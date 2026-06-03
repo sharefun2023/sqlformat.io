@@ -13,6 +13,72 @@
   <meta property="og:site_name" content="SQLFormat.io">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://sqlformat.io">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Format",
+    "description": "Free online SQL formatter and beautifier. Format, validate, and clean your SQL queries. Supports MySQL, PostgreSQL, SQLite, and 12+ other database dialects.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://sqlformat.io",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL formatting, SQL minification, SQL to JSON conversion, 15+ dialect support, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I format SQL online for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your SQL query into the input box, select your database dialect (MySQL, PostgreSQL, SQLite, etc.), and click the Format button. SQLFormat.io processes everything in your browser — no signup, no data sent to servers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects does sqlformat.io support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "15+ dialects: MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL data safe? Does it get sent to a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely safe. All formatting happens client-side in your browser using JavaScript. SQL queries never leave your device. No server-side processing, no logging, no data collection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I format large SQL queries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. There are no size limits. The formatter handles queries of any length, including complex queries with CTEs, subqueries, window functions, and nested joins."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does sqlformat.io work offline?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Once the page is loaded, formatting works without an internet connection since all processing is client-side. You can bookmark the page and use it anytime."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -246,6 +312,60 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* FAQ */
+    .faq-section {
+      margin: 40px 0;
+    }
+    .faq-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%;
+      padding: 16px 20px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq-question:hover { background: var(--surface2); }
+    .faq-question .arrow {
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-question .arrow {
+      transform: rotate(180deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+    .faq-answer p {
+      padding: 0 20px 16px;
+      color: var(--text2);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -360,6 +480,31 @@
       <div class="name">SQL Validator</div>
       <div class="desc">Coming soon</div>
     </a>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">How do I format SQL online for free? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Paste your SQL query into the input box, select your database dialect (MySQL, PostgreSQL, SQLite, etc.), and click the Format button. SQLFormat.io processes everything in your browser — no signup, no data sent to servers. Just paste, click, copy.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Which SQL dialects does sqlformat.io support? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>15+ dialects: MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. Select your dialect from the dropdown above the editor.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Is my SQL data safe? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes, completely safe. All formatting runs client-side in your browser using JavaScript. Your SQL queries never leave your device — no server processing, no logging, no data collection. You can even use it offline once the page is loaded.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Can I format large SQL queries? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes. There are no arbitrary size limits. The formatter handles queries of any length — complex CTEs, nested subqueries, window functions, multi-table joins. If your SQL works in your database, it'll work here.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Is sqlformat.io really free with no limits? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes. No signup, no credit card, no usage caps. Format as many queries as you want. We keep it free because the formatter runs entirely in your browser — there are no server costs to cover.</p></div>
+    </div>
   </div>
 </main>
 
