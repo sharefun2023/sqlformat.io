@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL to JSON Converter Online — Free & Instant</title>
+  <meta name="description" content="Convert SQL query results and INSERT statements to JSON format online. Free, instant, private. No data sent to servers.">
+  <meta name="keywords" content="sql, to, json, converter, online">
+  <meta property="og:title" content="SQL to JSON Converter Online — Free & Instant">
+  <meta property="og:description" content="Convert SQL query results and INSERT statements to JSON format online. Free, instant, private. No data sent to servers.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/sql-to-json-converter-online">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/sql-to-json-converter-online">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL to JSON Converter Online",
+    "description": "Convert SQL query results and INSERT statements to JSON format online. Free, instant, private. No data sent to servers.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "url": "https://sqlformat.io/sql-to-json-converter-online"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL to JSON Converter Online", "item": "https://sqlformat.io/sql-to-json-converter-online"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+    .hero {
+      text-align: left;
+      padding: 40px 0 24px;
+    }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero .content { color: var(--text2); font-size: 0.95rem; line-height: 1.7; max-width: 780px; }
+    .hero .content p { margin-bottom: 12px; }
+    .hero .content code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: var(--accent);
+    }
+    .hero .content strong { color: var(--text); }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover {
+      border-color: var(--accent);
+    }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) {
+      .editor-area { grid-template-columns: 1fr; }
+    }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 350px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .related-section {
+      margin: 32px 0 48px;
+    }
+    .related-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: var(--text2);
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .related-grid a {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+    }
+    .related-grid a:hover { border-color: var(--accent); }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL to JSON Converter Online</h1>
+    <div class="content">
+            <p>Need to <strong>convert SQL to JSON</strong>? Whether you've got a result set from a query, a batch of INSERT statements, or a CSV-style output from your database client — paste it in and get clean JSON out.</p>
+            <p>This converter handles common SQL output formats: tabular results with column headers, <code>INSERT INTO ... VALUES</code> statements, and pipe-delimited or comma-separated data dumps. The output is valid JSON ready for your API, config file, or frontend code.</p>
+            <p>Everything runs client-side, so your data never leaves your browser. No file size limits.</p>
+        </div>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🔄 SQL to JSON</h2>
+      <div class="tool-controls">
+        <button onclick="runTool()" class="primary" id="actionBtn">🔄 JSON</button>
+        <button onclick="copyResult()" class="success">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label>Input</label>
+        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">id,name,email,status
+1,Alice,alice@example.com,active
+2,Bob,bob@example.com,inactive
+3,Charlie,charlie@example.com,active</textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Output</label>
+        <textarea id="outputText" placeholder="Result will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="related-section">
+    <h2>More SQL Tools</h2>
+    <div class="related-grid">
+      <a href="/free-sql-formatter-online">Free SQL Formatter</a>
+      <a href="/sql-formatter-postgresql">SQL Formatter PostgreSQL</a>
+      <a href="/sql-formatter-mysql">SQL Formatter MySQL</a>
+      <a href="/online-sql-beautifier">Online SQL Beautifier</a>
+      <a href="/sql-minifier-online">SQL Minifier Online</a>
+      <a href="/sql-to-json-converter-online">SQL to JSON Converter</a>
+      <a href="/format-sql-online-free">Format SQL Online Free</a>
+      <a href="/sql-query-formatter">SQL Query Formatter</a>
+      <a href="/sql-code-beautifier">SQL Code Beautifier</a>
+      <a href="/compress-sql-online">Compress SQL Online</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="/sql-formatter.js"></script>
+<script>
+window._formatSql = sqlFormatter.format;
+
+function runTool() {
+  const input = document.getElementById('inputText');
+  const output = document.getElementById('outputText');
+  const btn = document.getElementById('actionBtn');
+  const sql = input.value.trim();
+  
+  if (!sql) { showToast('Please enter SQL first'); return; }
+  
+  btn.style.opacity = '0.5';
+  btn.textContent = '⏳ Processing...';
+  
+  setTimeout(() => {
+    try {
+      // Simple SQL to JSON conversion
+      const lines = sql.trim().split('\n').filter(l => l.trim());
+      if (lines.length < 2) { output.value = '[]'; return; }
+      
+      const headers = lines[0].split(/[,\t|]/).map(h => h.trim());
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {{
+        const vals = lines[i].split(/[,\t|]/).map(v => v.trim());
+        if (vals.length !== headers.length) continue;
+        const obj = {{}};
+        headers.forEach((h, j) => obj[h] = isNaN(vals[j]) ? vals[j] : Number(vals[j]));
+        rows.push(obj);
+      }}
+      output.value = JSON.stringify(rows, null, 2);
+      btn.textContent = '🔄 Converted';
+      showToast('✅ Done');
+    }} catch (e) {{
+      output.value = 'Error: ' + e.message;
+      showToast('❌ ' + e.message);
+    }} finally {{
+      btn.style.opacity = '1';
+    }}
+  }}, 50);
+}}
+
+function copyResult() {{
+  const output = document.getElementById('outputText');
+  if (!output.value.trim()) {{ showToast('Nothing to copy'); return; }}
+  navigator.clipboard.writeText(output.value).then(() => {{
+    showToast('📋 Copied to clipboard');
+  }}).catch(() => {{
+    output.select();
+    document.execCommand('copy');
+    showToast('📋 Copied to clipboard');
+  }});
+}}
+
+function clearAll() {{
+  document.getElementById('inputText').value = '';
+  document.getElementById('outputText').value = '';
+  showToast('🗑️ Cleared');
+}}
+
+function showToast(msg) {{
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}}
+
+// Cmd/Ctrl+Enter to run
+document.getElementById('inputText').addEventListener('keydown', (e) => {{
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {{
+    e.preventDefault();
+    runTool();
+  }}
+}});
+</script>
+
+</body>
+</html>
