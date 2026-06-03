@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - SQLFormat.io</title>
+  <meta name="description" content="About SQLFormat.io - Free online SQL formatter and beautifier tool.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --radius: 8px;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .content { padding: 48px 0; }
+    h1 { font-size: 2rem; margin-bottom: 24px; }
+    h2 { font-size: 1.3rem; margin: 32px 0 16px; color: var(--accent); }
+    p { color: var(--text2); line-height: 1.7; margin-bottom: 16px; font-size: 0.95rem; }
+    ul { color: var(--text2); line-height: 1.8; padding-left: 20px; margin-bottom: 16px; }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/about" class="active">About</a>
+    </nav>
+  </div>
+</header>
+<main class="container content">
+  <h1>About SQLFormat.io</h1>
+  <p><strong>SQLFormat.io</strong> is a free, fast, and privacy-focused online SQL formatter and beautifier. All processing happens directly in your browser — we never send your SQL queries to any server.</p>
+
+  <h2>✨ Why SQLFormat.io?</h2>
+  <ul>
+    <li><strong>100% Client-Side</strong> — Your data never leaves your device</li>
+    <li><strong>15+ SQL Dialects</strong> — MySQL, PostgreSQL, SQLite, Snowflake, BigQuery, and more</li>
+    <li><strong>Fast &amp; Lightweight</strong> — No sign-ups, no ads, no distractions</li>
+    <li><strong>Free Forever</strong> — No hidden limits or premium tiers</li>
+  </ul>
+
+  <h2>🔧 Supported Dialects</h2>
+  <p>Standard SQL, MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark, T-SQL, Trino</p>
+
+  <h2>📬 Contact</h2>
+  <p>Have feedback or suggestions? Feel free to contribute on GitHub.</p>
+</main>
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Beautifier | &copy; 2026</p>
+  </div>
+</footer>
+</body>
+</html>

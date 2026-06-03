@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Format - Free Online SQL Formatter & Beautifier</title>
+  <meta name="description" content="Free online SQL formatter and beautifier. Format, validate, and clean your SQL queries. Supports MySQL, PostgreSQL, SQLite, Snowflake, and more.">
+  <meta name="keywords" content="SQL formatter, SQL beautifier, online SQL tool, format SQL, SQL pretty">
+  <link rel="canonical" href="https://sqlformat.io">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    /* Tool section */
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover {
+      border-color: var(--accent);
+    }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) {
+      .editor-area { grid-template-columns: 1fr; }
+    }
+    .editor-pane {
+      position: relative;
+    }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 350px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .char-count {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--accent); }
+    .feature-card .icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .feature-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.5; }
+    /* Other Tools */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 20px 0 40px;
+    }
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .tool-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .tool-card .name { font-size: 0.9rem; font-weight: 500; }
+    .tool-card .desc { font-size: 0.78rem; color: var(--text2); margin-top: 4px; }
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    /* Loader */
+    .loading { opacity: 0.5; pointer-events: none; }
+    /* Example queries */
+    .examples {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding: 0 20px 16px;
+    }
+    .examples button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .examples button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/" class="active">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>Free Online SQL Formatter &amp; Beautifier</h1>
+    <p>Format, beautify, and clean your SQL queries instantly. Supports MySQL, PostgreSQL, SQLite, Snowflake, and more.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🧹 SQL Formatter</h2>
+      <div class="tool-controls">
+        <select id="dialect">
+          <option value="sql">Standard SQL</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+          <option value="bigquery">BigQuery</option>
+          <option value="db2">DB2</option>
+          <option value="hive">Hive</option>
+          <option value="mariadb">MariaDB</option>
+          <option value="plsql">PL/SQL</option>
+          <option value="redshift">Redshift</option>
+          <option value="singlestoredb">SingleStoreDB</option>
+          <option value="snowflake">Snowflake</option>
+          <option value="spark">Spark</option>
+          <option value="tsql">T-SQL</option>
+          <option value="trino">Trino</option>
+        </select>
+        <select id="indent">
+          <option value="2">2 spaces</option>
+          <option value="4" selected>4 spaces</option>
+          <option value="tab">Tabs</option>
+        </select>
+        <button onclick="formatSQL()" class="primary" id="formatBtn">✨ Format</button>
+        <button onclick="copyResult()" class="success" id="copyBtn">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label>Input SQL</label>
+        <textarea id="inputSql" placeholder="Paste your SQL query here...&#10;&#10;Example:&#10;SELECT id, name, count(*) FROM users WHERE status = 'active' GROUP BY id ORDER BY count DESC" spellcheck="false"></textarea>
+        <span class="char-count" id="inputCount">0 chars</span>
+      </div>
+      <div class="editor-pane">
+        <label>Formatted Output</label>
+        <textarea id="outputSql" placeholder="Formatted SQL will appear here..." spellcheck="false" readonly></textarea>
+        <span class="char-count" id="outputCount">0 chars</span>
+      </div>
+    </div>
+    <div class="examples">
+      <span style="color:var(--text2);font-size:0.8rem;padding:4px 0;">Try an example:</span>
+      <button onclick="loadExample('select')">SELECT</button>
+      <button onclick="loadExample('join')">JOIN</button>
+      <button onclick="loadExample('complex')">Complex</button>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="icon">🎯</div>
+      <h3>15+ SQL Dialects</h3>
+      <p>Supports MySQL, PostgreSQL, SQLite, Snowflake, BigQuery, and many more database systems.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚡</div>
+      <h3>Fast &amp; Private</h3>
+      <p>All formatting happens in your browser. No data sent to any server. 100% client-side.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🎨</div>
+      <h3>Customizable</h3>
+      <p>Choose your indentation style and dialect. Results are instantly formatted and ready to copy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🆓</div>
+      <h3>Free Forever</h3>
+      <p>No sign-ups, no credit cards, no limits. Use as much as you want, completely free.</p>
+    </div>
+  </div>
+
+  <!-- Other Tools -->
+  <h2 style="font-size:1.2rem;margin:24px 0 16px;">More SQL Tools</h2>
+  <div class="tools-grid">
+    <a href="/minify" class="tool-card">
+      <div class="icon">🗜️</div>
+      <div class="name">SQL Minifier</div>
+      <div class="desc">Compress SQL to one line, save space</div>
+    </a>
+    <a href="/" class="tool-card" style="opacity:0.5;cursor:default;">
+      <div class="icon">🔄</div>
+      <div class="name">SQL to JSON</div>
+      <div class="desc">Coming soon</div>
+    </a>
+    <a href="/" class="tool-card" style="opacity:0.5;cursor:default;">
+      <div class="icon">✅</div>
+      <div class="name">SQL Validator</div>
+      <div class="desc">Coming soon</div>
+    </a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Beautifier | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="/sql-formatter.js"></script>
+<script>
+window._formatSql = sqlFormatter.format;
+
+// Format function
+window.formatSQL = function() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  const dialect = document.getElementById('dialect').value;
+  const indent = document.getElementById('indent').value;
+  const btn = document.getElementById('formatBtn');
+
+  const sql = input.value.trim();
+  if (!sql) {
+    showToast('Please enter a SQL query first');
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Formatting...';
+
+  // Use setTimeout to let the UI update
+  setTimeout(() => {
+    try {
+      const formatted = window._formatSql(sql, {
+        language: dialect,
+        indent: indent === 'tab' ? '\t' : ' '.repeat(parseInt(indent)),
+      });
+      output.value = formatted;
+      updateCounts();
+      showToast('✅ Formatted successfully');
+    } catch (e) {
+      output.value = `Error: ${e.message}`;
+      showToast('❌ Error: ' + e.message);
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = '✨ Format';
+    }
+  }, 50);
+};
+
+// Copy result
+window.copyResult = function() {
+  const output = document.getElementById('outputSql');
+  if (!output.value.trim()) {
+    showToast('Nothing to copy');
+    return;
+  }
+  navigator.clipboard.writeText(output.value).then(() => {
+    showToast('📋 Copied to clipboard');
+  }).catch(() => {
+    // Fallback
+    output.select();
+    document.execCommand('copy');
+    showToast('📋 Copied to clipboard');
+  });
+};
+
+// Clear
+window.clearAll = function() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputSql').value = '';
+  updateCounts();
+  showToast('🗑️ Cleared');
+};
+
+// Examples
+window.loadExample = function(type) {
+  const input = document.getElementById('inputSql');
+  const examples = {
+    select: `SELECT u.id, u.name, u.email, COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.status = 'active' AND u.created_at > '2024-01-01'
+GROUP BY u.id, u.name, u.email
+HAVING COUNT(o.id) > 5
+ORDER BY order_count DESC
+LIMIT 20;`,
+    join: `SELECT e.id, e.name, d.name as department, e.salary,
+  CASE
+    WHEN e.salary > 100000 THEN 'High'
+    WHEN e.salary > 50000 THEN 'Medium'
+    ELSE 'Low'
+  END as salary_level
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.id
+WHERE e.active = true
+ORDER BY e.salary DESC;`,
+    complex: `WITH ranked_sales AS (
+  SELECT
+    product_id,
+    SUM(amount) as total_sales,
+    RANK() OVER (ORDER BY SUM(amount) DESC) as sales_rank
+  FROM transactions
+  WHERE transaction_date >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+  GROUP BY product_id
+)
+SELECT
+  p.name,
+  p.category,
+  rs.total_sales,
+  rs.sales_rank
+FROM products p
+JOIN ranked_sales rs ON p.id = rs.product_id
+WHERE rs.sales_rank <= 10
+ORDER BY rs.sales_rank;`
+  };
+  input.value = examples[type] || '';
+  updateCounts();
+  // Auto format
+  window.formatSQL();
+};
+
+// Update char counts
+function updateCounts() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  document.getElementById('inputCount').textContent = input.value.length + ' chars';
+  document.getElementById('outputCount').textContent = output.value.length + ' chars';
+}
+
+document.getElementById('inputSql').addEventListener('input', updateCounts);
+
+// Keyboard shortcut: Ctrl+Enter to format
+document.getElementById('inputSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    window.formatSQL();
+  }
+});
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Initial update
+updateCounts();
+</script>
+
+<!-- Google Analytics - uncomment and add your tracking ID
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+-->
+</body>
+</html>

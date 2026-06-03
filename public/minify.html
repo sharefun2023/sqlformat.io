@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Minifier - Compress & Minify SQL Queries Online</title>
+  <meta name="description" content="Free online SQL minifier. Compress and minify SQL queries to save space. Remove unnecessary whitespace and comments from SQL.">
+  <link rel="canonical" href="https://sqlformat.io/minify">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) { .editor-area { grid-template-columns: 1fr; } }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 350px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .stats {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 24px;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    .stats strong { color: var(--text); }
+    .nav-back { text-align: center; margin: 24px 0; }
+    .nav-back a { color: var(--accent); text-decoration: none; }
+    .nav-back a:hover { text-decoration: underline; }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify" class="active">Minifier</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <div class="hero">
+    <h1>SQL Minifier &amp; Compressor</h1>
+    <p>Compress your SQL queries into a single line. Remove unnecessary whitespace and comments to save space.</p>
+  </div>
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🗜️ SQL Minifier</h2>
+      <div class="tool-controls">
+        <button onclick="minifySQL()" class="primary" id="minifyBtn">🗜️ Minify</button>
+        <button onclick="copyResult()" class="success">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label>Input SQL</label>
+        <textarea id="inputSql" placeholder="Paste your SQL query here..." spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Minified Output</label>
+        <textarea id="outputSql" placeholder="Minified SQL will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+    <div class="stats" id="stats">
+      <span>Original: <strong id="origChars">0</strong> chars</span>
+      <span>Minified: <strong id="minChars">0</strong> chars</span>
+      <span>Saved: <strong id="savedPct">0%</strong></span>
+    </div>
+  </div>
+  <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
+</main>
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Beautifier | &copy; 2026</p>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+function minifySQL() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  const btn = document.getElementById('minifyBtn');
+  let sql = input.value.trim();
+  if (!sql) { showToast('Please enter a SQL query first'); return; }
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Minifying...';
+  setTimeout(() => {
+    try {
+      // Remove comments
+      sql = sql.replace(/\/\*[\s\S]*?\*\//g, '');
+      sql = sql.replace(/--.*$/gm, '');
+      // Normalize whitespace
+      sql = sql.replace(/\s+/g, ' ').trim();
+      output.value = sql;
+      updateStats();
+      showToast('✅ Minified successfully');
+    } catch (e) {
+      output.value = 'Error: ' + e.message;
+      showToast('❌ Error');
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = '🗜️ Minify';
+    }
+  }, 50);
+}
+function copyResult() {
+  const output = document.getElementById('outputSql');
+  if (!output.value.trim()) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output.value).then(() => showToast('📋 Copied to clipboard'));
+}
+function clearAll() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputSql').value = '';
+  updateStats();
+}
+function updateStats() {
+  const input = document.getElementById('inputSql').value.trim();
+  const output = document.getElementById('outputSql').value.trim();
+  document.getElementById('origChars').textContent = input.length;
+  document.getElementById('minChars').textContent = output.length;
+  const saved = input.length > 0 ? Math.round((1 - output.length / input.length) * 100) : 0;
+  document.getElementById('savedPct').textContent = saved + '%';
+}
+document.getElementById('inputSql').addEventListener('input', updateStats);
+document.getElementById('inputSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); minifySQL(); }
+});
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+updateStats();
+</script>
+</body>
+</html>

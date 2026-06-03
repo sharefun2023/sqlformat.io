@@ -1,0 +1,17 @@
+{
+  "name": "sqlformat.io",
+  "version": "1.0.0",
+  "description": "SQL Format - Online SQL Formatter & Beautifier",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "sql-formatter": "^15.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
