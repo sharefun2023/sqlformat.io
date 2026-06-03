@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL to JSON Converter - Transform SQL Query Results to JSON</title>
+  <meta name="description" content="Convert SQL query results to JSON format online. Transform INSERT statements and query results into JSON arrays. Free, fast, works in your browser.">
+  <meta name="keywords" content="SQL to JSON, convert SQL to JSON, SQL to JSON converter, SQL results to JSON, online SQL to JSON">
+  <meta property="og:title" content="SQL to JSON Converter - Transform SQL Query Results to JSON">
+  <meta property="og:description" content="Convert SQL query results or INSERT statements to JSON format instantly. Free and private.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/sql-to-json">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/sql-to-json">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+    .converter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) { .converter-grid { grid-template-columns: 1fr; } }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 400px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .mode-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-tabs button {
+      padding: 4px 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-tabs button.active {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+    }
+    .mode-tabs button:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+    .examples {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 20px 16px;
+    }
+    .examples button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .examples button:hover { border-color: var(--accent); color: var(--accent); }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .nav-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0 40px;
+    }
+    .nav-row a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    .nav-row a:hover { text-decoration: underline; }
+    .loading { opacity: 0.5; pointer-events: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json" class="active">SQL→JSON</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <div class="hero">
+    <h1>SQL to JSON Converter</h1>
+    <p>Convert SQL INSERT statements or query results into JSON format. Perfect for migrating data or generating fixtures.</p>
+  </div>
+  <div class="tool-section">
+    <div class="mode-tabs">
+      <button class="active" data-mode="insert" onclick="switchMode('insert')">📥 INSERT → JSON</button>
+      <button data-mode="select" onclick="switchMode('select')">📋 SELECT → JSON</button>
+    </div>
+    <div class="tool-header">
+      <h2 id="modeTitle">INSERT to JSON</h2>
+      <div class="tool-controls">
+        <button onclick="convert()" class="primary" id="convertBtn">🔄 Convert</button>
+        <button onclick="copyResult()" class="success">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="converter-grid">
+      <div class="editor-pane">
+        <label id="inputLabel">SQL Input</label>
+        <textarea id="inputSql" placeholder="Paste your SQL INSERT or SELECT statement here..." spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label>JSON Output</label>
+        <textarea id="outputJson" placeholder="JSON will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+    <div class="examples">
+      <span style="color:var(--text2);font-size:0.8rem;padding:4px 0;">Examples:</span>
+      <button onclick="loadExample('insert')">INSERT</button>
+      <button onclick="loadExample('select')">SELECT results</button>
+    </div>
+  </div>
+  <div class="nav-row">
+    <a href="/">← SQL Formatter</a>
+    <a href="/minify">SQL Minifier →</a>
+  </div>
+</main>
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Beautifier | &copy; 2026</p>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+let currentMode = 'insert';
+
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+  document.getElementById('modeTitle').textContent = mode === 'insert' ? 'INSERT to JSON' : 'SELECT Results to JSON';
+  document.getElementById('inputLabel').textContent = mode === 'insert' ? 'SQL INSERT Statements' : 'SELECT Query with Sample Results';
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputJson').value = '';
+}
+
+function convert() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputJson');
+  const btn = document.getElementById('convertBtn');
+  const sql = input.value.trim();
+  if (!sql) { showToast('Please enter SQL first'); return; }
+
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Converting...';
+
+  setTimeout(() => {
+    try {
+      let json;
+      if (currentMode === 'insert') {
+        json = parseInsertToJson(sql);
+      } else {
+        json = parseSelectToJson(sql);
+      }
+      output.value = JSON.stringify(json, null, 2);
+      showToast('✅ Converted successfully');
+    } catch (e) {
+      output.value = 'Error: ' + e.message;
+      showToast('❌ ' + e.message);
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = '🔄 Convert';
+    }
+  }, 50);
+}
+
+function parseInsertToJson(sql) {
+  // Parse INSERT INTO table (col1, col2) VALUES (val1, val2), (val3, val4);
+  const insertRegex = /INSERT\s+INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*(.+?)(?:;|$)/gsi;
+  let match = insertRegex.exec(sql);
+  const results = [];
+
+  if (!match) {
+    // Try simplified: VALUES only
+    const valuesRegex = /VALUES\s*(.+?)(?:;|$)/gsi;
+    let vm = valuesRegex.exec(sql);
+    if (!vm) throw new Error('Could not parse INSERT statement. Make sure it contains VALUES keyword.');
+
+    // Extract column names from the first row
+    const valueSets = parseValueSets(vm[1]);
+    const firstRow = valueSets[0];
+    const columns = firstRow.map((_, i) => 'col' + (i + 1));
+    for (const vals of valueSets) {
+      const obj = {};
+      columns.forEach((col, i) => obj[col] = parseValue(vals[i]));
+      results.push(obj);
+    }
+    return results;
+  }
+
+  const columns = match[2].split(',').map(c => c.trim());
+  const valueSets = parseValueSets(match[3]);
+
+  // Process all matches (multiple INSERT statements)
+  results.push(...valueSets.map(vals => {
+    const obj = {};
+    columns.forEach((col, i) => obj[col] = parseValue(vals[i]));
+    return obj;
+  }));
+
+  // Process additional INSERT statements
+  while ((match = insertRegex.exec(sql)) !== null) {
+    const moreCols = match[2].split(',').map(c => c.trim());
+    const moreVals = parseValueSets(match[3]);
+    results.push(...moreVals.map(vals => {
+      const obj = {};
+      moreCols.forEach((col, i) => obj[col] = parseValue(vals[i]));
+      return obj;
+    }));
+  }
+
+  return results;
+}
+
+function parseValueSets(str) {
+  // Split by ), ( pattern
+  const sets = [];
+  let depth = 0;
+  let current = '';
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    if (ch === '(') { depth++; if (depth === 1) { current = ''; continue; } }
+    if (ch === ')') { depth--; if (depth === 0) { sets.push(current.trim()); continue; } }
+    if (depth >= 1) current += ch;
+  }
+  // Fallback: split by comma-separated paren groups
+  if (sets.length === 0) {
+    const parenGroups = str.match(/\(([^)]+)\)/g);
+    if (parenGroups) {
+      return parenGroups.map(g => g.slice(1, -1).split(',').map(s => s.trim()));
+    }
+    throw new Error('Could not parse VALUES. Make sure values are enclosed in parentheses.');
+  }
+  return sets.map(s => {
+    // Split by comma, but not inside quotes
+    const parts = [];
+    let current = '', inStr = false, quoteChar = '';
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (inStr) {
+        current += ch;
+        if (ch === quoteChar && (i + 1 >= s.length || s[i + 1] !== quoteChar)) inStr = false;
+        else if (ch === quoteChar) current += ch; // escaped quote
+      } else if (ch === "'" || ch === '"') {
+        inStr = true; quoteChar = ch; current += ch;
+      } else if (ch === ',') {
+        parts.push(current.trim()); current = '';
+      } else {
+        current += ch;
+      }
+    }
+    if (current.trim()) parts.push(current.trim());
+    return parts;
+  });
+}
+
+function parseValue(val) {
+  val = val.trim();
+  if (val === 'NULL' || val === 'null') return null;
+  if (val === 'TRUE' || val === 'true') return true;
+  if (val === 'FALSE' || val === 'false') return false;
+  if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
+    let inner = val.slice(1, -1);
+    inner = inner.replace(/''/g, "'").replace(/""/g, '"');
+    return inner;
+  }
+  const num = Number(val);
+  if (!isNaN(num) && val !== '') return num;
+  return val;
+}
+
+function parseSelectToJson(sql) {
+  // Expect format like:
+  // SELECT id, name FROM users;
+  // 1 | Alice
+  // 2 | Bob
+  const lines = sql.split('\n').filter(l => l.trim());
+  if (lines.length < 2) throw new Error('Please provide both the SELECT query and sample result rows.');
+
+  // First non-empty line should be SELECT, skip it
+  let headerLine = '';
+  let dataStart = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (/SELECT/i.test(lines[i]) || /id\s*[|,]\s*name/i.test(lines[i]) || lines[i].includes('|')) {
+      if (/SELECT/i.test(lines[i])) continue;
+      headerLine = lines[i];
+      dataStart = i;
+      break;
+    }
+  }
+
+  if (!headerLine) {
+    // Try pipe-delimited
+    const pipeLines = lines.filter(l => l.includes('|'));
+    if (pipeLines.length < 2) throw new Error('Could not find column headers. Use pipe (|) or comma-separated format.');
+    headerLine = pipeLines[0];
+    dataStart = lines.indexOf(headerLine);
+  }
+
+  // Determine separator
+  const sep = headerLine.includes('|') ? '|' : (headerLine.includes('\t') ? '\t' : ',');
+  const columns = headerLine.split(sep).map(c => c.trim()).filter(c => c);
+
+  const results = [];
+  for (let i = dataStart + 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line || /^[-=]+$/.test(line)) continue; // skip separator lines like ---
+    const values = line.split(sep).map(v => v.trim()).filter(v => v);
+    if (values.length === columns.length) {
+      const obj = {};
+      columns.forEach((col, idx) => {
+        obj[col] = parseValue(values[idx]);
+      });
+      results.push(obj);
+    }
+  }
+
+  if (results.length === 0) throw new Error('Could not parse any data rows. Check your format (pipe | or comma separated).');
+  return results;
+}
+
+function copyResult() {
+  const output = document.getElementById('outputJson');
+  if (!output.value.trim()) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output.value).then(() => showToast('📋 Copied to clipboard'));
+}
+
+function clearAll() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputJson').value = '';
+  showToast('🗑️ Cleared');
+}
+
+function loadExample(type) {
+  const input = document.getElementById('inputSql');
+  if (type === 'insert') {
+    switchMode('insert');
+    input.value = `INSERT INTO users (id, name, email, age, active) VALUES
+(1, 'Alice', 'alice@example.com', 28, true),
+(2, 'Bob', 'bob@example.com', 35, true),
+(3, 'Charlie', 'charlie@example.com', 22, false),
+(4, 'Diana', 'diana@example.com', 31, true),
+(5, 'Eve', NULL, 29, true);`;
+  } else {
+    switchMode('select');
+    input.value = `SELECT id, name, age, city, salary
+---
+1  | Alice    | 28 | New York   | 75000
+2  | Bob      | 35 | San Francisco | 92000
+3  | Charlie  | 22 | Chicago   | 48000
+4  | Diana    | 31 | Seattle   | 83000
+5  | Eve      | 29 | Boston    | 71000`;
+  }
+  document.getElementById('outputJson').value = '';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+document.getElementById('inputSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); convert(); }
+});
+</script>
+</body>
+</html>
