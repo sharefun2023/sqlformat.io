@@ -40,6 +40,30 @@
     h2 { font-size: 1.3rem; margin: 32px 0 16px; color: var(--accent); }
     p { color: var(--text2); line-height: 1.7; margin-bottom: 16px; font-size: 0.95rem; }
     ul { color: var(--text2); line-height: 1.8; padding-left: 20px; margin-bottom: 16px; }
+    .changelog { margin-top: 8px; }
+    .changelog-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .changelog-item:last-child { border-bottom: none; }
+    .changelog-item .date {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .changelog-item .title {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .changelog-item ul {
+      margin-bottom: 0;
+      padding-left: 16px;
+      font-size: 0.85rem;
+    }
+    .changelog-item ul li { margin-bottom: 2px; }
     footer {
       margin-top: auto;
       border-top: 1px solid var(--border);
@@ -78,6 +102,63 @@
 
   <h2>🔧 Supported Dialects</h2>
   <p>Standard SQL, MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark, T-SQL, Trino</p>
+
+  <h2>📋 Changelog</h2>
+  <div class="changelog">
+
+    <div class="changelog-item">
+      <div class="date">June 2, 2026</div>
+      <div class="title">UX Improvements — History, Share &amp; Copy Feedback</div>
+      <ul>
+        <li>Format history saves last 5 queries in your browser (localStorage)</li>
+        <li>Share button generates a link you can send to teammates</li>
+        <li>Copy button shows "✓ Copied!" feedback for 2 seconds</li>
+      </ul>
+    </div>
+
+    <div class="changelog-item">
+      <div class="date">June 2, 2026</div>
+      <div class="title">New Tool: SQL Syntax Validator</div>
+      <ul>
+        <li>Real-time syntax checking with line-by-line error highlighting</li>
+        <li>Common typo detection (SELCET→SELECT, WHRE→WHERE, etc.)</li>
+        <li>Unmatched parenthesis detection</li>
+        <li>All 15 dialects supported</li>
+      </ul>
+    </div>
+
+    <div class="changelog-item">
+      <div class="date">June 2, 2026</div>
+      <div class="title">SEO — JSON-LD Structured Data &amp; FAQ</div>
+      <ul>
+        <li>SoftwareApplication and FAQPage schema added to all pages</li>
+        <li>5-question FAQ section on homepage for Google rich results</li>
+        <li>BreadcrumbList schema for navigation breadcrumbs</li>
+      </ul>
+    </div>
+
+    <div class="changelog-item">
+      <div class="date">June 2, 2026</div>
+      <div class="title">10 SEO Landing Pages</div>
+      <ul>
+        <li>Targeted long-tail keyword pages for PostgreSQL, MySQL, beautifier, minifier, and more</li>
+        <li>Each page has unique 200-300 word content + embedded tool</li>
+        <li>Full internal linking matrix across all pages</li>
+      </ul>
+    </div>
+
+    <div class="changelog-item">
+      <div class="date">June 1, 2026</div>
+      <div class="title">Initial Launch</div>
+      <ul>
+        <li>SQL Formatter with 15 dialects — format, beautify, clean SQL</li>
+        <li>SQL Minifier — compress SQL to single line</li>
+        <li>SQL to JSON — convert query results to JSON arrays</li>
+        <li>100% client-side, no data sent to any server, free forever</li>
+      </ul>
+    </div>
+
+  </div>
 
   <h2>📬 Contact</h2>
   <p>Have feedback or suggestions? Feel free to contribute on GitHub.</p>
