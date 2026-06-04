@@ -271,6 +271,75 @@
       font-size: 0.85rem;
     }
     footer a { color: var(--accent); text-decoration: none; }
+    /* History panel */
+    .history-panel {
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      display: none;
+    }
+    .history-panel.visible { display: block; }
+    .history-panel h3 {
+      font-size: 0.82rem;
+      color: var(--text2);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .history-list { display: flex; flex-direction: column; gap: 4px; }
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      color: var(--text2);
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .history-item:hover {
+      background: var(--surface2);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .history-item .preview {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .history-item .dialect-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--surface2);
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .history-item .time-tag {
+      font-size: 0.7rem;
+      color: var(--text2);
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    .history-clear {
+      font-size: 0.75rem;
+      color: var(--text2);
+      cursor: pointer;
+      margin-left: 8px;
+      background: none;
+      border: none;
+    }
+    .history-clear:hover { color: var(--red); }
+    /* Share button state */
+    .tool-controls button.share-btn {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+    .tool-controls button.share-btn:hover { border-color: var(--accent); }
     /* Toast notification */
     .toast {
       position: fixed;
@@ -417,6 +486,7 @@
         <button onclick="formatSQL()" class="primary" id="formatBtn">✨ Format</button>
         <button onclick="copyResult()" class="success" id="copyBtn">📋 Copy</button>
         <button onclick="clearAll()">🗑️ Clear</button>
+        <button onclick="shareQuery()" class="share-btn" id="shareBtn">🔗 Share</button>
       </div>
     </div>
     <div class="editor-area">
@@ -436,6 +506,10 @@
       <button onclick="loadExample('select')">SELECT</button>
       <button onclick="loadExample('join')">JOIN</button>
       <button onclick="loadExample('complex')">Complex</button>
+    </div>
+    <div class="history-panel" id="historyPanel">
+      <h3>Recent Formats <button class="history-clear" onclick="clearHistory()">clear</button></h3>
+      <div class="history-list" id="historyList"></div>
     </div>
   </div>
 
@@ -560,18 +634,134 @@ window.formatSQL = function() {
 // Copy result
 window.copyResult = function() {
   const output = document.getElementById('outputSql');
+  const btn = document.getElementById('copyBtn');
   if (!output.value.trim()) {
     showToast('Nothing to copy');
     return;
   }
   navigator.clipboard.writeText(output.value).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('success');
     showToast('📋 Copied to clipboard');
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
   }).catch(() => {
-    // Fallback
     output.select();
     document.execCommand('copy');
+    btn.textContent = '✓ Copied!';
     showToast('📋 Copied to clipboard');
+    setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
   });
+};
+
+// Share: encode SQL in URL hash + copy link
+window.shareQuery = function() {
+  const input = document.getElementById('inputSql');
+  const dialect = document.getElementById('dialect').value;
+  if (!input.value.trim()) { showToast('Nothing to share'); return; }
+  
+  const encoded = btoa(unescape(encodeURIComponent(input.value)));
+  const url = `${location.origin}/?d=${dialect}&q=${encoded}`;
+  
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('🔗 Share link copied! Anyone can open it to see this query');
+  }).catch(() => {
+    prompt('Copy this link:', url);
+  });
+};
+
+// Load shared query from URL
+(function loadSharedQuery() {
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  const d = params.get('d');
+  if (q) {
+    try {
+      const sql = decodeURIComponent(escape(atob(q)));
+      document.getElementById('inputSql').value = sql;
+      if (d) document.getElementById('dialect').value = d;
+      updateCounts();
+      showToast('📥 Query loaded from shared link');
+    } catch(e) { /* ignore invalid base64 */ }
+  }
+})();
+
+// History: localStorage
+const HISTORY_KEY = 'sqlformat_history';
+const MAX_HISTORY = 5;
+
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch(e) { return []; }
+}
+
+function saveToHistory(sql, dialect) {
+  const history = loadHistory();
+  // Remove duplicate
+  const filtered = history.filter(h => h.sql !== sql);
+  filtered.unshift({
+    sql: sql.substring(0, 200),
+    fullSql: sql,
+    dialect: dialect,
+    time: Date.now()
+  });
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered.slice(0, MAX_HISTORY)));
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = loadHistory();
+  const panel = document.getElementById('historyPanel');
+  const list = document.getElementById('historyList');
+  
+  if (history.length === 0) {
+    panel.classList.remove('visible');
+    return;
+  }
+  panel.classList.add('visible');
+  
+  list.innerHTML = history.map((h, i) => {
+    const time = new Date(h.time);
+    const timeStr = time.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const preview = h.sql.replace(/\n/g, ' ').substring(0, 80);
+    return `<div class="history-item" onclick="restoreHistory(${i})">
+      <span class="preview">${escapeHtml(preview)}</span>
+      <span class="dialect-tag">${escapeHtml(h.dialect)}</span>
+      <span class="time-tag">${timeStr}</span>
+    </div>`;
+  }).join('');
+}
+
+function restoreHistory(index) {
+  const history = loadHistory();
+  if (index >= history.length) return;
+  const h = history[index];
+  document.getElementById('inputSql').value = h.fullSql;
+  document.getElementById('dialect').value = h.dialect;
+  updateCounts();
+  window.formatSQL();
+}
+
+function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistory();
+  showToast('🗑️ History cleared');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Save to history after format
+const origFormatSQL = window.formatSQL;
+window.formatSQL = function() {
+  const input = document.getElementById('inputSql');
+  const dialect = document.getElementById('dialect').value;
+  const sql = input.value.trim();
+  if (sql) saveToHistory(sql, dialect);
+  origFormatSQL();
 };
 
 // Clear
