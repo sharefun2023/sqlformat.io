@@ -3,351 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Minifier Online — Compress SQL Queries Free</title>
-  <meta name="description" content="Minify and compress SQL queries online for free. Remove whitespace and comments. Reduce SQL file size. No signup, instant results.">
-  <meta name="keywords" content="sql, minifier, online">
-  <meta property="og:title" content="SQL Minifier Online — Compress SQL Queries Free">
-  <meta property="og:description" content="Minify and compress SQL queries online for free. Remove whitespace and comments. Reduce SQL file size. No signup, instant results.">
+  <title>SQL Minifier Online — Compress SQL for Production | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL minifier. Compress SQL queries to a single line for production use, API payloads, or log storage. Reduce SQL size by 40-60% without changing logic.">
+  <meta name="keywords" content="sql, minifier, compress, online, production">
+  <meta property="og:title" content="SQL Minifier Online — Compress SQL for Production | SQLFormat.io">
+  <meta property="og:description" content="Free online SQL minifier. Compress SQL queries to a single line for production use, API payloads, or log storage. Reduce...">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/sql-minifier-online">
-  <meta property="og:site_name" content="SQLFormat.io">
-  <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://sqlformat.io/sql-minifier-online">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "SQL Minifier Online",
-    "description": "Minify and compress SQL queries online for free. Remove whitespace and comments. Reduce SQL file size. No signup, instant results.",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Any",
-    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "url": "https://sqlformat.io/sql-minifier-online"
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
-      {"@type": "ListItem", "position": 2, "name": "SQL Minifier Online", "item": "https://sqlformat.io/sql-minifier-online"}
-    ]
-  }
-  </script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #21262d;
-      --border: #30363d;
-      --text: #e6edf3;
-      --text2: #8b949e;
-      --accent: #58a6ff;
-      --accent2: #1f6feb;
-      --green: #3fb950;
-      --orange: #d29922;
-      --radius: 8px;
-    }
-    html { font-size: 16px; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; width: 100%; }
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
-      background: var(--surface);
-    }
-    header .container { display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
-    .logo span { color: var(--accent); }
-    nav a {
-      color: var(--text2);
-      text-decoration: none;
-      margin-left: 24px;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    nav a:hover { color: var(--accent); }
-    .hero {
-      text-align: left;
-      padding: 40px 0 24px;
-    }
-    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-    .hero .content { color: var(--text2); font-size: 0.95rem; line-height: 1.7; max-width: 780px; }
-    .hero .content p { margin-bottom: 12px; }
-    .hero .content code {
-      background: var(--surface2);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.88em;
-      color: var(--accent);
-    }
-    .hero .content strong { color: var(--text); }
-    .tool-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 24px;
-      overflow: hidden;
-    }
-    .tool-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
-    .tool-controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .tool-controls select, .tool-controls button {
-      padding: 6px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tool-controls select:hover, .tool-controls button:hover {
-      border-color: var(--accent);
-    }
-    .tool-controls button.primary {
-      background: var(--accent2);
-      border-color: var(--accent2);
-      color: #fff;
-      font-weight: 500;
-    }
-    .tool-controls button.primary:hover { background: var(--accent); }
-    .tool-controls button.success {
-      background: var(--green);
-      border-color: var(--green);
-      color: #fff;
-    }
-    .editor-area {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-    }
-    @media (max-width: 768px) {
-      .editor-area { grid-template-columns: 1fr; }
-    }
-    .editor-pane { position: relative; }
-    .editor-pane label {
-      display: block;
-      padding: 8px 16px;
-      font-size: 0.78rem;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-    .editor-pane textarea {
-      width: 100%;
-      height: 350px;
-      padding: 16px;
-      border: none;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-      font-size: 0.85rem;
-      line-height: 1.5;
-      resize: vertical;
-      outline: none;
-      tab-size: 2;
-    }
-    .editor-pane textarea:focus { background: #0d1117; }
-    .related-section {
-      margin: 32px 0 48px;
-    }
-    .related-section h2 {
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      color: var(--text2);
-    }
-    .related-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-    }
-    .related-grid a {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 16px;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: border-color 0.2s;
-    }
-    .related-grid a:hover { border-color: var(--accent); }
-    footer {
-      margin-top: auto;
-      border-top: 1px solid var(--border);
-      padding: 24px 0;
-      text-align: center;
-      color: var(--text2);
-      font-size: 0.85rem;
-    }
-    footer a { color: var(--accent); text-decoration: none; }
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 20px;
-      font-size: 0.88rem;
-      z-index: 999;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.3s;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: translateY(0); }
-  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Free SQL Formatter Online","description":"Format SQL queries online for free. No signup, no ads, no data sent to servers. Supports 15+ SQL dialects.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://sqlformat.io/free-sql-formatter-online"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Free SQL Formatter Online","item":"https://sqlformat.io/free-sql-formatter-online"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type": "Question", "name": "Will minification break my SQL?", "acceptedAnswer": {"@type": "Answer", "text": "No. The minifier only removes whitespace and comments. All SQL logic, identifiers, and string literals are preserved exactly as written."}}, {"@type": "Question", "name": "How much can I reduce SQL size?", "acceptedAnswer": {"@type": "Answer", "text": "Typically 40-60% for formatted SQL. Heavily indented queries with comments can see up to 70% reduction."}}]</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:16px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.93rem}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section li{color:var(--text2);line-height:1.65;margin-bottom:6px;font-size:.93rem}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;overflow-x:auto;margin-bottom:12px}.content-section pre code{background:none;padding:0;color:var(--green);font-size:.82rem;line-height:1.6;display:block}.content-section strong{color:var(--text)}.content-section .tip{background:rgba(63,185,80,.08);border-left:3px solid var(--green);padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:16px;font-size:.9rem;color:var(--text2)}.content-section .tip strong{color:var(--green)}.faq-item{margin-bottom:16px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:6px}.faq-item p{color:var(--text2);line-height:1.65;font-size:.93rem}.tool-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:24px;overflow:hidden}.tool-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.tool-header h2{font-size:1.1rem;font-weight:600}.tool-controls{display:flex;gap:8px;flex-wrap:wrap}.tool-controls select,.tool-controls button{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.85rem;cursor:pointer;transition:all .2s}.tool-controls select:hover,.tool-controls button:hover{border-color:var(--accent)}.tool-controls button.primary{background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:500}.tool-controls button.primary:hover{background:var(--accent)}.tool-controls button.success{background:var(--green);border-color:var(--green);color:#fff}.editor-area{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}@media(max-width:768px){.editor-area{grid-template-columns:1fr}}nav a{font-size:.8rem;margin-left:12px}.hero h1{font-size:1.5rem}}.editor-pane{position:relative}.editor-pane label{display:block;padding:8px 16px;font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;background:var(--surface);border-bottom:1px solid var(--border)}.editor-pane textarea{width:100%;height:350px;padding:16px;border:none;background:var(--bg);color:var(--text);font-family:'JetBrains Mono','Fira Code','Consolas',monospace;font-size:.85rem;line-height:1.5;resize:vertical;outline:none;tab-size:2}.editor-pane textarea:focus{background:#0d1117}.related-section{margin:32px 0 48px}.related-section h2{font-size:1.1rem;margin-bottom:16px;color:var(--text2)}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);text-decoration:none;font-size:.82rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{margin-top:auto;border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--text2);font-size:.85rem}footer a{color:var(--accent);text-decoration:none}.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 20px;font-size:.88rem;z-index:999;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}</style>
 </head>
 <body>
-
-<header>
-  <div class="container">
-    <a href="/" class="logo"><span>SQL</span> Format</a>
-    <nav>
-      <a href="/">Formatter</a>
-      <a href="/minify">Minifier</a>
-      <a href="/validate">Validator</a>
-      <a href="/sql-to-json">SQL→JSON</a>
-      <a href="/about">About</a>
-    </nav>
-  </div>
-</header>
-
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/sql-to-json">SQL→JSON</a><a href="/about">About</a></nav></div></header>
 <main class="container">
-  <div class="hero">
-    <h1>SQL Minifier Online</h1>
-    <div class="content">
-            <p>A <strong>SQL minifier online</strong> compresses your query by stripping out unnecessary whitespace, comments, and line breaks — without changing the logic. Useful when you're embedding SQL in a JavaScript string, sending it in an API payload with a size cap, or cramming it into a config value.</p>
-            <p>This minifier handles multi-line comments (<code>/* ... */</code>), single-line comments (<code>-- ...</code>), and all redundant spaces and newlines. Your query stays functionally identical but takes up less space.</p>
-            <p>Paste your formatted SQL below and get the compressed version in one click. Your query never left your tab.</p>
-        </div>
-  </div>
 
-  <div class="tool-section">
-    <div class="tool-header">
-      <h2>🗜️ SQL Minifier</h2>
-      <div class="tool-controls">
-        <button onclick="runTool()" class="primary" id="actionBtn">🗜️ Minifier</button>
-        <button onclick="copyResult()" class="success">📋 Copy</button>
-        <button onclick="clearAll()">🗑️ Clear</button>
-      </div>
-    </div>
-    <div class="editor-area">
-      <div class="editor-pane">
-        <label>Input</label>
-        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">SELECT   u.name,   COUNT(o.id)   FROM   users u   LEFT JOIN   orders o   ON   u.id = o.user_id   GROUP BY   u.name   ORDER BY   COUNT(o.id)   DESC</textarea>
-      </div>
-      <div class="editor-pane">
-        <label>Output</label>
-        <textarea id="outputText" placeholder="Result will appear here..." spellcheck="false" readonly></textarea>
-      </div>
-    </div>
-  </div>
+<div class="hero">
+<h1>SQL Minifier Online</h1>
+<div class="content">
+<p>Formatted SQL is great for humans. But when you are embedding SQL in an API response, storing it in a log system that charges by the byte, or shipping it over a slow network, all that whitespace is just overhead.</p><p>A <strong>SQL minifier</strong> strips out every unnecessary space, line break, and indentation — producing a single-line query that is functionally identical but 40-60% smaller.</p>
+</div>
+</div><details class="toc" open>
+<summary>📑 Table of Contents</summary>
+<ol>
+<li><a href="#why-minify">When to Minify SQL</a></li>
+<li><a href="#how-it-works">How SQL Minification Works</a></li>
+<li><a href="#use-cases">Common Use Cases</a></li>
+<li><a href="#faq">Frequently Asked Questions</a></li>
+</ol>
+</details>
 
-  <div class="related-section">
-    <h2>More SQL Tools</h2>
-    <div class="related-grid"><a href="/free-sql-formatter-online">Free SQL Formatter</a><a href="/sql-formatter-postgresql">PostgreSQL Formatter</a><a href="/sql-formatter-mysql">MySQL Formatter</a><a href="/online-sql-beautifier">SQL Beautifier</a><a href="/sql-query-formatter">Query Formatter</a><a href="/format-sql-online-free">Format SQL Free</a><a href="/sql-code-beautifier">Code Beautifier</a><a href="/sql-minifier-online">SQL Minifier</a><a href="/compress-sql-online">Compress SQL</a><a href="/sql-to-json-converter-online">SQL to JSON</a><a href="/auto-format-sql-online">Auto Format SQL</a><a href="/best-online-sql-formatter">Best SQL Formatter</a><a href="/sql-formatter-no-signup">No Signup Formatter</a><a href="/format-sql-query-online">Format Queries</a><a href="/beautify-sql-code-online">Beautify SQL Code</a><a href="/sql-indentation-formatter">Indentation Fix</a><a href="/sql-pretty-print-online">Pretty Print SQL</a><a href="/online-sql-formatting-tool">Formatting Tool</a><a href="/clean-up-sql-online">Clean Up SQL</a><a href="/sql-formatter-for-beginners">Beginner Formatter</a><a href="/sql-syntax-formatter-online">Syntax Formatter</a><a href="/fix-sql-formatting-online">Fix Formatting</a><a href="/sql-code-cleaner-online">Code Cleaner</a><a href="/sql-readability-formatter">Readability</a><a href="/instant-sql-formatter">Instant Formatter</a></div>
-  </div>
+<section class="content-section" id="why-minify">
+<h2>When to Minify SQL</h2>
+<p>Minification is the opposite of formatting. You are trading readability for size. Here is when that trade makes sense:</p><ul><li><strong>API payloads:</strong> If your API returns SQL snippets, minifying them reduces response size</li><li><strong>Log storage:</strong> Log systems like Datadog or CloudWatch charge by volume — minified SQL costs less to store</li><li><strong>Embedded SQL:</strong> SQL inside JSON config files or environment variables benefits from minification</li><li><strong>Mobile apps:</strong> When SQL is bundled with an app, every byte counts</li></ul><div class="tip"><strong>💡 Recommended workflow:</strong> Keep a formatted version in your source control for readability. Minify at build time or before deployment. Never minify the source of truth.</div>
+</section>
+
+<section class="content-section" id="how-it-works">
+<h2>How SQL Minification Works</h2>
+<p>The minifier applies several transformations:</p><ol><li><strong>Whitespace removal:</strong> All unnecessary spaces, tabs, and newlines are stripped</li><li><strong>Comment removal:</strong> <code>-- single-line</code> and <code>/* block */</code> comments are removed</li><li><strong>Space compression:</strong> Multiple spaces are collapsed to single spaces where needed</li></ol><p>It does <em>not</em> touch string literals. If you have <code>'Hello World'</code> in your SQL, the space between Hello and World is preserved.</p>
+</section>
+
+<section class="content-section" id="use-cases">
+<h2>Common Use Cases</h2>
+<h3>CI/CD pipeline optimization</h3><p>If your pipeline sends SQL to a deployment API, minifying reduces network transfer time and API rate limit consumption. Over thousands of deployments, this adds up.</p><h3>Database migration files</h3><p>Minified migration files are smaller to store and faster to apply. Keep the formatted version in your repo, minify in the deployed artifact.</p><div class="tip"><strong>💡 Note:</strong> For very long queries (1000+ lines), minification can reduce size by up to 70%. That is the difference between fitting in a 4KB log message and getting truncated.</div>
+</section>
+
+<section class="content-section" id="faq">
+<h2>Frequently Asked Questions</h2>
+<div class="faq-item"><h3>Will minification break my SQL?</h3><p>No. The minifier only removes whitespace and comments. All SQL logic, identifiers, and string literals are preserved exactly.</p></div><div class="faq-item"><h3>How much size reduction can I expect?</h3><p>Typically 40-60% for formatted SQL. For heavily indented queries with comments, up to 70% reduction is common.</p></div>
+</section>
+<div class="tool-section">
+<div class="tool-header"><h2>🧹 Try It Now</h2><div class="tool-controls"><select id="dialect"><option value="sql" selected>Standard SQL</option><option value="mysql">MySQL</option><option value="postgresql">PostgreSQL</option><option value="sqlite">SQLite</option><option value="bigquery">BigQuery</option><option value="db2">DB2</option><option value="hive">Hive</option><option value="mariadb">MariaDB</option><option value="plsql">PL/SQL</option><option value="redshift">Redshift</option><option value="singlestoredb">SingleStoreDB</option><option value="snowflake">Snowflake</option><option value="spark">Spark</option><option value="tsql">T-SQL</option><option value="trino">Trino</option></select><select id="indent"><option value="2">2 spaces</option><option value="4" selected>4 spaces</option><option value="tab">Tabs</option></select><button onclick="runTool()" class="primary" id="actionBtn">🧹 Format</button><button onclick="copyResult()" class="success">📋 Copy</button><button onclick="clearAll()">🗑️ Clear</button></div></div>
+<div class="editor-area"><div class="editor-pane"><label>Input</label><textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">SELECT id, name, email, created_at FROM users WHERE status = 'active' ORDER BY created_at DESC</textarea></div><div class="editor-pane"><label>Output</label><textarea id="outputText" placeholder="Result will appear here..." spellcheck="false" readonly></textarea></div></div>
+</div>
+
+<div class="related-section"><h2>More SQL Tools</h2><div class="related-grid">
+<a href="/free-sql-formatter-online">Free SQL Formatter</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/online-sql-beautifier">SQL Beautifier</a>
+<a href="/sql-minifier-online">SQL Minifier</a>
+<a href="/sql-to-json-converter-online">SQL to JSON</a>
+<a href="/auto-format-sql-online">Auto Format</a>
+<a href="/best-online-sql-formatter">Best Formatter</a>
+</div></div>
+
 </main>
-
-<footer>
-  <div class="container">
-    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p>
-  </div>
-</footer>
-
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p></div></footer>
 <div class="toast" id="toast"></div>
-
 <script src="/sql-formatter.js"></script>
 <script>
-window._formatSql = sqlFormatter.format;
-
-function runTool() {
-  const input = document.getElementById('inputText');
-  const output = document.getElementById('outputText');
-  const btn = document.getElementById('actionBtn');
-  const sql = input.value.trim();
-  
-  if (!sql) { showToast('Please enter SQL first'); return; }
-  
-  btn.style.opacity = '0.5';
-  btn.textContent = '⏳ Processing...';
-  
-  setTimeout(() => {
-    try {
-      const formatted = window._formatSql(sql, { language: 'sql', indent: '' });
-      output.value = formatted.replace(/\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
-      btn.textContent = '🗜️ Minified';
-      showToast('✅ Done');
-    }} catch (e) {{
-      output.value = 'Error: ' + e.message;
-      showToast('❌ ' + e.message);
-    }} finally {{
-      btn.style.opacity = '1';
-    }}
-  }}, 50);
-}}
-
-function copyResult() {{
-  const output = document.getElementById('outputText');
-  if (!output.value.trim()) {{ showToast('Nothing to copy'); return; }}
-  navigator.clipboard.writeText(output.value).then(() => {{
-    showToast('📋 Copied to clipboard');
-  }}).catch(() => {{
-    output.select();
-    document.execCommand('copy');
-    showToast('📋 Copied to clipboard');
-  }});
-}}
-
-function clearAll() {{
-  document.getElementById('inputText').value = '';
-  document.getElementById('outputText').value = '';
-  showToast('🗑️ Cleared');
-}}
-
-function showToast(msg) {{
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
-}}
-
-// Cmd/Ctrl+Enter to run
-document.getElementById('inputText').addEventListener('keydown', (e) => {{
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {{
-    e.preventDefault();
-    runTool();
-  }}
-}});
+window._formatSql=sqlFormatter.format;
+function runTool(){const e=document.getElementById("inputText"),t=document.getElementById("outputText"),n=document.getElementById("actionBtn"),o=e.value.trim();if(!o){showToast("Please enter SQL first");return}n.style.opacity="0.5",n.textContent="⏳ Processing...",setTimeout(()=>{try{const e=document.getElementById("dialect").value,o=document.getElementById("indent").value,i="tab"===o?"\t":" ".repeat(parseInt(o));t.value=window._formatSql(e,{language:document.getElementById("dialect").value,indent:i}),n.textContent="✨ Formatted",showToast("✅ Done")}catch(e){t.value="Error: "+e.message,showToast("❌ "+e.message)}finally{n.style.opacity="1"}},50)}
+function copyResult(){const e=document.getElementById("outputText");e.value.trim()?(navigator.clipboard.writeText(e.value).then(()=>{showToast("📋 Copied to clipboard")}).catch(()=>{e.select(),document.execCommand("copy"),showToast("📋 Copied to clipboard")})):showToast("Nothing to copy")}
+function clearAll(){document.getElementById("inputText").value="",document.getElementById("outputText").value="",showToast("🗑️ Cleared")}
+function showToast(e){const t=document.getElementById("toast");t.textContent=e,t.classList.add("show"),clearTimeout(t._timeout),t._timeout=setTimeout(()=>t.classList.remove("show"),2500)}
+document.getElementById("inputText").addEventListener("keydown",e=>{(e.ctrlKey||e.metaKey)&&"Enter"===e.key&&(e.preventDefault(),runTool())});
 </script>
-
 </body>
 </html>
