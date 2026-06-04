@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Syntax Validator — Check SQL Errors Online Free</title>
+  <meta name="description" content="Free online SQL syntax validator. Check SQL queries for errors instantly. Line-by-line error detection with Chinese error messages. No signup, private.">
+  <meta name="keywords" content="SQL validator, SQL syntax check, SQL error checker, validate SQL online, SQL linter">
+  <meta property="og:title" content="SQL Syntax Validator — Check SQL Errors Online Free">
+  <meta property="og:description" content="Validate SQL syntax online. Instant error detection, line highlighting, Chinese error messages. Free and private.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/validate">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/validate">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Syntax Validator",
+    "description": "Free online SQL syntax validator. Check SQL queries for errors instantly with line-by-line error detection. No signup, private, runs in browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "url": "https://sqlformat.io/validate"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Validator", "item": "https://sqlformat.io/validate"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero {
+      padding: 32px 0 20px;
+    }
+    .hero h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 0.95rem; max-width: 650px; }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tool-header h2 { font-size: 1.05rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .tool-controls select:hover, .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .editor-wrapper {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .line-numbers {
+      padding: 12px 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      text-align: right;
+      user-select: none;
+      min-width: 48px;
+      overflow: hidden;
+    }
+    .line-numbers div {
+      padding: 0 12px 0 8px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text2);
+      height: 22.3px;
+    }
+    .line-numbers div.error-line { background: rgba(248,81,73,0.15); color: var(--red); }
+    .editor-pane {
+      flex: 1;
+      position: relative;
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 380px;
+      padding: 12px 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow-wrap: normal;
+      overflow-x: auto;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .results-panel {
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .results-panel.empty { display: none; }
+    .result-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .result-item .msg { flex: 1; font-size: 0.88rem; line-height: 1.5; }
+    .result-item .msg .line { color: var(--accent); font-weight: 500; }
+    .result-item .msg .hint { color: var(--text2); font-size: 0.82rem; margin-top: 4px; font-style: italic; }
+    .result-item.error { background: rgba(248,81,73,0.06); }
+    .result-item.error .icon { color: var(--red); }
+    .result-item.warning { background: rgba(210,153,34,0.06); }
+    .result-item.warning .icon { color: var(--orange); }
+    .result-item.success { background: rgba(63,185,80,0.06); }
+    .result-item.success .icon { color: var(--green); }
+    .result-summary {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .result-summary.pass { color: var(--green); }
+    .result-summary.fail { color: var(--red); }
+    .quick-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .quick-links span { color: var(--text2); font-size: 0.8rem; padding: 4px 0; }
+    .quick-links button {
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .quick-links button:hover { border-color: var(--accent); color: var(--accent); }
+    .status-bar {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+      color: var(--text2);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+    .related-section { margin: 32px 0 48px; }
+    .related-section h2 { font-size: 1.1rem; margin-bottom: 16px; color: var(--text2); }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .related-grid a {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.83rem;
+      transition: border-color 0.2s;
+    }
+    .related-grid a:hover { border-color: var(--accent); }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 768px) {
+      .editor-wrapper { flex-direction: column; }
+      .line-numbers { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/validate" class="active">Validator</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Syntax Validator</h1>
+    <p>Paste your SQL, pick a dialect, and see every error on its exact line. All checking happens in your browser — your query never leaves your machine.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>✅ SQL Validator</h2>
+      <div class="tool-controls">
+        <select id="dialect">
+          <option value="sql">Standard SQL</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+          <option value="bigquery">BigQuery</option>
+          <option value="db2">DB2</option>
+          <option value="hive">Hive</option>
+          <option value="mariadb">MariaDB</option>
+          <option value="plsql">PL/SQL</option>
+          <option value="redshift">Redshift</option>
+          <option value="singlestoredb">SingleStoreDB</option>
+          <option value="snowflake">Snowflake</option>
+          <option value="spark">Spark SQL</option>
+          <option value="tsql">T-SQL</option>
+          <option value="trino">Trino</option>
+        </select>
+        <button onclick="validateSQL()" class="primary" id="validateBtn">🔍 Validate</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="quick-links">
+      <span>Try an example with errors:</span>
+      <button onclick="loadExample('missing-comma')">Missing comma</button>
+      <button onclick="loadExample('wrong-keyword')">Wrong keyword</button>
+      <button onclick="loadExample('unmatched-paren')">Unmatched paren</button>
+      <button onclick="loadExample('valid')">Valid query</button>
+    </div>
+    <div class="editor-wrapper">
+      <div class="line-numbers" id="lineNumbers"><div>1</div></div>
+      <div class="editor-pane">
+        <textarea id="sqlInput" placeholder="Paste your SQL here to check for errors..." spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="results-panel empty" id="results"></div>
+    <div class="status-bar" id="statusBar">
+      <span id="charCount">0 characters</span>
+      <span id="lineCount">1 line</span>
+    </div>
+  </div>
+
+  <div class="related-section">
+    <h2>More SQL Tools</h2>
+    <div class="related-grid">
+      <a href="/">SQL Formatter</a>
+      <a href="/minify">SQL Minifier</a>
+      <a href="/sql-to-json">SQL to JSON</a>
+      <a href="/free-sql-formatter-online">Free SQL Formatter</a>
+      <a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+      <a href="/sql-formatter-mysql">MySQL Formatter</a>
+      <a href="/sql-minifier-online">SQL Minifier Online</a>
+      <a href="/sql-to-json-converter-online">SQL to JSON Converter</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+<script src="/sql-formatter.js"></script>
+<script>
+window._formatSql = sqlFormatter.format;
+
+const input = document.getElementById('sqlInput');
+const lineNumbers = document.getElementById('lineNumbers');
+const results = document.getElementById('results');
+const statusBar = document.getElementById('statusBar');
+const charCount = document.getElementById('charCount');
+const lineCount = document.getElementById('lineCount');
+
+// Update line numbers and stats on input
+function updateLineNumbers() {
+  const text = input.value;
+  const lines = text.split('\n');
+  const numLines = Math.max(lines.length, 1);
+  
+  let html = '';
+  for (let i = 1; i <= numLines; i++) {
+    html += `<div>${i}</div>`;
+  }
+  lineNumbers.innerHTML = html;
+  
+  charCount.textContent = text.length + ' characters';
+  lineCount.textContent = numLines + (numLines === 1 ? ' line' : ' lines');
+  
+  // Sync scroll
+  lineNumbers.scrollTop = input.scrollTop;
+}
+
+input.addEventListener('input', updateLineNumbers);
+input.addEventListener('scroll', () => { lineNumbers.scrollTop = input.scrollTop; });
+
+// Error code → Chinese message mapping
+const errorMessages = {
+  'Expected': (ctx) => `语法错误：期望 ${ctx.expected || '其他内容'}，但找到了 ${ctx.found || '未知符号'}`,
+  'Unexpected': (ctx) => `意外的符号：在第 ${ctx.line || '?'} 行出现了不期望的 ${ctx.token || '内容'}`,
+  'Parse error': (ctx) => `解析失败：SQL 在第 ${ctx.line || '?'} 行附近无法识别`,
+  'default': (ctx) => `语法错误：第 ${ctx.line || '?'} 行，${ctx.raw || 'SQL 解析器无法处理此查询'}`
+};
+
+function parseError(rawError) {
+  // Try to extract line number from various error formats
+  let line = null;
+  let column = null;
+  
+  // Pattern: "at line X column Y" or "line X"
+  const lineMatch = rawError.match(/line\s*(\d+)/i);
+  if (lineMatch) line = parseInt(lineMatch[1]);
+  
+  const colMatch = rawError.match(/col(?:umn)?\s*(\d+)/i);
+  if (colMatch) column = parseInt(colMatch[1]);
+  
+  // Pattern: "Expected ... but ... found" (common in PEG parsers)
+  const expectedMatch = rawError.match(/Expected\s+"([^"]*)"/i);
+  const foundMatch = rawError.match(/but\s+"([^"]*)"\s+found/i);
+  
+  // If no line from regex, try to infer from position
+  if (!line && input.value) {
+    const posMatch = rawError.match(/position\s*(\d+)/i);
+    if (posMatch) {
+      const pos = parseInt(posMatch[1]);
+      const beforeError = input.value.substring(0, pos);
+      line = beforeError.split('\n').length;
+    }
+  }
+  
+  return {
+    line: line || 1,
+    column: column,
+    expected: expectedMatch ? expectedMatch[1] : null,
+    found: foundMatch ? foundMatch[1] : null,
+    raw: rawError
+  };
+}
+
+function getChineseMessage(parsed) {
+  if (parsed.expected && parsed.found) {
+    return `期望 <code>${escapeHtml(parsed.expected)}</code>，但发现了 <code>${escapeHtml(parsed.found)}</code>`;
+  }
+  if (parsed.expected) {
+    return `期望 <code>${escapeHtml(parsed.expected)}</code>，但 SQL 在这里结束了`;
+  }
+  return escapeHtml(parsed.raw);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Also run a few heuristic checks that the parser might miss
+function heuristicChecks(sql) {
+  const warnings = [];
+  const lines = sql.split('\n');
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const ln = i + 1;
+    
+    // Unmatched parentheses
+    const opens = (line.match(/\(/g) || []).length;
+    const closes = (line.match(/\)/g) || []).length;
+    
+    // Missing semicolon at end of statement (not always an error, but worth flagging)
+    // Common typos
+    if (/\bSELCET\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>SELCET</code> 应为 <code>SELECT</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bFORM\b(?!\s)/i.test(line) && !/\bFROM\b/i.test(line)) {
+      // Could be a typo of FROM
+    }
+    if (/\bWHRE\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>WHRE</code> 应为 <code>WHERE</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bINSRET\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>INSRET</code> 应为 <code>INSERT</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bUDPATE\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>UDPATE</code> 应为 <code>UPDATE</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bDLETE\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>DLETE</code> 应为 <code>DELETE</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bGRUOP\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>GRUOP</code> 应为 <code>GROUP</code>`, icon: '⚠️', type: 'warning' });
+    }
+    if (/\bODRER\b/i.test(line)) {
+      warnings.push({ line: ln, msg: `可能的拼写错误：<code>ODRER</code> 应为 <code>ORDER</code>`, icon: '⚠️', type: 'warning' });
+    }
+  }
+  
+  return warnings;
+}
+
+function validateSQL() {
+  const sql = input.value.trim();
+  const dialect = document.getElementById('dialect').value;
+  const btn = document.getElementById('validateBtn');
+  
+  if (!sql) {
+    results.className = 'results-panel';
+    results.innerHTML = '<div class="result-item warning"><span class="icon">💡</span><div class="msg">请输入 SQL 查询语句</div></div>';
+    return;
+  }
+  
+  btn.textContent = '⏳ Checking...';
+  btn.style.opacity = '0.6';
+  
+  // Clear previous error highlights
+  document.querySelectorAll('.line-numbers .error-line').forEach(el => el.classList.remove('error-line'));
+  
+  setTimeout(() => {
+    const allResults = [];
+    let hasSyntaxError = false;
+    
+    // 1. Try to parse with sql-formatter
+    try {
+      window._formatSql(sql, { language: dialect, indent: '  ' });
+    } catch (e) {
+      hasSyntaxError = true;
+      const parsed = parseError(e.message);
+      
+      // Highlight error line
+      const errorLineEls = lineNumbers.querySelectorAll('div');
+      if (errorLineEls[parsed.line - 1]) {
+        errorLineEls[parsed.line - 1].classList.add('error-line');
+      }
+      
+      allResults.push({
+        line: parsed.line,
+        msg: getChineseMessage(parsed),
+        icon: '❌',
+        type: 'error',
+        hint: `检查第 ${parsed.line} 行附近的关键词和标点符号`
+      });
+    }
+    
+    // 2. Heuristic checks (warnings for common typos)
+    const warnings = heuristicChecks(sql);
+    warnings.forEach(w => allResults.push(w));
+    
+    // 3. Unmatched parens check (global)
+    let openCount = 0;
+    let lastOpenLine = 0;
+    const lines = sql.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      for (const ch of lines[i]) {
+        if (ch === '(') { openCount++; lastOpenLine = i + 1; }
+        if (ch === ')') { openCount = Math.max(0, openCount - 1); }
+      }
+    }
+    if (openCount > 0) {
+      allResults.push({
+        line: lastOpenLine,
+        msg: `有 ${openCount} 个未闭合的左括号 <code>(</code>`,
+        icon: '⚠️',
+        type: 'warning',
+        hint: `最后未闭合的左括号在第 ${lastOpenLine} 行`
+      });
+    }
+    
+    // Render results
+    if (allResults.length === 0) {
+      results.className = 'results-panel';
+      results.innerHTML = `
+        <div class="result-summary pass">✅ 语法检查通过 — 没有发现错误</div>
+        <div class="result-item success">
+          <span class="icon">✅</span>
+          <div class="msg">SQL 语法正确。方言：<strong>${dialect.toUpperCase()}</strong>。你可以切换到 <a href="/" style="color:var(--accent)">格式化器</a> 来美化这段查询。</div>
+        </div>`;
+    } else {
+      results.className = 'results-panel';
+      const errorCount = allResults.filter(r => r.type === 'error').length;
+      const warningCount = allResults.filter(r => r.type === 'warning').length;
+      
+      let html = `<div class="result-summary fail">发现 ${errorCount} 个错误，${warningCount} 个警告</div>`;
+      
+      allResults.forEach(r => {
+        html += `<div class="result-item ${r.type}">
+          <span class="icon">${r.icon}</span>
+          <div class="msg">
+            <span class="line">第 ${r.line} 行：</span>${r.msg}
+            ${r.hint ? `<div class="hint">${r.hint}</div>` : ''}
+          </div>
+        </div>`;
+      });
+      
+      results.innerHTML = html;
+    }
+    
+    btn.textContent = '🔍 Validate';
+    btn.style.opacity = '1';
+  }, 50);
+}
+
+function clearAll() {
+  input.value = '';
+  results.className = 'results-panel empty';
+  results.innerHTML = '';
+  document.querySelectorAll('.line-numbers .error-line').forEach(el => el.classList.remove('error-line'));
+  updateLineNumbers();
+}
+
+// Examples
+function loadExample(type) {
+  const examples = {
+    'missing-comma': `SELECT id name email\nFROM users\nWHERE status = 'active'`,
+    'wrong-keyword': `SELCET * FORM users\nWHRE id = 1`,
+    'unmatched-paren': `SELECT * FROM users\nWHERE (status = 'active'\nAND age > 18`,
+    'valid': `SELECT u.id, u.name, COUNT(o.id) AS orders\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nWHERE u.status = 'active'\nGROUP BY u.id, u.name\nORDER BY orders DESC`
+  };
+  input.value = examples[type] || '';
+  updateLineNumbers();
+  validateSQL();
+}
+
+// Ctrl+Enter to validate
+input.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    validateSQL();
+  }
+});
+
+// Initial setup
+updateLineNumbers();
+</script>
+
+</body>
+</html>
