@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Formatter for PostgreSQL — Free Online Tool</title>
-  <meta name="description" content="Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.">
-  <meta name="keywords" content="sql, formatter, postgresql">
-  <meta property="og:title" content="SQL Formatter for PostgreSQL — Free Online Tool">
-  <meta property="og:description" content="Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.">
+  <title>SQL Pretty Print Online — Beautiful SQL Formatting in One Click | SQLFormat.io</title>
+  <meta name="description" content="Pretty print SQL online. Transform raw, minified, or messy SQL into beautifully formatted code. Perfect for documentation, code review, and sharing with teammates.">
+  <meta name="keywords" content="sql, pretty, print, online, beautiful, formatting">
+  <meta property="og:title" content="SQL Pretty Print Online — Beautiful SQL Formatting in One Click | SQLFormat.io">
+  <meta property="og:description" content="Pretty print SQL online. Transform raw, minified, or messy SQL into beautifully formatted code. Perfect for documentation, code review, and sharing with teammates.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://sqlformat.io/sql-formatter-postgresql">
+  <meta property="og:url" content="https://sqlformat.io/sql-pretty-print-online">
   <meta property="og:site_name" content="SQLFormat.io">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://sqlformat.io/sql-formatter-postgresql">
+  <link rel="canonical" href="https://sqlformat.io/sql-pretty-print-online">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "SQL Formatter for PostgreSQL",
-    "description": "Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.",
+    "name": "SQL Pretty Print Online",
+    "description": "Pretty print SQL online. Transform raw, minified, or messy SQL into beautifully formatted code. Perfect for documentation, code review, and sharing with teammates.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "url": "https://sqlformat.io/sql-formatter-postgresql"
+    "url": "https://sqlformat.io/sql-pretty-print-online"
   }
   </script>
   <script type="application/ld+json">
@@ -31,7 +31,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
-      {"@type": "ListItem", "position": 2, "name": "SQL Formatter for PostgreSQL", "item": "https://sqlformat.io/sql-formatter-postgresql"}
+      {"@type": "ListItem", "position": 2, "name": "SQL Pretty Print Online", "item": "https://sqlformat.io/free-sql-formatter-online"}
     ]
   }
   </script>
@@ -241,11 +241,11 @@
 
 <main class="container">
   <div class="hero">
-    <h1>SQL Formatter for PostgreSQL</h1>
+    <h1>SQL Pretty Print Online</h1>
     <div class="content">
-            <p>PostgreSQL has syntax that trips up generic SQL formatters — <code>RETURNING</code> clauses, <code>ON CONFLICT</code> upserts, <code>::type</code> casts, and CTEs with <code>MATERIALIZED</code>. Use a generic formatter and your carefully written Postgres query comes out looking worse than it went in.</p>
-            <p>This <strong>PostgreSQL SQL formatter</strong> knows Postgres dialect rules. It indents CTEs correctly, preserves <code>::</code> cast spacing, and doesn't mangle <code>RETURNING</code> or <code>ON CONFLICT</code> blocks.</p>
-            <p>Pick <strong>PostgreSQL</strong> from the dropdown and paste the query you've been dreading to format. You'll see the difference in one click.</p>
+            <p>When you need to put a SQL query in documentation, a pull request description, or a Slack message, raw unformatted SQL is embarrassing. It screams 'I didn't have time to make this readable' — which might be true, but you don't need to advertise it.</p>
+            <p><strong>SQL pretty print</strong> solves this in one click. Paste the query, hit format, and you get output that looks like it came from a style-guide-compliant codebase. Consistent capitalization, logical line breaks, and clean indentation that makes the query actually pleasant to read.</p>
+            <p>I keep this tool bookmarked specifically for code reviews. When someone posts a messy query in a PR, I format it before trying to understand the logic. It saves about five minutes of mental parsing per review, which adds up fast.</p>
         </div>
   </div>
 
@@ -254,9 +254,9 @@
       <h2>🧹 SQL Formatter</h2>
       <div class="tool-controls">
         <select id="dialect">
-          <option value="sql">Standard SQL</option>
+          <option value="sql" selected>Standard SQL</option>
           <option value="mysql">MySQL</option>
-          <option value="postgresql" selected>PostgreSQL</option>
+          <option value="postgresql">PostgreSQL</option>
           <option value="sqlite">SQLite</option>
           <option value="bigquery">BigQuery</option>
           <option value="db2">DB2</option>
@@ -283,17 +283,7 @@
     <div class="editor-area">
       <div class="editor-pane">
         <label>Input</label>
-        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">WITH active_users AS (
-  SELECT id, name, email
-  FROM users
-  WHERE last_login > NOW() - INTERVAL '30 days'
-)
-UPDATE orders o
-SET status = 'priority'
-FROM active_users au
-WHERE o.user_id = au.id
-  AND o.total > 100
-RETURNING o.id, o.status, au.name;</textarea>
+        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">SELECT id, name, email FROM users WHERE status = 'active' ORDER BY created_at DESC</textarea>
       </div>
       <div class="editor-pane">
         <label>Output</label>

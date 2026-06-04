@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Formatter for PostgreSQL — Free Online Tool</title>
-  <meta name="description" content="Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.">
-  <meta name="keywords" content="sql, formatter, postgresql">
-  <meta property="og:title" content="SQL Formatter for PostgreSQL — Free Online Tool">
-  <meta property="og:description" content="Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.">
+  <title>SQL Syntax Formatter — Correct Spacing Around Keywords Online | SQLFormat.io</title>
+  <meta name="description" content="SQL syntax formatter that fixes spacing around SQL keywords, operators, and parentheses. Consistent formatting for SELECT, FROM, WHERE, GROUP BY, ORDER BY and more.">
+  <meta name="keywords" content="sql, syntax, formatter, online, spacing, keywords">
+  <meta property="og:title" content="SQL Syntax Formatter — Correct Spacing Around Keywords Online | SQLFormat.io">
+  <meta property="og:description" content="SQL syntax formatter that fixes spacing around SQL keywords, operators, and parentheses. Consistent formatting for SELECT, FROM, WHERE, GROUP BY, ORDER BY and more.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://sqlformat.io/sql-formatter-postgresql">
+  <meta property="og:url" content="https://sqlformat.io/sql-syntax-formatter-online">
   <meta property="og:site_name" content="SQLFormat.io">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://sqlformat.io/sql-formatter-postgresql">
+  <link rel="canonical" href="https://sqlformat.io/sql-syntax-formatter-online">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "SQL Formatter for PostgreSQL",
-    "description": "Format PostgreSQL SQL queries online for free. Handles RETURNING, ON CONFLICT, ::casts, CTEs, window functions. Instant, private, no signup.",
+    "name": "SQL Syntax Formatter",
+    "description": "SQL syntax formatter that fixes spacing around SQL keywords, operators, and parentheses. Consistent formatting for SELECT, FROM, WHERE, GROUP BY, ORDER BY and more.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-    "url": "https://sqlformat.io/sql-formatter-postgresql"
+    "url": "https://sqlformat.io/sql-syntax-formatter-online"
   }
   </script>
   <script type="application/ld+json">
@@ -31,7 +31,7 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
-      {"@type": "ListItem", "position": 2, "name": "SQL Formatter for PostgreSQL", "item": "https://sqlformat.io/sql-formatter-postgresql"}
+      {"@type": "ListItem", "position": 2, "name": "SQL Syntax Formatter", "item": "https://sqlformat.io/free-sql-formatter-online"}
     ]
   }
   </script>
@@ -241,11 +241,11 @@
 
 <main class="container">
   <div class="hero">
-    <h1>SQL Formatter for PostgreSQL</h1>
+    <h1>SQL Syntax Formatter</h1>
     <div class="content">
-            <p>PostgreSQL has syntax that trips up generic SQL formatters — <code>RETURNING</code> clauses, <code>ON CONFLICT</code> upserts, <code>::type</code> casts, and CTEs with <code>MATERIALIZED</code>. Use a generic formatter and your carefully written Postgres query comes out looking worse than it went in.</p>
-            <p>This <strong>PostgreSQL SQL formatter</strong> knows Postgres dialect rules. It indents CTEs correctly, preserves <code>::</code> cast spacing, and doesn't mangle <code>RETURNING</code> or <code>ON CONFLICT</code> blocks.</p>
-            <p>Pick <strong>PostgreSQL</strong> from the dropdown and paste the query you've been dreading to format. You'll see the difference in one click.</p>
+            <p>SQL syntax is picky about commas and parentheses but surprisingly lenient about whitespace. That's why you can have a valid query that's a single 800-character line. It runs fine, but heaven help anyone who needs to modify it later.</p>
+            <p>The <strong>SQL syntax formatter</strong> adds intelligent whitespace around every syntactic element. Commas get spaces after them but not before. Parentheses get indentation for their contents. Operators like <code>=</code>, <code>&lt;&gt;</code>, and <code>BETWEEN</code> get consistent spacing on both sides.</p>
+            <p>There's a subtle but important thing it does with <code>AND</code> and <code>OR</code> in <code>WHERE</code> clauses. Most formatters just indent them, but this one actually aligns conditions at the same logical level. When you've got five conditions with mixed ANDs and ORs, that alignment is the difference between understanding the logic and guessing at it.</p>
         </div>
   </div>
 
@@ -254,9 +254,9 @@
       <h2>🧹 SQL Formatter</h2>
       <div class="tool-controls">
         <select id="dialect">
-          <option value="sql">Standard SQL</option>
+          <option value="sql" selected>Standard SQL</option>
           <option value="mysql">MySQL</option>
-          <option value="postgresql" selected>PostgreSQL</option>
+          <option value="postgresql">PostgreSQL</option>
           <option value="sqlite">SQLite</option>
           <option value="bigquery">BigQuery</option>
           <option value="db2">DB2</option>
@@ -283,17 +283,7 @@
     <div class="editor-area">
       <div class="editor-pane">
         <label>Input</label>
-        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">WITH active_users AS (
-  SELECT id, name, email
-  FROM users
-  WHERE last_login > NOW() - INTERVAL '30 days'
-)
-UPDATE orders o
-SET status = 'priority'
-FROM active_users au
-WHERE o.user_id = au.id
-  AND o.total > 100
-RETURNING o.id, o.status, au.name;</textarea>
+        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">SELECT id, name, email FROM users WHERE status = 'active' ORDER BY created_at DESC</textarea>
       </div>
       <div class="editor-pane">
         <label>Output</label>
