@@ -29,6 +29,48 @@
     "url": "https://sqlformat.io/sql-to-json"
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL to JSON Converter", "item": "https://sqlformat.io/sql-to-json"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert SQL query results to JSON?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your SQL INSERT statements or SELECT query results into the input box, choose the conversion mode (INSERT→JSON or SELECT→JSON), and click Convert. The tool parses column names and values, outputting a clean JSON array of objects."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What SQL formats does the converter support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The converter supports standard SQL INSERT INTO ... VALUES statements and pipe-delimited or comma-separated SELECT result sets. Multiple INSERT statements and multi-row VALUES clauses are handled automatically."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data safe when converting SQL to JSON?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely safe. All conversion runs client-side in your browser. Your SQL data never leaves your device — no server processing, no logging, no data collection."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -227,6 +269,7 @@
       <a href="/">Formatter</a>
       <a href="/minify">Minifier</a>
       <a href="/sql-to-json" class="active">SQL→JSON</a>
+      <a href="/escape">Escape</a>
       <a href="/about">About</a>
     </nav>
   </div>

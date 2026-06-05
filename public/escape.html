@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Escape - Escape Single Quotes &amp; Special Characters Online</title>
+  <meta name="description" content="Free online SQL string escaper. Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Instant, client-side, no data sent to server.">
+  <meta name="keywords" content="SQL escape, escape SQL string, escape single quotes, SQL string escaper, escape SQL characters, online SQL escape">
+  <meta property="og:title" content="SQL Escape - Escape Single Quotes &amp; Special Characters Online">
+  <meta property="og:description" content="Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Free, instant, and runs entirely in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/escape">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/escape">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Escape Tool",
+    "description": "Free online SQL string escaper. Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Instant, client-side, no data sent to server.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "url": "https://sqlformat.io/escape"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Escape", "item": "https://sqlformat.io/escape"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero {
+      text-align: center;
+      padding: 48px 0 32px;
+    }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+    .tool-controls button.active-mode {
+      background: var(--accent2);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+    .mode-bar {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .mode-bar span {
+      font-size: 0.78rem;
+      color: var(--text2);
+      margin-right: 6px;
+    }
+    .mode-bar button {
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .mode-bar button:hover { border-color: var(--accent); color: var(--accent); }
+    .mode-bar button.active {
+      background: var(--accent2);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+    .stacked-editor {
+      display: flex;
+      flex-direction: column;
+    }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 220px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .editor-pane + .editor-pane {
+      border-top: 1px solid var(--border);
+    }
+    .stats {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 24px;
+      font-size: 0.83rem;
+      color: var(--text2);
+      flex-wrap: wrap;
+    }
+    .stats strong { color: var(--text); }
+    .example-bar {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .example-bar span {
+      font-size: 0.78rem;
+      color: var(--text2);
+      margin-right: 6px;
+    }
+    .example-bar button {
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .example-bar button:hover { border-color: var(--accent); color: var(--accent); }
+    .how-to {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      padding: 24px;
+    }
+    .how-to h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .how-to h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    .how-to h3:first-of-type { margin-top: 0; }
+    .how-to p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .how-to code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .how-to pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+      margin: 8px 0 12px;
+    }
+    .nav-back { text-align: center; margin: 24px 0; }
+    .nav-back a { color: var(--accent); text-decoration: none; }
+    .nav-back a:hover { text-decoration: underline; }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/validate">Validate</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/escape" class="active">Escape</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <div class="hero">
+    <h1>SQL Escape</h1>
+    <p>Escape single quotes, double quotes, backslashes, and special characters for SQL queries. All processing happens in your browser — your data never leaves your machine.</p>
+  </div>
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🔐 SQL Escape</h2>
+      <div class="tool-controls">
+        <button onclick="doEscape()" class="primary" id="escapeBtn">🔐 Escape</button>
+        <button onclick="copyOutput()" class="success">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="mode-bar">
+      <span>Escape mode:</span>
+      <button onclick="setMode('sql-quote')" class="active" data-mode="sql-quote">SQL Escape ('' quotes)</button>
+      <button onclick="setMode('sql-backslash')" data-mode="sql-backslash">SQL Escape (\' backslash)</button>
+      <button onclick="setMode('json')" data-mode="json">JSON Escape</button>
+      <button onclick="setMode('unescape')" data-mode="unescape">Unescape All</button>
+    </div>
+    <div class="example-bar">
+      <span>Try an example:</span>
+      <button onclick="loadExample('string-with-quotes')">String with quotes</button>
+      <button onclick="loadExample('insert')">INSERT statement</button>
+      <button onclick="loadExample('json-data')">JSON in SQL</button>
+    </div>
+    <div class="stacked-editor">
+      <div class="editor-pane">
+        <label>Input</label>
+        <textarea id="inputSql" placeholder="Paste your SQL or string here..." spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Escaped Output</label>
+        <textarea id="outputSql" placeholder="Escaped output will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+    <div class="stats" id="stats">
+      <span>Characters: <strong id="charCount">0</strong></span>
+      <span>Lines: <strong id="lineCount">1</strong></span>
+      <span>Mode: <strong id="modeLabel">SQL Escape ('' quotes)</strong></span>
+    </div>
+  </div>
+  <div class="how-to">
+    <h2>How to Use the SQL Escape Tool</h2>
+
+    <h3>SQL Escape ('' quotes)</h3>
+    <p>This is the standard SQL escape method. Every single quote <code>'</code> inside a string literal is doubled to <code>''</code>. This is the most common and widely supported SQL escape technique, used by MySQL, PostgreSQL, SQLite, Oracle, and most other databases.</p>
+    <pre>Input:  It's a great day
+Output: It''s a great day</pre>
+
+    <h3>SQL Escape (\' backslash)</h3>
+    <p>Some databases (notably MySQL with <code>NO_BACKSLASH_ESCAPES</code> disabled) support C-style backslash escaping. This mode prepends a backslash before single quotes, double quotes, backslashes, and control characters like newlines and tabs.</p>
+    <pre>Input:  It's a "test" with \backslash
+Output: It\'s a \"test\" with \\backslash</pre>
+
+    <h3>JSON Escape</h3>
+    <p>Use this when embedding string values inside JSON or when constructing JSON that will be stored in a SQL column. This mode escapes double quotes, backslashes, newlines, tabs, and other control characters using standard JSON escape sequences.</p>
+    <pre>Input:  {"name": "O'Brien", "path": "C:\data"}
+Output: {\"name\": \"O'Brien\", \"path\": \"C:\\data\"}</pre>
+
+    <h3>Unescape All</h3>
+    <p>Reverts escaped strings back to their original form. Handles both doubled-quote SQL escaping (<code>''</code> → <code>'</code>) and backslash escaping (<code>\'</code> → <code>'</code>, <code>\\</code> → <code>\</code>), as well as JSON escape sequences.</p>
+    <pre>Input:  It''s a \"test\" with \\backslash
+Output: It's a "test" with \backslash</pre>
+
+    <h3>Auto-Escape</h3>
+    <p>As you type in the input box, the output updates automatically with a small debounce delay of 300ms. You can also press <strong>Ctrl+Enter</strong> to trigger escaping immediately.</p>
+  </div>
+  <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
+</main>
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+// --- State ---
+let currentMode = 'sql-quote';
+let debounceTimer = null;
+
+// --- Mode management ---
+function setMode(mode) {
+  currentMode = mode;
+  // Update active button
+  document.querySelectorAll('.mode-bar button[data-mode]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+  // Update mode label
+  const modeNames = {
+    'sql-quote': "SQL Escape ('' quotes)",
+    'sql-backslash': "SQL Escape (\\' backslash)",
+    'json': 'JSON Escape',
+    'unescape': 'Unescape All'
+  };
+  document.getElementById('modeLabel').textContent = modeNames[mode] || mode;
+  // Re-run escape
+  doEscape();
+}
+
+// --- Core escape/unescape logic ---
+function sqlQuoteEscape(str) {
+  return str.replace(/'/g, "''");
+}
+
+function sqlBackslashEscape(str) {
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
+}
+
+function jsonEscape(str) {
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')
+    .replace(/\f/g, '\\f')
+    .replace(/[\x00-\x1F]/g, (ch) => {
+      return '\\u' + ('000' + ch.charCodeAt(0).toString(16)).slice(-4);
+    });
+}
+
+function unescapeAll(str) {
+  let result = str;
+  // Handle JSON/backslash escapes first
+  result = result.replace(/\\'/g, "'");
+  result = result.replace(/\\"/g, '"');
+  result = result.replace(/\\n/g, '\n');
+  result = result.replace(/\\r/g, '\r');
+  result = result.replace(/\\t/g, '\t');
+  result = result.replace(/\\\\/g, '\\');
+  // Handle SQL double-quote escaping ('' → ')
+  result = result.replace(/''/g, "'");
+  return result;
+}
+
+function escapeString(str) {
+  switch (currentMode) {
+    case 'sql-quote':
+      return sqlQuoteEscape(str);
+    case 'sql-backslash':
+      return sqlBackslashEscape(str);
+    case 'json':
+      return jsonEscape(str);
+    case 'unescape':
+      return unescapeAll(str);
+    default:
+      return str;
+  }
+}
+
+// --- Action functions ---
+function doEscape() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  const sql = input.value;
+  
+  if (!sql) {
+    output.value = '';
+    updateStats();
+    return;
+  }
+  
+  try {
+    const escaped = escapeString(sql);
+    output.value = escaped;
+    updateStats();
+  } catch (e) {
+    output.value = 'Error: ' + e.message;
+    showToast('❌ Error during escape');
+  }
+}
+
+function copyOutput() {
+  const output = document.getElementById('outputSql');
+  if (!output.value.trim()) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output.value).then(() => showToast('📋 Copied to clipboard'));
+}
+
+function clearAll() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputSql').value = '';
+  updateStats();
+  showToast('🗑️ Cleared');
+}
+
+function updateStats() {
+  const input = document.getElementById('inputSql').value;
+  const output = document.getElementById('outputSql').value;
+  document.getElementById('charCount').textContent = input.length;
+  const lines = input ? input.split('\n').length : 1;
+  document.getElementById('lineCount').textContent = lines;
+}
+
+// --- Auto-escape on type (debounced) ---
+document.getElementById('inputSql').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    doEscape();
+  }, 300);
+  updateStats();
+});
+
+// --- Keyboard shortcut: Ctrl+Enter ---
+document.getElementById('inputSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    clearTimeout(debounceTimer);
+    doEscape();
+  }
+});
+
+// --- Example loading ---
+function loadExample(type) {
+  const input = document.getElementById('inputSql');
+  const examples = {
+    'string-with-quotes': "SELECT * FROM users WHERE name = 'O''Brien' AND city = 'New York';\n-- Try escaping this string: It's a great day for \"coding\"",
+    'insert': "INSERT INTO products (name, description, tags)\nVALUES (\n  'Widget',\n  'It''s a high-quality widget with 100% satisfaction',\n  '[\"sale\", \"featured\", \"new\"]'\n);",
+    'json-data': 'UPDATE settings SET config = \'{"theme": "dark", "user": "admin", "path": "C:\\\\data\\\\config"}\' WHERE id = 1;'
+  };
+  input.value = examples[type] || '';
+  updateStats();
+  doEscape();
+  showToast('📝 Example loaded');
+}
+
+// --- Toast notification ---
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// --- Initial setup ---
+updateStats();
+</script>
+</body>
+</html>

@@ -29,6 +29,48 @@
     "url": "https://sqlformat.io/minify"
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Minifier", "item": "https://sqlformat.io/minify"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is SQL minification and why would I need it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SQL minification removes unnecessary whitespace, line breaks, and comments from SQL queries, compressing them into a single line. This is useful when embedding SQL in application code, reducing network payload size in API calls, or fitting queries into log messages with character limits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will minification break my SQL query?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The minifier only removes whitespace and comments. All SQL logic, identifiers, keywords, and string literals are preserved exactly as written. The query will execute identically to the original."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much space can I save by minifying SQL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Typically 40-60% for well-formatted SQL. A 500-line query with 4-space indentation can compress from ~15KB to ~6KB. The exact savings depend on how heavily formatted the original query is."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -197,6 +239,7 @@
       <a href="/minify" class="active">Minifier</a>
       <a href="/validate">Validator</a>
       <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/escape">Escape</a>
       <a href="/about">About</a>
     </nav>
   </div>

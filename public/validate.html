@@ -35,6 +35,38 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What SQL errors can the validator detect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The validator detects syntax errors such as missing commas, unmatched parentheses, misspelled keywords (e.g., SELCET instead of SELECT), and structural issues that would cause the query to fail. Errors are shown line-by-line with Chinese error messages for clarity."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does validation require sending my query to a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All validation runs client-side in your browser. Your SQL query never leaves your device — no data is sent to any server, ensuring complete privacy and security."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects can I validate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can validate 15+ SQL dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL, and Trino. Select your dialect from the dropdown before validating."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -262,6 +294,7 @@
       <a href="/">Formatter</a>
       <a href="/minify">Minifier</a>
       <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/escape">Escape</a>
       <a href="/validate" class="active">Validator</a>
       <a href="/about">About</a>
     </nav>

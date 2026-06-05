@@ -31,7 +31,39 @@
     "@type": "BreadcrumbList",
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
-      {"@type": "ListItem", "position": 2, "name": "Format SQL Query Online", "item": "https://sqlformat.io/free-sql-formatter-online"}
+      {"@type": "ListItem", "position": 2, "name": "Format SQL Query Online", "item": "https://sqlformat.io/format-sql-query-online"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need to sign up to format SQL queries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No signup required. Paste your SQL, select a dialect, click Format, and copy the result. Everything runs in your browser — no account, no email, no registration wall."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does it take to format a query?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Formatting is near-instant. Even complex queries with CTEs, subqueries, and multiple JOINs format in under 100ms. There are no server round-trips — all processing happens locally in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I format very large or complex SQL queries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, there are no size limits. The formatter handles queries of any length, including deeply nested subqueries, recursive CTEs, window functions, and complex multi-table joins across 15+ SQL dialects."
+        }
+      }
     ]
   }
   </script>
@@ -234,6 +266,7 @@
       <a href="/minify">Minifier</a>
       <a href="/validate">Validator</a>
       <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/escape">Escape</a>
       <a href="/about">About</a>
     </nav>
   </div>
