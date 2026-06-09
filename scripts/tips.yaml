@@ -1,0 +1,54 @@
+last_used: 3
+tips:
+- tip: 用 `EXPLAIN ANALYZE` 代替 `EXPLAIN`，可以看到实际执行时间而不仅是预估计划
+  dialect: PostgreSQL
+- tip: '`SELECT *` 在生产代码中是大忌 —— 列顺序变化会导致下游崩溃，始终显式列出列名'
+  dialect: all
+- tip: 用 `COALESCE(col, default)` 代替 `CASE WHEN col IS NULL`，简洁且能处理多个备选值
+  dialect: all
+- tip: MySQL 中 `utf8` 不是真正的 UTF-8！要用 `utf8mb4` 才能存 emoji 和 4 字节字符
+  dialect: MySQL
+- tip: 窗口函数 `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)` 是去重的利器，比 `GROUP BY`
+    灵活得多
+  dialect: all
+- tip: PostgreSQL 的 `RETURNING` 子句可以在 INSERT/UPDATE/DELETE 后直接返回数据，省掉一次 SELECT
+  dialect: PostgreSQL
+- tip: 避免在 `WHERE` 子句中对索引列使用函数（如 `WHERE YEAR(date_col) = 2024`），这会让索引失效
+  dialect: all
+- tip: 用 `UNION ALL` 而非 `UNION` —— 除非你真的需要去重。`UNION` 的隐式排序和去重非常昂贵
+  dialect: all
+- tip: '`IN` 子查询在大数据量下会退化成全表扫描，试试换成 `EXISTS` 或 `JOIN`'
+  dialect: all
+- tip: MySQL 8.0+ 支持 `LATERAL` 派生表了！可以引用前面 FROM 子句中的列，实现行级子查询
+  dialect: MySQL
+- tip: 用 `ILIKE` 代替 `LIKE` 做不区分大小写的模糊匹配（PostgreSQL），MySQL 用 `LIKE BINARY` 做区分大小写
+  dialect: PostgreSQL/MySQL
+- tip: 批量 INSERT 时用多行 VALUES 语法 `INSERT INTO t VALUES (...), (...), (...)` 比逐条 INSERT
+    快 10 倍以上
+  dialect: all
+- tip: SQLite 的 `.mode json` 命令可以直接把查询结果输出为 JSON 数组，配合脚本很好用
+  dialect: SQLite
+- tip: '`GROUP BY 1, 2` 可以按列序号分组，减少重复写列名，但可读性较差，建议仅在快速探索时使用'
+  dialect: all
+- tip: 用 CTE（Common Table Expression）替代嵌套子查询，调试和阅读都方便得多
+  dialect: all
+- tip: '`TRUNCATE TABLE` 比 `DELETE FROM` 快很多 —— 它是 DDL 而不是 DML，不记逐行日志'
+  dialect: all
+- tip: 在 `WHERE col IN (SELECT ...)` 中如果子查询可能返回 NULL，结果会出乎意料 —— 先确保子查询有 `IS NOT NULL`
+  dialect: all
+- tip: PostgreSQL 的 `GENERATED ALWAYS AS ... STORED` 计算列可以自动维护派生值，省去触发器
+  dialect: PostgreSQL
+- tip: 用 `ON CONFLICT ... DO UPDATE`（PostgreSQL）或 `ON DUPLICATE KEY UPDATE`（MySQL）优雅实现
+    UPSERT
+  dialect: PostgreSQL/MySQL
+- tip: '`ORDER BY RANDOM()`（SQLite/PostgreSQL）或 `ORDER BY RAND()`（MySQL）在大表上极慢，试试
+    `TABLESAMPLE` 或应用层随机'
+  dialect: all
+- tip: 字符串比较用 `COLLATE` 指定排序规则，避免隐式转换导致索引失效
+  dialect: all
+- tip: '`JSON_EXTRACT()` 在 MySQL 中可以索引虚拟列上的 JSON 路径，加速 JSON 字段查询'
+  dialect: MySQL
+- tip: '`pg_stat_statements` 是 PostgreSQL 的性能金矿 —— 开启后可以看到最慢的查询、调用次数、总耗时'
+  dialect: PostgreSQL
+- tip: '`SELECT COUNT(*)` 在 InnoDB 上不走索引时会全表扫描。有 `WHERE` 条件的统计尽量用 `EXPLAIN` 查看行数估算'
+  dialect: MySQL
