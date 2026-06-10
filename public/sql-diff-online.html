@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Diff Online - Free SQL Query Compare Tool | SQLFormat.io</title>
+  <meta name="description" content="Compare SQL queries online for free with our SQL diff tool. See field-level differences between MySQL & PostgreSQL queries. No signup, 100% client-side.">
+  <meta name="keywords" content="SQL diff online, compare SQL queries, online SQL diff tool, SQL compare, MySQL diff, PostgreSQL diff, diff SQL">
+  <meta property="og:title" content="SQL Diff Online - Free SQL Query Compare Tool">
+  <meta property="og:description" content="Compare two SQL queries online and see exact differences at the field and value level. Works with MySQL and PostgreSQL. No data sent to any server.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/sql-diff-online">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/sql-diff-online">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Diff Online",
+    "description": "Free online SQL diff tool that compares two SQL queries and highlights differences at the field and value level. Supports MySQL, PostgreSQL, and standard SQL. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/sql-diff-online",
+    "dateModified": "2026-06-10",
+    "featureList": "SQL query comparison, field-level diff, MySQL support, PostgreSQL support, client-side processing, line-by-line comparison"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Diff Online", "item": "https://sqlformat.io/sql-diff-online"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I compare two SQL queries online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your original SQL in the left panel and the modified SQL in the right panel, then click Compare. Our SQL diff tool analyzes both queries and highlights added, removed, and modified sections at the field and value level—not just line-by-line text differences."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can this tool compare MySQL and PostgreSQL DDL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The SQL diff tool understands MySQL-specific syntax like backtick identifiers and AUTO_INCREMENT, as well as PostgreSQL features like SERIAL types, RETURNING clauses, and :: casting. CREATE TABLE, ALTER TABLE, and schema DDL are all supported."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL data safe when using the diff tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All comparison happens in your browser using JavaScript. Your SQL queries never leave your device—no server-side processing, no logging, no data collection. You can even disconnect from the internet after the page loads and it still works."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is this different from a text diff tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Unlike generic text diff tools, our SQL diff tool understands SQL structure. It highlights changes at the field, value, and clause level within each line, so you see exactly which column was renamed, which value changed, or which JOIN condition was modified—not just that a line is different."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #00d4aa;
+      --accent2: #00b894;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+
+    .hero { text-align: center; padding: 48px 0 24px; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+    .cta-section {
+      text-align: center;
+      padding: 20px 0 36px;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--accent2);
+      color: #0d1117;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+    .content-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .content-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    .content-section p {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+    .content-section ul li { margin-bottom: 8px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .feature-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .feature-card .icon { font-size: 2rem; margin-bottom: 10px; }
+    .feature-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.5; }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/diff">Diff</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Diff Online — Free SQL Query Comparison Tool</h1>
+    <p>Compare two SQL queries instantly and see exactly what changed at the field, value, and clause level. No signup. No uploads. Just results.</p>
+  </div>
+
+  <div class="cta-section">
+    <a href="/diff" class="cta-btn">🔍 Try SQL Diff Now — Free</a>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Use an Online SQL Diff Tool?</h2>
+    <p>
+      When you're working with SQL, changes happen constantly. A colleague refactors a query. A migration script adds new columns. A stored procedure gets rewritten to handle edge cases. Tracking down what actually changed between two versions of a SQL query can be tedious and error-prone—especially when the differences span multiple lines or involve subtle value adjustments.
+    </p>
+    <p>
+      That's where an <strong>online SQL diff tool</strong> comes in. Instead of squinting at two text files side by side and hoping you catch every changed keyword, our tool automatically highlights exactly what was added, removed, or modified—right down to the individual field name or value. It works directly in your browser with no data ever sent to a server, so your sensitive SQL stays completely private.
+    </p>
+    <p>
+      Whether you're comparing <strong>MySQL</strong> schema definitions, reviewing <strong>PostgreSQL</strong> query optimizations, or auditing changes in legacy SQL Server code, the SQL diff tool gives you a clear, color-coded breakdown of every difference. No more manual line-by-line checking. Just paste, click, and see what changed.
+    </p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon">🎯</div>
+      <h3>Field-Level Precision</h3>
+      <p>Highlights which specific column, value, or keyword changed—not just that a line is different.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🔒</div>
+      <h3>100% Client-Side</h3>
+      <p>All comparison runs in your browser. SQL never leaves your device. Zero data collection.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🗄️</div>
+      <h3>MySQL & PostgreSQL</h3>
+      <p>Understands dialect-specific syntax including backticks, SERIAL types, and :: casting.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚡</div>
+      <h3>Instant Results</h3>
+      <p>No loading spinners. No server round-trips. See differences the moment you click Compare.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>How the SQL Diff Tool Works</h2>
+    <p>
+      Using the SQL diff tool is straightforward: paste your original SQL query in the left panel and the modified version in the right panel, then click <strong>Compare</strong>. The tool tokenizes both queries into their component parts—keywords, identifiers, string literals, numbers, and operators—and uses a longest-common-subsequence algorithm to identify matching segments.
+    </p>
+    <p>Lines that exist only in the original appear in <span style="color:#f85149">red</span> (removed). Lines that exist only in the modified version appear in <span style="color:#3fb950">green</span> (added). Lines that appear in both but have differences are shown in <span style="color:#d29922">yellow</span> with the specific changed tokens highlighted inline, so you can see exactly which field name was renamed or which value was updated.</p>
+  </div>
+
+  <div class="cta-section" style="padding-top:0">
+    <a href="/diff" class="cta-btn">🔍 Start Comparing SQL Now</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/diff">SQL Diff</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

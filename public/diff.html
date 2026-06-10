@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Diff - Compare SQL Queries Online | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL diff tool. Compare two SQL queries side by side and see exact differences highlighted at the field and value level. Supports MySQL & PostgreSQL. 100% client-side.">
+  <meta name="keywords" content="SQL diff, SQL compare, compare SQL queries, SQL difference tool, online SQL diff, diff SQL online">
+  <meta property="og:title" content="SQL Diff - Compare SQL Queries Online">
+  <meta property="og:description" content="Compare two SQL queries and see exact differences highlighted at the field/value level. Free, private, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/diff">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/diff">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Diff",
+    "description": "Free online SQL diff tool. Compare two SQL queries and see exact differences highlighted at the field and value level. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/diff",
+    "dateModified": "2026-06-10"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Diff", "item": "https://sqlformat.io/diff"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #00d4aa;
+      --accent2: #00b894;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) { .editor-area { grid-template-columns: 1fr; } }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 280px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+
+    /* Diff stats bar */
+    .diff-stats {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      flex-wrap: wrap;
+      display: none;
+    }
+    .diff-stats.visible { display: flex; }
+    .diff-stats span { white-space: nowrap; }
+    .stat-add { color: var(--green); }
+    .stat-del { color: var(--red); }
+    .stat-mod { color: var(--orange); }
+
+    /* Diff output */
+    .diff-output {
+      border-top: 1px solid var(--border);
+      min-height: 60px;
+      max-height: 600px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .diff-placeholder {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text2);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .diff-line {
+      display: flex;
+      padding: 0;
+      border-bottom: 1px solid rgba(48,54,63,0.4);
+    }
+    .diff-line:hover { background: rgba(255,255,255,0.02); }
+    .diff-gutter {
+      width: 48px;
+      min-width: 48px;
+      text-align: right;
+      padding: 2px 8px;
+      color: var(--text2);
+      font-size: 0.78rem;
+      user-select: none;
+      background: rgba(0,0,0,0.15);
+      border-right: 1px solid var(--border);
+    }
+    .diff-gutter.add { color: var(--green); background: rgba(63,185,80,0.08); }
+    .diff-gutter.del { color: var(--red); background: rgba(248,81,73,0.08); }
+    .diff-gutter.mod { color: var(--orange); background: rgba(210,153,34,0.08); }
+    .diff-marker {
+      width: 20px;
+      min-width: 20px;
+      text-align: center;
+      padding: 2px 0;
+      font-size: 0.75rem;
+      user-select: none;
+      font-weight: 700;
+    }
+    .diff-marker.add { color: var(--green); }
+    .diff-marker.del { color: var(--red); }
+    .diff-marker.mod { color: var(--orange); }
+    .diff-marker.same { color: var(--text2); }
+    .diff-content {
+      flex: 1;
+      padding: 2px 12px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .diff-content.add { background: rgba(63,185,80,0.1); }
+    .diff-content.del { background: rgba(248,81,73,0.1); }
+    .diff-content.mod { background: rgba(210,153,34,0.08); }
+    .diff-content.same { background: transparent; }
+    .token-add {
+      background: rgba(63,185,80,0.35);
+      border-radius: 3px;
+      padding: 0 1px;
+    }
+    .token-del {
+      background: rgba(248,81,73,0.35);
+      border-radius: 3px;
+      padding: 0 1px;
+      text-decoration: line-through;
+    }
+    .token-mod {
+      background: rgba(210,153,34,0.35);
+      border-radius: 3px;
+      padding: 0 1px;
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/escape">Escape</a>
+      <a href="/diff" class="active">Diff</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Diff Compare</h1>
+    <p>Compare two SQL queries side by side. See exact differences at the field and value level — not just line-by-line text diff.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🔍 SQL Comparison</h2>
+      <div class="tool-controls">
+        <button onclick="compareSQL()" class="primary" id="compareBtn">🔍 Compare</button>
+        <button onclick="loadExample('schema')">📋 Example</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label>⬅️ Original SQL (A)</label>
+        <textarea id="leftSql" placeholder="Paste the original SQL here...&#10;&#10;Tip: Ctrl+Enter to compare" spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Modified SQL (B) ➡️</label>
+        <textarea id="rightSql" placeholder="Paste the modified SQL here..." spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="diff-stats" id="diffStats">
+      <span class="stat-add" id="statAdd">+0 added</span>
+      <span class="stat-del" id="statDel">-0 removed</span>
+      <span class="stat-mod" id="statMod">~0 modified</span>
+      <span style="margin-left:auto" id="statTotal">0 lines unchanged</span>
+    </div>
+    <div class="diff-output" id="diffOutput">
+      <div class="diff-placeholder">👆 Click <strong>Compare</strong> to see differences between the two SQL queries</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/diff">SQL Diff</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== SQL Tokenizer ===== */
+const KEYWORDS = new Set([
+  'SELECT','FROM','WHERE','AND','OR','NOT','IN','IS','NULL','LIKE','BETWEEN',
+  'JOIN','LEFT','RIGHT','INNER','OUTER','CROSS','FULL','ON','AS',
+  'INSERT','INTO','VALUES','UPDATE','SET','DELETE','CREATE','ALTER','DROP',
+  'TABLE','INDEX','VIEW','IF','EXISTS','PRIMARY','KEY','FOREIGN','REFERENCES',
+  'GROUP','BY','ORDER','ASC','DESC','HAVING','LIMIT','OFFSET','UNION','ALL',
+  'DISTINCT','CASE','WHEN','THEN','ELSE','END','WITH','RECURSIVE','OVER',
+  'PARTITION','ROWS','RANGE','UNBOUNDED','PRECEDING','FOLLOWING','CURRENT',
+  'COUNT','SUM','AVG','MAX','MIN','COALESCE','CAST','CONVERT','EXTRACT',
+  'TRUE','FALSE','DEFAULT','CHECK','CONSTRAINT','UNIQUE','CASCADE',
+  'INT','INTEGER','BIGINT','SMALLINT','VARCHAR','CHAR','TEXT','BOOLEAN',
+  'DECIMAL','NUMERIC','FLOAT','DOUBLE','DATE','TIMESTAMP','TIME','UUID',
+  'SERIAL','BIGSERIAL','JSON','JSONB','ARRAY','ENUM',
+  'BEGIN','COMMIT','ROLLBACK','TRANSACTION','SCHEMA','DATABASE','USE',
+  'GRANT','REVOKE','TRUNCATE','EXPLAIN','ANALYZE','RETURNING',
+  'LATERAL','NATURAL','USING','EXCEPT','INTERSECT','WINDOW','FETCH','NEXT',
+  'ROWS','ONLY','FIRST','LAST','NULLS','IGNORE','RESPECT',
+  'ILIKE','SIMILAR','REGEXP','RLIKE','DIV','MOD','XOR',
+  'AUTO_INCREMENT','ENGINE','CHARSET','COLLATE','COMMENT',
+  'TEMPORARY','TEMP','GLOBAL','LOCAL','SESSION',
+  'SERIALIZABLE','REPEATABLE','READ','COMMITTED','UNCOMMITTED',
+  'DO','NOTHING','CONFLICT','UPSERT','ON','CONSTRAINT','DO',
+  'GENERATED','ALWAYS','IDENTITY','STORED','VIRTUAL',
+]);
+
+function tokenizeSQL(sql) {
+  const tokens = [];
+  let i = 0;
+  while (i < sql.length) {
+    // Whitespace
+    if (/\s/.test(sql[i])) {
+      let ws = '';
+      while (i < sql.length && /\s/.test(sql[i])) { ws += sql[i]; i++; }
+      tokens.push({ type: 'space', value: ws });
+      continue;
+    }
+    // Single-line comment
+    if (sql[i] === '-' && sql[i+1] === '-') {
+      let cmt = '--';
+      i += 2;
+      while (i < sql.length && sql[i] !== '\n') { cmt += sql[i]; i++; }
+      tokens.push({ type: 'comment', value: cmt });
+      continue;
+    }
+    // Block comment
+    if (sql[i] === '/' && sql[i+1] === '*') {
+      let cmt = '/*';
+      i += 2;
+      while (i < sql.length && !(sql[i] === '*' && sql[i+1] === '/')) { cmt += sql[i]; i++; }
+      if (i < sql.length) { cmt += '*/'; i += 2; }
+      tokens.push({ type: 'comment', value: cmt });
+      continue;
+    }
+    // String literal (single quote)
+    if (sql[i] === "'") {
+      let str = "'";
+      i++;
+      while (i < sql.length) {
+        if (sql[i] === "'") {
+          if (sql[i+1] === "'") { str += "''"; i += 2; }
+          else { str += "'"; i++; break; }
+        } else { str += sql[i]; i++; }
+      }
+      tokens.push({ type: 'string', value: str });
+      continue;
+    }
+    // String literal (double quote - identifier or string depending on dialect)
+    if (sql[i] === '"') {
+      let str = '"';
+      i++;
+      while (i < sql.length) {
+        if (sql[i] === '"') {
+          if (sql[i+1] === '"') { str += '""'; i += 2; }
+          else { str += '"'; i++; break; }
+        } else { str += sql[i]; i++; }
+      }
+      tokens.push({ type: 'identifier', value: str });
+      continue;
+    }
+    // Backtick identifier (MySQL)
+    if (sql[i] === '`') {
+      let str = '`';
+      i++;
+      while (i < sql.length && sql[i] !== '`') { str += sql[i]; i++; }
+      if (i < sql.length) { str += '`'; i++; }
+      tokens.push({ type: 'identifier', value: str });
+      continue;
+    }
+    // Number
+    if (/[0-9]/.test(sql[i]) || (sql[i] === '.' && i+1 < sql.length && /[0-9]/.test(sql[i+1]))) {
+      let num = '';
+      while (i < sql.length && /[0-9.eE+\-xXa-fA-F]/.test(sql[i])) { num += sql[i]; i++; }
+      tokens.push({ type: 'number', value: num });
+      continue;
+    }
+    // Word (keyword or identifier)
+    if (/[a-zA-Z_]/.test(sql[i])) {
+      let word = '';
+      while (i < sql.length && /[a-zA-Z0-9_$]/.test(sql[i])) { word += sql[i]; i++; }
+      const upper = word.toUpperCase();
+      if (KEYWORDS.has(upper)) {
+        tokens.push({ type: 'keyword', value: word });
+      } else {
+        tokens.push({ type: 'identifier', value: word });
+      }
+      continue;
+    }
+    // Operators and punctuation
+    const twoChar = sql.substring(i, i+2);
+    if (['<=', '>=', '<>', '!=', '||', '::', '=>', '->'].includes(twoChar)) {
+      tokens.push({ type: 'operator', value: twoChar });
+      i += 2;
+      continue;
+    }
+    const ch = sql[i];
+    if ('(),;.=<>+-*/%!&|^~@#?:[]{}'.includes(ch)) {
+      tokens.push({ type: 'operator', value: ch });
+      i++;
+    } else {
+      // Unknown char, treat as text
+      tokens.push({ type: 'text', value: ch });
+      i++;
+    }
+  }
+  return tokens;
+}
+
+function tokenValue(token) {
+  if (token.type === 'space') return '';
+  return token.value.toUpperCase();
+}
+
+function tokensToLine(tokens) {
+  return tokens.map(t => t.value).join('');
+}
+
+/* ===== LCS Algorithm ===== */
+function lcsTable(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m+1 }, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (a[i-1] === b[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+      else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  return dp;
+}
+
+function backtrackLCS(dp, a, b) {
+  const matches = [];
+  let i = a.length, j = b.length;
+  while (i > 0 && j > 0) {
+    if (a[i-1] === b[j-1]) {
+      matches.unshift([i-1, j-1]);
+      i--; j--;
+    } else if (dp[i-1][j] >= dp[i][j-1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+  return matches;
+}
+
+/* ===== Line Diff ===== */
+function diffLines(leftLines, rightLines) {
+  // Use LCS on line contents to find matching lines
+  const a = leftLines.map(l => l.trim().toUpperCase());
+  const b = rightLines.map(l => l.trim().toUpperCase());
+  const dp = lcsTable(a, b);
+  const matches = backtrackLCS(dp, a, b);
+
+  const matchSetL = new Set(matches.map(m => m[0]));
+  const matchSetR = new Set(matches.map(m => m[1]));
+
+  const result = [];
+  let li = 0, ri = 0, mi = 0;
+
+  while (li < leftLines.length || ri < rightLines.length) {
+    if (mi < matches.length && li === matches[mi][0] && ri === matches[mi][1]) {
+      // Check if the lines are actually identical or just similar
+      if (leftLines[li].trim() === rightLines[ri].trim()) {
+        result.push({ type: 'same', left: li, right: ri, text: leftLines[li] });
+      } else {
+        result.push({ type: 'mod', left: li, right: ri, leftText: leftLines[li], rightText: rightLines[ri] });
+      }
+      li++; ri++; mi++;
+    } else if (li < leftLines.length && !matchSetL.has(li)) {
+      result.push({ type: 'del', left: li, right: -1, text: leftLines[li] });
+      li++;
+    } else if (ri < rightLines.length && !matchSetR.has(ri)) {
+      result.push({ type: 'add', left: -1, right: ri, text: rightLines[ri] });
+      ri++;
+    } else {
+      // Force alignment for unmatched leftovers
+      if (li < leftLines.length) {
+        result.push({ type: 'del', left: li, right: -1, text: leftLines[li] });
+        li++;
+      }
+      if (ri < rightLines.length) {
+        result.push({ type: 'add', left: -1, right: ri, text: rightLines[ri] });
+        ri++;
+      }
+    }
+  }
+
+  return result;
+}
+
+/* ===== Token Diff for Modified Lines ===== */
+function diffTokens(leftTokens, rightTokens) {
+  const a = leftTokens.map(t => tokenValue(t));
+  const b = rightTokens.map(t => tokenValue(t));
+  const dp = lcsTable(a, b);
+  const matches = backtrackLCS(dp, a, b);
+
+  const matchSetL = new Set(matches.map(m => m[0]));
+  const matchSetR = new Set(matches.map(m => m[1]));
+
+  const result = [];
+  let li = 0, ri = 0, mi = 0;
+
+  while (li < leftTokens.length || ri < rightTokens.length) {
+    if (mi < matches.length && li === matches[mi][0] && ri === matches[mi][1]) {
+      result.push({ type: 'same', text: leftTokens[li].value });
+      li++; ri++; mi++;
+    } else if (li < leftTokens.length && !matchSetL.has(li)) {
+      if (leftTokens[li].type !== 'space') {
+        result.push({ type: 'del', text: leftTokens[li].value });
+      }
+      li++;
+    } else if (ri < rightTokens.length && !matchSetR.has(ri)) {
+      if (rightTokens[ri].type !== 'space') {
+        result.push({ type: 'add', text: rightTokens[ri].value });
+      }
+      ri++;
+    } else {
+      if (li < leftTokens.length) {
+        if (leftTokens[li].type !== 'space') result.push({ type: 'del', text: leftTokens[li].value });
+        li++;
+      }
+      if (ri < rightTokens.length) {
+        if (rightTokens[ri].type !== 'space') result.push({ type: 'add', text: rightTokens[ri].value });
+        ri++;
+      }
+    }
+  }
+  return result;
+}
+
+function renderTokenDiff(tokens, side) {
+  return tokens.map(t => {
+    let cls = '';
+    let prefix = '';
+    if (t.type === 'add') { cls = 'token-add'; prefix = ''; }
+    else if (t.type === 'del') { cls = 'token-del'; prefix = ''; }
+    else if (t.type === 'same') { cls = ''; prefix = ''; }
+    if (side === 'left' && t.type === 'add') return ''; // Don't show additions on left
+    if (side === 'right' && t.type === 'del') return '';
+    return `<span class="${cls}">${escHtml(t.text)}</span>`;
+  }).join('');
+}
+
+/* ===== Render ===== */
+function renderDiff(diffResult, leftLines, rightLines) {
+  let html = '';
+  let adds = 0, dels = 0, mods = 0, sames = 0;
+
+  for (const entry of diffResult) {
+    if (entry.type === 'same') {
+      const ln = entry.left + 1;
+      html += `<div class="diff-line">
+        <div class="diff-gutter">${ln}</div>
+        <div class="diff-marker same"> </div>
+        <div class="diff-content same">${escHtml(entry.text)}</div>
+      </div>`;
+      sames++;
+    } else if (entry.type === 'add') {
+      const ln = entry.right + 1;
+      html += `<div class="diff-line">
+        <div class="diff-gutter add">+${ln}</div>
+        <div class="diff-marker add">+</div>
+        <div class="diff-content add">${escHtml(entry.text)}</div>
+      </div>`;
+      adds++;
+    } else if (entry.type === 'del') {
+      const ln = entry.left + 1;
+      html += `<div class="diff-line">
+        <div class="diff-gutter del">−${ln}</div>
+        <div class="diff-marker del">−</div>
+        <div class="diff-content del">${escHtml(entry.text)}</div>
+      </div>`;
+      dels++;
+    } else if (entry.type === 'mod') {
+      const lnL = entry.left + 1;
+      const lnR = entry.right + 1;
+      const leftTokens = tokenizeSQL(entry.leftText);
+      const rightTokens = tokenizeSQL(entry.rightText);
+      const tdiff = diffTokens(leftTokens, rightTokens);
+
+      // Show left (old) line
+      html += `<div class="diff-line">
+        <div class="diff-gutter mod">${lnL}→</div>
+        <div class="diff-marker mod">~</div>
+        <div class="diff-content mod">${renderTokenDiff(tdiff, 'left') || '<span style="color:var(--text2)">(removed)</span>'}</div>
+      </div>`;
+      // Show right (new) line
+      html += `<div class="diff-line">
+        <div class="diff-gutter mod">${lnR}←</div>
+        <div class="diff-marker mod">~</div>
+        <div class="diff-content mod">${renderTokenDiff(tdiff, 'right') || '<span style="color:var(--text2)">(removed)</span>'}</div>
+      </div>`;
+      mods++;
+    }
+  }
+
+  // Update stats
+  const stats = document.getElementById('diffStats');
+  document.getElementById('statAdd').textContent = `+${adds} added`;
+  document.getElementById('statDel').textContent = `−${dels} removed`;
+  document.getElementById('statMod').textContent = `~${mods} modified`;
+  document.getElementById('statTotal').textContent = `${sames} unchanged`;
+  if (adds + dels + mods + sames > 0) stats.classList.add('visible');
+
+  return html;
+}
+
+/* ===== Main Compare ===== */
+function compareSQL() {
+  const leftInput = document.getElementById('leftSql');
+  const rightInput = document.getElementById('rightSql');
+  const output = document.getElementById('diffOutput');
+  const btn = document.getElementById('compareBtn');
+
+  const leftText = leftInput.value;
+  const rightText = rightInput.value;
+
+  if (!leftText.trim() && !rightText.trim()) {
+    showToast('⚠️ Please enter SQL in both panels first');
+    return;
+  }
+
+  btn.textContent = '⏳ Comparing...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const leftLines = leftText.split('\n');
+    const rightLines = rightText.split('\n');
+
+    const diff = diffLines(leftLines, rightLines);
+    output.innerHTML = renderDiff(diff, leftLines, rightLines);
+
+    btn.textContent = '🔍 Compare';
+    btn.disabled = false;
+    showToast('✅ Comparison complete');
+  }, 50);
+}
+
+function clearAll() {
+  document.getElementById('leftSql').value = '';
+  document.getElementById('rightSql').value = '';
+  document.getElementById('diffOutput').innerHTML = '<div class="diff-placeholder">👆 Click <strong>Compare</strong> to see differences between the two SQL queries</div>';
+  document.getElementById('diffStats').classList.remove('visible');
+}
+
+function loadExample(type) {
+  const examples = {
+    schema: {
+      left: `CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  amount DECIMAL(10,2),
+  status VARCHAR(20) DEFAULT 'pending',
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+SELECT u.name, u.email, o.amount
+FROM users u
+JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'pending'
+ORDER BY o.amount DESC;`,
+      right: `CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  phone VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  product_id INT,
+  amount DECIMAL(12,2),
+  status VARCHAR(20) DEFAULT 'pending',
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+SELECT u.name, u.email, u.phone, o.amount
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'completed'
+ORDER BY o.amount DESC
+LIMIT 50;`
+    }
+  };
+  const ex = examples[type];
+  if (ex) {
+    document.getElementById('leftSql').value = ex.left;
+    document.getElementById('rightSql').value = ex.right;
+    showToast('📋 Example loaded — click Compare');
+    setTimeout(() => compareSQL(), 100);
+  }
+}
+
+/* ===== Keyboard Shortcut ===== */
+document.getElementById('leftSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); compareSQL(); }
+});
+document.getElementById('rightSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); compareSQL(); }
+});
+
+/* ===== Utility ===== */
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+
+</body>
+</html>
