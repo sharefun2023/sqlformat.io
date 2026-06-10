@@ -14,8 +14,16 @@ if ! git diff --quiet; then
     TODAY=$(date +%Y-%m-%d)
     git add public/index.html public/sitemap.xml scripts/tips.yaml
     git commit -m "✨ Daily tip update — $TODAY"
-    git push origin master
-    echo "🚀 Pushed to GitHub — Cloudflare Pages deploying..."
+    # Retry push up to 3 times, with 5s delay
+    for i in 1 2 3; do
+        if git push origin master 2>&1; then
+            echo "🚀 Pushed to GitHub — Cloudflare Pages deploying..."
+            break
+        else
+            echo "⚠️ Push attempt $i/3 failed, retrying in 5s..."
+            sleep 5
+        fi
+    done
 else
     echo "ℹ️ No changes to commit"
 fi
