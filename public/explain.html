@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL EXPLAIN Visualizer - Execution Plan Analyzer | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL EXPLAIN plan visualizer. Paste your EXPLAIN or EXPLAIN ANALYZE output and see a tree diagram of your query execution plan. Spot table scans, index usage, and bottlenecks instantly.">
+  <meta name="keywords" content="SQL EXPLAIN visualizer, EXPLAIN ANALYZE, execution plan, MySQL EXPLAIN, PostgreSQL EXPLAIN, query plan analyzer, SQL performance, online EXPLAIN tool">
+  <meta property="og:title" content="SQL EXPLAIN Visualizer - Free Execution Plan Analyzer">
+  <meta property="og:description" content="Paste your EXPLAIN or EXPLAIN ANALYZE output and see a visual tree diagram of your query execution plan. Spot full table scans, index usage, and bottlenecks instantly. 100% client-side.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/explain">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/explain">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL EXPLAIN Visualizer",
+    "description": "Free online SQL EXPLAIN plan visualizer. Paste your EXPLAIN or EXPLAIN ANALYZE output to see a tree diagram of your query execution plan. Spot full table scans, index usage, nested loops, and performance bottlenecks. Supports MySQL, PostgreSQL, and SQLite. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/explain",
+    "dateModified": "2026-06-10"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL EXPLAIN Visualizer", "item": "https://sqlformat.io/explain"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --purple: #a371f7;
+      --cyan: #39d2c0;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 600;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 240px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+
+    /* Example buttons */
+    .examples-bar {
+      padding: 8px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .examples-bar span { font-size: 0.78rem; color: var(--text2); margin-right: 8px; }
+    .examples-bar button {
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .examples-bar button:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Stats header */
+    .stats-header {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: none;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stats-header.visible { display: flex; }
+    .stats-header .badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge.warn { background: rgba(210,153,34,0.15); color: var(--orange); border: 1px solid rgba(210,153,34,0.3); }
+    .badge.good { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+    .badge.info { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
+
+    /* Tree output */
+    .tree-output {
+      border-top: 1px solid var(--border);
+      min-height: 60px;
+      max-height: 700px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .tree-placeholder {
+      padding: 50px 20px;
+      text-align: center;
+      color: var(--text2);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.95rem;
+    }
+    .tree-placeholder .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+
+    /* Tree node */
+    .tree-node {
+      padding: 6px 12px 6px 4px;
+      border-bottom: 1px solid rgba(48,54,63,0.3);
+      cursor: default;
+    }
+    .tree-node:hover { background: rgba(255,255,255,0.02); }
+    .tree-node.root { border-bottom: 1px solid var(--border); }
+    .tree-node .row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tree-node .indent { color: var(--text2); user-select: none; white-space: pre; font-size: 0.72rem; flex-shrink: 0; }
+    .tree-node .op-icon { font-size: 0.85rem; flex-shrink: 0; width: 18px; text-align: center; }
+    .tree-node .op-type {
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .op-scan { background: rgba(248,81,73,0.15); color: var(--red); }
+    .op-index { background: rgba(63,185,80,0.15); color: var(--green); }
+    .op-join { background: rgba(88,166,255,0.15); color: var(--accent); }
+    .op-sort { background: rgba(210,153,34,0.15); color: var(--orange); }
+    .op-other { background: var(--surface2); color: var(--text2); }
+    .tree-node .details {
+      color: var(--text2);
+      font-size: 0.76rem;
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+    .tree-node .details strong { color: var(--text); }
+    .tree-node .cost {
+      color: var(--cyan);
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .warn-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(248,81,73,0.12);
+      color: var(--red);
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    .ok-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(63,185,80,0.12);
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    /* Legend */
+    .legend {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
+    .legend-dot.scan { background: rgba(248,81,73,0.5); }
+    .legend-dot.index { background: rgba(63,185,80,0.5); }
+    .legend-dot.join { background: rgba(88,166,255,0.5); }
+    .legend-dot.sort { background: rgba(210,153,34,0.5); }
+
+    /* Insights panel */
+    .insights {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(88,166,255,0.05);
+      display: none;
+    }
+    .insights.visible { display: block; }
+    .insights h3 { font-size: 0.9rem; margin-bottom: 8px; color: var(--accent); }
+    .insights ul { list-style: none; }
+    .insights li {
+      font-size: 0.82rem;
+      color: var(--text2);
+      padding: 3px 0;
+      line-height: 1.5;
+    }
+    .insights li::before {
+      content: "▸ ";
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.5rem; }
+      nav a { margin-left: 12px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">SQL<span>Format</span>.io</a>
+    <nav>
+      <a href="/sql-to-json">SQL to JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain" class="active">EXPLAIN</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL EXPLAIN Visualizer</h1>
+    <p>Paste your EXPLAIN or EXPLAIN ANALYZE output and see your query execution plan as a visual tree. Spot full table scans, index usage, nested loops, and performance bottlenecks — instantly.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>📊 Execution Plan</h2>
+      <div class="tool-controls">
+        <select id="dialectSelect">
+          <option value="auto">Auto Detect</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+        </select>
+        <button class="primary" onclick="analyzePlan()">🔍 Analyze Plan</button>
+      </div>
+    </div>
+
+    <div class="editor-pane">
+      <label>Paste EXPLAIN / EXPLAIN ANALYZE output here</label>
+      <textarea id="explainInput" placeholder="Paste the output of EXPLAIN or EXPLAIN ANALYZE here...
+
+PostgreSQL example:
+Seq Scan on users  (cost=0.00..150.00 rows=1000 width=80)
+  Filter: (status = 'active')
+  ->  Hash Join  (cost=50.00..200.00 rows=500 width=120)
+        Hash Cond: (orders.user_id = users.id)
+        ->  Seq Scan on orders  (cost=0.00..100.00 rows=500 width=40)
+        ->  Hash  (cost=25.00..25.00 rows=100 width=80)
+              ->  Index Scan on users_pkey  (cost=0.00..25.00 rows=100 width=80)
+
+MySQL example (tab-separated):
+id	select_type	table	type	key	rows	Extra
+1	SIMPLE	users	ALL	NULL	1000	Using where
+1	SIMPLE	orders	ref	idx_user_id	5	NULL
+
+SQLite example:
+addr	opcode	p1	p2	p3
+0	OpenRead	0	5	
+1	Rewind	0	10
+2	Column	0	1
+3	Ne	2	9"></textarea>
+    </div>
+
+    <div class="examples-bar">
+      <span>Examples:</span>
+      <button onclick="loadExample('postgres_basic')">PostgreSQL JOIN</button>
+      <button onclick="loadExample('postgres_complex')">PostgreSQL Complex</button>
+      <button onclick="loadExample('mysql_basic')">MySQL JOIN</button>
+      <button onclick="loadExample('sqlite_basic')">SQLite Scan</button>
+      <button onclick="loadExample('postgres_bad')">⚠️ Bad Plan</button>
+    </div>
+
+    <div class="stats-header" id="statsHeader">
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot scan"></span> Table Scan</span>
+      <span class="legend-item"><span class="legend-dot index"></span> Index Scan/Seek</span>
+      <span class="legend-item"><span class="legend-dot join"></span> Join</span>
+      <span class="legend-item"><span class="legend-dot sort"></span> Sort/Aggregate</span>
+    </div>
+
+    <div class="tree-output" id="treeOutput">
+      <div class="tree-placeholder">
+        <span class="icon">🌲</span>
+        Paste your EXPLAIN output above and click "Analyze Plan"
+      </div>
+    </div>
+
+    <div class="insights" id="insightsPanel">
+      <h3>💡 Performance Insights</h3>
+      <ul id="insightsList"></ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/diff">SQL Diff</a> · <a href="/validate">Validator</a> · <a href="/minify">Minifier</a> · <a href="/explain">EXPLAIN Visualizer</a></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// === Parsers for EXPLAIN output ===
+
+function parseExplain(input, dialect) {
+  const text = input.trim();
+  if (!text) return null;
+
+  // Try to auto-detect
+  if (dialect === 'auto') {
+    dialect = detectDialect(text);
+  }
+
+  switch (dialect) {
+    case 'postgresql': return parsePostgreSQL(text);
+    case 'mysql': return parseMySQL(text);
+    case 'sqlite': return parseSQLite(text);
+    default: return parseGeneric(text);
+  }
+}
+
+function detectDialect(text) {
+  // PostgreSQL: lines start with operation name, have "cost=" or "rows="
+  if (/(cost=|rows=|width=)/i.test(text)) return 'postgresql';
+  // MySQL: tab-separated with "id"/"select_type"/"table" headers
+  if (/^id\s+select_type/i.test(text) || /^\d+\s+(SIMPLE|PRIMARY|SUBQUERY)/im.test(text)) return 'mysql';
+  // SQLite: "addr" / "opcode" columns
+  if (/^addr\s+opcode/i.test(text) && /OpenRead|Rewind|Column/i.test(text)) return 'sqlite';
+  return 'postgresql'; // default
+}
+
+// PostgreSQL EXPLAIN parser
+function parsePostgreSQL(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  const nodes = [];
+  const stack = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const indent = line.search(/\S/);
+    const content = line.trim();
+
+    // Parse operation
+    const opMatch = content.match(/^(.+?)\s+\(cost=/);
+    if (!opMatch) continue;
+
+    const opName = opMatch[1].trim();
+    const costMatch = content.match(/cost=([\d.]+)\.\.([\d.]+)/);
+    const rowsMatch = content.match(/rows=(\d+)/);
+    const widthMatch = content.match(/width=(\d+)/);
+    const timeMatch = content.match(/actual time=([\d.]+)\.\.([\d.]+)/);
+    const loopsMatch = content.match(/loops=(\d+)/);
+
+    let details = '';
+    if (content.includes('Filter:')) {
+      const m = content.match(/Filter:\s*(.+?)(?:Rows Removed by Filter:\s*\d+)?$/);
+      if (m) details = 'Filter: ' + m[1].trim();
+    }
+    if (content.includes('Index Cond:')) {
+      const m = content.match(/Index Cond:\s*(.+?)$/);
+      if (m) details = 'Index: ' + m[1].trim();
+    }
+    if (content.includes('Hash Cond:')) {
+      const m = content.match(/Hash Cond:\s*(.+?)$/);
+      if (m) details = 'Hash: ' + m[1].trim();
+    }
+    if (content.includes('Join Filter:')) {
+      const m = content.match(/Join Filter:\s*(.+?)$/);
+      if (m) details = 'Join Filter: ' + m[1].trim();
+    }
+
+    // Determine parent based on indentation
+    while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
+      stack.pop();
+    }
+
+    const node = {
+      operation: classifyOp(opName),
+      opName: opName,
+      opLabel: shortenOp(opName),
+      indent: indent,
+      startCost: costMatch ? parseFloat(costMatch[1]) : 0,
+      totalCost: costMatch ? parseFloat(costMatch[2]) : 0,
+      rows: rowsMatch ? parseInt(rowsMatch[1]) : 0,
+      width: widthMatch ? parseInt(widthMatch[1]) : 0,
+      actualTime: timeMatch ? `${timeMatch[1]}..${timeMatch[2]}` : null,
+      loops: loopsMatch ? parseInt(loopsMatch[1]) : 1,
+      details: details,
+      children: [],
+      parent: stack.length > 0 ? stack[stack.length - 1].node : null,
+    };
+
+    if (stack.length > 0) {
+      stack[stack.length - 1].node.children.push(node);
+    } else {
+      nodes.push(node);
+    }
+
+    stack.push({ node, indent });
+  }
+
+  return { dialect: 'postgresql', nodes, stats: computeStats(nodes) };
+}
+
+// MySQL EXPLAIN parser (tabular format)
+function parseMySQL(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  const nodes = [];
+  let headers = [];
+  let dataStart = 0;
+
+  // Find header and data rows
+  for (let i = 0; i < lines.length; i++) {
+    const cols = lines[i].split('\t').map(c => c.trim());
+    if (cols[0] === 'id' && (cols[1] === 'select_type' || cols[1] === 'select_type')) {
+      headers = cols.map(h => h.toLowerCase());
+      dataStart = i + 1;
+      break;
+    }
+  }
+
+  if (headers.length === 0) {
+    // Try space-separated
+    for (let i = 0; i < lines.length; i++) {
+      const cols = lines[i].split(/\s{2,}/).map(c => c.trim());
+      if (cols[0] === 'id' && cols[1] === 'select_type') {
+        headers = cols.map(h => h.toLowerCase());
+        dataStart = i + 1;
+        break;
+      }
+    }
+  }
+
+  if (headers.length === 0) {
+    // Assume standard MySQL row format, try parsing as data
+    for (let i = 0; i < lines.length; i++) {
+      const cols = lines[i].split('\t');
+      if (cols.length >= 6 && /^\d+$/.test(cols[0].trim())) {
+        headers = ['id', 'select_type', 'table', 'type', 'possible_keys', 'key', 'key_len', 'ref', 'rows', 'extra'];
+        dataStart = i;
+        break;
+      }
+    }
+  }
+
+  if (headers.length === 0) {
+    return { dialect: 'mysql', nodes: [], stats: { scans: 0, indexes: 0, joins: 0, sorts: 0, totalCost: 0, totalRows: 0 } };
+  }
+
+  for (let i = dataStart; i < lines.length; i++) {
+    const cols = lines[i].split('\t').map(c => c.trim());
+    if (cols.length < 3 || !/^\d+$/.test(cols[0])) continue;
+
+    const row = {};
+    headers.forEach((h, idx) => { row[h] = cols[idx] || ''; });
+
+    const opType = row.type ? row.type.toUpperCase() : '';
+    const key = row.key || '';
+    const extra = row.extra || '';
+
+    let operation = 'other';
+    if (opType === 'ALL') operation = 'scan';
+    else if (['index', 'ref', 'eq_ref', 'range', 'index_merge'].includes(opType)) operation = 'index';
+    else if (opType === 'const' || opType === 'system') operation = 'index';
+
+    const opLabel = `${row.table || '?'} ${opType || '?'}`.trim();
+    let details = key ? `Key: ${key}` : '';
+    if (extra && extra !== 'NULL') details += (details ? ' · ' : '') + extra;
+
+    nodes.push({
+      operation,
+      opName: `${row.select_type || ''} ${opLabel}`.trim(),
+      opLabel,
+      indent: (parseInt(row.id) > 1) ? 20 : 0,
+      rows: parseInt(row.rows) || 0,
+      details,
+      children: [],
+      startCost: 0,
+      totalCost: 0,
+    });
+  }
+
+  return { dialect: 'mysql', nodes, stats: computeStats(nodes) };
+}
+
+// SQLite EXPLAIN parser
+function parseSQLite(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  const nodes = [];
+  let headers = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const cols = lines[i].split(/\s{1,}/).map(c => c.trim());
+    if (cols[0] === 'addr' && cols[1] === 'opcode') {
+      headers = cols.map(h => h.toLowerCase());
+      continue;
+    }
+    if (headers.length === 0) continue;
+
+    const row = {};
+    headers.forEach((h, idx) => { row[h] = cols[idx] || ''; });
+
+    const opcode = row.opcode || '';
+
+    let operation = 'other';
+    if (opcode === 'OpenRead' || opcode === 'OpenWrite') operation = 'scan';
+    else if (opcode === 'SeekGE' || opcode === 'SeekGT' || opcode === 'SeekLE' || opcode === 'SeekLT') operation = 'index';
+    else if (opcode === 'Rewind' || opcode === 'Next') operation = 'other';
+
+    nodes.push({
+      operation,
+      opName: opcode,
+      opLabel: opcode,
+      indent: 0,
+      rows: 0,
+      details: row.p4 ? `(${row.p4})` : '',
+      children: [],
+      startCost: 0,
+      totalCost: 0,
+    });
+  }
+
+  return { dialect: 'sqlite', nodes, stats: computeStats(nodes) };
+}
+
+// Generic fallback parser
+function parseGeneric(text) {
+  const nodes = [];
+  const lines = text.split('\n').filter(l => l.trim());
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const indent = line.search(/\S/);
+    const content = line.trim();
+    const parts = content.split(/\s+/);
+
+    let operation = 'other';
+    const lower = content.toLowerCase();
+    if (lower.includes('scan') || lower.includes('table scan')) operation = 'scan';
+    else if (lower.includes('index') || lower.includes('seek')) operation = 'index';
+    else if (lower.includes('join') || lower.includes('hash') || lower.includes('merge') || lower.includes('loop')) operation = 'join';
+    else if (lower.includes('sort') || lower.includes('aggregate') || lower.includes('group')) operation = 'sort';
+
+    nodes.push({
+      operation,
+      opName: content.substring(0, 60) + (content.length > 60 ? '…' : ''),
+      opLabel: parts[0] || content.substring(0, 20),
+      indent,
+      rows: 0,
+      details: '',
+      children: [],
+      startCost: 0,
+      totalCost: 0,
+    });
+  }
+
+  return { dialect: 'generic', nodes, stats: computeStats(nodes) };
+}
+
+function classifyOp(name) {
+  const n = name.toLowerCase();
+  if (n.includes('seq scan') || n.includes('table scan') || n.includes('full scan')) return 'scan';
+  if (n.includes('index scan') || n.includes('index seek') || n.includes('index only scan') || n.includes('bitmap index')) return 'index';
+  if (n.includes('join') || n.includes('hash') || n.includes('merge') || n.includes('nested loop')) return 'join';
+  if (n.includes('sort') || n.includes('aggregate') || n.includes('group') || n.includes('unique')) return 'sort';
+  return 'other';
+}
+
+function shortenOp(op) {
+  const short = op
+    .replace('Parallel ', '¶ ')
+    .replace('Bitmap ', 'BTM ')
+    .replace('Index Only Scan', 'IdxOnly')
+    .replace('Index Scan', 'IdxScan')
+    .replace('Seq Scan', 'SeqScan')
+    .replace('Bitmap Index Scan', 'BTM Idx')
+    .replace('Bitmap Heap Scan', 'BTM Heap')
+    .replace('Hash Join', 'HashJoin')
+    .replace('Merge Join', 'MergeJoin')
+    .replace('Nested Loop', 'NLoop')
+    .substring(0, 35);
+  return short;
+}
+
+function computeStats(nodes) {
+  let scans = 0, indexes = 0, joins = 0, sorts = 0, totalCost = 0, totalRows = 0;
+
+  function walk(list) {
+    for (const n of list) {
+      if (n.operation === 'scan') scans++;
+      if (n.operation === 'index') indexes++;
+      if (n.operation === 'join') joins++;
+      if (n.operation === 'sort') sorts++;
+      totalCost = Math.max(totalCost, n.totalCost);
+      totalRows += n.rows || 0;
+      walk(n.children);
+    }
+  }
+  walk(nodes);
+  return { scans, indexes, joins, sorts, totalCost, totalRows };
+}
+
+// === Rendering ===
+
+function renderTree(nodes, stats, dialect) {
+  const output = document.getElementById('treeOutput');
+  const statsHeader = document.getElementById('statsHeader');
+
+  if (nodes.length === 0) {
+    output.innerHTML = '<div class="tree-placeholder"><span class="icon">🤷</span>Could not parse the EXPLAIN output. Make sure you pasted valid EXPLAIN or EXPLAIN ANALYZE output.</div>';
+    statsHeader.classList.remove('visible');
+    document.getElementById('insightsPanel').classList.remove('visible');
+    return;
+  }
+
+  // Stats header
+  statsHeader.innerHTML = `
+    <strong>${dialect === 'postgresql' ? 'PostgreSQL' : dialect === 'mysql' ? 'MySQL' : dialect === 'sqlite' ? 'SQLite' : 'Unknown'} Plan</strong>
+    <span class="badge warn">⚠️ ${stats.scans} Table Scan${stats.scans !== 1 ? 's' : ''}</span>
+    <span class="badge good">✅ ${stats.indexes} Index${stats.indexes !== 1 ? 'es' : ''}</span>
+    <span class="badge info">🔗 ${stats.joins} Join${stats.joins !== 1 ? 's' : ''}</span>
+    ${stats.totalCost > 0 ? `<span>💰 Cost: ${stats.totalCost.toFixed(2)}</span>` : ''}
+    ${stats.totalRows > 0 ? `<span>📊 Rows: ${stats.totalRows.toLocaleString()}</span>` : ''}
+  `;
+  statsHeader.classList.add('visible');
+
+  // Build tree HTML recursively
+  let html = '';
+  function buildTree(node, depth, isLast, ancestors) {
+    const indentStr = buildIndent(depth, ancestors);
+
+    const opClass = 'op-' + node.operation;
+    const opEmoji = {
+      scan: '📄', index: '🗂️', join: '🔗', sort: '🔀', other: '➤'
+    }[node.operation] || '➤';
+
+    let costStr = '';
+    if (node.totalCost > 0) {
+      costStr = node.startCost ? `cost=${node.startCost.toFixed(2)}..${node.totalCost.toFixed(2)}` : `cost=${node.totalCost.toFixed(2)}`;
+    }
+
+    let badges = '';
+    if (node.operation === 'scan' && node.startCost > 0) {
+      badges += '<span class="warn-tag">⚠️ FULL SCAN</span>';
+    }
+    if (node.operation === 'index') {
+      badges += '<span class="ok-tag">✅ Index</span>';
+    }
+    if (node.rows > 10000) {
+      badges += `<span class="warn-tag">${node.rows.toLocaleString()} rows</span>`;
+    }
+
+    html += `<div class="tree-node${depth === 0 ? ' root' : ''}">
+      <div class="row">
+        <span class="indent">${indentStr}</span>
+        <span class="op-icon">${opEmoji}</span>
+        <span class="op-type ${opClass}">${escapeHtml(node.opLabel)}</span>
+        ${costStr ? `<span class="cost">${costStr}</span>` : ''}
+        ${badges}
+      </div>`;
+
+    if (node.details || node.actualTime) {
+      html += `<div class="details">`;
+      if (node.actualTime) html += `⏱ actual time=${node.actualTime} `;
+      if (node.loops > 1) html += `loop${node.loops}x `;
+      if (node.width) html += `width=${node.width} `;
+      if (node.details) html += `<strong>${escapeHtml(node.details)}</strong>`;
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i];
+      const isLastChild = i === node.children.length - 1;
+      buildTree(child, depth + 1, isLastChild, [...ancestors, !isLastChild]);
+    }
+  }
+
+  for (let i = 0; i < nodes.length; i++) {
+    buildTree(nodes[i], 0, i === nodes.length - 1, []);
+  }
+
+  output.innerHTML = html;
+
+  // Insights
+  generateInsights(nodes, stats, dialect);
+}
+
+function buildIndent(depth, ancestors) {
+  if (depth === 0) return '';
+  let s = '';
+  for (let i = 0; i < depth - 1; i++) {
+    s += ancestors[i] ? '│  ' : '   ';
+  }
+  s += ancestors[depth - 1] ? '├─ ' : '└─ ';
+  return s;
+}
+
+function generateInsights(nodes, stats, dialect) {
+  const panel = document.getElementById('insightsPanel');
+  const list = document.getElementById('insightsList');
+  const insights = [];
+
+  // Full table scans
+  if (stats.scans > 0) {
+    if (stats.scans === 1) {
+      insights.push(`1 full table scan detected — consider adding an index on the filter column.`);
+    } else {
+      insights.push(`${stats.scans} full table scans — this query may be slow on large tables. Consider adding indexes on WHERE, JOIN, and ORDER BY columns.`);
+    }
+  }
+
+  // No indexes used
+  if (stats.indexes === 0 && stats.scans > 0) {
+    insights.push('No index usage found — the query performs only sequential scans. Indexes on frequently filtered columns can dramatically improve performance.');
+  }
+
+  // Large row estimate
+  const maxRows = findMaxRows(nodes);
+  if (maxRows > 10000) {
+    insights.push(`High row estimate: ${maxRows.toLocaleString()} rows — consider adding LIMIT or more restrictive WHERE clauses if you don't need all rows.`);
+  }
+
+  // Complex joins
+  if (stats.joins >= 3) {
+    insights.push(`${stats.joins} join operations — verify join columns are indexed. Consider using EXPLAIN ANALYZE to see actual vs estimated row counts.`);
+  }
+
+  // Good index usage
+  if (stats.indexes > stats.scans && stats.indexes >= 2) {
+    insights.push(`Good index coverage: ${stats.indexes} index operations — the query planner is finding useful indexes for most access paths.`);
+  }
+
+  // High cost
+  if (stats.totalCost > 1000) {
+    insights.push(`High total cost (${stats.totalCost.toFixed(0)}) — this query may benefit from query rewriting, materialized views, or table partitioning.`);
+  }
+
+  if (insights.length === 0) {
+    insights.push('No obvious performance issues detected. The query plan looks reasonable.');
+  }
+
+  list.innerHTML = insights.map(i => `<li>${i}</li>`).join('');
+  panel.classList.add('visible');
+}
+
+function findMaxRows(nodes) {
+  let max = 0;
+  function walk(list) {
+    for (const n of list) {
+      if (n.rows > max) max = n.rows;
+      walk(n.children);
+    }
+  }
+  walk(nodes);
+  return max;
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// === Main entry ===
+
+function analyzePlan() {
+  const input = document.getElementById('explainInput');
+  const dialect = document.getElementById('dialectSelect').value;
+  const text = input.value.trim();
+
+  if (!text) {
+    showToast('Paste EXPLAIN output first');
+    return;
+  }
+
+  const result = parseExplain(text, dialect);
+  if (!result) {
+    document.getElementById('treeOutput').innerHTML = '<div class="tree-placeholder"><span class="icon">🤷</span>Could not parse the output. Make sure you pasted valid EXPLAIN or EXPLAIN ANALYZE output.</div>';
+    return;
+  }
+
+  // Auto-update dialect selector
+  if (document.getElementById('dialectSelect').value === 'auto') {
+    document.getElementById('dialectSelect').value = result.dialect === 'generic' ? 'postgresql' : result.dialect;
+  }
+
+  renderTree(result.nodes, result.stats, result.dialect);
+  showToast('✅ Execution plan analyzed');
+}
+
+// === Examples ===
+
+const examples = {
+  postgres_basic: `Hash Join  (cost=1.09..2.17 rows=5 width=120)
+  Hash Cond: (orders.user_id = users.id)
+  ->  Seq Scan on orders  (cost=0.00..1.05 rows=5 width=44)
+  ->  Hash  (cost=1.03..1.03 rows=3 width=80)
+        ->  Seq Scan on users  (cost=0.00..1.03 rows=3 width=80)
+              Filter: (status = 'active')`,
+
+  postgres_complex: `Sort  (cost=150.25..152.50 rows=900 width=160)
+  Sort Key: orders.created_at DESC
+  ->  Hash Join  (cost=45.00..105.75 rows=900 width=160)
+        Hash Cond: (orders.user_id = users.id)
+        ->  Seq Scan on orders  (cost=0.00..38.50 rows=1850 width=44)
+              Filter: (amount > 100)
+        ->  Hash  (cost=35.00..35.00 rows=800 width=120)
+              ->  Hash Join  (cost=15.00..35.00 rows=800 width=120)
+                    Hash Cond: (users.dept_id = departments.id)
+                    ->  Seq Scan on users  (cost=0.00..15.00 rows=500 width=84)
+                    ->  Hash  (cost=10.00..10.00 rows=200 width=40)
+                          ->  Seq Scan on departments  (cost=0.00..10.00 rows=200 width=40)`,
+
+  mysql_basic: `id\tselect_type\ttable\ttype\tpossible_keys\tkey\tkey_len\tref\trows\tExtra
+1\tSIMPLE\tusers\tALL\tNULL\tNULL\tNULL\tNULL\t1000\tUsing where
+1\tSIMPLE\torders\tref\tidx_user_id\tidx_user_id\t4\tusers.id\t5\tNULL`,
+
+  sqlite_basic: `addr\topcode\tp1\tp2\tp3\tp4\tp5\tcomment
+0\tInit\t0\t15\t0\t\t00\t
+1\tOpenRead\t0\t5\t0\t4\t00\t
+2\tOpenRead\t1\t3\t0\tk(2,,)\t02\t
+3\tRewind\t0\t13\t0\t\t00\t
+4\tColumn\t0\t1\t2\t\t00\t
+5\tNe\t3\t12\t2\tcollseq(BINARY)\t52\t
+6\tColumn\t0\t0\t4\t\t00\t`,
+
+  postgres_bad: `Nested Loop  (cost=0.00..90500.50 rows=50000 width=200)
+  ->  Seq Scan on orders  (cost=0.00..15000.00 rows=100000 width=60)
+        Filter: (status = 'pending')
+  ->  Index Scan on users_pkey  (cost=0.00..0.75 rows=1 width=140)
+        Index Cond: (id = orders.user_id)
+        Filter: (last_login < '2024-01-01')`
+};
+
+function loadExample(name) {
+  const input = document.getElementById('explainInput');
+  input.value = examples[name] || '';
+  document.getElementById('dialectSelect').value = name.startsWith('mysql') ? 'mysql' : name.startsWith('sqlite') ? 'sqlite' : 'postgresql';
+  analyzePlan();
+}
+
+// === Toast ===
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Keyboard shortcut
+document.getElementById('explainInput').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    analyzePlan();
+  }
+});
+
+</script>
+
+</body>
+</html>

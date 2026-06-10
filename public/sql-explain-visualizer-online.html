@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL EXPLAIN Visualizer Online - Free Execution Plan Analyzer | SQLFormat.io</title>
+  <meta name="description" content="Visualize SQL execution plans online for free. Paste EXPLAIN or EXPLAIN ANALYZE output from MySQL & PostgreSQL and see a tree diagram of your query plan. Spot table scans and bottlenecks instantly.">
+  <meta name="keywords" content="SQL EXPLAIN visualizer online, EXPLAIN ANALYZE viewer, SQL execution plan tool, MySQL EXPLAIN visualizer, PostgreSQL EXPLAIN analyzer, query plan viewer, SQL performance analyzer, free EXPLAIN tool">
+  <meta property="og:title" content="SQL EXPLAIN Visualizer Online - Free Execution Plan Analyzer">
+  <meta property="og:description" content="Paste your EXPLAIN or EXPLAIN ANALYZE output and see a visual tree diagram of your query plan. Spot full table scans, index usage, nested loops, and bottlenecks. Works with MySQL and PostgreSQL. No data sent to any server.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/sql-explain-visualizer-online">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/sql-explain-visualizer-online">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL EXPLAIN Visualizer Online",
+    "description": "Free online SQL EXPLAIN plan visualizer that renders MySQL and PostgreSQL execution plans as interactive tree diagrams. Spot full table scans, index usage, nested loops, and performance bottlenecks instantly. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/sql-explain-visualizer-online",
+    "dateModified": "2026-06-10",
+    "featureList": "EXPLAIN visualization, execution plan tree, MySQL support, PostgreSQL support, full table scan detection, index usage highlighting, cost analysis, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL EXPLAIN Visualizer Online", "item": "https://sqlformat.io/sql-explain-visualizer-online"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I visualize an SQL EXPLAIN plan online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Run EXPLAIN or EXPLAIN ANALYZE on your query in MySQL or PostgreSQL, copy the output, and paste it into the SQLFormat.io EXPLAIN Visualizer. It parses the plan and renders it as a color-coded tree diagram, highlighting full table scans in red and index usage in green — no signup required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this tool support MySQL EXPLAIN output?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The tool auto-detects MySQL tabular EXPLAIN output (with columns like id, select_type, table, type, key, rows, Extra) and renders each row as a node in the execution plan tree. It flags ALL scans, index lookups, and notes from the Extra column like Using filesort and Using temporary."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between EXPLAIN and EXPLAIN ANALYZE?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "EXPLAIN shows the estimated execution plan with predicted costs and row counts. EXPLAIN ANALYZE actually runs the query and shows real timing, row counts, and loop counts — much more accurate but may take time for slow queries. Our visualizer handles both formats in the same tree view."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL data safe when analyzing execution plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All parsing and rendering happens in your browser using JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after the page loads and it still works."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+
+    .hero { text-align: center; padding: 48px 0 24px; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+    .cta-section {
+      text-align: center;
+      padding: 20px 0 36px;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--accent2);
+      color: #fff;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+    .content-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .content-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    .content-section p {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+    .content-section ul li { margin-bottom: 8px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .feature-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .feature-card .icon { font-size: 2rem; margin-bottom: 10px; }
+    .feature-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.5; }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL EXPLAIN Visualizer Online — Free Execution Plan Analyzer</h1>
+    <p>Paste your EXPLAIN or EXPLAIN ANALYZE output and see your query execution plan as a visual tree. Spot full table scans, index usage, and performance bottlenecks without deciphering raw plan text.</p>
+  </div>
+
+  <div class="cta-section">
+    <a href="/explain" class="cta-btn">🔍 Analyze Your Execution Plan — Free</a>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Visualize SQL Execution Plans?</h2>
+    <p>
+      Raw EXPLAIN output is powerful but hard to read. A moderately complex PostgreSQL query can produce 30+ lines of nested plan text with cost estimates, row counts, filter conditions, and join types scattered across multiple indentation levels. Tracking which node is scanning a 100,000-row table without an index requires careful, line-by-line inspection.
+    </p>
+    <p>
+      An <strong>online EXPLAIN visualizer</strong> transforms that wall of text into a color-coded tree diagram. Full table scans are flagged red. Index usage gets a green checkmark. Nested loops, hash joins, and merge joins are color-differentiated. Cost estimates and actual timing appear right alongside each node, so you can see at a glance which part of your query is eating up the most resources.
+    </p>
+    <p>
+      The tool auto-detects whether your output came from <strong>MySQL</strong> (tabular format with columns like type, key, rows, Extra) or <strong>PostgreSQL</strong> (tree format with cost, rows, actual time annotations). No configuration required — paste and the parser identifies the dialect automatically.
+    </p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon">🌲</div>
+      <h3>Tree Diagram View</h3>
+      <p>Nested execution plans rendered as an indented tree with operation icons, not flat text.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚠️</div>
+      <h3>Table Scan Detection</h3>
+      <p>Full table scans and high-row-count nodes flagged immediately so problems jump out.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🗄️</div>
+      <h3>MySQL & PostgreSQL</h3>
+      <p>Auto-detects dialect and parses both tabular MySQL output and tree-formatted PostgreSQL plans.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">💡</div>
+      <h3>Performance Insights</h3>
+      <p>Automatic recommendations for missing indexes, high-cost operations, and query rewrites.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🔒</div>
+      <h3>100% Client-Side</h3>
+      <p>All parsing runs in your browser. EXPLAIN output never leaves your device.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚡</div>
+      <h3>Instant Results</h3>
+      <p>No server round-trips. See the tree diagram the moment you click Analyze Plan.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the EXPLAIN Visualizer</h2>
+    <p>
+      Run <code>EXPLAIN</code> or <code>EXPLAIN ANALYZE</code> on your query in any PostgreSQL or MySQL client, copy the output, and paste it into the tool. Click <strong>Analyze Plan</strong> to see it rendered as a tree. Each node shows the operation type (Seq Scan, Index Scan, Hash Join, etc.), estimated cost, row count, and any filter or index conditions.
+    </p>
+    <p>
+      For PostgreSQL users, <code>EXPLAIN ANALYZE</code> provides actual execution timing and per-loop row counts — far more useful than estimates alone. The visualizer displays these alongside the cost estimates so you can compare what the planner predicted versus what actually happened.
+    </p>
+  </div>
+
+  <div class="content-section">
+    <h2>Related SQL Tools</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">✨</div>
+        <h3>SQL Formatter</h3>
+        <p>Format and beautify SQL queries. 15+ dialects supported.</p>
+        <a href="/" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Formatter →</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔍</div>
+        <h3>SQL Diff</h3>
+        <p>Compare two SQL queries side by side at field-level detail.</p>
+        <a href="/diff" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Diff →</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">✅</div>
+        <h3>SQL Validator</h3>
+        <p>Check SQL syntax for errors before running against your database.</p>
+        <a href="/validate" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Validator →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section" style="padding-top:0">
+    <a href="/explain" class="cta-btn">🔍 Visualize Your EXPLAIN Plan Now</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/explain">EXPLAIN Visualizer</a> | <a href="/diff">SQL Diff</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>
