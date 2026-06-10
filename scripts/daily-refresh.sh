@@ -14,7 +14,7 @@ if ! git diff --quiet; then
     TODAY=$(date +%Y-%m-%d)
     git add public/index.html public/sitemap.xml scripts/tips.yaml
     git commit -m "✨ Daily tip update — $TODAY"
-    git push origin main
+    git push origin master
     echo "🚀 Pushed to GitHub — Cloudflare Pages deploying..."
 else
     echo "ℹ️ No changes to commit"
