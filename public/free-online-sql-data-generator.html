@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Data Generator — Generate Mock INSERT Data | SQLFormat.io</title>
+  <meta name="description" content="Generate realistic SQL mock data online for free. Define your table schema with column names and types — INT, VARCHAR, DATE, BOOLEAN, UUID — and generate INSERT statements with realistic fake data. No signup, no data leaves your browser.">
+  <meta name="keywords" content="free online sql data generator, sql mock data generator, generate sql insert data online, sql test data generator, fake sql data generator, sql seed data generator, mock sql inserts">
+  <meta property="og:title" content="Free Online SQL Data Generator — Generate Mock INSERT Data">
+  <meta property="og:description" content="Define your table schema and generate realistic mock INSERT statements. Supports INT, VARCHAR, DATE, BOOLEAN, UUID, TIMESTAMP, DECIMAL, TEXT, and ENUM. 100% client-side, free, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-data-generator">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-data-generator">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online SQL Data Generator",
+    "description": "Free online SQL data generator that creates realistic mock INSERT statements from your table schema. Supports INT, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, FLOAT, DECIMAL, UUID, JSON, and ENUM data types. 100% client-side, no signup required.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-sql-data-generator",
+    "dateModified": "2026-06-11",
+    "featureList": "SQL data generation, mock INSERT statements, realistic fake data, multiple data types, configurable row count, schema presets, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Data Generator", "item": "https://sqlformat.io/free-online-sql-data-generator"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I generate mock SQL data online for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Go to SQLFormat.io, click Data Gen in the navigation bar. Enter your table name, define columns (name + data type), set how many rows you want, and click Generate. The tool produces INSERT statements with realistic fake data — names, emails, dates, prices, UUIDs — based on the column names and types you define."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What data types can the SQL data generator handle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, JSONB, and ENUM. Each type produces appropriate mock values — VARCHAR generates names and emails, DECIMAL generates prices, UUID generates valid UUID strings, DATE generates calendar dates in a recent range."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I generate data for specific column naming patterns?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The generator detects common naming conventions and adjusts output automatically. Columns named email or mail get valid email addresses. Columns ending in _id get sequential IDs. Price, cost, or amount columns get realistic dollar values. Columns named phone get formatted phone numbers. City gets real US city names. This makes the generated data much more believable than random strings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a limit on how many rows I can generate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can generate up to 1,000 rows at a time. Since all processing happens in your browser, the practical limit depends on your device memory. For most development and testing needs, 1,000 rows is more than enough to populate a test database or seed integration tests."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there preset schemas I can use instead of building from scratch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The tool includes presets for Users, Products, Orders, and Employees tables. Each preset includes realistic column definitions — names, emails, prices, dates, foreign keys, and status fields. You can load a preset and modify it, or build your schema from scratch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my schema data safe when using this generator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Completely safe. All generation runs client-side in your browser using JavaScript. Your table schema and the generated data never leave your device. There is no server-side processing, no data collection, and no logging of any kind."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+    .hero { text-align: center; padding: 48px 0 24px; }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; line-height: 1.6; }
+    .cta-section { text-align: center; padding: 20px 0 36px; }
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--accent2);
+      color: #fff;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); transform: translateY(-2px); }
+    .content-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .content-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    .content-section h3 {
+      font-size: 1.05rem;
+      margin: 16px 0 8px;
+      color: var(--text);
+    }
+    .content-section p {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .content-section p:last-child { margin-bottom: 0; }
+    .content-section ul {
+      color: var(--text2);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+    .content-section ul li { margin-bottom: 8px; }
+    .content-section code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: var(--accent);
+    }
+    .content-section strong { color: var(--text); }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .feature-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .feature-card .icon { font-size: 2rem; margin-bottom: 10px; }
+    .feature-card h3 { font-size: 1rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.5; }
+    .example-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: var(--text);
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+    }
+    .example-block .comment { color: #8b949e; font-style: italic; }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/validate">Validator</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>Free Online SQL Data Generator — Mock INSERT Statements</h1>
+    <p>Define your table schema and generate realistic mock INSERT data with one click. Supports 15+ data types, automatic name/email/price detection, and up to 1,000 rows at a time. 100% free, no signup, all processing in your browser.</p>
+  </div>
+
+  <div class="cta-section">
+    <a href="/data-generator" class="cta-btn">Generate Mock SQL Data Now — Free</a>
+  </div>
+
+  <div class="content-section">
+    <h2>Why You Need an SQL Data Generator</h2>
+    <p>
+      Writing INSERT statements by hand is tedious. For a schema with ten columns, you spend more time typing quotes and commas than the data itself is worth. When you need 50 rows to populate a development database or seed integration tests, manual INSERTs are not just slow — they are error-prone. One missing quote and your script fails at runtime.
+    </p>
+    <p>
+      A <strong>free online SQL data generator</strong> solves this by letting you describe your schema and automatically producing syntactically correct INSERT statements with realistic test data. A column named <code>email</code> generates addresses like alice.smith@example.com. A column named <code>price</code> generates dollar amounts between $10 and $1,000. A <code>UUID</code> column gets a valid <code>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</code> string. The result is data that looks believable in demos, documentation, and staging environments.
+    </p>
+    <p>
+      Every developer has at least one story about writing a script to populate a test database, only to spend more time debugging the script than it would have taken to write INSERTs manually. This generator eliminates that overhead entirely.
+    </p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon">[TBL]</div>
+      <h3>Schema Presets</h3>
+      <p>Pre-built schemas for Users, Products, Orders, and Employees. Load one and customize, or start from scratch.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">[TP]</div>
+      <h3>Smart Data Detection</h3>
+      <p>Column names like email, phone, price, city, and name auto-generate realistic values. No configuration needed.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">[RG]</div>
+      <h3>Up to 1,000 Rows</h3>
+      <p>Generate anywhere from 1 to 1,000 INSERT statements in a single click. Perfect for seeding test databases.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">[DT]</div>
+      <h3>15+ Data Types</h3>
+      <p>INT, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, DECIMAL, FLOAT, UUID, JSON, ENUM, and more.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">[CP]</div>
+      <h3>One-Click Copy</h3>
+      <p>Generated INSERTs are ready to paste into your SQL client, migration script, or seed file.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">[LK]</div>
+      <h3>100% Client-Side</h3>
+      <p>All processing runs in your browser. Your schema and data never leave your device.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Generate Mock SQL Data</h2>
+    <ol>
+      <li><strong>Enter your table name</strong> — e.g. <code>employees</code>, <code>products</code>, <code>orders</code></li>
+      <li><strong>Define columns</strong> — add column names and pick a data type (INT, VARCHAR, DECIMAL, DATE, BOOLEAN, etc.)</li>
+      <li><strong>Set row count</strong> — how many INSERT rows to generate (1 to 1,000)</li>
+      <li><strong>Click Generate</strong> — the tool produces complete INSERT statements with realistic data</li>
+      <li><strong>Copy the result</strong> — paste directly into your database console or seed file</li>
+    </ol>
+    <p style="margin-top:16px;">The generator also includes an <strong>Options</strong> field where you can provide hints — like <code>price</code>, <code>email</code>, or <code>name</code> — to guide what kind of mock data each column produces. Most columns detect this automatically from the column name, but the hint field lets you override the default behavior.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Example Use Cases</h2>
+    <h3>Seeding a Development Database</h3>
+    <p>When you set up a new project locally, you need sample data to verify that queries, views, and API endpoints work correctly. Manually INSERTing 30 rows into 5 tables is an afternoon killer. The generator gives you usable data in seconds.</p>
+    <div class="example-block">
+<span class="comment">-- Define: table=employees, 5 rows</span>
+<span class="comment">-- Columns: first_name(VARCHAR), last_name(VARCHAR), email(VARCHAR), salary(DECIMAL), department(VARCHAR), hire_date(DATE)</span>
+
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Alice', 'Smith', 'alice.smith@gmail.com', 85342.18, 'Engineering', '2025-03-14');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Bob', 'Johnson', 'bob.johnson@outlook.com', 62471.50, 'Sales', '2024-08-22');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Grace', 'Williams', 'grace.williams@company.com', 91205.99, 'Marketing', '2025-11-03');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Jack', 'Brown', 'jack.brown@proton.me', 51200.00, 'Support', '2024-02-11');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Mia', 'Davis', 'mia.davis@gmail.com', 120000.00, 'Engineering', '2023-06-30');
+    </div>
+
+    <h3>Populating an E-Commerce Schema</h3>
+    <p>Testing an order system requires related products, customers, and orders tables. The generator handles each table individually, and you can control foreign key IDs by setting the right column type and row count.</p>
+    <div class="example-block">
+<span class="comment">-- Products table - 8 rows</span>
+INSERT INTO products (product_name, category, price, stock, is_available) VALUES ('Pro Widget', 'Electronics', 499.99, 150, TRUE);
+INSERT INTO products (product_name, category, price, stock, is_available) VALUES ('Slim Device', 'Home', 29.95, 2000, TRUE);
+INSERT INTO products (product_name, category, price, stock, is_available) VALUES ('Premium Kit', 'Sports', 89.00, 45, TRUE);
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>Supported Data Types and What They Generate</h2>
+    <table style="width:100%;border-collapse:collapse;color:var(--text2);font-size:0.9rem;margin-bottom:16px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:8px 12px;color:var(--text);">Data Type</th>
+          <th style="text-align:left;padding:8px 12px;color:var(--text);">Generated Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding:6px 12px;"><code>INT</code></td><td style="padding:6px 12px;">Random integer 1–9,999</td></tr>
+        <tr><td style="padding:6px 12px;"><code>BIGINT</code></td><td style="padding:6px 12px;">Random integer 10,000–99,999,999</td></tr>
+        <tr><td style="padding:6px 12px;"><code>VARCHAR</code></td><td style="padding:6px 12px;">Name, email, city, phone, or company — detected from column name</td></tr>
+        <tr><td style="padding:6px 12px;"><code>TEXT</code></td><td style="padding:6px 12px;">Short descriptive sentence</td></tr>
+        <tr><td style="padding:6px 12px;"><code>BOOLEAN</code></td><td style="padding:6px 12px;"><code>TRUE</code> or <code>FALSE</code></td></tr>
+        <tr><td style="padding:6px 12px;"><code>DATE</code></td><td style="padding:6px 12px;">Date in YYYY-MM-DD format within a 2-year range</td></tr>
+        <tr><td style="padding:6px 12px;"><code>TIMESTAMP</code></td><td style="padding:6px 12px;">Timestamp in YYYY-MM-DD HH:MM:SS format</td></tr>
+        <tr><td style="padding:6px 12px;"><code>DECIMAL</code></td><td style="padding:6px 12px;">Price or amount, e.g. 49.99, 85342.18</td></tr>
+        <tr><td style="padding:6px 12px;"><code>FLOAT</code></td><td style="padding:6px 12px;">Random decimal with 4-digit precision</td></tr>
+        <tr><td style="padding:6px 12px;"><code>UUID</code></td><td style="padding:6px 12px;">Valid UUID v4 string</td></tr>
+        <tr><td style="padding:6px 12px;"><code>JSON</code></td><td style="padding:6px 12px;">Empty JSON object <code>{}</code></td></tr>
+        <tr><td style="padding:6px 12px;"><code>ENUM</code></td><td style="padding:6px 12px;"><code>value_a</code>, <code>value_b</code>, <code>value_c</code> (or custom values from Options)</td></tr>
+        <tr><td style="padding:6px 12px;"><code>SERIAL</code></td><td style="padding:6px 12px;"><code>DEFAULT</code> (database auto-increment)</td></tr>
+      </tbody>
+    </table>
+    <p>Columns ending in <code>_id</code> generate integers suitable for foreign key references. Columns named <code>password</code>, <code>hash</code>, or <code>token</code> generate hex strings that look like real authentication values.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Related SQL Tools at SQLFormat.io</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">[FM]</div>
+        <h3>SQL Formatter</h3>
+        <p>Format and beautify SQL queries. 15+ dialects supported.</p>
+        <a href="/" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Formatter</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">[DF]</div>
+        <h3>SQL Diff</h3>
+        <p>Compare two SQL queries side by side at field-level detail.</p>
+        <a href="/diff" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Diff</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">[EP]</div>
+        <h3>EXPLAIN Visualizer</h3>
+        <p>See execution plans as color-coded tree diagrams.</p>
+        <a href="/explain" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try EXPLAIN Visualizer</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">[MN]</div>
+        <h3>SQL Minifier</h3>
+        <p>Compress SQL to a single line for storage or logs.</p>
+        <a href="/minify" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Minifier</a>
+      </div>
+      <div class="feature-card">
+        <div class="icon">[VL]</div>
+        <h3>SQL Validator</h3>
+        <p>Check SQL syntax before running against your database.</p>
+        <a href="/validate" style="color:var(--accent);font-size:0.85rem;font-weight:600;">Try Validator</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section" style="padding-top:0">
+    <a href="/data-generator" class="cta-btn">Generate Mock SQL Data Now</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/data-generator">SQL Data Generator</a> | <a href="/free-online-sql-data-generator">Free Data Generator</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

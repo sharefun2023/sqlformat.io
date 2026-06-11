@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Data Generator — Generate Mock SQL INSERT Data | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL data generator. Define your table schema and generate realistic mock INSERT data. Supports INT, VARCHAR, DATE, TEXT, BOOLEAN, TIMESTAMP, DECIMAL, and UUID. 100% client-side.">
+  <meta name="keywords" content="SQL data generator, mock data generator, SQL INSERT generator, test data generator, fake SQL data, generate SQL inserts online, SQL seed data generator">
+  <meta property="og:title" content="SQL Data Generator — Generate Mock SQL INSERT Data Online">
+  <meta property="og:description" content="Define your table schema and generate realistic mock INSERT data. Supports INT, VARCHAR, DATE, TEXT, BOOLEAN, TIMESTAMP, DECIMAL, and UUID. 100% client-side, no signup needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/data-generator">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/data-generator">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Data Generator",
+    "description": "Free online SQL data generator that creates realistic mock INSERT statements from your table schema. Supports INT, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, FLOAT, DECIMAL, and UUID data types. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/data-generator",
+    "dateModified": "2026-06-11",
+    "featureList": "SQL data generation, mock INSERT statements, realistic fake data, multiple data types, configurable row count, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Data Generator", "item": "https://sqlformat.io/data-generator"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I generate mock SQL data online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Enter your table name, define column names and data types (INT, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, FLOAT, DECIMAL, UUID), set the number of rows, and click Generate. The tool creates realistic INSERT statements with fake but believable data — no signup required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What data types does the SQL data generator support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, and ENUM. Each type generates appropriate mock data — names and emails for VARCHAR, dates for DATE, prices for DECIMAL, etc."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the generated data realistic?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. VARCHAR fields generate first names, last names, company names, email addresses, and city names. INT fields generate sequential or random IDs. DATE fields generate dates in a recent range. DECIMAL fields generate realistic prices."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data safe when using this generator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All generation happens client-side in your browser using JavaScript. Your schema definition and generated data never leave your device. No server-side processing, no logging, no data collection."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+
+    /* Schema editor */
+    .schema-section { padding: 20px; }
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .form-row label { font-size: 0.88rem; color: var(--text2); min-width: 80px; }
+    .form-row input[type="text"], .form-row input[type="number"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .form-row input[type="text"]:focus, .form-row input[type="number"]:focus {
+      border-color: var(--accent);
+    }
+    .form-row input[name="tableName"] { flex: 1; min-width: 200px; }
+    .form-row input[name="rowCount"] { width: 80px; }
+
+    .columns-header {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .columns-header .col-name { flex: 2; min-width: 120px; }
+    .columns-header .col-type { flex: 1; min-width: 100px; }
+    .columns-header .col-opt { flex: 2; min-width: 150px; }
+    .columns-header .col-action { width: 40px; text-align: center; }
+
+    .column-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .column-row input, .column-row select {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .column-row input:focus, .column-row select:focus { border-color: var(--accent); }
+    .column-row .col-name { flex: 2; min-width: 120px; }
+    .column-row .col-type { flex: 1; min-width: 100px; }
+    .column-row .col-opt { flex: 2; min-width: 150px; }
+    .column-row .col-opt input { width: 100%; }
+    .column-row .col-action {
+      width: 40px; text-align: center;
+    }
+    .column-row .col-action button {
+      background: none;
+      border: none;
+      color: var(--red);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+    }
+    .column-row .col-action button:hover { opacity: 0.7; }
+
+    .add-column-btn {
+      margin-top: 8px;
+      color: var(--accent);
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .add-column-btn:hover {
+      border-color: var(--accent);
+      background: rgba(88,166,255,0.05);
+    }
+
+    /* Output */
+    .output-area {
+      border-top: 1px solid var(--border);
+    }
+    .output-area textarea {
+      width: 100%;
+      height: 320px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .output-area textarea:focus { background: #0d1117; }
+
+    .output-stats {
+      padding: 8px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text2);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .output-stats .stat { white-space: nowrap; }
+
+    /* Example presets */
+    .presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 20px 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 0;
+    }
+    .presets button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .presets button:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL->JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/data-generator" class="active">Data Gen</a>
+      <a href="/escape">Escape</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Data Generator</h1>
+    <p>Define your table schema and generate realistic mock INSERT data. Supports INT, VARCHAR, DATE, BOOLEAN, UUID, and more. All processing is done in your browser.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>Mock Data Generator</h2>
+      <div class="tool-controls">
+        <button onclick="generateData()" class="primary" id="genBtn">Generate</button>
+        <button onclick="copyOutput()" class="success" id="copyBtn">Copy</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <div class="schema-section">
+      <div class="form-row">
+        <label for="tableName">Table Name</label>
+        <input type="text" id="tableName" name="tableName" value="users" placeholder="e.g. employees, products, orders">
+        <label for="rowCount" style="min-width:auto">Rows</label>
+        <input type="number" id="rowCount" name="rowCount" value="5" min="1" max="1000">
+      </div>
+
+      <div class="columns-header">
+        <div class="col-name">Column Name</div>
+        <div class="col-type">Data Type</div>
+        <div class="col-opt">Options</div>
+        <div class="col-action"></div>
+      </div>
+      <div id="columnsList"></div>
+      <button class="add-column-btn" onclick="addColumn()">+ Add Column</button>
+    </div>
+
+    <div class="presets">
+      <button onclick="loadPreset('users')">Users Table</button>
+      <button onclick="loadPreset('products')">Products Table</button>
+      <button onclick="loadPreset('orders')">Orders Table</button>
+      <button onclick="loadPreset('employees')">Employees Table</button>
+    </div>
+
+    <div class="output-area">
+      <textarea id="output" placeholder="Generated INSERT statements will appear here..." readonly spellcheck="false"></textarea>
+      <div class="output-stats" id="outputStats">
+        <span class="stat" id="statRows">Rows: 0</span>
+        <span class="stat" id="statCols">Columns: 0</span>
+        <span class="stat" id="statSize">Size: 0 B</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/data-generator">SQL Data Generator</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== Mock Data Pools ===== */
+const FIRST_NAMES = [
+  'Alice','Bob','Charlie','Diana','Eve','Frank','Grace','Henry','Iris','Jack',
+  'Kate','Leo','Mia','Noah','Olivia','Paul','Quinn','Rose','Sam','Tina',
+  'Uma','Victor','Wendy','Xander','Yara','Zack','Amelia','Ben','Clara','David',
+  'Emma','Finn','Gina','Hugo','Ivy','Jake','Kara','Liam','Maya','Nate'
+];
+const LAST_NAMES = [
+  'Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis',
+  'Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson',
+  'Thomas','Taylor','Moore','Jackson','Martin','Lee','Perez','Thompson',
+  'White','Harris','Sanchez','Clark','Ramirez','Lewis','Robinson'
+];
+const COMPANIES = [
+  'Acme Corp','Globex Inc','Initech','Umbrella Corp','Cyberdyne Systems',
+  'Wonka Industries','Stark Industries','Wayne Enterprises','Oscorp',
+  'Massive Dynamic','Hooli','Pied Piper','Dunder Mifflin','Sterling Cooper',
+  'Gekko & Co','Aperture Science','Black Mesa','Tyrell Corp','Weyland-Yutani'
+];
+const CITIES = [
+  'New York','Los Angeles','Chicago','Houston','Phoenix','Philadelphia',
+  'San Antonio','San Diego','Dallas','San Jose','Austin','Jacksonville',
+  'Fort Worth','Columbus','Charlotte','Indianapolis','San Francisco','Seattle',
+  'Denver','Nashville','Portland','Miami','Atlanta','Boston'
+];
+const STREETS = ['Main','Oak','Elm','Maple','Cedar','Pine','Birch','Walnut','Parker','Madison'];
+const STREET_TYPES = ['St','Ave','Blvd','Dr','Ln','Way','Ct','Pl'];
+const DEPARTMENTS = ['Engineering','Sales','Marketing','HR','Finance','Operations','Support','Legal'];
+const PRODUCT_CATEGORIES = ['Electronics','Clothing','Food','Books','Home','Sports','Toys','Beauty'];
+const PRODUCT_NAMES_PRE = ['Ultra','Pro','Max','Smart','Premium','Classic','Elite','Basic','Advanced','Slim'];
+const PRODUCT_NAMES_POST = ['Widget','Gadget','Device','Tool','Kit','Pack','Set','System','Module','Appliance'];
+const EMAIL_DOMAINS = ['gmail.com','outlook.com','yahoo.com','company.com','example.org','mail.com','proton.me'];
+const JOB_TITLES = [
+  'Software Engineer','Data Analyst','Product Manager','Designer','DevOps Engineer',
+  'QA Engineer','Tech Lead','CTO','VP Engineering','Analyst','Consultant'
+];
+const TAGS = ['active','inactive','pending','verified','premium','trial','beta','archived'];
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randBool() { return Math.random() > 0.5; }
+function randDate() {
+  const d = new Date();
+  d.setDate(d.getDate() - randInt(0, 730));
+  return d.toISOString().split('T')[0];
+}
+function randTimestamp() {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - randInt(0, 3));
+  d.setDate(d.getDate() - randInt(0, 365));
+  return d.toISOString().replace('T', ' ').split('.')[0];
+}
+function randTime() {
+  return `${String(randInt(0,23)).padStart(2,'0')}:${String(randInt(0,59)).padStart(2,'0')}:${String(randInt(0,59)).padStart(2,'0')}`;
+}
+function randEmail() {
+  const name = (rand(FIRST_NAMES).toLowerCase()) + '.' + rand(LAST_NAMES).toLowerCase();
+  return name + '@' + rand(EMAIL_DOMAINS);
+}
+function randPrice() { return (Math.random() * 990 + 9.99).toFixed(2); }
+function randPhone() {
+  return `${randInt(200,999)}-${randInt(100,999)}-${randInt(1000,9999)}`;
+}
+function randUuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+function oneOf(values) {
+  if (typeof values === 'string') {
+    // User specified values like "admin,user,guest"
+    return rand(values.split(','));
+  }
+  return rand(values);
+}
+
+function formatVal(value, type) {
+  if (value === null || value === undefined) return 'NULL';
+  const upperType = type.toUpperCase();
+  if (['INT','BIGINT','SMALLINT','TINYINT','SERIAL','BIGSERIAL'].includes(upperType)) return String(value);
+  if (['FLOAT','DOUBLE','DECIMAL','NUMERIC','REAL'].includes(upperType)) return String(value);
+  if (upperType === 'BOOLEAN' || upperType === 'BOOL') return value ? 'TRUE' : 'FALSE';
+  if (upperType === 'JSON' || upperType === 'JSONB') return `'${JSON.stringify(value)}'`;
+  // Strings: VARCHAR, CHAR, TEXT, DATE, TIMESTAMP, TIME, UUID, ENUM
+  const escaped = String(value).replace(/'/g, "''");
+  return `'${escaped}'`;
+}
+
+/* ===== Value Generators per Type ===== */
+function generateValue(colName, dataType, options) {
+  const ut = dataType.toUpperCase();
+  const opts = (options || '').trim().toLowerCase();
+
+  // ENUM: treat options as possible values
+  if (ut === 'ENUM') {
+    if (options && options.trim()) return oneOf(options.trim());
+    return rand(['value_a','value_b','value_c']);
+  }
+  if (ut === 'BOOLEAN' || ut === 'BOOL') return randBool();
+  if (ut === 'INT' || ut === 'INTEGER') return randInt(1, 9999);
+  if (ut === 'BIGINT') return randInt(10000, 99999999);
+  if (ut === 'SMALLINT' || ut === 'TINYINT') return randInt(0, 255);
+  if (ut === 'SERIAL') return 'DEFAULT';
+  if (ut === 'BIGSERIAL') return 'DEFAULT';
+  if (ut === 'FLOAT' || ut === 'REAL') return (Math.random() * 1000).toFixed(4);
+  if (ut === 'DOUBLE') return (Math.random() * 100000).toFixed(6);
+  if (ut === 'DECIMAL' || ut === 'NUMERIC') {
+    if (opts.includes('price') || colName.toLowerCase().includes('price') || colName.toLowerCase().includes('amount')) return randPrice();
+    return (Math.random() * 99999).toFixed(2);
+  }
+  if (ut === 'UUID') return randUuid();
+  if (ut === 'DATE') return randDate();
+  if (ut === 'TIMESTAMP' || ut === 'DATETIME') return randTimestamp();
+  if (ut === 'TIME') return randTime();
+  if (ut === 'JSON' || ut === 'JSONB') return {};
+  if (ut === 'TEXT' || ut === 'LONGTEXT' || ut === 'MEDIUMTEXT' || ut === 'TINYTEXT') {
+    return `Sample text for ${colName} - generated by SQLFormat.io data generator.`;
+  }
+  if (ut === 'CHAR') {
+    const s = rand(FIRST_NAMES);
+    return s.substring(0, Math.min(10, s.length));
+  }
+  // VARCHAR or default
+  const colLower = colName.toLowerCase();
+  if (colLower.includes('email') || colLower.includes('mail')) return randEmail();
+  if (colLower.includes('name')) return rand(FIRST_NAMES) + ' ' + rand(LAST_NAMES);
+  if (colLower.includes('first_name') || colLower.includes('firstname') || colLower.includes('fname')) return rand(FIRST_NAMES);
+  if (colLower.includes('last_name') || colLower.includes('lastname') || colLower.includes('lname')) return rand(LAST_NAMES);
+  if (colLower.includes('city')) return rand(CITIES);
+  if (colLower.includes('state') || colLower.includes('province')) return rand(['CA','NY','TX','FL','IL','WA','OR','CO','MA','AZ']);
+  if (colLower.includes('country')) return 'United States';
+  if (colLower.includes('phone') || colLower.includes('mobile') || colLower.includes('tel')) return randPhone();
+  if (colLower.includes('address') || colLower.includes('street')) return `${randInt(100,9999)} ${rand(STREETS)} ${rand(STREET_TYPES)}`;
+  if (colLower.includes('zip') || colLower.includes('postal')) return String(randInt(10000, 99999));
+  if (colLower.includes('company') || colLower.includes('org') || colLower.includes('corp')) return rand(COMPANIES);
+  if (colLower.includes('department') || colLower.includes('dept')) return rand(DEPARTMENTS);
+  if (colLower.includes('title') || colLower.includes('position') || colLower.includes('job')) return rand(JOB_TITLES);
+  if (colLower.includes('tag') || colLower.includes('status') || colLower.includes('role')) return rand(TAGS);
+  if (colLower.includes('url') || colLower.includes('website') || colLower.includes('link')) return `https://www.${rand(COMPANIES).toLowerCase().replace(/[^a-z]/g,'')}.com`;
+  if (colLower.includes('password') || colLower.includes('hash') || colLower.includes('token')) {
+    return randUuid().replace(/-/g, '');
+  }
+  if (colLower.includes('description') || colLower.includes('bio') || colLower.includes('comment') || colLower.includes('note')) {
+    return `This is a ${colName} entry generated for testing purposes.`;
+  }
+  // Guess from common patterns
+  if (colLower.endsWith('_id') || colLower.endsWith('id')) return randInt(1, 1000);
+  if (colLower.includes('price') || colLower.includes('cost') || colLower.includes('fee')) return randPrice();
+  // Default: full name
+  return rand(FIRST_NAMES) + ' ' + rand(LAST_NAMES);
+}
+
+/* ===== Column Management ===== */
+let columnCount = 0;
+
+function addColumn(name, type, opts) {
+  columnCount++;
+  const id = columnCount;
+  const list = document.getElementById('columnsList');
+  const div = document.createElement('div');
+  div.className = 'column-row';
+  div.id = `colrow-${id}`;
+  div.innerHTML = `
+    <input class="col-name" type="text" id="colname-${id}" value="${name || ''}" placeholder="column_name">
+    <select class="col-type" id="coltype-${id}">
+      <option value="INT">INT</option>
+      <option value="BIGINT">BIGINT</option>
+      <option value="SMALLINT">SMALLINT</option>
+      <option value="VARCHAR">VARCHAR</option>
+      <option value="CHAR">CHAR</option>
+      <option value="TEXT">TEXT</option>
+      <option value="BOOLEAN">BOOLEAN</option>
+      <option value="DATE">DATE</option>
+      <option value="TIMESTAMP">TIMESTAMP</option>
+      <option value="TIME">TIME</option>
+      <option value="FLOAT">FLOAT</option>
+      <option value="DOUBLE">DOUBLE</option>
+      <option value="DECIMAL">DECIMAL</option>
+      <option value="NUMERIC">NUMERIC</option>
+      <option value="UUID">UUID</option>
+      <option value="JSON">JSON</option>
+      <option value="JSONB">JSONB</option>
+      <option value="ENUM">ENUM</option>
+    </select>
+    <div class="col-opt"><input type="text" id="colopt-${id}" value="${opts || ''}" placeholder="Hint e.g. price, email, name..."></div>
+    <div class="col-action"><button onclick="removeColumn(${id})" title="Remove column">&times;</button></div>
+  `;
+  if (type) {
+    div.querySelector('.col-type').value = type;
+  }
+  list.appendChild(div);
+}
+
+function removeColumn(id) {
+  const el = document.getElementById(`colrow-${id}`);
+  if (el) el.remove();
+}
+
+function getColumns() {
+  const rows = document.querySelectorAll('.column-row');
+  const cols = [];
+  rows.forEach(row => {
+    const name = row.querySelector('.col-name').value.trim();
+    const type = row.querySelector('.col-type').value;
+    const opts = row.querySelector('.col-opt input').value.trim();
+    if (name) {
+      cols.push({ name, type, opts });
+    }
+  });
+  return cols;
+}
+
+/* ===== Presets ===== */
+function loadPreset(name) {
+  const presets = {
+    users: [
+      ['id', 'INT'],
+      ['first_name', 'VARCHAR'],
+      ['last_name', 'VARCHAR'],
+      ['email', 'VARCHAR'],
+      ['phone', 'VARCHAR'],
+      ['department', 'VARCHAR'],
+      ['salary', 'DECIMAL'],
+      ['is_active', 'BOOLEAN'],
+      ['created_at', 'TIMESTAMP']
+    ],
+    products: [
+      ['id', 'INT'],
+      ['product_name', 'VARCHAR'],
+      ['category', 'VARCHAR'],
+      ['price', 'DECIMAL'],
+      ['stock', 'INT'],
+      ['is_available', 'BOOLEAN'],
+      ['description', 'TEXT'],
+      ['added_date', 'DATE']
+    ],
+    orders: [
+      ['order_id', 'INT'],
+      ['customer_id', 'INT'],
+      ['product_id', 'INT'],
+      ['quantity', 'INT'],
+      ['unit_price', 'DECIMAL'],
+      ['total_amount', 'DECIMAL'],
+      ['order_date', 'TIMESTAMP'],
+      ['status', 'VARCHAR'],
+      ['shipped_date', 'DATE']
+    ],
+    employees: [
+      ['emp_id', 'INT'],
+      ['first_name', 'VARCHAR'],
+      ['last_name', 'VARCHAR'],
+      ['email', 'VARCHAR'],
+      ['phone', 'VARCHAR'],
+      ['job_title', 'VARCHAR'],
+      ['salary', 'DECIMAL'],
+      ['department', 'VARCHAR'],
+      ['hire_date', 'DATE'],
+      ['is_manager', 'BOOLEAN']
+    ]
+  };
+  const cols = presets[name];
+  if (!cols) return;
+  document.getElementById('columnsList').innerHTML = '';
+  document.getElementById('tableName').value = name;
+  columnCount = 0;
+  cols.forEach(([cname, ctype]) => {
+    addColumn(cname, ctype, '');
+  });
+}
+
+/* ===== Generate ===== */
+function generateData() {
+  const tableName = document.getElementById('tableName').value.trim() || 'my_table';
+  const rowCount = parseInt(document.getElementById('rowCount').value) || 5;
+  const cols = getColumns();
+
+  if (cols.length === 0) {
+    showToast('Add at least one column');
+    return;
+  }
+
+  const btn = document.getElementById('genBtn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    try {
+      const colNames = cols.map(c => c.name);
+      const lines = [];
+      for (let i = 0; i < rowCount; i++) {
+        const values = cols.map(c => generateValue(c.name, c.type, c.opts));
+        const formatted = values.map((v, idx) => formatVal(v, cols[idx].type));
+        lines.push(`INSERT INTO ${tableName} (${colNames.join(', ')}) VALUES (${formatted.join(', ')});`);
+      }
+      document.getElementById('output').value = lines.join('\n');
+      document.getElementById('statRows').textContent = `Rows: ${rowCount}`;
+      document.getElementById('statCols').textContent = `Columns: ${cols.length}`;
+      const size = new Blob([lines.join('\n')]).size;
+      document.getElementById('statSize').textContent = `Size: ${size > 1024 ? (size/1024).toFixed(1)+' KB' : size+' B'}`;
+    } catch(e) {
+      showToast('Error: ' + e.message);
+    }
+    btn.textContent = 'Generate';
+    btn.disabled = false;
+  }, 50);
+}
+
+/* ===== Copy ===== */
+function copyOutput() {
+  const textarea = document.getElementById('output');
+  if (!textarea.value.trim()) {
+    showToast('Nothing to copy');
+    return;
+  }
+  textarea.select();
+  document.execCommand('copy');
+  showToast('Copied to clipboard');
+}
+
+function clearAll() {
+  document.getElementById('output').value = '';
+  document.getElementById('statRows').textContent = 'Rows: 0';
+  document.getElementById('statCols').textContent = 'Columns: 0';
+  document.getElementById('statSize').textContent = 'Size: 0 B';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ===== Init ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  loadPreset('users');
+  // Auto-generate on load
+  generateData();
+});
+</script>
+</body>
+</html>
