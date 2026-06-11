@@ -8,12 +8,19 @@
 
 import { format } from 'sql-formatter';
 
-export async function onRequestPost(context) {
+export async function onRequest(context) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
+
+  if (context.request.method !== 'POST') {
+    return new Response(JSON.stringify({ success: false, error: 'Use POST' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
 
   try {
     let body;
