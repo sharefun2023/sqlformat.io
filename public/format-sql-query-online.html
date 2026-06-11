@@ -363,48 +363,48 @@ function runTool() {
       output.value = formatted;
       btn.textContent = '✨ Formatted';
       showToast('✅ Done');
-    }} catch (e) {{
+    } catch (e) {
       output.value = 'Error: ' + e.message;
       showToast('❌ ' + e.message);
-    }} finally {{
+    } finally {
       btn.style.opacity = '1';
-    }}
-  }}, 50);
-}}
+    }
+  }, 50);
+}
 
-function copyResult() {{
+function copyResult() {
   const output = document.getElementById('outputText');
-  if (!output.value.trim()) {{ showToast('Nothing to copy'); return; }}
-  navigator.clipboard.writeText(output.value).then(() => {{
+  if (!output.value.trim()) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output.value).then(() => {
     showToast('📋 Copied to clipboard');
-  }}).catch(() => {{
+  }).catch(() => {
     output.select();
     document.execCommand('copy');
     showToast('📋 Copied to clipboard');
-  }});
-}}
+  });
+}
 
-function clearAll() {{
+function clearAll() {
   document.getElementById('inputText').value = '';
   document.getElementById('outputText').value = '';
   showToast('🗑️ Cleared');
-}}
+}
 
-function showToast(msg) {{
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(t._timeout);
   t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
-}}
+}
 
 // Cmd/Ctrl+Enter to run
-document.getElementById('inputText').addEventListener('keydown', (e) => {{
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {{
+document.getElementById('inputText').addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault();
     runTool();
-  }}
-}});
+  }
+});
 </script>
 
 </body>
