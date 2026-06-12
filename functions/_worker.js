@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════
 // SQLFormat.io API — Cloudflare Workers entry point
-// Handles /api/* routes
+// Handles /api/* routes, passthrough for everything else
 // ═══════════════════════════════════════════════════════
 
 import { format } from 'sql-formatter';
@@ -71,6 +71,11 @@ export default {
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // Only handle /api/* routes — everything else passes through to static files
+    if (!path.startsWith('/api')) {
+      return env.ASSETS.fetch(request);
     }
 
     // API docs
