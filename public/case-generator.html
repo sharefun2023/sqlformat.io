@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL CASE Statement Generator — Build CASE WHEN THEN ELSE Online | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL CASE statement generator. Build simple and searched CASE WHEN THEN ELSE END expressions visually. Add conditions, set values, and generate clean SQL instantly. 100% client-side.">
+  <meta name="keywords" content="SQL CASE generator, CASE WHEN generator, SQL CASE statement, CASE WHEN THEN ELSE, SQL expression builder, online SQL tool, generate CASE statement">
+  <meta property="og:title" content="SQL CASE Statement Generator — Build CASE WHEN THEN ELSE Online">
+  <meta property="og:description" content="Build simple and searched CASE WHEN THEN ELSE END expressions visually. Add conditions, set values, and generate clean SQL instantly. Free, no sign-up, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/case-generator">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/case-generator">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL CASE Statement Generator",
+    "description": "Free online SQL CASE statement generator. Build simple and searched CASE WHEN THEN ELSE END expressions visually. Add conditions, set values, and generate clean SQL instantly. 100% client-side, no data sent to server.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/case-generator",
+    "dateModified": "2026-06-12",
+    "featureList": "SQL CASE generation, Simple CASE, Searched CASE, WHEN THEN ELSE building, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL CASE Generator", "item": "https://sqlformat.io/case-generator"}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+
+    /* Schema section */
+    .schema-section { padding: 20px; }
+
+    /* Mode toggle */
+    .mode-toggle {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      width: fit-content;
+    }
+    .mode-toggle button {
+      padding: 8px 20px;
+      border: none;
+      background: var(--surface2);
+      color: var(--text2);
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mode-toggle button:first-child { border-right: 1px solid var(--border); }
+    .mode-toggle button.active {
+      background: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .mode-toggle button:hover:not(.active) { color: var(--accent); }
+
+    /* Form rows */
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .form-row label { font-size: 0.88rem; color: var(--text2); min-width: 100px; }
+    .form-row input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    }
+    .form-row input[type="text"]:focus { border-color: var(--accent); }
+    .form-row input[name="caseExpr"] { flex: 1; min-width: 200px; }
+
+    /* Columns header */
+    .columns-header {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .columns-header .col-when { flex: 3; min-width: 150px; }
+    .columns-header .col-then { flex: 3; min-width: 150px; }
+    .columns-header .col-action { width: 40px; text-align: center; }
+
+    .column-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .column-row input {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    }
+    .column-row input:focus { border-color: var(--accent); }
+    .column-row .col-when { flex: 3; min-width: 150px; }
+    .column-row .col-then { flex: 3; min-width: 150px; }
+    .column-row .col-action {
+      width: 40px; text-align: center;
+    }
+    .column-row .col-action button {
+      background: none;
+      border: none;
+      color: var(--red);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+    }
+    .column-row .col-action button:hover { opacity: 0.7; }
+
+    .add-row-btn {
+      margin-top: 8px;
+      color: var(--accent);
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .add-row-btn:hover {
+      border-color: var(--accent);
+      background: rgba(88,166,255,0.05);
+    }
+
+    /* ELSE row */
+    .else-row {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .else-row label { font-size: 0.88rem; color: var(--text2); min-width: 100px; }
+    .else-row input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      flex: 1;
+      min-width: 200px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    }
+    .else-row input[type="text"]:focus { border-color: var(--accent); }
+    .else-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Output */
+    .output-area {
+      border-top: 1px solid var(--border);
+    }
+    .output-area textarea {
+      width: 100%;
+      height: 220px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .output-area textarea:focus { background: #0d1117; }
+
+    .output-stats {
+      padding: 8px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text2);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Example presets */
+    .presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .presets button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .presets button:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* How-to section */
+    .how-to {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      padding: 24px;
+    }
+    .how-to h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; }
+    .how-to h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--accent);
+    }
+    .how-to h3:first-of-type { margin-top: 0; }
+    .how-to p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px; }
+    .how-to code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .how-to pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+      margin: 8px 0 12px;
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/validate">Validator</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/diff">Diff</a>
+      <a href="/case-generator" class="active">CASE</a>
+      <a href="/escape">Escape</a>
+      <a href="/data-generator">Data Gen</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL CASE Statement Generator</h1>
+    <p>Build SQL CASE WHEN THEN ELSE END expressions visually. Choose between Simple CASE and Searched CASE, add conditions, and generate clean SQL. All processing happens in your browser.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>📐 CASE Builder</h2>
+      <div class="tool-controls">
+        <button onclick="generateCase()" class="primary" id="genBtn">Generate</button>
+        <button onclick="copyOutput()" class="success" id="copyBtn">Copy</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+
+    <div class="schema-section">
+      <div class="mode-toggle">
+        <button onclick="setMode('simple')" class="active" id="modeSimple">Simple CASE</button>
+        <button onclick="setMode('searched')" id="modeSearched">Searched CASE</button>
+      </div>
+
+      <div class="form-row" id="exprRow">
+        <label for="caseExpr">CASE Expression</label>
+        <input type="text" id="caseExpr" name="caseExpr" value="status" placeholder="e.g. status, category, type">
+      </div>
+
+      <div class="columns-header">
+        <div class="col-when" id="whenHeader">WHEN</div>
+        <div class="col-then">THEN</div>
+        <div class="col-action"></div>
+      </div>
+      <div id="whenThenList"></div>
+      <button class="add-row-btn" onclick="addRow()">+ Add WHEN / THEN</button>
+
+      <div class="else-row">
+        <label for="elseVal">ELSE</label>
+        <input type="text" id="elseVal" placeholder="e.g. 'Other', 0, NULL">
+        <input type="checkbox" id="useElse" checked>
+        <label for="useElse" style="min-width:auto;cursor:pointer">Include ELSE</label>
+      </div>
+    </div>
+
+    <div class="presets">
+      <button onclick="loadPreset('status')">Status Labels</button>
+      <button onclick="loadPreset('salary')">Salary Bands</button>
+      <button onclick="loadPreset('priority')">Priority Levels</button>
+      <button onclick="loadPreset('age_group')">Age Groups</button>
+      <button onclick="loadPreset('rating')">Rating Tiers</button>
+    </div>
+
+    <div class="output-area">
+      <textarea id="output" placeholder="Generated CASE statement will appear here..." readonly spellcheck="false"></textarea>
+      <div class="output-stats" id="outputStats">
+        <span>WHEN clauses: <strong id="whenCount">0</strong></span>
+        <span>Lines: <strong id="lineCount">0</strong></span>
+        <span>Characters: <strong id="charCount">0</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-to">
+    <h2>How to Use the SQL CASE Statement Generator</h2>
+
+    <h3>Simple CASE</h3>
+    <p>Use Simple CASE when you want to compare a single expression against multiple values. You provide an expression (e.g. a column name) after <code>CASE</code>, and each <code>WHEN</code> clause specifies a value to compare against it.</p>
+    <pre>CASE status
+  WHEN 'active' THEN 'Enabled'
+  WHEN 'inactive' THEN 'Disabled'
+  ELSE 'Unknown'
+END</pre>
+
+    <h3>Searched CASE</h3>
+    <p>Use Searched CASE when you need Boolean conditions. Each <code>WHEN</code> clause contains a full condition (comparisons, logical operators, etc.). This is more flexible than Simple CASE.</p>
+    <pre>CASE
+  WHEN salary &gt;= 100000 THEN 'High'
+  WHEN salary &gt;= 50000 THEN 'Medium'
+  ELSE 'Low'
+END</pre>
+
+    <h3>Best Practices</h3>
+    <p>Searched CASE evaluates conditions in order. The first matching <code>WHEN</code> wins, so put the most specific conditions first. Use <code>ELSE NULL</code> explicitly if no default value makes sense, though the <code>ELSE</code> clause is optional.</p>
+
+    <h3>Common Use Cases</h3>
+    <p>CASE expressions are used in <code>SELECT</code> lists, <code>ORDER BY</code> clauses, <code>UPDATE</code> statements, and <code>HAVING</code> clauses. They can also be nested for complex conditional logic.</p>
+    <pre>SELECT
+  name,
+  CASE
+    WHEN age &lt; 18 THEN 'Minor'
+    WHEN age BETWEEN 18 AND 65 THEN 'Adult'
+    ELSE 'Senior'
+  END as age_group
+FROM users;</pre>
+  </div>
+
+  <div class="nav-back" style="text-align:center;margin:24px 0;">
+    <a href="/" style="color:var(--accent);text-decoration:none;">← Back to SQL Formatter</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/validate">Validator</a> · <a href="/diff">Diff</a> · <a href="/explain">EXPLAIN</a> · <a href="/case-generator">CASE Generator</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// === State ===
+let currentMode = 'simple';
+let rowIdCounter = 0;
+
+// === Mode toggle ===
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeSimple').classList.toggle('active', mode === 'simple');
+  document.getElementById('modeSearched').classList.toggle('active', mode === 'searched');
+  document.getElementById('exprRow').style.display = mode === 'simple' ? 'flex' : 'none';
+  document.getElementById('whenHeader').textContent = mode === 'simple' ? 'WHEN value' : 'WHEN condition';
+  // Update placeholder text for when inputs
+  document.querySelectorAll('.col-when input').forEach(inp => {
+    inp.placeholder = mode === 'simple' ? "e.g. 'active'" : "e.g. salary >= 100000";
+  });
+  generateCase();
+}
+
+// === Row management ===
+function addRow(whenVal, thenVal) {
+  rowIdCounter++;
+  const id = rowIdCounter;
+  const list = document.getElementById('whenThenList');
+  const div = document.createElement('div');
+  div.className = 'column-row';
+  div.id = `row-${id}`;
+  const placeholder = currentMode === 'simple' ? "e.g. 'active'" : "e.g. salary >= 100000";
+  div.innerHTML = `
+    <div class="col-when"><input type="text" id="when-${id}" value="${escapeAttr(whenVal || '')}" placeholder="${placeholder}"></div>
+    <div class="col-then"><input type="text" id="then-${id}" value="${escapeAttr(thenVal || '')}" placeholder="e.g. 'High', 1, 'Admin'"></div>
+    <div class="col-action"><button onclick="removeRow(${id})" title="Remove">&times;</button></div>
+  `;
+  list.appendChild(div);
+  // Auto-generate
+  generateCase();
+}
+
+function removeRow(id) {
+  const el = document.getElementById(`row-${id}`);
+  if (el) {
+    el.remove();
+    generateCase();
+  }
+}
+
+function getRows() {
+  const rows = document.querySelectorAll('.column-row');
+  const result = [];
+  rows.forEach(row => {
+    const when = row.querySelector('.col-when input').value.trim();
+    const then = row.querySelector('.col-then input').value.trim();
+    if (when && then) {
+      result.push({ when, then });
+    }
+  });
+  return result;
+}
+
+// === Generate CASE ===
+function generateCase() {
+  const rows = getRows();
+  const useElse = document.getElementById('useElse').checked;
+  const elseVal = document.getElementById('elseVal').value.trim();
+  const caseExpr = document.getElementById('caseExpr').value.trim();
+  const output = document.getElementById('output');
+  const btn = document.getElementById('genBtn');
+
+  if (rows.length === 0) {
+    output.value = '';
+    updateStats(rows.length);
+    return;
+  }
+
+  btn.textContent = 'Generating...';
+
+  setTimeout(() => {
+    try {
+      const lines = [];
+      const indent = '  ';
+
+      if (currentMode === 'simple') {
+        lines.push(`CASE ${caseExpr}`);
+      } else {
+        lines.push('CASE');
+      }
+
+      for (const row of rows) {
+        lines.push(`${indent}WHEN ${row.when} THEN ${row.then}`);
+      }
+
+      if (useElse && elseVal) {
+        lines.push(`${indent}ELSE ${elseVal}`);
+      }
+
+      lines.push('END');
+
+      output.value = lines.join('\n');
+      updateStats(rows.length);
+    } catch (e) {
+      output.value = 'Error: ' + e.message;
+    }
+    btn.textContent = 'Generate';
+  }, 50);
+}
+
+function updateStats(whenCount) {
+  const output = document.getElementById('output').value;
+  document.getElementById('whenCount').textContent = whenCount;
+  document.getElementById('lineCount').textContent = output ? output.split('\n').length : 0;
+  document.getElementById('charCount').textContent = output.length;
+}
+
+// === Copy ===
+function copyOutput() {
+  const textarea = document.getElementById('output');
+  if (!textarea.value.trim()) {
+    showToast('Nothing to copy');
+    return;
+  }
+  navigator.clipboard.writeText(textarea.value).then(() => {
+    showToast('Copied to clipboard');
+  }).catch(() => {
+    textarea.select();
+    document.execCommand('copy');
+    showToast('Copied to clipboard');
+  });
+}
+
+function clearAll() {
+  document.getElementById('whenThenList').innerHTML = '';
+  rowIdCounter = 0;
+  document.getElementById('output').value = '';
+  document.getElementById('elseVal').value = '';
+  document.getElementById('useElse').checked = true;
+  document.getElementById('caseExpr').value = 'status';
+  updateStats(0);
+  showToast('Cleared');
+}
+
+// === Presets ===
+function loadPreset(name) {
+  const presets = {
+    status: {
+      mode: 'simple',
+      expr: 'status',
+      rows: [
+        ["'active'", "'Active'"],
+        ["'inactive'", "'Inactive'"],
+        ["'pending'", "'Pending'"],
+        ["'suspended'", "'Suspended'"]
+      ],
+      else: "'Unknown'"
+    },
+    salary: {
+      mode: 'searched',
+      expr: '',
+      rows: [
+        ["salary >= 100000", "'High'"],
+        ["salary >= 60000", "'Medium'"],
+        ["salary >= 30000", "'Low'"]
+      ],
+      else: "'Entry Level'"
+    },
+    priority: {
+      mode: 'simple',
+      expr: 'priority',
+      rows: [
+        ["1", "'Critical'"],
+        ["2", "'High'"],
+        ["3", "'Medium'"],
+        ["4", "'Low'"]
+      ],
+      else: "'Unknown'"
+    },
+    age_group: {
+      mode: 'searched',
+      expr: '',
+      rows: [
+        ["age < 13", "'Child'"],
+        ["age BETWEEN 13 AND 17", "'Teen'"],
+        ["age BETWEEN 18 AND 64", "'Adult'"],
+        ["age >= 65", "'Senior'"]
+      ],
+      else: "'Unknown'"
+    },
+    rating: {
+      mode: 'simple',
+      expr: 'rating',
+      rows: [
+        ["5", "'Excellent'"],
+        ["4", "'Good'"],
+        ["3", "'Average'"],
+        ["2", "'Poor'"],
+        ["1", "'Terrible'"]
+      ],
+      else: "'Not Rated'"
+    }
+  };
+
+  const preset = presets[name];
+  if (!preset) return;
+
+  document.getElementById('whenThenList').innerHTML = '';
+  rowIdCounter = 0;
+
+  setMode(preset.mode);
+  document.getElementById('caseExpr').value = preset.expr;
+  document.getElementById('elseVal').value = preset.else || '';
+  document.getElementById('useElse').checked = true;
+
+  preset.rows.forEach(([w, t]) => addRow(w, t));
+
+  generateCase();
+  showToast('Example loaded');
+}
+
+function escapeAttr(str) {
+  return str.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// === Auto-generate on input ===
+document.getElementById('caseExpr').addEventListener('input', generateCase);
+document.getElementById('elseVal').addEventListener('input', generateCase);
+document.getElementById('useElse').addEventListener('change', generateCase);
+
+// Keyboard shortcut
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    generateCase();
+  }
+});
+
+// === Init ===
+document.addEventListener('DOMContentLoaded', () => {
+  loadPreset('status');
+});
+</script>
+</body>
+</html>
