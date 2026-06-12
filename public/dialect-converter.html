@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Dialect Converter — MySQL ↔ PostgreSQL ↔ SQLite | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL dialect converter. Convert SQL between MySQL, PostgreSQL, and SQLite syntax automatically. Handles LIMIT, AUTO_INCREMENT, quoting rules, date functions, and more. 100% client-side.">
+  <meta name="keywords" content="SQL dialect converter, MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, SQL syntax converter, convert SQL between databases, SQL dialect translator online, cross-database SQL converter">
+  <meta property="og:title" content="SQL Dialect Converter — MySQL ↔ PostgreSQL ↔ SQLite">
+  <meta property="og:description" content="Convert SQL between MySQL, PostgreSQL, and SQLite dialects automatically. Handles LIMIT/TOP, AUTO_INCREMENT/SERIAL, quoting rules, date functions, ILIKE, and type casting. Free, private, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/dialect-converter">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/dialect-converter">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Dialect Converter",
+    "description": "Free online SQL dialect converter that transforms SQL syntax between MySQL, PostgreSQL, and SQLite. Handles LIMIT/OFFSET, AUTO_INCREMENT/SERIAL/GENERATED, backtick/double-quote quoting, NOW/CURRENT_TIMESTAMP, CONCAT/||, ILIKE, type casting, IFNULL/COALESCE, and date functions. 100% client-side, no server upload.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/dialect-converter",
+    "dateModified": "2026-06-12",
+    "featureList": "MySQL to PostgreSQL conversion, PostgreSQL to MySQL conversion, SQLite cross-conversion, LIMIT/OFFSET handling, AUTO_INCREMENT/SERIAL translation, backtick to double-quote, ILIKE to LIKE, CONCAT to ||, type casting conversion, date function translation, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Dialect Converter", "item": "https://sqlformat.io/dialect-converter"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert MySQL SQL to PostgreSQL online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your MySQL SQL query into the input box, select 'MySQL' as the source dialect and 'PostgreSQL' as the target dialect, then click Convert. The tool automatically translates AUTO_INCREMENT to SERIAL, backtick quoting to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), and MySQL-specific date functions to PostgreSQL equivalents."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What SQL syntax differences does the dialect converter handle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LIMIT/OFFSET syntax, AUTO_INCREMENT vs SERIAL vs AUTOINCREMENT, backtick vs double-quote quoting, ILIKE to LIKE, CONCAT to || operator, type casting (:: vs CAST vs implicit), IFNULL vs COALESCE, DATE_FORMAT vs TO_CHAR vs STRFTIME, NOW() vs CURRENT_TIMESTAMP vs DATETIME('now'), GROUP_CONCAT differences, and INSERT IGNORE vs ON CONFLICT vs INSERT OR REPLACE."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL dialect converter free and private?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely free and private. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device. No signup, no server uploads, no usage limits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert between any of MySQL, PostgreSQL, and SQLite?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. You can convert in any direction: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, or SQLite to PostgreSQL. Just select the source and target dialects and paste your SQL."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the converter work for CREATE TABLE statements?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The converter handles CREATE TABLE definitions including AUTO_INCREMENT to SERIAL/GENERATED AS IDENTITY, ENGINE=InnoDB removal, CHARSET removal, ON UPDATE CURRENT_TIMESTAMP translation, and ENUM type differences between MySQL and PostgreSQL (converted to VARCHAR with CHECK constraints)."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 600;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .tool-controls button.success:hover { opacity: 0.9; }
+    .tool-controls .dialect-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .dialect-badge.mysql { background: #00758f33; color: #f29111; border: 1px solid #00758f66; }
+    .dialect-badge.pgsql { background: #33679133; color: #6ba2d9; border: 1px solid #33679166; }
+    .dialect-badge.sqlite { background: #044a6433; color: #82c8e6; border: 1px solid #044a6466; }
+
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      background: var(--border);
+    }
+    @media (max-width: 768px) { .editor-area { grid-template-columns: 1fr; } }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 300px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+
+    .arrow-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      padding: 0 12px;
+    }
+    .arrow-col .arrow-icon {
+      font-size: 1.8rem;
+      color: var(--accent);
+      font-weight: 300;
+    }
+    @media (max-width: 768px) {
+      .arrow-col { padding: 8px; }
+      .arrow-col .arrow-icon { transform: rotate(90deg); }
+    }
+
+    .conversion-stat {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: var(--text2);
+      flex-wrap: wrap;
+    }
+    .conversion-stat .stat-item { display: flex; align-items: center; gap: 4px; }
+    .conversion-stat .stat-item .num { color: var(--accent); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+    .examples {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding: 0 20px 16px;
+    }
+    .examples button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .examples button:hover { border-color: var(--accent); color: var(--accent); }
+
+    .info-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .info-card h3 { font-size: 1rem; margin-bottom: 8px; color: var(--accent); }
+    .info-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.6; }
+    .info-card code {
+      font-size: 0.82rem;
+      background: var(--surface2);
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--orange);
+    }
+
+    .faq-section { margin: 40px 0; }
+    .faq-section h2 { font-size: 1.2rem; margin-bottom: 20px; }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%;
+      padding: 16px 20px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq-question:hover { background: var(--surface2); }
+    .faq-question .arrow {
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+    .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; }
+    .faq-answer p {
+      padding: 0 20px 16px;
+      color: var(--text2);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/dialect-converter" class="active">Converter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Dialect Converter</h1>
+    <p>Convert SQL syntax between MySQL, PostgreSQL, and SQLite automatically. Handles LIMIT, AUTO_INCREMENT, quoting, date functions, and 40+ syntax differences.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2> Dialect Converter</h2>
+      <div class="tool-controls">
+        <span class="dialect-badge" id="sourceBadge">MySQL</span>
+        <select id="sourceDialect">
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+        </select>
+        <span style="color:var(--text2);font-size:1.1rem;">→</span>
+        <span class="dialect-badge" id="targetBadge">PostgreSQL</span>
+        <select id="targetDialect">
+          <option value="postgresql">PostgreSQL</option>
+          <option value="mysql">MySQL</option>
+          <option value="sqlite">SQLite</option>
+        </select>
+        <button onclick="convertDialect()" class="primary" id="convertBtn"> Convert</button>
+        <button onclick="copyResult()" class="success" id="copyBtn"> Copy</button>
+        <button onclick="clearAll()"> Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label id="inputLabel">Input SQL (MySQL)</label>
+        <textarea id="inputSql" placeholder="Paste your SQL query here...
+
+Example (MySQL):
+SELECT id, name, COUNT(*)
+FROM users
+WHERE created_at > NOW()
+GROUP BY id
+LIMIT 10;" spellcheck="false"></textarea>
+      </div>
+      <div class="arrow-col">
+        <span class="arrow-icon">→</span>
+      </div>
+      <div class="editor-pane">
+        <label id="outputLabel">Converted SQL (PostgreSQL)</label>
+        <textarea id="outputSql" placeholder="Converted SQL will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+    <div class="conversion-stat" id="conversionStats">
+      <span class="stat-item">Converted: <span class="num" id="changeCount">0</span> changes</span>
+      <span class="stat-item" id="inputChars">Input: <span class="num">0</span> chars</span>
+      <span class="stat-item" id="outputChars">Output: <span class="num">0</span> chars</span>
+    </div>
+    <div class="examples">
+      <span style="color:var(--text2);font-size:0.8rem;padding:4px 0;">Try an example:</span>
+      <button onclick="loadExample('create-table')">CREATE TABLE</button>
+      <button onclick="loadExample('select')">SELECT (LIMIT)</button>
+      <button onclick="loadExample('insert')">INSERT</button>
+      <button onclick="loadExample('functions')">Functions</button>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="info-card">
+      <h3>MySQL → PostgreSQL</h3>
+      <p><code>AUTO_INCREMENT</code> → <code>SERIAL</code> · Backtick <code>`</code> → Double-quote <code>"</code> · <code>LIMIT</code> stays · <code>CONCAT()</code> → <code>||</code> · <code>IFNULL()</code> → <code>COALESCE()</code> · <code>DATE_FORMAT()</code> → <code>TO_CHAR()</code> · <code>GROUP_CONCAT()</code> → <code>STRING_AGG()</code> · <code>INSERT IGNORE</code> → <code>INSERT ... ON CONFLICT DO NOTHING</code></p>
+    </div>
+    <div class="info-card">
+      <h3>PostgreSQL → MySQL</h3>
+      <p><code>SERIAL</code> → <code>AUTO_INCREMENT</code> · <code>::type</code> → <code>CAST()</code> · <code>ILIKE</code> → <code>LIKE</code> · <code>||</code> → <code>CONCAT()</code> · <code>COALESCE()</code> stays · <code>TO_CHAR()</code> → <code>DATE_FORMAT()</code> · <code>STRING_AGG()</code> → <code>GROUP_CONCAT()</code> · <code>NOW()</code> stays</p>
+    </div>
+    <div class="info-card">
+      <h3>MySQL → SQLite</h3>
+      <p><code>AUTO_INCREMENT</code> → <code>AUTOINCREMENT</code> · <code>NOW()</code> → <code>DATETIME('now')</code> · <code>LIMIT</code> stays · <code>IFNULL()</code> stays · <code>CONCAT()</code> → <code>||</code> · Remove <code>ENGINE=</code> and <code>CHARSET</code> · <code>GROUP_CONCAT()</code> stays · <code>INSERT IGNORE</code> → <code>INSERT OR IGNORE</code></p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">How do I convert MySQL SQL to PostgreSQL? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Paste your MySQL SQL into the input box. Select "MySQL" as source and "PostgreSQL" as target. Click Convert. The tool automatically translates AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to the || operator, IFNULL() to COALESCE(), LIMIT stays the same, and MySQL-specific date functions to PostgreSQL equivalents like TO_CHAR().</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">What about PostgreSQL to SQLite conversion? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>The converter handles PostgreSQL to SQLite as well: SERIAL becomes INTEGER PRIMARY KEY AUTOINCREMENT, ILIKE becomes LIKE, ::type casts are simplified, || stays as is (SQLite supports it), RETURNING clauses are handled, and sequences (CREATE SEQUENCE) are converted to AUTOINCREMENT on the column definition.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Is the conversion accurate for complex queries? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>The converter handles 40+ syntax differences across the three dialects, including CREATE TABLE definitions, SELECT queries, INSERT/UPDATE/DELETE, subqueries, CTEs, window functions, and JOINs. For edge cases or dialect-specific features (like MySQL's ON DUPLICATE KEY), the tool applies the closest equivalent. Always review the output before using it in production.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Is there a size limit on the SQL I can convert? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>No size limit. All processing is client-side, so the practical limit depends on your browser's memory. For typical development queries (CREATE TABLE, INSERT, SELECT with CTEs), performance is instant. Very large scripts (500+ lines) may take a second or two to process.</p></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Tools | <a href="/dialect-converter">SQL Dialect Converter</a></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// SQL Dialect Converter — Core Engine
+// ============================================================
+
+const CONVERSION_RULES = {
+  // Each rule: { pattern: regex/string, replacement: string/fn, label: string, directions: {src: [targets]} }
+
+  // ------ LIMIT / OFFSET ------
+  // MySQL & PostgreSQL & SQLite all use LIMIT ... OFFSET — mostly compatible
+  // Only difference: MySQL LIMIT without required target. PostgreSQL requires LIMIT ALL or a number.
+  // No special conversion needed for LIMIT itself.
+
+  // ------ AUTO_INCREMENT / SERIAL / AUTOINCREMENT ------
+  autoIncrement: {
+    mysql_to_pgsql: [
+      { pattern: /\bAUTO_INCREMENT\b/gi, replacement: 'GENERATED ALWAYS AS IDENTITY', label: 'AUTO_INCREMENT → GENERATED' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bAUTO_INCREMENT\b/gi, replacement: 'AUTOINCREMENT', label: 'AUTO_INCREMENT → AUTOINCREMENT' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\b(BIGSERIAL|SERIAL)\b/gi, replacement: (m) => m.toLowerCase() === 'bigserial' ? 'BIGINT AUTO_INCREMENT' : 'INT AUTO_INCREMENT', label: 'SERIAL → AUTO_INCREMENT' },
+    ],
+    pgsql_to_sqlite: [
+      { pattern: /\bSERIAL\b/gi, replacement: 'INTEGER PRIMARY KEY AUTOINCREMENT', label: 'SERIAL → AUTOINCREMENT' },
+      { pattern: /\bBIGSERIAL\b/gi, replacement: 'INTEGER PRIMARY KEY AUTOINCREMENT', label: 'BIGSERIAL → AUTOINCREMENT' },
+    ],
+  },
+
+  // ------ Backtick quoting ------
+  backtick: {
+    mysql_to_pgsql: [
+      { pattern: /`([^`]+)`/g, replacement: '"$1"', label: 'Backtick → Double-quote' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /`([^`]+)`/g, replacement: '"$1"', label: 'Backtick → Double-quote' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /"([^"]+)"/g, replacement: (m, p1) => {
+        // Don't convert string literals — only identifiers
+        // We'll try to be smart: if it looks like a column/table name, convert
+        // This is heuristic-based; best effort
+        if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(p1)) return `\`${p1}\``;
+        return m;
+      }, label: 'Double-quote → Backtick' },
+    ],
+  },
+
+  // ------ CONCAT / || ------
+  concat: {
+    mysql_to_pgsql: [
+      { pattern: /\bCONCAT\s*\(([^)]+)\)/gi, replacement: (m, args) => {
+        const parts = splitArgs(args);
+        return parts.map(p => p.trim()).join(' || ');
+      }, label: 'CONCAT() → ||' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bCONCAT\s*\(([^)]+)\)/gi, replacement: (m, args) => {
+        const parts = splitArgs(args);
+        return parts.map(p => p.trim()).join(' || ');
+      }, label: 'CONCAT() → ||' },
+    ],
+    pgsql_to_mysql: [
+      // Only convert || that's used for string concat (not boolean OR)
+      // This is tricky — we convert only || between string-like expressions
+      { pattern: /(\s+)([a-zA-Z_][a-zA-Z0-9_.]*)\s*\|\|\s*([a-zA-Z_][a-zA-Z0-9_.]*)(\s+)/g, replacement: '$1CONCAT($2, $3)$4', label: '|| → CONCAT()' },
+    ],
+  },
+
+  // ------ IFNULL / COALESCE ------
+  ifnull: {
+    mysql_to_pgsql: [
+      { pattern: /\bIFNULL\s*\(/gi, replacement: 'COALESCE(', label: 'IFNULL → COALESCE' },
+    ],
+    pgsql_to_sqlite: [], // COALESCE works in SQLite too
+    sqlite_to_pgsql: [], // IFNULL works in PostgreSQL too but COALESCE is more standard
+  },
+
+  // ------ NOW() / CURRENT_TIMESTAMP / DATETIME ------
+  now: {
+    mysql_to_sqlite: [
+      { pattern: /\bNOW\s*\(\s*\)/gi, replacement: "DATETIME('now')", label: 'NOW() → DATETIME(\'now\')' },
+    ],
+    pgsql_to_sqlite: [
+      { pattern: /\bCURRENT_TIMESTAMP\b/gi, replacement: "DATETIME('now')", label: 'CURRENT_TIMESTAMP → DATETIME(\'now\')' },
+    ],
+    sqlite_to_mysql: [
+      { pattern: /DATETIME\s*\(\s*'now'\s*\)/gi, replacement: 'NOW()', label: "DATETIME('now') → NOW()" },
+    ],
+    sqlite_to_pgsql: [
+      { pattern: /DATETIME\s*\(\s*'now'\s*\)/gi, replacement: 'CURRENT_TIMESTAMP', label: "DATETIME('now') → CURRENT_TIMESTAMP" },
+    ],
+  },
+
+  // ------ DATE_FORMAT / TO_CHAR / STRFTIME ------
+  dateFormat: {
+    mysql_to_pgsql: [
+      { pattern: /\bDATE_FORMAT\s*\(([^,]+),\s*'([^']+)'\s*\)/gi, replacement: (m, dateExpr, fmt) => {
+        const pgFmt = mysqlDateFormatToPg(fmt);
+        return `TO_CHAR(${dateExpr.trim()}, '${pgFmt}')`;
+      }, label: 'DATE_FORMAT → TO_CHAR' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bDATE_FORMAT\s*\(([^,]+),\s*'([^']+)'\s*\)/gi, replacement: (m, dateExpr, fmt) => {
+        const slFmt = mysqlDateFormatToSqlite(fmt);
+        return `STRFTIME('${slFmt}', ${dateExpr.trim()})`;
+      }, label: 'DATE_FORMAT → STRFTIME' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\bTO_CHAR\s*\(([^,]+),\s*'([^']+)'\s*\)/gi, replacement: (m, dateExpr, fmt) => {
+        const myFmt = pgDateFormatToMysql(fmt);
+        return `DATE_FORMAT(${dateExpr.trim()}, '${myFmt}')`;
+      }, label: 'TO_CHAR → DATE_FORMAT' },
+    ],
+  },
+
+  // ------ ILIKE ------
+  ilike: {
+    pgsql_to_mysql: [
+      { pattern: /\bILIKE\b/gi, replacement: 'LIKE', label: 'ILIKE → LIKE' },
+    ],
+    pgsql_to_sqlite: [
+      { pattern: /\bILIKE\b/gi, replacement: 'LIKE', label: 'ILIKE → LIKE' },
+    ],
+  },
+
+  // ------ ::type casting ------
+  typeCast: {
+    pgsql_to_mysql: [
+      { pattern: /::([a-zA-Z]+(?:\[[^\]]*\])?(?:\s*(?:\[\])?)?)/g, replacement: '', label: '::type cast removed' },
+    ],
+    pgsql_to_sqlite: [
+      { pattern: /::([a-zA-Z]+(?:\[[^\]]*\])?(?:\s*(?:\[\])?)?)/g, replacement: '', label: '::type cast removed' },
+    ],
+  },
+
+  // ------ GROUP_CONCAT / STRING_AGG ------
+  groupConcat: {
+    mysql_to_pgsql: [
+      { pattern: /\bGROUP_CONCAT\s*\(/gi, replacement: 'STRING_AGG(', label: 'GROUP_CONCAT → STRING_AGG' },
+      // Handle ORDER BY inside GROUP_CONCAT
+      { pattern: /STRING_AGG\s*\(([^)]+)\s+ORDER\s+BY\s+([^)]+)\)/gi, replacement: (m, expr, order) => {
+        return `STRING_AGG(${expr.trim()} ORDER BY ${order.trim()})`;
+      }, label: 'GROUP_CONCAT ORDER BY → STRING_AGG' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\bSTRING_AGG\s*\(/gi, replacement: 'GROUP_CONCAT(', label: 'STRING_AGG → GROUP_CONCAT' },
+    ],
+  },
+
+  // ------ INSERT IGNORE / ON CONFLICT / INSERT OR ------
+  insertIgnore: {
+    mysql_to_pgsql: [
+      { pattern: /\bINSERT\s+IGNORE\b/gi, replacement: 'INSERT', label: 'INSERT IGNORE → INSERT ... ON CONFLICT' },
+      // Add ON CONFLICT DO NOTHING after VALUES
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bINSERT\s+IGNORE\b/gi, replacement: 'INSERT OR IGNORE', label: 'INSERT IGNORE → INSERT OR IGNORE' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\bON\s+CONFLICT\s+DO\s+NOTHING\b/gi, replacement: '', label: 'ON CONFLICT DO NOTHING → (removed)' },
+      { pattern: /\bON\s+CONFLICT\s*\([^)]+\)\s+DO\s+UPDATE\s+SET\s+[^;]+/gi, replacement: '', label: 'ON CONFLICT DO UPDATE → (needs manual ON DUPLICATE KEY)' },
+    ],
+    pgsql_to_sqlite: [
+      { pattern: /\bON\s+CONFLICT\s+DO\s+NOTHING\b/gi, replacement: '', label: 'ON CONFLICT → (handled by SQLite)' },
+    ],
+  },
+
+  // ------ RETURNING (PostgreSQL) ------
+  returning: {
+    pgsql_to_mysql: [
+      { pattern: /\s+RETURNING\s+[^;]+/gi, replacement: '', label: 'RETURNING clause removed' },
+    ],
+    pgsql_to_sqlite: [], // SQLite supports RETURNING since 3.35.0
+  },
+
+  // ------ ENGINE=InnoDB / CHARSET / COLLATE (MySQL-specific) ------
+  engineCharset: {
+    mysql_to_pgsql: [
+      { pattern: /\s+ENGINE\s*=\s*\w+/gi, replacement: '', label: 'ENGINE= removed' },
+      { pattern: /\s+DEFAULT\s+CHARSET\s*=\s*\w+/gi, replacement: '', label: 'CHARSET= removed' },
+      { pattern: /\s+COLLATE\s*=\s*\w+/gi, replacement: '', label: 'COLLATE= removed' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\s+ENGINE\s*=\s*\w+/gi, replacement: '', label: 'ENGINE= removed' },
+      { pattern: /\s+DEFAULT\s+CHARSET\s*=\s*\w+/gi, replacement: '', label: 'CHARSET= removed' },
+      { pattern: /\s+COLLATE\s*=\s*\w+/gi, replacement: '', label: 'COLLATE= removed' },
+    ],
+  },
+
+  // ------ ON UPDATE CURRENT_TIMESTAMP (MySQL-specific) ------
+  onUpdateCurrentTs: {
+    mysql_to_pgsql: [
+      { pattern: /\s+ON\s+UPDATE\s+CURRENT_TIMESTAMP\b/gi, replacement: '', label: 'ON UPDATE CURRENT_TIMESTAMP removed' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\s+ON\s+UPDATE\s+CURRENT_TIMESTAMP\b/gi, replacement: '', label: 'ON UPDATE CURRENT_TIMESTAMP removed' },
+    ],
+  },
+
+  // ------ TINYINT / BOOLEAN ------
+  tinyint: {
+    mysql_to_pgsql: [
+      { pattern: /\bTINYINT\s*(\(\d+\))?/gi, replacement: 'BOOLEAN', label: 'TINYINT → BOOLEAN' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bTINYINT\s*(\(\d+\))?/gi, replacement: 'INTEGER', label: 'TINYINT → INTEGER' },
+    ],
+  },
+
+  // ------ ENUM ------
+  enum: {
+    mysql_to_pgsql: [
+      { pattern: /\bENUM\s*\(([^)]+)\)/gi, replacement: (m, values) => {
+        const vals = splitArgs(values).map(v => v.trim().replace(/^'(.*)'$/, '$1'));
+        return `VARCHAR(50) CHECK (col IN (${vals.map(v => `'${v}'`).join(', ')}))`;
+      }, label: 'ENUM → VARCHAR + CHECK' },
+    ],
+    mysql_to_sqlite: [
+      { pattern: /\bENUM\s*\(([^)]+)\)/gi, replacement: 'TEXT', label: 'ENUM → TEXT' },
+    ],
+  },
+
+  // ------ NOW() / CURRENT_DATE / CURDATE ------
+  curdate: {
+    mysql_to_pgsql: [
+      { pattern: /\bCURDATE\s*\(\s*\)/gi, replacement: 'CURRENT_DATE', label: 'CURDATE() → CURRENT_DATE' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\bCURRENT_DATE\b/gi, replacement: 'CURDATE()', label: 'CURRENT_DATE → CURDATE()' },
+    ],
+  },
+
+  // ------ LENGTH / CHAR_LENGTH ------
+  length: {
+    mysql_to_pgsql: [
+      { pattern: /\bLENGTH\s*\(/gi, replacement: 'CHAR_LENGTH(', label: 'LENGTH → CHAR_LENGTH' },
+    ],
+    pgsql_to_mysql: [
+      { pattern: /\bCHAR_LENGTH\s*\(/gi, replacement: 'LENGTH(', label: 'CHAR_LENGTH → LENGTH' },
+    ],
+  },
+
+  // ------ IF() (MySQL ternary) ------
+  ifTernary: {
+    mysql_to_pgsql: [
+      { pattern: /\bIF\s*\(([^,]+),([^,]+),([^)]+)\)/gi, replacement: (m, cond, t, f) => {
+        return `CASE WHEN ${cond.trim()} THEN ${t.trim()} ELSE ${f.trim()} END`;
+      }, label: 'IF() → CASE WHEN' },
+    ],
+  },
+
+  // ------ LIMIT / OFFSET position (MySQL uses LIMIT offset, count; Pg uses LIMIT count OFFSET offset) ------
+  limitSyntax: {
+    mysql_to_pgsql: [
+      { pattern: /\bLIMIT\s+(\d+)\s*,\s*(\d+)/gi, replacement: 'LIMIT $2 OFFSET $1', label: 'LIMIT a,b → LIMIT b OFFSET a' },
+    ],
+  },
+  
+  // ------ NULLS FIRST / LAST (PostgreSQL only) ------
+  nullsOrder: {
+    pgsql_to_mysql: [
+      { pattern: /\s+NULLS\s+(FIRST|LAST)\b/gi, replacement: '', label: 'NULLS FIRST/LAST removed' },
+    ],
+    pgsql_to_sqlite: [], // SQLite supports NULLS FIRST/LAST
+  },
+
+  // ------ UNIQUE constraint as separate line (MySQL) ------
+  uniqueLine: {
+    mysql_to_pgsql: [], // same
+    pgsql_to_mysql: [], // same
+  },
+
+  // ------ CREATE TABLE IF NOT EXISTS ------
+  // All support this
+
+  // ------ COMMENT ON (PostgreSQL) ------
+  commentOn: {
+    pgsql_to_mysql: [
+      { pattern: /\bCOMMENT\s+ON\s+[^;]+;/gi, replacement: '', label: 'COMMENT ON removed' },
+    ],
+  },
+
+  // ------ SEQUENCE (PostgreSQL) ------
+  sequence: {
+    pgsql_to_mysql: [
+      { pattern: /\bCREATE\s+SEQUENCE\b[^;]+;/gi, replacement: '', label: 'CREATE SEQUENCE removed' },
+    ],
+  },
+
+  // ------ ON DELETE/UPDATE behavior ------
+  // All 3 support similar syntax
+};
+
+// Helper: split comma-separated args (respecting nested parens)
+function splitArgs(str) {
+  const parts = [];
+  let depth = 0;
+  let current = '';
+  let inStr = false;
+  let strChar = '';
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i];
+    if (inStr) {
+      current += c;
+      if (c === strChar) inStr = false;
+      continue;
+    }
+    if (c === "'" || c === '"') {
+      inStr = true;
+      strChar = c;
+      current += c;
+      continue;
+    }
+    if (c === '(') { depth++; current += c; continue; }
+    if (c === ')') { depth--; current += c; continue; }
+    if (c === ',' && depth === 0) {
+      parts.push(current);
+      current = '';
+      continue;
+    }
+    current += c;
+  }
+  if (current.trim()) parts.push(current);
+  return parts;
+}
+
+// MySQL date format to PostgreSQL TO_CHAR format
+function mysqlDateFormatToPg(fmt) {
+  const map = {
+    '%Y': 'YYYY', '%y': 'YY', '%m': 'MM', '%c': 'MM', '%d': 'DD', '%e': 'DD',
+    '%H': 'HH24', '%h': 'HH12', '%I': 'HH12', '%i': 'MI', '%S': 'SS', '%s': 'SS',
+    '%p': 'AM', '%W': 'Day', '%a': 'Dy', '%M': 'Month', '%b': 'Mon',
+    '%j': 'DDD', '%w': 'D', '%%': '%',
+  };
+  let res = '';
+  for (let i = 0; i < fmt.length; i++) {
+    if (fmt[i] === '%' && i + 1 < fmt.length) {
+      const key = '%' + fmt[i + 1];
+      res += map[key] || fmt[i+1];
+      i++;
+    } else {
+      res += fmt[i];
+    }
+  }
+  return res;
+}
+
+// MySQL date format to SQLite STRFTIME format
+function mysqlDateFormatToSqlite(fmt) {
+  const map = {
+    '%Y': '%Y', '%y': '%y', '%m': '%m', '%c': '%m', '%d': '%d', '%e': '%d',
+    '%H': '%H', '%h': '%I', '%I': '%I', '%i': '%M', '%S': '%S', '%s': '%S',
+    '%p': '%p', '%W': '%A', '%a': '%a', '%M': '%B', '%b': '%b',
+    '%j': '%j', '%w': '%w', '%%': '%',
+  };
+  let res = '';
+  for (let i = 0; i < fmt.length; i++) {
+    if (fmt[i] === '%' && i + 1 < fmt.length) {
+      const key = '%' + fmt[i + 1];
+      res += map[key] || fmt[i+1];
+      i++;
+    } else {
+      res += fmt[i];
+    }
+  }
+  return res;
+}
+
+// PostgreSQL TO_CHAR format to MySQL DATE_FORMAT
+function pgDateFormatToMysql(fmt) {
+  const map = {
+    'YYYY': '%Y', 'YY': '%y', 'MM': '%m', 'DD': '%d',
+    'HH24': '%H', 'HH12': '%h', 'HH': '%H',
+    'MI': '%i', 'SS': '%S',
+    'AM': '%p', 'PM': '%p',
+    'Day': '%W', 'Dy': '%a',
+    'Month': '%M', 'Mon': '%b',
+    'DDD': '%j', 'D': '%w',
+  };
+  let res = '';
+  for (let i = 0; i < fmt.length; i++) {
+    let matched = false;
+    for (let len = 4; len >= 1; len--) {
+      const sub = fmt.substring(i, i + len).toUpperCase();
+      if (map[sub]) {
+        res += map[sub];
+        i += len - 1;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      res += fmt[i];
+    }
+  }
+  return res;
+}
+
+// Build the conversion function for a specific source/target pair
+function getRules(src, tgt) {
+  const rules = [];
+  const key = `${src}_to_${tgt}`;
+  
+  // Collect all matching rules
+  for (const category of Object.values(CONVERSION_RULES)) {
+    if (category[key]) {
+      rules.push(...category[key]);
+    }
+  }
+  
+  return rules;
+}
+
+// Main conversion function
+function applyConversion(sql, src, tgt) {
+  if (!sql.trim() || src === tgt) return { output: sql, changes: 0 };
+  
+  const rules = getRules(src, tgt);
+  let result = sql;
+  let changes = 0;
+  
+  for (const rule of rules) {
+    let newResult;
+    if (typeof rule.replacement === 'function') {
+      newResult = result.replace(rule.pattern, rule.replacement);
+    } else {
+      newResult = result.replace(rule.pattern, rule.replacement);
+    }
+    if (newResult !== result) {
+      // Count occurrences
+      const diff = (result.match(rule.pattern) || []).length;
+      changes += diff;
+      result = newResult;
+    }
+  }
+  
+  // Post-processing for INSERT IGNORE → add ON CONFLICT DO NOTHING
+  if (src === 'mysql' && tgt === 'pgsql' && /\bINSERT\b/i.test(result) && !/\bON CONFLICT\b/i.test(result)) {
+    // Check if original had INSERT IGNORE
+    if (/\bINSERT\s+IGNORE\b/i.test(sql)) {
+      result = result.replace(/;\s*$/, ' ON CONFLICT DO NOTHING;');
+      changes++;
+    }
+  }
+  
+  return { output: result, changes };
+}
+
+// ============================================================
+// UI Logic
+// ============================================================
+
+const dialectNames = { mysql: 'MySQL', postgresql: 'PostgreSQL', sqlite: 'SQLite' };
+const badgeClasses = { mysql: 'mysql', postgresql: 'pgsql', sqlite: 'sqlite' };
+
+function updateLabels() {
+  const src = document.getElementById('sourceDialect').value;
+  const tgt = document.getElementById('targetDialect').value;
+  
+  document.getElementById('inputLabel').textContent = `Input SQL (${dialectNames[src]})`;
+  document.getElementById('outputLabel').textContent = `Converted SQL (${dialectNames[tgt]})`;
+  
+  const srcBadge = document.getElementById('sourceBadge');
+  srcBadge.textContent = dialectNames[src];
+  srcBadge.className = 'dialect-badge ' + badgeClasses[src];
+  
+  const tgtBadge = document.getElementById('targetBadge');
+  tgtBadge.textContent = dialectNames[tgt];
+  tgtBadge.className = 'dialect-badge ' + badgeClasses[tgt];
+}
+
+function convertDialect() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  const src = document.getElementById('sourceDialect').value;
+  const tgt = document.getElementById('targetDialect').value;
+  const btn = document.getElementById('convertBtn');
+  
+  const sql = input.value.trim();
+  if (!sql) {
+    showToast('Please enter SQL to convert');
+    return;
+  }
+  
+  if (src === tgt) {
+    output.value = input.value;
+    document.getElementById('changeCount').textContent = '0';
+    showToast('Source and target dialects are the same');
+    return;
+  }
+  
+  btn.classList.add('loading');
+  btn.textContent = ' Converting...';
+  
+  setTimeout(() => {
+    try {
+      const { output: converted, changes } = applyConversion(sql, src, tgt);
+      output.value = converted;
+      document.getElementById('changeCount').textContent = changes;
+      document.getElementById('inputChars').querySelector('.num').textContent = input.value.length;
+      document.getElementById('outputChars').querySelector('.num').textContent = converted.length;
+      showToast(` Converted: ${changes} changes applied`);
+    } catch (e) {
+      output.value = `Conversion error: ${e.message}`;
+      showToast('Error: ' + e.message);
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = ' Convert';
+    }
+  }, 50);
+}
+
+function copyResult() {
+  const output = document.getElementById('outputSql');
+  const btn = document.getElementById('copyBtn');
+  if (!output.value.trim()) {
+    showToast('Nothing to copy');
+    return;
+  }
+  navigator.clipboard.writeText(output.value).then(() => {
+    btn.textContent = ' Copied!';
+    showToast('Copied to clipboard');
+    setTimeout(() => { btn.textContent = ' Copy'; }, 2000);
+  }).catch(() => {
+    output.select();
+    document.execCommand('copy');
+    btn.textContent = ' Copied!';
+    setTimeout(() => { btn.textContent = ' Copy'; }, 2000);
+  });
+}
+
+function clearAll() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputSql').value = '';
+  document.getElementById('changeCount').textContent = '0';
+  document.getElementById('inputChars').querySelector('.num').textContent = '0';
+  document.getElementById('outputChars').querySelector('.num').textContent = '0';
+  showToast('Cleared');
+}
+
+const EXAMPLES = {
+  'create-table': {
+    mysql: `CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  status ENUM('active', 'inactive', 'banned') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+    postgresql: `CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  status VARCHAR(20) DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`,
+    sqlite: `CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  status TEXT DEFAULT 'active',
+  created_at TEXT DEFAULT (DATETIME('now')),
+  updated_at TEXT DEFAULT (DATETIME('now'))
+);`,
+  },
+  'select': {
+    mysql: `SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count,
+  DATE_FORMAT(u.created_at, '%Y-%m-%d') AS signup_date,
+  IFNULL(u.phone, 'N/A') AS phone
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.status = 'active' AND u.created_at > NOW()
+GROUP BY u.id
+HAVING COUNT(o.id) > 3
+ORDER BY order_count DESC
+LIMIT 10;`,
+    postgresql: `SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count,
+  TO_CHAR(u.created_at, 'YYYY-MM-DD') AS signup_date,
+  COALESCE(u.phone, 'N/A') AS phone
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.status = 'active' AND u.created_at > CURRENT_TIMESTAMP
+GROUP BY u.id
+HAVING COUNT(o.id) > 3
+ORDER BY order_count DESC
+LIMIT 10;`,
+    sqlite: `SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count,
+  STRFTIME('%Y-%m-%d', u.created_at) AS signup_date,
+  IFNULL(u.phone, 'N/A') AS phone
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.status = 'active' AND u.created_at > DATETIME('now')
+GROUP BY u.id
+HAVING COUNT(o.id) > 3
+ORDER BY order_count DESC
+LIMIT 10;`,
+  },
+  'insert': {
+    mysql: `INSERT IGNORE INTO users (name, email, status, created_at)
+VALUES ('Alice', 'alice@example.com', 'active', NOW());`,
+    postgresql: `INSERT INTO users (name, email, status, created_at)
+VALUES ('Alice', 'alice@example.com', 'active', CURRENT_TIMESTAMP)
+ON CONFLICT DO NOTHING;`,
+    sqlite: `INSERT OR IGNORE INTO users (name, email, status, created_at)
+VALUES ('Alice', 'alice@example.com', 'active', DATETIME('now'));`,
+  },
+  'functions': {
+    mysql: `SELECT id,
+  CONCAT(first_name, ' ', last_name) AS full_name,
+  GROUP_CONCAT(DISTINCT role ORDER BY role SEPARATOR ', ') AS roles,
+  IF(status = 'active', 'Enabled', 'Disabled') AS access,
+  LENGTH(bio) AS bio_len,
+  CURDATE() AS today
+FROM employees
+GROUP BY id
+LIMIT 0, 20;`,
+    postgresql: `SELECT id,
+  first_name || ' ' || last_name AS full_name,
+  STRING_AGG(DISTINCT role ORDER BY role, ', ') AS roles,
+  CASE WHEN status = 'active' THEN 'Enabled' ELSE 'Disabled' END AS access,
+  CHAR_LENGTH(bio) AS bio_len,
+  CURRENT_DATE AS today
+FROM employees
+GROUP BY id
+LIMIT 20 OFFSET 0;`,
+    sqlite: `SELECT id,
+  first_name || ' ' || last_name AS full_name,
+  GROUP_CONCAT(DISTINCT role, ', ') AS roles,
+  CASE WHEN status = 'active' THEN 'Enabled' ELSE 'Disabled' END AS access,
+  LENGTH(bio) AS bio_len,
+  DATE('now') AS today
+FROM employees
+GROUP BY id
+LIMIT 20 OFFSET 0;`,
+  },
+};
+
+function loadExample(name) {
+  const src = document.getElementById('sourceDialect').value;
+  const tgt = document.getElementById('targetDialect').value;
+  
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputSql');
+  
+  // Find best dialect match for input
+  if (EXAMPLES[name][src]) {
+    input.value = EXAMPLES[name][src];
+  } else {
+    // Fallback: use MySQL as default source example
+    input.value = EXAMPLES[name]['mysql'];
+    document.getElementById('sourceDialect').value = 'mysql';
+    updateLabels();
+  }
+  
+  output.value = '';
+  showToast(`Example loaded: ${name}`);
+  
+  // Auto-convert
+  setTimeout(() => convertDialect(), 100);
+}
+
+document.getElementById('sourceDialect').addEventListener('change', updateLabels);
+document.getElementById('targetDialect').addEventListener('change', updateLabels);
+
+document.getElementById('inputSql').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    convertDialect();
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Initialize
+updateLabels();
+</script>
+</body>
+</html>

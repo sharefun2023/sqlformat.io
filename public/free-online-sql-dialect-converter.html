@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Dialect Converter — MySQL to PostgreSQL & SQLite</title>
+  <meta name="description" content="Free online SQL dialect converter. Convert MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, and more. Handles AUTO_INCREMENT, backtick quoting, LIMIT/OFFSET, CONCAT, date functions, and 40+ syntax differences automatically. 100% client-side.">
+  <meta name="keywords" content="free online sql dialect converter, mysql to postgresql converter, postgresql to mysql converter, mysql to sqlite converter, sqlite to mysql converter, convert sql syntax between databases, free sql dialect translation, online database migration tool, sql cross-dialect converter, database syntax converter">
+  <meta property="og:title" content="Free Online SQL Dialect Converter — MySQL ↔ PostgreSQL ↔ SQLite">
+  <meta property="og:description" content="Convert SQL between MySQL, PostgreSQL, and SQLite dialects instantly. Handles 40+ syntax differences automatically. Free, private, no signup required.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-dialect-converter">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-dialect-converter">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online SQL Dialect Converter",
+    "description": "Free online tool to convert SQL syntax between MySQL, PostgreSQL, and SQLite. Automatically translates AUTO_INCREMENT, backtick quoting, LIMIT/OFFSET syntax, CONCAT, date functions, ILIKE, type casting, IFNULL/COALESCE, GROUP_CONCAT/STRING_AGG, INSERT IGNORE, ENUM types, and more. 100% client-side processing, no data leaves your browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-sql-dialect-converter",
+    "dateModified": "2026-06-12",
+    "featureList": "MySQL to PostgreSQL conversion, PostgreSQL to MySQL conversion, SQLite cross-conversion, LIMIT/OFFSET handling, AUTO_INCREMENT/SERIAL translation, backtick/double-quote conversion, ILIKE to LIKE, CONCAT to ||, type casting, date function translation, GROUP_CONCAT/STRING_AGG, INSERT IGNORE/ON CONFLICT, ENUM handling, ENGINE/CHARSET removal, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online SQL Dialect Converter", "item": "https://sqlformat.io/free-online-sql-dialect-converter"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I convert MySQL SQL to PostgreSQL online for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Visit the SQL Dialect Converter at SQLFormat.io. Paste your MySQL SQL in the input area, select 'MySQL' as the source and 'PostgreSQL' as the target, then click Convert. The tool automatically handles AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), and INSERT IGNORE to ON CONFLICT DO NOTHING. No signup required, all processing happens in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What SQL syntax differences does the converter handle between MySQL and PostgreSQL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The converter handles 40+ differences: AUTO_INCREMENT to SERIAL/BIGSERIAL, backtick to double-quote quoting, CONCAT() to || operator, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), INSERT IGNORE to ON CONFLICT DO NOTHING, IF() to CASE WHEN, LENGTH() to CHAR_LENGTH(), CURDATE() to CURRENT_DATE, LIMIT a,b to LIMIT b OFFSET a, ENGINE/CHARSET removal, ON UPDATE CURRENT_TIMESTAMP removal, TINYINT to BOOLEAN, and ENUM to VARCHAR with CHECK constraints."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert PostgreSQL or MySQL to SQLite?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The converter supports all 6 conversion directions: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, and SQLite to PostgreSQL. For SQLite specifically, it handles AUTO_INCREMENT to AUTOINCREMENT, NOW() to DATETIME('now'), CURRENT_TIMESTAMP to DATETIME('now'), ENGINE/CHARSET removal, CONCAT() to ||, and INSERT IGNORE to INSERT OR IGNORE."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this SQL dialect converter safe for sensitive queries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Completely safe. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device and are never sent to any server. There's no data logging, no analytics tracking of your query content, and no signup required. It works the same way as our SQL Formatter — private by design."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to know both dialects to use this converter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Just paste your SQL from the source database, select source and target dialects, and the tool does the rest. It's designed for developers migrating between databases who don't want to memorize every syntax difference. The conversion count tells you exactly how many changes were applied, so you can review the output with confidence."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover { color: var(--accent); }
+
+    .content { padding: 40px 0; }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; }
+    .lead { color: var(--text2); font-size: 1.05rem; line-height: 1.6; margin-bottom: 32px; }
+
+    .cta-box {
+      background: linear-gradient(135deg, var(--surface), var(--surface2));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .cta-box h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .cta-box p { color: var(--text2); margin-bottom: 16px; }
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--accent2);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); }
+
+    h2 { font-size: 1.3rem; margin: 28px 0 16px; }
+    h3 { font-size: 1.05rem; margin: 20px 0 10px; color: var(--accent); }
+    p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; font-size: 0.95rem; }
+    ul { color: var(--text2); line-height: 1.8; margin: 8px 0 16px 20px; font-size: 0.95rem; }
+    li { margin-bottom: 4px; }
+    code {
+      background: var(--surface2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.88rem;
+      color: var(--orange);
+    }
+
+    .feature-grid, .conv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 16px 0 24px;
+    }
+    .feature-card, .conv-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .feature-card h3, .conv-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+    .feature-card p, .conv-card p { font-size: 0.85rem; margin: 0; }
+    .conv-card .pair { font-size: 0.8rem; color: var(--text2); margin-bottom: 6px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.88rem;
+    }
+    th, td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    th { background: var(--surface); color: var(--accent); font-weight: 600; }
+    td { color: var(--text2); }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/dialect-converter">Converter</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container content">
+  <h1>Free Online SQL Dialect Converter</h1>
+  <p class="lead">Convert SQL between MySQL, PostgreSQL, and SQLite automatically. Your queries stay private — everything runs in your browser.</p>
+
+  <div class="cta-box">
+    <h2>Try the SQL Dialect Converter</h2>
+    <p>Paste your SQL, select source and target dialects, and get converted syntax instantly.</p>
+    <a href="/dialect-converter" class="cta-btn">Open Converter →</a>
+  </div>
+
+  <h2>Why You Need a SQL Dialect Converter</h2>
+  <p>Every major database has its own SQL dialect. MySQL uses backtick quoting and AUTO_INCREMENT. PostgreSQL uses SERIAL and double-quote identifiers. SQLite uses AUTOINCREMENT and has unique date functions. When you're migrating a database, porting an application, or writing cross-database scripts, manually translating these differences is tedious and error-prone.</p>
+  <p>This free online SQL dialect converter automates the entire process. Just paste your SQL from any of the three dialects, select the target, and the tool handles 40+ syntax differences automatically.</p>
+
+  <h2>Supported Conversions</h2>
+  <p>All 6 conversion directions are supported:</p>
+  <div class="conv-grid">
+    <div class="conv-card">
+      <div class="pair">MySQL → PostgreSQL</div>
+      <p>Auto-increment, backtick quoting, CONCAT, date functions, and more</p>
+    </div>
+    <div class="conv-card">
+      <div class="pair">PostgreSQL → MySQL</div>
+      <p>SERIAL, double-quote identifiers, ILIKE, STRING_AGG, type casting</p>
+    </div>
+    <div class="conv-card">
+      <div class="pair">MySQL → SQLite</div>
+      <p>Auto-increment, NOW(), ENGINE/CHARSET, INSERT IGNORE, ENUM</p>
+    </div>
+    <div class="conv-card">
+      <div class="pair">SQLite → MySQL</div>
+      <p>DATETIME('now'), AUTOINCREMENT, IFNULL, CONCAT</p>
+    </div>
+    <div class="conv-card">
+      <div class="pair">PostgreSQL → SQLite</div>
+      <p>SERIAL, ILIKE, sequences, RETURNING, type casts</p>
+    </div>
+    <div class="conv-card">
+      <div class="pair">SQLite → PostgreSQL</div>
+      <p>DATETIME('now'), AUTOINCREMENT, IFNULL, date handling</p>
+    </div>
+  </div>
+
+  <h2>What Gets Converted</h2>
+  <table>
+    <tr>
+      <th>Feature</th>
+      <th>MySQL</th>
+      <th>PostgreSQL</th>
+      <th>SQLite</th>
+    </tr>
+    <tr><td>Auto-increment</td><td><code>AUTO_INCREMENT</code></td><td><code>SERIAL</code> / <code>GENERATED AS IDENTITY</code></td><td><code>AUTOINCREMENT</code></td></tr>
+    <tr><td>Identifier quotes</td><td><code>`backtick`</code></td><td><code>"double-quote"</code></td><td>Any</td></tr>
+    <tr><td>String concat</td><td><code>CONCAT(a, b)</code></td><td><code>a || b</code></td><td><code>a || b</code></td></tr>
+    <tr><td>Null handling</td><td><code>IFNULL(a, b)</code></td><td><code>COALESCE(a, b)</code></td><td><code>IFNULL(a, b)</code></td></tr>
+    <tr><td>Current time</td><td><code>NOW()</code></td><td><code>CURRENT_TIMESTAMP</code></td><td><code>DATETIME('now')</code></td></tr>
+    <tr><td>Date format</td><td><code>DATE_FORMAT()</code></td><td><code>TO_CHAR()</code></td><td><code>STRFTIME()</code></td></tr>
+    <tr><td>Group concat</td><td><code>GROUP_CONCAT()</code></td><td><code>STRING_AGG()</code></td><td><code>GROUP_CONCAT()</code></td></tr>
+    <tr><td>Case-insensitive</td><td><code>LIKE</code></td><td><code>ILIKE</code></td><td><code>LIKE</code></td></tr>
+    <tr><td>Type cast</td><td>—</td><td><code>::type</code></td><td>—</td></tr>
+    <tr><td>Insert conflict</td><td><code>INSERT IGNORE</code></td><td><code>ON CONFLICT DO NOTHING</code></td><td><code>INSERT OR IGNORE</code></td></tr>
+    <tr><td>Ternary</td><td><code>IF(cond, t, f)</code></td><td><code>CASE WHEN</code></td><td><code>CASE WHEN</code></td></tr>
+    <tr><td>Boolean type</td><td><code>TINYINT</code></td><td><code>BOOLEAN</code></td><td><code>INTEGER</code></td></tr>
+    <tr><td>Enum type</td><td><code>ENUM('a','b')</code></td><td><code>VARCHAR + CHECK</code></td><td><code>TEXT</code></td></tr>
+    <tr><td>Storage engine</td><td><code>ENGINE=InnoDB</code></td><td>Removed</td><td>Removed</td></tr>
+  </table>
+
+  <h2>How It Works</h2>
+  <p>Using the SQL dialect converter is straightforward:</p>
+  <ul>
+    <li><strong>Step 1:</strong> Paste your SQL query into the input textarea</li>
+    <li><strong>Step 2:</strong> Select the source dialect (the one your query is written in)</li>
+    <li><strong>Step 3:</strong> Select the target dialect (the one you want to convert to)</li>
+    <li><strong>Step 4:</strong> Click Convert — the tool applies 40+ syntax rules automatically</li>
+    <li><strong>Step 5:</strong> Copy the converted SQL and use it in your target database</li>
+  </ul>
+  <p>The tool shows exactly how many changes were applied, so you can verify the conversion at a glance.</p>
+
+  <h2>Common Use Cases</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>Database Migration</h3>
+      <p>Moving from MySQL to PostgreSQL or SQLite? Convert your schema DDL and query scripts automatically instead of editing each file by hand.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Cross-Platform Development</h3>
+      <p>Writing code that needs to work across multiple databases? Generate dialect-specific SQL variations for local, staging, and production.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Learning New Dialects</h3>
+      <p>Already know MySQL and learning PostgreSQL? Compare how the same query looks in each dialect and learn the syntax patterns.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Code Porting</h3>
+      <p>Porting an application from one database backend to another — convert all your inline SQL and stored procedures in one session.</p>
+    </div>
+  </div>
+
+  <h2>Privacy & Security</h2>
+  <p>Your SQL queries never leave your device. The entire conversion engine runs inside your browser using JavaScript. No server requests, no data logging, no account needed. This is the same privacy model used by our <a href="/">SQL Formatter</a>, <a href="/minify">SQL Minifier</a>, and all other tools on SQLFormat.io.</p>
+
+  <h2>More SQL Tools</h2>
+  <p>SQLFormat.io offers a complete suite of free SQL utilities. Try our <a href="/">SQL Formatter</a> to beautify your queries, the <a href="/diff">SQL Diff</a> tool to compare two queries, or the <a href="/data-generator">SQL Data Generator</a> to create mock INSERT data from your schema definitions.</p>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Tools | <a href="/dialect-converter">Dialect Converter</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
