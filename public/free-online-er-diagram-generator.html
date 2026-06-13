@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online ER Diagram Generator — Visualize Database Schema | SQLFormat.io</title>
+  <meta name="description" content="Generate ER diagrams online for free. Paste your CREATE TABLE DDL and instantly visualize your database schema as an entity-relationship diagram. Shows tables, columns, primary keys, and foreign key relationships. 100% client-side, no signup.">
+  <meta name="keywords" content="free online ER diagram generator, database schema visualizer, entity relationship diagram tool, DDL to ER diagram, visualize database schema online, free ER diagram tool, SQL schema viewer, CREATE TABLE diagram">
+  <meta property="og:title" content="Free Online ER Diagram Generator — Visualize Database Schema">
+  <meta property="og:description" content="Paste your CREATE TABLE statements and instantly generate an entity-relationship diagram. See tables, columns, primary keys, and foreign key relationships as a visual graph. 100% free, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-er-diagram-generator">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-er-diagram-generator">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online ER Diagram Generator",
+    "description": "Generate ER diagrams from CREATE TABLE DDL online for free. Parse any number of CREATE TABLE statements and instantly render an entity-relationship diagram showing tables, columns, primary keys, foreign keys, and their relationships. 100% client-side, no signup required.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-er-diagram-generator",
+    "dateModified": "2026-06-13",
+    "featureList": "CREATE TABLE DDL parsing, ER diagram generation, primary key visualization, foreign key relationship mapping, database schema visualization, export to PNG, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online ER Diagram Generator", "item": "https://sqlformat.io/free-online-er-diagram-generator"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I generate an ER diagram from SQL for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your CREATE TABLE statements into the free online ER diagram generator at sqlformat.io and click Generate Diagram. The tool parses your DDL, extracts tables, columns, primary keys, and foreign keys, then renders an interactive entity-relationship diagram. No signup or registration required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What SQL dialects does the ER diagram generator support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool supports standard SQL DDL syntax used by MySQL, PostgreSQL, SQLite, MariaDB, and most relational databases. It handles inline PRIMARY KEY constraints, table-level PRIMARY KEY declarations, FOREIGN KEY references with ON DELETE and ON UPDATE clauses, AUTO_INCREMENT and SERIAL types, DEFAULT values, NOT NULL constraints, and UNIQUE constraints."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I save or export my database ER diagram?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The free ER diagram generator includes an Export as PNG button that downloads the current diagram as a PNG image file. You can also use the Zoom controls to adjust the view before exporting. The diagram is rendered on an HTML5 Canvas element for crisp output."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my schema data private when using the online ER diagram generator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All DDL parsing and diagram rendering happens client-side in your browser. Your database schema definitions never leave your device. There is no server-side processing, no logging, and no data collection of any kind."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many tables can the ER diagram generator handle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The online ER diagram generator can visualize any number of CREATE TABLE statements in a single input. Tables are automatically laid out in a grid arrangement with color-coded headers. Foreign key relationships between any two tables are drawn as curved connecting lines with arrow indicators."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 0; background: var(--surface); }
+    header .container { max-width: 1300px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
+    nav a:hover { color: var(--accent); }
+    .hero { text-align: center; padding: 48px 0 24px; }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 16px; }
+    .hero p { color: var(--text2); font-size: 1.1rem; max-width: 650px; margin: 0 auto; }
+    .cta {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 14px 36px;
+      background: #1f6feb;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: background 0.2s;
+    }
+    .cta:hover { background: #58a6ff; }
+    section { margin: 48px 0; }
+    section h2 { font-size: 1.5rem; margin-bottom: 16px; color: var(--accent); }
+    section h3 { font-size: 1.15rem; margin: 24px 0 12px; }
+    section p, section li { color: var(--text2); margin-bottom: 12px; }
+    section ul, section ol { padding-left: 24px; }
+    section li { margin-bottom: 8px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card h3 { margin-top: 0; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .feature-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .feature-item .icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .feature-item h4 { font-size: 0.95rem; margin-bottom: 6px; }
+    .feature-item p { font-size: 0.85rem; color: var(--text2); margin: 0; }
+    pre {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 0.82rem;
+      overflow-x: auto;
+      color: #e6edf3;
+      line-height: 1.5;
+      margin: 16px 0;
+    }
+    code { font-family: 'JetBrains Mono', 'Consolas', monospace; font-size: 0.85rem; }
+    .inline-code { background: var(--surface2); padding: 2px 6px; border-radius: 3px; }
+    .related-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .related-tools a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    .related-tools a:hover { text-decoration: underline; }
+    footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--text2); font-size: 0.85rem; margin-top: 48px; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/er-diagram">ER Diagram</a>
+      <a href="/diff">Diff</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>Free Online ER Diagram Generator</h1>
+    <p>Paste your CREATE TABLE DDL and instantly generate an entity-relationship diagram. Visualize your database schema with tables, columns, primary keys, and foreign key relationships — all in your browser, 100% free.</p>
+    <a href="/er-diagram" class="cta">Generate ER Diagram Now</a>
+  </div>
+
+  <section>
+    <h2>Why Use a Free ER Diagram Generator?</h2>
+    <p>An entity-relationship (ER) diagram is the most intuitive way to understand a database schema. But traditional ER diagram tools require installation, signups, or expensive licenses. Our free online ER diagram generator solves this by working entirely in your browser:</p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="icon">🔌</div>
+        <h4>Zero Setup</h4>
+        <p>No installs or accounts. Just paste DDL and generate.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🔒</div>
+        <h4>100% Private</h4>
+        <p>Everything runs client-side. Your schema never leaves your machine.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🖼️</div>
+        <h4>Export PNG</h4>
+        <p>Download your diagram as an image for docs or presentations.</p>
+      </div>
+      <div class="feature-item">
+        <div class="icon">🎯</div>
+        <h4>FK Detection</h4>
+        <p>Foreign keys are automatically parsed and drawn as relationship lines.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How It Works</h2>
+    <div class="card">
+      <h3>1. Paste Your CREATE TABLE DDL</h3>
+      <p>Copy your CREATE TABLE statements from any database or SQL script. The tool accepts standard SQL DDL syntax used by MySQL, PostgreSQL, SQLite, and more.</p>
+      <pre>CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  total DECIMAL(10,2),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);</pre>
+    </div>
+    <div class="card">
+      <h3>2. Click Generate</h3>
+      <p>Press the Generate Diagram button and the parser extracts each table's columns, data types, primary keys, and foreign key references. The tool supports both inline PRIMARY KEY constraints and table-level PRIMARY KEY declarations.</p>
+    </div>
+    <div class="card">
+      <h3>3. Explore Your Schema</h3>
+      <p>Each table appears as a color-coded card showing its columns with types. Primary keys are marked with a PK badge, foreign keys with an FK badge. Relationship lines connect foreign key columns to their referenced tables. Use the Zoom controls to adjust the view and Export as PNG to save the diagram.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Feature Highlights</h2>
+    <ul>
+      <li><strong>Multi-table support</strong> — Parse any number of CREATE TABLE statements in one go. Tables are automatically laid out in a readable grid.</li>
+      <li><strong>Primary key detection</strong> — Both inline (<span class="inline-code">id INT PRIMARY KEY</span>) and table-level (<span class="inline-code">PRIMARY KEY (id, user_id)</span>) constraints are recognized and highlighted.</li>
+      <li><strong>Foreign key mapping</strong> — <span class="inline-code">FOREIGN KEY (col) REFERENCES table(col)</span> constraints are drawn as curved, color-coded relationship lines with arrows.</li>
+      <li><strong>Column type display</strong> — Each column shows its data type (INT, VARCHAR, DECIMAL, TIMESTAMP, etc.) and nullable status.</li>
+      <li><strong>Built-in examples</strong> — Try predefined schemas for an e-commerce store, blog platform, or library management system to see how the tool works.</li>
+      <li><strong>PNG export</strong> — Download your ER diagram as a PNG image for inclusion in documentation, presentations, or architecture diagrams.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Use Cases</h2>
+    <div class="card">
+      <h3>Database Design & Review</h3>
+      <p>When designing a new database schema, quickly visualize your CREATE TABLE statements to spot missing foreign keys, redundant tables, or normalization issues. The ER diagram generator gives you instant visual feedback on your schema design.</p>
+    </div>
+    <div class="card">
+      <h3>Legacy Database Documentation</h3>
+      <p>Reverse-engineer an existing database by exporting its DDL and pasting it into the tool. The generated ER diagram serves as up-to-date documentation without manual drawing — perfect for onboarding new team members onto an unfamiliar schema.</p>
+    </div>
+    <div class="card">
+      <h3>Interview & Study Preparation</h3>
+      <p>When practicing database design for interviews or studying SQL schema design patterns, use the ER diagram generator to visualize your design and verify relationships between tables. Try schema patterns like many-to-many junction tables, self-referential hierarchies, and polymorphic associations.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>More SQL Tools</h2>
+    <div class="related-tools">
+      <a href="/er-diagram">ER Diagram Generator</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/">SQL Formatter</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/diff">SQL Diff</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/explain">EXPLAIN Visualizer</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/data-generator">Data Generator</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/dialect-converter">Dialect Converter</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | ER Diagram Generator | &copy; 2026</p>
+  </div>
+</footer>
+</body>
+</html>

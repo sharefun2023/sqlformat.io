@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL ER Diagram Generator — Visualize Database Schema | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL ER diagram generator. Paste CREATE TABLE DDL statements to generate an entity-relationship diagram. Visualize tables, columns, primary keys, and foreign key relationships instantly. 100% client-side.">
+  <meta name="keywords" content="SQL ER diagram, database schema visualizer, ER diagram generator, entity relationship diagram, CREATE TABLE visualizer, DDL to ER diagram, database diagram tool, schema visualization online">
+  <meta property="og:title" content="SQL ER Diagram Generator — Visualize Database Schema">
+  <meta property="og:description" content="Paste CREATE TABLE DDL and instantly generate an entity-relationship diagram. See tables, columns, primary keys, and foreign key relationships as a visual graph. 100% free, no signup, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/er-diagram">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/er-diagram">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL ER Diagram Generator",
+    "description": "Free online ER diagram generator that visualizes database schemas from CREATE TABLE DDL statements. Shows tables, columns, primary keys, foreign keys, and relationships as an interactive graph. 100% client-side, no data leaves your browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/er-diagram",
+    "dateModified": "2026-06-13",
+    "featureList": "CREATE TABLE DDL parsing, entity-relationship diagram generation, primary key and foreign key visualization, table column display, interactive canvas diagram, 100% client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL ER Diagram Generator", "item": "https://sqlformat.io/er-diagram"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I generate an ER diagram from SQL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste one or more CREATE TABLE DDL statements into the input area and click Generate. The tool parses each table's columns, data types, primary keys, and foreign keys, then renders an entity-relationship diagram showing tables as boxes and relationships as connecting lines. All processing happens in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What SQL dialects does the ER diagram tool support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool supports standard SQL CREATE TABLE syntax used by MySQL, PostgreSQL, SQLite, and most other relational databases. It handles column definitions, PRIMARY KEY constraints (both inline and table-level), FOREIGN KEY references, NOT NULL, DEFAULT values, UNIQUE constraints, and various data types."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I download or export the ER diagram?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Click the Export as PNG button to download the current diagram as a PNG image. You can also use the Zoom buttons to adjust the view. The diagram renders on an HTML Canvas element for crisp output at any size."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my schema data safe when generating ER diagrams?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All DDL parsing and diagram rendering happens client-side in your browser using JavaScript. Your schema definitions never leave your device. No server-side processing, no logging, no data collection."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --red: #f85149;
+      --orange: #d29922;
+      --purple: #bc8cff;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    .hero { text-align: center; padding: 40px 0 24px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: var(--text2); font-size: 1.05rem; max-width: 650px; margin: 0 auto; }
+
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls button:hover { border-color: var(--accent); }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 600;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+
+    .editor-area textarea {
+      width: 100%;
+      min-height: 200px;
+      max-height: 350px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-area textarea:focus { background: #0d1117; }
+
+    /* Canvas area */
+    .diagram-area {
+      border-top: 1px solid var(--border);
+      position: relative;
+      overflow: auto;
+    }
+    .diagram-area canvas {
+      display: block;
+      background: #0d1117;
+    }
+    .diagram-empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text2);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Diagram info bar */
+    .diagram-info {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      flex-wrap: wrap;
+    }
+    .diagram-info span { white-space: nowrap; }
+    .diagram-info .tables-count { color: var(--accent); }
+    .diagram-info .fks-count { color: var(--purple); }
+
+    /* Examples */
+    .examples {
+      padding: 8px 20px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .examples span.label { color: var(--text2); font-size: 0.8rem; }
+    .examples button {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .examples button:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Download link styling */
+    #downloadLink {
+      display: none;
+    }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/dialect-converter">Converter</a>
+      <a href="/er-diagram" class="active">ER</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL ER Diagram Generator</h1>
+    <p>Paste your CREATE TABLE DDL statements and instantly visualize your database schema as an entity-relationship diagram. Shows tables, columns, primary keys, and foreign key relationships.</p>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>CREATE TABLE DDL Input</h2>
+      <div class="tool-controls">
+        <button onclick="generateDiagram()" class="primary" id="genBtn">Generate Diagram</button>
+        <button onclick="exportPNG()" id="exportBtn">Export PNG</button>
+        <button onclick="clearAll()">Clear</button>
+        <button onclick="zoomIn()">Zoom +</button>
+        <button onclick="zoomOut()">Zoom -</button>
+        <button onclick="zoomReset()">Reset</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <textarea id="ddlInput" placeholder="Paste your CREATE TABLE DDL statements here...&#10;&#10;Example:&#10;CREATE TABLE users (&#10;  id INT PRIMARY KEY AUTO_INCREMENT,&#10;  name VARCHAR(100) NOT NULL,&#10;  email VARCHAR(255) UNIQUE NOT NULL,&#10;  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP&#10;);&#10;&#10;CREATE TABLE orders (&#10;  id INT PRIMARY KEY AUTO_INCREMENT,&#10;  user_id INT NOT NULL,&#10;  total DECIMAL(10,2) NOT NULL,&#10;  status VARCHAR(20) DEFAULT 'pending',&#10;  FOREIGN KEY (user_id) REFERENCES users(id)&#10;);" spellcheck="false"></textarea>
+    </div>
+    <div class="diagram-area" id="diagramArea">
+      <div class="diagram-empty" id="diagramEmpty">
+        Paste your CREATE TABLE statements above and click <strong>Generate Diagram</strong> to visualize your database schema.
+      </div>
+      <canvas id="diagramCanvas" style="display:none;"></canvas>
+    </div>
+    <div class="diagram-info" id="diagramInfo" style="display:none;">
+      <span class="tables-count" id="tablesCount">0 tables</span>
+      <span class="fks-count" id="fksCount">0 foreign keys</span>
+      <span id="colCount">0 columns</span>
+    </div>
+    <div class="examples">
+      <span class="label">Try an example:</span>
+      <button onclick="loadExample('ecommerce')">E-Commerce</button>
+      <button onclick="loadExample('blog')">Blog</button>
+      <button onclick="loadExample('library')">Library</button>
+    </div>
+  </div>
+
+  <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+    <h3 style="font-size:1rem;margin-bottom:12px;">More SQL Tools</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <a href="/" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Formatter</a><span style="color:var(--border);">·</span>
+      <a href="/diff" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Diff</a><span style="color:var(--border);">·</span>
+      <a href="/explain" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">EXPLAIN Visualizer</a><span style="color:var(--border);">·</span>
+      <a href="/data-generator" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">Data Generator</a><span style="color:var(--border);">·</span>
+      <a href="/dialect-converter" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">Dialect Converter</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/er-diagram">ER Diagram Generator</a> | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<a id="downloadLink"></a>
+
+<script>
+/* ===== DDL Parser ===== */
+
+function parseCreateTable(sql) {
+  const tables = [];
+  // Remove line comments and block comments
+  let clean = sql.replace(/--.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  
+  // Match CREATE TABLE statements
+  const tableRegex = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:`|'|"|)(\w+)(?:`|'|"|)\s*\(([\s\S]*?)\)\s*;?/gi;
+  let match;
+
+  while ((match = tableRegex.exec(clean)) !== null) {
+    const tableName = match[1];
+    const body = match[2];
+    const columns = [];
+    const foreignKeys = [];
+    let tablePK = null;
+    let autoInc = false;
+
+    // Split by commas, respecting parentheses nesting
+    const parts = splitDDLBody(body);
+    
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+
+      // Table-level PRIMARY KEY
+      const pkMatch = trimmed.match(/^PRIMARY\s+KEY\s*\(([^)]+)\)/i);
+      if (pkMatch) {
+        tablePK = pkMatch[1].split(',').map(s => s.replace(/`|'|"/g, '').trim());
+        continue;
+      }
+
+      // FOREIGN KEY
+      const fkMatch = trimmed.match(/^FOREIGN\s+KEY\s*\(([^)]+)\)\s*REFERENCES\s+(?:`|'|"|)(\w+)(?:`|'|"|)\s*\(([^)]+)\)/i);
+      if (fkMatch) {
+        foreignKeys.push({
+          columns: fkMatch[1].split(',').map(s => s.replace(/`|'|"/g, '').trim()),
+          refTable: fkMatch[2],
+          refColumns: fkMatch[3].split(',').map(s => s.replace(/`|'|"/g, '').trim())
+        });
+        continue;
+      }
+
+      // Skip table constraints
+      if (/^(INDEX|KEY|UNIQUE|CONSTRAINT|CHECK|FOREIGN|PRIMARY)\s/i.test(trimmed)) {
+        continue;
+      }
+
+      // Column definition
+      const colMatch = trimmed.match(/^(`|'|"|)(\w+)\1\s+([\w(][\s\S]*)$/i);
+      if (!colMatch) continue;
+
+      const colName = colMatch[2];
+      const defStr = colMatch[3].trim();
+
+      // Extract data type
+      const typeMatch = defStr.match(/^(\w+(?:\s*\([^)]*\))?)\s*(.*)/i);
+      if (!typeMatch) continue;
+      const dataType = typeMatch[1].toUpperCase();
+      const rest = typeMatch[2].toUpperCase();
+
+      const isPK = /PRIMARY\s+KEY/i.test(rest) || (tablePK && tablePK.includes(colName));
+      const isFK = foreignKeys.some(fk => fk.columns.includes(colName));
+      const isNullable = !/NOT\s+NULL/i.test(rest);
+      const hasDefault = /DEFAULT\s+/i.test(rest);
+      const isUnique = /UNIQUE/i.test(rest);
+      const isAutoInc = /AUTO_INCREMENT|SERIAL|IDENTITY/i.test(rest) || dataType === 'SERIAL' || dataType === 'BIGSERIAL';
+      if (isAutoInc) autoInc = true;
+
+      columns.push({
+        name: colName,
+        type: dataType,
+        isPK: isPK,
+        isFK: isFK,
+        nullable: isNullable,
+        hasDefault: hasDefault,
+        isUnique: isUnique,
+        isAutoInc: isAutoInc
+      });
+    }
+
+    tables.push({
+      name: tableName,
+      columns: columns,
+      foreignKeys: foreignKeys,
+      primaryKey: tablePK
+    });
+  }
+
+  return tables;
+}
+
+function splitDDLBody(body) {
+  const parts = [];
+  let depth = 0;
+  let current = '';
+  let inParen = false;
+
+  for (let i = 0; i < body.length; i++) {
+    const ch = body[i];
+    if (ch === '(') { depth++; if (!inParen) inParen = true; current += ch; }
+    else if (ch === ')') { depth--; current += ch; }
+    else if (ch === ',' && depth === 0) {
+      if (current.trim()) parts.push(current.trim());
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) parts.push(current.trim());
+  return parts;
+}
+
+/* ===== Diagram Renderer ===== */
+
+const TABLE_COLORS = ['#58a6ff', '#3fb950', '#d29922', '#f85149', '#bc8cff', '#79c0ff', '#ffa657', '#56d364'];
+const TABLE_WIDTH = 240;
+const TABLE_HEADER_H = 36;
+const TABLE_ROW_H = 24;
+const COL_PK_WIDTH = 18;
+const TABLE_GAP_X = 60;
+const TABLE_GAP_Y = 40;
+
+let currentTables = [];
+let zoomLevel = 1;
+
+function getTableLayout(tables) {
+  const layouts = [];
+  let x = 20, y = 20;
+  let maxYInRow = 0;
+  const canvasWidth = Math.max(800, tables.length * (TABLE_WIDTH + TABLE_GAP_X) + 40);
+  
+  for (let i = 0; i < tables.length; i++) {
+    const t = tables[i];
+    const rowCount = t.columns.length;
+    const height = TABLE_HEADER_H + rowCount * TABLE_ROW_H + 8;
+    
+    // Check if we need to start a new row (wrap at ~3-4 tables)
+    if (i > 0 && i % 4 === 0) {
+      x = 20;
+      y += maxYInRow + TABLE_GAP_Y;
+      maxYInRow = 0;
+    }
+    
+    layouts.push({ x, y, width: TABLE_WIDTH, height: height + 4 });
+    maxYInRow = Math.max(maxYInRow, height);
+    x += TABLE_WIDTH + TABLE_GAP_X;
+  }
+  
+  return layouts;
+}
+
+function renderDiagram(tables) {
+  const canvas = document.getElementById('diagramCanvas');
+  const empty = document.getElementById('diagramEmpty');
+  const info = document.getElementById('diagramInfo');
+  const ctx = canvas.getContext('2d');
+  
+  if (!tables || tables.length === 0) {
+    canvas.style.display = 'none';
+    empty.style.display = 'block';
+    info.style.display = 'none';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  info.style.display = 'flex';
+  
+  document.getElementById('tablesCount').textContent = tables.length + ' table(s)';
+  const totalCols = tables.reduce((s, t) => s + t.columns.length, 0);
+  document.getElementById('colCount').textContent = totalCols + ' column(s)';
+  const totalFKs = tables.reduce((s, t) => s + t.foreignKeys.length, 0);
+  document.getElementById('fksCount').textContent = totalFKs + ' foreign key(s)';
+  
+  currentTables = tables;
+  
+  const layouts = getTableLayout(tables);
+  const maxX = Math.max(...layouts.map(l => l.x + l.width)) + 20;
+  const maxY = Math.max(...layouts.map(l => l.y + l.height)) + 20;
+  
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = maxX * dpr * zoomLevel;
+  canvas.height = maxY * dpr * zoomLevel;
+  canvas.style.width = (maxX * zoomLevel) + 'px';
+  canvas.style.height = (maxY * zoomLevel) + 'px';
+  canvas.style.display = 'block';
+  
+  ctx.scale(dpr * zoomLevel, dpr * zoomLevel);
+  
+  // Background
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, maxX, maxY);
+  
+  // Draw FK lines first (behind tables)
+  for (let i = 0; i < tables.length; i++) {
+    const srcLayout = layouts[i];
+    for (const fk of tables[i].foreignKeys) {
+      const targetIdx = tables.findIndex(t => t.name.toLowerCase() === fk.refTable.toLowerCase());
+      if (targetIdx === -1) continue;
+      
+      const dstLayout = layouts[targetIdx];
+      const fkColIdx = tables[i].columns.findIndex(c => c.name === fk.columns[0]);
+      const refColIdx = tables[targetIdx].columns.findIndex(c => c.name === fk.refColumns[0]);
+      
+      if (fkColIdx === -1 || refColIdx === -1) continue;
+      
+      const srcY = srcLayout.y + TABLE_HEADER_H + fkColIdx * TABLE_ROW_H + TABLE_ROW_H / 2;
+      const dstY = dstLayout.y + TABLE_HEADER_H + refColIdx * TABLE_ROW_H + TABLE_ROW_H / 2;
+      
+      const srcX = srcLayout.x + srcLayout.width;
+      const dstX = dstLayout.x;
+      
+      // Draw curved line
+      const midX = (srcX + dstX) / 2;
+      
+      ctx.beginPath();
+      ctx.moveTo(srcX, srcY + 2);
+      ctx.bezierCurveTo(midX, srcY + 2, midX, dstY + 2, dstX, dstY + 2);
+      ctx.strokeStyle = 'rgba(188, 140, 255, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      
+      // Arrow on destination side
+      ctx.beginPath();
+      ctx.moveTo(dstX, dstY + 2);
+      ctx.lineTo(dstX - 6, dstY - 3);
+      ctx.lineTo(dstX - 6, dstY + 7);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(188, 140, 255, 0.7)';
+      ctx.fill();
+      
+      // Dot on source side
+      ctx.beginPath();
+      ctx.arc(srcX, srcY + 2, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(188, 140, 255, 0.7)';
+      ctx.fill();
+    }
+  }
+  
+  // Draw tables
+  for (let i = 0; i < tables.length; i++) {
+    const t = tables[i];
+    const layout = layouts[i];
+    const color = TABLE_COLORS[i % TABLE_COLORS.length];
+    
+    // Table shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    roundRect(ctx, layout.x + 3, layout.y + 3, layout.width, layout.height, 6, true, false);
+    
+    // Table background
+    ctx.fillStyle = '#161b22';
+    roundRect(ctx, layout.x, layout.y, layout.width, layout.height, 6, true, false);
+    
+    // Table border
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, layout.x, layout.y, layout.width, layout.height, 6, false, true);
+    
+    // Table header
+    ctx.fillStyle = color;
+    roundRect(ctx, layout.x + 1, layout.y + 1, layout.width - 2, TABLE_HEADER_H - 1, 5, true, false);
+    // Square off bottom of header
+    ctx.fillRect(layout.x + 1, layout.y + TABLE_HEADER_H - 4, layout.width - 2, 4);
+    
+    // Table name
+    ctx.fillStyle = '#0d1117';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const displayName = t.name.length > 18 ? t.name.substring(0, 16) + '..' : t.name;
+    ctx.fillText(displayName, layout.x + layout.width / 2, layout.y + TABLE_HEADER_H / 2);
+    
+    // Column rows
+    for (let j = 0; j < t.columns.length; j++) {
+      const col = t.columns[j];
+      const rowY = layout.y + TABLE_HEADER_H + j * TABLE_ROW_H;
+      
+      // Row background on hover (not implemented, but separator)
+      ctx.strokeStyle = '#21262d';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(layout.x + 1, rowY);
+      ctx.lineTo(layout.x + layout.width - 1, rowY);
+      ctx.stroke();
+      
+      // PK indicator
+      if (col.isPK) {
+        ctx.fillStyle = color;
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('PK', layout.x + 12, rowY + TABLE_ROW_H / 2);
+      }
+      
+      // FK indicator
+      if (col.isFK && !col.isPK) {
+        ctx.fillStyle = '#bc8cff';
+        ctx.font = '9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('FK', layout.x + 12, rowY + TABLE_ROW_H / 2 + 1);
+      }
+      
+      // Column name
+      ctx.fillStyle = '#e6edf3';
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      const nameOffset = (col.isPK || col.isFK) ? 28 : 12;
+      const colName = col.name.length > 14 ? col.name.substring(0, 12) + '..' : col.name;
+      ctx.fillText(colName, layout.x + nameOffset, rowY + TABLE_ROW_H / 2);
+      
+      // Column type
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'right';
+      let typeLabel = col.type;
+      if (typeLabel.length > 8) typeLabel = typeLabel.substring(0, 7) + '..';
+      ctx.fillText(typeLabel, layout.x + layout.width - 8, rowY + TABLE_ROW_H / 2);
+      
+      // Nullable indicator
+      if (col.nullable && !col.isPK) {
+        ctx.fillStyle = '#484f58';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('?', layout.x + layout.width - 8 - ctx.measureText(typeLabel).width - 4, rowY + TABLE_ROW_H / 2);
+      }
+    }
+    
+    // Column separator line at bottom
+    ctx.strokeStyle = '#21262d';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(layout.x, layout.y + layout.height);
+    ctx.lineTo(layout.x + layout.width, layout.y + layout.height);
+    ctx.stroke();
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  if (fill) ctx.fill();
+  if (stroke) ctx.stroke();
+}
+
+/* ===== Main Actions ===== */
+
+function generateDiagram() {
+  const input = document.getElementById('ddlInput');
+  const btn = document.getElementById('genBtn');
+  const sql = input.value.trim();
+  
+  if (!sql) {
+    showToast('Please paste CREATE TABLE statements first');
+    return;
+  }
+  
+  btn.classList.add('loading');
+  btn.textContent = 'Parsing...';
+  
+  setTimeout(() => {
+    try {
+      const tables = parseCreateTable(sql);
+      if (tables.length === 0) {
+        showToast('No CREATE TABLE statements found. Check the syntax.');
+      } else {
+        renderDiagram(tables);
+        showToast('Diagram generated: ' + tables.length + ' table(s)');
+      }
+    } catch (e) {
+      showToast('Error: ' + e.message);
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = 'Generate Diagram';
+    }
+  }, 50);
+}
+
+function exportPNG() {
+  const canvas = document.getElementById('diagramCanvas');
+  if (!canvas || canvas.style.display === 'none') {
+    showToast('Generate a diagram first');
+    return;
+  }
+  
+  const link = document.getElementById('downloadLink');
+  link.href = canvas.toDataURL('image/png');
+  link.download = 'er-diagram.png';
+  link.click();
+  showToast('PNG exported');
+}
+
+function clearAll() {
+  document.getElementById('ddlInput').value = '';
+  renderDiagram([]);
+  showToast('Cleared');
+}
+
+function zoomIn() {
+  zoomLevel = Math.min(zoomLevel + 0.2, 3);
+  renderDiagram(currentTables);
+}
+
+function zoomOut() {
+  zoomLevel = Math.max(zoomLevel - 0.2, 0.4);
+  renderDiagram(currentTables);
+}
+
+function zoomReset() {
+  zoomLevel = 1;
+  renderDiagram(currentTables);
+}
+
+/* ===== Examples ===== */
+const EXAMPLES = {
+  ecommerce: `CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  address TEXT,
+  phone VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL,
+  stock INT DEFAULT 0,
+  category_id INT,
+  image_url VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  slug VARCHAR(100) UNIQUE NOT NULL,
+  parent_id INT,
+  FOREIGN KEY (parent_id) REFERENCES categories(id)
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  total DECIMAL(12,2) NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending',
+  shipping_address TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE order_items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  unit_price DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE reviews (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);`,
+
+  blog: `CREATE TABLE authors (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  bio TEXT,
+  avatar_url VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  author_id INT NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  slug VARCHAR(200) UNIQUE NOT NULL,
+  content TEXT NOT NULL,
+  excerpt TEXT,
+  status VARCHAR(20) DEFAULT 'draft',
+  published_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (author_id) REFERENCES authors(id)
+);
+
+CREATE TABLE tags (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  slug VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE post_tags (
+  post_id INT NOT NULL,
+  tag_id INT NOT NULL,
+  PRIMARY KEY (post_id, tag_id),
+  FOREIGN KEY (post_id) REFERENCES posts(id),
+  FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+CREATE TABLE comments (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  post_id INT NOT NULL,
+  author_name VARCHAR(100) NOT NULL,
+  author_email VARCHAR(255),
+  content TEXT NOT NULL,
+  status VARCHAR(20) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_id) REFERENCES posts(id)
+);`,
+
+  library: `CREATE TABLE books (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  isbn VARCHAR(13) UNIQUE NOT NULL,
+  title VARCHAR(300) NOT NULL,
+  publisher_id INT,
+  published_year INT,
+  pages INT,
+  quantity INT DEFAULT 1,
+  available INT DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE authors (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  bio TEXT,
+  birth_year INT
+);
+
+CREATE TABLE book_authors (
+  book_id INT NOT NULL,
+  author_id INT NOT NULL,
+  PRIMARY KEY (book_id, author_id),
+  FOREIGN KEY (book_id) REFERENCES books(id),
+  FOREIGN KEY (author_id) REFERENCES authors(id)
+);
+
+CREATE TABLE publishers (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(200) NOT NULL,
+  address TEXT,
+  phone VARCHAR(20)
+);
+
+CREATE TABLE members (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  membership_date DATE NOT NULL,
+  status VARCHAR(20) DEFAULT 'active'
+);
+
+CREATE TABLE loans (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  book_id INT NOT NULL,
+  member_id INT NOT NULL,
+  loan_date DATE NOT NULL,
+  due_date DATE NOT NULL,
+  return_date DATE,
+  status VARCHAR(20) DEFAULT 'active',
+  FOREIGN KEY (book_id) REFERENCES books(id),
+  FOREIGN KEY (member_id) REFERENCES members(id)
+);`
+};
+
+function loadExample(name) {
+  document.getElementById('ddlInput').value = EXAMPLES[name] || '';
+  setTimeout(() => generateDiagram(), 100);
+  showToast('Loaded: ' + name + ' schema');
+}
+
+/* ===== Toast ===== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ===== Keyboard shortcut ===== */
+document.getElementById('ddlInput').addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    e.preventDefault();
+    generateDiagram();
+  }
+});
+</script>
+</body>
+</html>
