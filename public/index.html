@@ -28,7 +28,7 @@
       "priceCurrency": "USD"
     },
     "url": "https://sqlformat.io",
-    "dateModified": "2026-06-12",
+    "dateModified": "2026-06-13",
     "browserRequirements": "Requires JavaScript",
     "featureList": "SQL formatting, SQL minification, SQL to JSON conversion, 15+ dialect support, client-side processing"
   }
@@ -615,11 +615,7 @@ gtag('config', 'G-M3MYLE3P6F');
       <span style="font-size:1.5rem;">💡</span>
       <strong style="font-size:1.05rem;color:var(--accent);">今日 SQL 技巧 · Daily Tip</strong>
     </div>
-    <p style="color:var(--text);font-size:0.95rem;line-height:1.6;margin:0;">避免在 `WHERE` 子句中对索引列使用函数（如 `WHERE YEAR(date_col) = 2024`），这会让索引失效 <span style="color:var(--text2);font-size:0.78rem;margin-left:8px;">— all</span></div>
-    </div>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <button class="faq-question">Can I format large SQL queries? <span class="arrow">▼</span></button>
-      <div class="faq-answer"><p>Yes. There are no arbitrary size limits. The formatter handles queries of any length — complex CTEs, nested subqueries, window functions, multi-table joins. If your SQL works in your database, it'll work here.</p></div>
+    <p style="color:var(--text);font-size:0.95rem;line-height:1.6;margin:0;">用 `UNION ALL` 而非 `UNION` —— 除非你真的需要去重。`UNION` 的隐式排序和去重非常昂贵 <span style="color:var(--text2);font-size:0.78rem;margin-left:8px;">— all</span></div>
     </div>
     <div class="faq-item" onclick="this.classList.toggle('open')">
       <button class="faq-question">Is sqlformat.io really free with no limits? <span class="arrow">▼</span></button>
