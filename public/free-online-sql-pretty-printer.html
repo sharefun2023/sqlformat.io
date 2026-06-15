@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Pretty Printer — Syntax Highlighting & Image Export | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL pretty printer with full syntax highlighting. Format SQL queries with colored keywords, strings, and operators. Export as PNG or SVG image for documentation, presentations, and code reviews. Dark and light themes. No signup, 100% client-side.">
+  <meta name="keywords" content="free online SQL pretty printer, SQL syntax highlighting tool, SQL to PNG, SQL to SVG, SQL code image generator, SQL documentation tool, formatted SQL export, SQL beautifier with colors, SQL code screenshot, SQL pretty print online">
+  <meta property="og:title" content="Free Online SQL Pretty Printer — Syntax Highlighting & Image Export">
+  <meta property="og:description" content="Format SQL with full syntax highlighting and export as PNG or SVG. Perfect for documentation, presentations, and code reviews. Dark and light themes. 100% free, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-pretty-printer">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-pretty-printer">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online SQL Pretty Printer",
+    "description": "Free online SQL pretty printer with full syntax highlighting. Format SQL queries with colored keywords, strings, numbers, and comments. Export formatted output as PNG or SVG images for use in documentation, presentations, and code reviews. Supports 15+ SQL dialects. Dark and light themes. 100% client-side, no data leaves your browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-sql-pretty-printer",
+    "dateModified": "2026-06-15",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL syntax highlighting, SQL formatted image export, PNG export, SVG export, dark and light themes, 15+ dialect support, client-side processing, clipboard copy"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online SQL Pretty Printer", "item": "https://sqlformat.io/free-online-sql-pretty-printer"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a SQL pretty printer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A SQL pretty printer formats raw SQL queries with proper indentation, line breaks, and color-coded syntax highlighting. It makes SQL code readable and visually appealing, with different colors for keywords, strings, numbers, comments, and operators. The formatted output can be exported as an image for use in documentation, presentations, and code reviews."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I export formatted SQL as an image?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Enter your SQL query on the free online SQL pretty printer at sqlformat.io, click Format & Highlight, then choose Export PNG or Export SVG. The tool renders your formatted SQL with full syntax highlighting as a clean image file. You can switch between dark and light themes before exporting. SVG exports are resolution-independent and perfect for print documentation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use the pretty printer for documentation screenshots?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The SQL pretty printer is built specifically for creating documentation-quality SQL images. Choose your color theme (dark or light), format your query with proper indentation and syntax highlighting, and download as PNG or SVG. The dark theme produces images that look great on modern developer documentation sites, while the light theme is ideal for printed documentation and presentations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects does the pretty printer support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The free online SQL pretty printer supports 15+ database dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. The syntax highlighting adapts to each dialect's specific keywords and syntax rules."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL data safe when using the online pretty printer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. All SQL formatting, syntax highlighting, and image rendering happens entirely in your browser. The SQL pretty printer uses client-side JavaScript with no server-side processing. Your SQL queries never leave your device. No data is logged, stored, or transmitted."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6;
+      display: flex; flex-direction: column;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    header {
+      background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 0;
+    }
+    header .container { display: flex; align-items: center; gap: 20px; }
+    .logo { font-size: 1rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    header nav a { color: var(--text2); text-decoration: none; font-size: 0.82rem; }
+    header nav a:hover { color: var(--text); }
+
+    main { flex: 1; padding: 32px 0; }
+    h1 { font-size: 1.6rem; margin-bottom: 16px; }
+    h2 { font-size: 1.15rem; margin: 28px 0 12px; color: var(--accent); }
+    p { margin-bottom: 14px; font-size: 0.92rem; color: var(--text2); }
+    p strong { color: var(--text); }
+    ul { margin: 10px 0 16px 20px; }
+    li { margin-bottom: 8px; font-size: 0.92rem; color: var(--text2); line-height: 1.6; }
+    .cta {
+      display: inline-block; margin: 8px 0 16px; padding: 10px 24px;
+      background: var(--accent); color: #fff; text-decoration: none;
+      border-radius: 6px; font-weight: 500; font-size: 0.9rem;
+    }
+    .cta:hover { opacity: 0.85; }
+    .feature-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 16px;
+    }
+    .feature-box h3 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
+    .feature-box p, .feature-box ul { margin: 0; }
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 640px) { .feature-grid { grid-template-columns: 1fr; } }
+
+    .related-links { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+    .related-links a {
+      color: var(--accent); text-decoration: none; font-size: 0.84rem;
+      padding: 4px 10px; background: var(--surface2); border-radius: 4px;
+    }
+    .related-links a:hover { background: var(--border); }
+
+    footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 20px 0; text-align: center; font-size: 0.82rem; color: var(--text2);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav><a href="/pretty-print">SQL Pretty Print</a></nav>
+  </div>
+</header>
+
+<main class="container">
+  <h1>Free Online SQL Pretty Printer — Syntax Highlighting &amp; Image Export</h1>
+
+  <p><strong>SQL pretty printing</strong> is the practice of formatting raw SQL queries with proper indentation, line breaks, and color-coded syntax highlighting. A SQL pretty printer transforms messy, hard-to-read queries into clean, visually organized code that is easy to understand, review, and share. The <strong>free online SQL pretty printer</strong> at SQLFormat.io goes a step further — it lets you <strong>export formatted SQL as PNG or SVG images</strong>, making it the perfect tool for documentation, presentations, and code reviews.</p>
+
+  <a href="/pretty-print" class="cta">Open SQL Pretty Print &rarr;</a>
+
+  <p>When you paste a SQL query into the pretty printer, it applies <strong>intelligent formatting</strong> that respects your database dialect's syntax rules. Keywords become one color, string literals another, and numbers, comments, and operators each get their own distinct hue. The result is not just formatted — it's <strong>visually parseable at a glance</strong>.</p>
+
+  <h2>Why Use a SQL Pretty Printer with Image Export?</h2>
+
+  <div class="feature-grid">
+    <div class="feature-box">
+      <h3>Documentation Ready</h3>
+      <p>Export formatted SQL as clean SVG or PNG images that are ready to insert into technical documentation, wikis, and developer guides. SVG exports are resolution-independent and look sharp at any size.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Presentations &amp; Slides</h3>
+      <p>Create professional SQL code images for PowerPoint, Keynote, or Google Slides presentations. Choose the light theme for printed handouts or the dark theme for screen presentations.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Code Reviews</h3>
+      <p>Share formatted and highlighted SQL snippets in code review comments. The syntax highlighting makes it easy for reviewers to spot keywords, table names, and conditions at a glance.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Social Media &amp; Blogging</h3>
+      <p>Post attractive SQL code screenshots on Twitter, LinkedIn, or Dev.to. A well-formatted, color-highlighted SQL image gets more engagement than a code block.</p>
+    </div>
+  </div>
+
+  <h2>Syntax Highlighting: Every Token Gets Its Color</h2>
+
+  <p>The free online SQL pretty printer tokenizes your formatted SQL and assigns a distinct color to each type of token:</p>
+
+  <ul>
+    <li><strong>Keywords</strong> (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code>, etc.) — rendered in a distinct red/pink tone in both dark and light themes</li>
+    <li><strong>Functions</strong> (<code>COUNT()</code>, <code>SUM()</code>, <code>COALESCE()</code>, <code>ROW_NUMBER()</code>, etc.) — purple/violet coloring for immediate recognition</li>
+    <li><strong>String literals</strong> — blue tones to distinguish data values from structure</li>
+    <li><strong>Numbers</strong> — bright blue for easy spotting in queries with LIMIT, OFFSET, or WHERE clauses</li>
+    <li><strong>Comments</strong> (<code>-- single line</code>, <code>/* block */</code>) — italic and muted gray to de-emphasize notes</li>
+    <li><strong>Operators</strong> (<code>AND</code>, <code>OR</code>, <code>IN</code>, <code>BETWEEN</code>, <code>LIKE</code>) — orange/amber to highlight logical connections</li>
+  </ul>
+
+  <p>Choose between <strong>Dark Theme</strong> (GitHub-style dark background, ideal for developer screens and modern docs) and <strong>Light Theme</strong> (white background, perfect for print, publications, and formal documentation).</p>
+
+  <h2>Export Formats: PNG vs SVG</h2>
+
+  <p>The SQL pretty printer supports two export formats, each suited to different use cases:</p>
+
+  <ul>
+    <li><strong>PNG Export</strong> — Raster image format, good for social media, screenshots, and embedding in documents where a fixed-resolution image is fine. The SQL is rendered onto an HTML5 Canvas element with exact pixel positioning.</li>
+    <li><strong>SVG Export</strong> — Vector image format, best for professional documentation, print, and any use case requiring resolution independence. SVG images scale perfectly to any size without quality loss. Each character is an individual text element with its own color, producing crisp output at any zoom level.</li>
+  </ul>
+
+  <h2>15+ SQL Dialects Supported</h2>
+
+  <p>The SQL pretty printer works with all major database dialects, ensuring accurate formatting and highlighting regardless of your database platform: MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL.</p>
+
+  <h2>Privacy &amp; Security</h2>
+
+  <p>Like all tools on SQLFormat.io, the <strong>SQL pretty printer runs entirely in your browser</strong>. There are no server requests, no data storage, and no logging. Your SQL queries and formatted output never leave your device. This makes it safe to use with proprietary queries, production SQL, and sensitive database schemas.</p>
+
+  <a href="/pretty-print" class="cta">Try the Free SQL Pretty Printer &rarr;</a>
+
+  <div class="related-links">
+    <a href="/">SQL Formatter</a>
+    <a href="/minify">SQL Minifier</a>
+    <a href="/sql-to-json">SQL to JSON</a>
+    <a href="/validate">SQL Validator</a>
+    <a href="/diff">SQL Diff</a>
+    <a href="/explain">EXPLAIN Visualizer</a>
+    <a href="/er-diagram">ER Diagram Generator</a>
+    <a href="/data-generator">SQL Data Generator</a>
+    <a href="/dialect-converter">Dialect Converter</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> &mdash; Free Online SQL Formatter &amp; Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

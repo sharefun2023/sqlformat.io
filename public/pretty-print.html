@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Pretty Print — Syntax-Highlighted Formatter & Image Export | SQLFormat.io</title>
+  <meta name="description" content="Format SQL with syntax highlighting and export as PNG or SVG image. Perfect for documentation, presentations, and code reviews. Choose from dark and light themes. 100% free, runs in your browser.">
+  <meta name="keywords" content="SQL pretty print, SQL syntax highlighting, SQL formatter with colors, export SQL as image, SQL to PNG, SQL to SVG, SQL code screenshot, formatted SQL image, database documentation tool">
+  <meta property="og:title" content="SQL Pretty Print — Syntax-Highlighted Formatter & Image Export">
+  <meta property="og:description" content="Format SQL with syntax highlighting and export as PNG or SVG. Perfect for documentation, presentations, and code reviews. Dark and light themes. No signup, runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/pretty-print">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/pretty-print">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Pretty Print",
+    "description": "Free online SQL pretty printer with syntax highlighting and image export. Format SQL queries with colored keywords, strings, numbers, and comments. Export as PNG or SVG for documentation, presentations, and code reviews. Dark and light themes available. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/pretty-print",
+    "dateModified": "2026-06-15",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL syntax highlighting, SQL formatting, PNG export, SVG export, dark and light themes, copy formatted SQL, 15+ dialect support, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Pretty Print", "item": "https://sqlformat.io/pretty-print"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I export formatted SQL as an image?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Enter your SQL query, select your database dialect, click Format, then choose Export PNG or Export SVG. The syntax-highlighted output is rendered as a downloadable image file. Choose between dark and light themes before exporting. All processing happens client-side in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use the SQL pretty printer for documentation screenshots?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The pretty printer is designed specifically for creating documentation-ready SQL images. Format your query with full syntax highlighting, choose your preferred color theme, and export as PNG or SVG. SVG exports are resolution-independent, perfect for inserting into technical documentation, wikis, and presentations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What syntax highlighting does the SQL pretty printer support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool highlights SQL keywords (SELECT, FROM, WHERE, JOIN, etc.), string literals, numbers, comments (both single-line -- and multi-line /* */), operators, and functions. The highlighting is based on tokenized analysis of the formatted output, producing accurate and readable color-coded SQL for any dialect."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL pretty print tool free with no limits?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Completely free with no signup, no limits, and no data sent to servers. Everything runs in your browser. You can format and export as many SQL queries as you need. The PNG and SVG exports have no size restrictions."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+    /* Header */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .logo { font-size: 1.0rem; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    header nav { display: flex; gap: 6px; flex-wrap: wrap; }
+    header nav a {
+      color: var(--text2); text-decoration: none; font-size: 0.82rem;
+      padding: 4px 10px; border-radius: 4px; transition: all 0.2s; white-space: nowrap;
+    }
+    header nav a:hover, header nav a.active { color: var(--text); background: var(--surface2); }
+
+    main { flex: 1; padding: 24px 0; }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; }
+    .subtitle { color: var(--text2); font-size: 0.88rem; margin-bottom: 20px; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .panel-header label { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
+    .panel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    textarea, .code-output {
+      width: 100%;
+      min-height: 240px;
+      flex: 1;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      resize: vertical;
+      tab-size: 2;
+    }
+    textarea:focus { outline: none; border-color: var(--accent); }
+
+    .code-output {
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .code-output .keyword { color: #ff7b72; }
+    .code-output .function { color: #d2a8ff; }
+    .code-output .string { color: #a5d6ff; }
+    .code-output .number { color: #79c0ff; }
+    .code-output .comment { color: #8b949e; font-style: italic; }
+    .code-output .operator { color: #ffa657; }
+    .code-output .punctuation { color: #e6edf3; }
+
+    /* Light theme for code-output */
+    .code-output.light-theme .keyword { color: #d73a49; }
+    .code-output.light-theme .function { color: #6f42c1; }
+    .code-output.light-theme .string { color: #032f62; }
+    .code-output.light-theme .number { color: #005cc5; }
+    .code-output.light-theme .comment { color: #6a737d; }
+    .code-output.light-theme .operator { color: #d73a49; }
+    .code-output.light-theme .punctuation { color: #24292e; }
+    .code-output.light-theme { background: #ffffff; color: #24292e; }
+
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    select, button {
+      font-family: var(--font);
+      font-size: 0.84rem;
+    }
+
+    select {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    select:focus { outline: none; border-color: var(--accent); }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover { background: var(--border); }
+
+    .theme-toggle-group {
+      display: flex;
+      gap: 4px;
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 3px;
+    }
+    .theme-btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      background: transparent;
+      color: var(--text2);
+      transition: all 0.2s;
+    }
+    .theme-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .theme-btn:hover:not(.active) { color: var(--text); }
+
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      margin: 12px 0;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+    .stats-bar span { display: flex; align-items: center; gap: 4px; }
+    .stats-bar strong { color: var(--text); }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface2);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      border: 1px solid var(--border);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 100;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* Related tools */
+    .related-tools {
+      margin-top: 32px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .related-tools h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--text2); }
+    .related-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .related-links a {
+      color: var(--accent); text-decoration: none; font-size: 0.84rem;
+      padding: 4px 10px; background: var(--surface2); border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .related-links a:hover { background: var(--border); }
+
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    .back-link { display: inline-block; margin-bottom: 16px; }
+    .back-link a { color: var(--accent); text-decoration: none; font-size: 0.84rem; }
+    .back-link a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .tool-grid { grid-template-columns: 1fr; }
+      header .container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL->JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/escape">Escape</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/dialect-converter">Converter</a>
+      <a href="/er-diagram">ER</a>
+      <a href="/pretty-print" class="active">Pretty Print</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="back-link"><a href="/">&larr; Back to SQL Formatter</a></div>
+  <h1>SQL Pretty Print &amp; Syntax Highlighting</h1>
+  <p class="subtitle">Format SQL with colored syntax, then export as PNG or SVG for documentation, presentations, and code reviews.</p>
+
+  <div class="controls-row">
+    <select id="dialect">
+      <option value="sql">Standard SQL</option>
+      <option value="mysql">MySQL</option>
+      <option value="postgresql">PostgreSQL</option>
+      <option value="sqlite">SQLite</option>
+      <option value="bigquery">BigQuery</option>
+      <option value="db2">DB2</option>
+      <option value="hive">Hive</option>
+      <option value="mariadb">MariaDB</option>
+      <option value="plsql">PL/SQL (Oracle)</option>
+      <option value="redshift">Redshift</option>
+      <option value="singlestoredb">SingleStoreDB</option>
+      <option value="snowflake">Snowflake</option>
+      <option value="sparksql">Spark SQL</option>
+      <option value="tsql">T-SQL (SQL Server)</option>
+      <option value="trino">Trino</option>
+    </select>
+
+    <div class="theme-toggle-group">
+      <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">Dark</button>
+      <button class="theme-btn" data-theme="light" onclick="setTheme('light')">Light</button>
+    </div>
+
+    <button onclick="formatSQL()">Format &amp; Highlight</button>
+    <button class="secondary" onclick="exportPNG()">Export PNG</button>
+    <button class="secondary" onclick="exportSVG()">Export SVG</button>
+    <button class="secondary" onclick="copyFormatted()">Copy</button>
+  </div>
+
+  <div class="tool-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <label for="inputSql">Input SQL</label>
+      </div>
+      <textarea id="inputSql" placeholder="Paste your SQL query here&#10;&#10;SELECT u.name, COUNT(o.id) as order_count&#10;FROM users u&#10;LEFT JOIN orders o ON u.id = o.user_id&#10;WHERE o.created_at >= '2025-01-01'&#10;GROUP BY u.name&#10;HAVING COUNT(o.id) > 5&#10;ORDER BY order_count DESC;"></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <label>Formatted Output</label>
+      </div>
+      <div class="code-output" id="outputHighlight"></div>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <span>Lines: <strong id="lineCount">0</strong></span>
+    <span>Chars: <strong id="charCount">0</strong></span>
+    <span>Theme: <strong id="currentTheme">Dark</strong></span>
+  </div>
+
+  <!-- Hidden canvas for PNG export -->
+  <canvas id="exportCanvas" style="display:none;"></canvas>
+
+  <div class="related-tools">
+    <h3>Related Tools</h3>
+    <div class="related-links">
+      <a href="/">SQL Formatter</a>
+      <a href="/minify">SQL Minifier</a>
+      <a href="/diff">SQL Diff</a>
+      <a href="/validate">SQL Validator</a>
+      <a href="/explain">EXPLAIN Visualizer</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> &mdash; Free Online SQL Formatter &amp; Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="/sql-formatter.js"></script>
+<script>
+window._formatSql = sqlFormatter.format;
+
+let currentTheme = 'dark';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function setTheme(theme) {
+  currentTheme = theme;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+  document.getElementById('currentTheme').textContent = theme === 'dark' ? 'Dark' : 'Light';
+  const output = document.getElementById('outputHighlight');
+  output.classList.toggle('light-theme', theme === 'light');
+  // Re-highlight if there's content
+  const content = output.textContent || output.innerText;
+  if (content.trim()) {
+    highlightSyntax(output, content, theme);
+  }
+}
+
+// SQL syntax highlighting tokens
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function highlightSyntax(element, text, theme) {
+  const kw = '\\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|AS|ON|JOIN|LEFT|RIGHT|INNER|OUTER|CROSS|FULL|NATURAL|USING|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|INDEX|VIEW|IF|EXISTS|PRIMARY|KEY|FOREIGN|UNIQUE|REFERENCES|CASCADE|CONSTRAINT|DEFAULT|CHECK|INDEX|TYPE|BETWEEN|LIKE|ILIKE|ORDER\\s+BY|GROUP\\s+BY|HAVING|LIMIT|OFFSET|DISTINCT|TOP|ASC|DESC|CASE|WHEN|THEN|ELSE|END|BEGIN|COMMIT|ROLLBACK|TRANSACTION|WITH|RECURSIVE|RETURNING|EXCEPT|INTERSECT|UNION|ALL|ANY|SOME|EXISTS|CAST|COALESCE|NULLIF|TRUE|FALSE|OVER|PARTITION\\s+BY|WINDOW|ROWS|RANGE|UNBOUNDED|PRECEDING|FOLLOWING|CURRENT\\s+ROW|ROW|ROWS\\b)';
+  const func = '\\b(COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST|CONVERT|SUBSTRING|SUBSTR|TRIM|LENGTH|CHAR_LENGTH|UPPER|LOWER|REPLACE|CONCAT|NOW|CURDATE|CURTIME|DATE_FORMAT|DATE_ADD|DATE_SUB|DATEDIFF|EXTRACT|YEAR|MONTH|DAY|HOUR|MINUTE|SECOND|ROW_NUMBER|RANK|DENSE_RANK|NTILE|LAG|LEAD|FIRST_VALUE|LAST_VALUE|NTH_VALUE|ARRAY_AGG|STRING_AGG|GROUP_CONCAT|JSON_EXTRACT|JSON_UNQUOTE|JSON_KEYS|JSON_ARRAY|JSON_OBJECT|TO_CHAR|TO_DATE|TO_NUMBER|GREATEST|LEAST|ABS|ROUND|CEIL|FLOOR|MOD|POWER|SQRT|EXP|LN|LOG)\\b';
+  const str = "'(?:[^']|'')*'";
+  const num = '\\b\\d+(\\.\\d+)?\\b';
+  const comment = '(--[^\n]*)';
+  const blockComment = '(\\/\\*[\\s\\S]*?\\*\\/)';
+  const op = '\\b(AND|OR|NOT|IS|NULL|IN|BETWEEN|LIKE|ILIKE|SIMILAR\\s+TO)\\b';
+  const punct = '([,;()=<>!+\\-*\\/%])';
+
+  // Build combined regex
+  const re = new RegExp(kw + '|' + func + '|' + str + '|' + num + '|' + comment + '|' + blockComment + '|' + op + '|' + punct, 'gi');
+
+  let html = '';
+  let lastIndex = 0;
+  let m;
+  const text2 = text;
+
+  while ((m = re.exec(text2)) !== null) {
+    // text before match
+    if (m.index > lastIndex) {
+      html += escapeHtml(text2.substring(lastIndex, m.index));
+    }
+    const token = m[0];
+    let cls = 'punctuation';
+    if (m[1] !== undefined) cls = 'keyword';
+    else if (m[2] !== undefined) cls = 'function';
+    else if (m[3] !== undefined) cls = 'string';
+    else if (m[4] !== undefined) cls = 'number';
+    else if (m[5] !== undefined || m[6] !== undefined) cls = 'comment';
+    else if (m[7] !== undefined) cls = 'operator';
+    html += '<span class="' + cls + '">' + escapeHtml(token) + '</span>';
+    lastIndex = m.index + token.length;
+  }
+  if (lastIndex < text2.length) {
+    html += escapeHtml(text2.substring(lastIndex));
+  }
+  element.innerHTML = html || escapeHtml(text2);
+}
+
+function formatSQL() {
+  const input = document.getElementById('inputSql');
+  const output = document.getElementById('outputHighlight');
+  const sql = input.value.trim();
+
+  if (!sql) {
+    showToast('Please enter a SQL query first');
+    return;
+  }
+
+  const dialect = document.getElementById('dialect').value;
+
+  try {
+    const formatted = window._formatSql(sql, { language: dialect, indent: '  ' });
+    // Apply theme class
+    output.classList.toggle('light-theme', currentTheme === 'light');
+    highlightSyntax(output, formatted, currentTheme);
+    updateStats(formatted);
+    showToast('Formatted with syntax highlighting');
+  } catch (e) {
+    // Even if formatting fails, show plain text with highlighting
+    output.classList.toggle('light-theme', currentTheme === 'light');
+    highlightSyntax(output, sql, currentTheme);
+    updateStats(sql);
+    showToast('Displayed with syntax highlighting (raw)');
+  }
+}
+
+function updateStats(text) {
+  document.getElementById('lineCount').textContent = text.split('\n').length;
+  document.getElementById('charCount').textContent = text.length;
+}
+
+function getFormattedText() {
+  const output = document.getElementById('outputHighlight');
+  return output.textContent || output.innerText || '';
+}
+
+function copyFormatted() {
+  const text = getFormattedText();
+  if (!text) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Copied to clipboard');
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+}
+
+// Export as PNG
+function exportPNG() {
+  const text = getFormattedText();
+  if (!text) { showToast('Format some SQL first'); return; }
+
+  const isLight = currentTheme === 'light';
+  const bgColor = isLight ? '#ffffff' : '#0d1117';
+  const textColor = isLight ? '#24292e' : '#e6edf3';
+  const lines = text.split('\n');
+  const maxLineWidth = Math.max(...lines.map(l => l.length));
+  const fontSize = 14;
+  const lineHeight = fontSize * 1.55;
+  const padding = 24;
+  const charWidth = fontSize * 0.61;  // monospace approx
+  const width = Math.max(400, Math.min(1200, maxLineWidth * charWidth + padding * 2));
+  const height = Math.max(100, lines.length * lineHeight + padding * 2 + 32); // + header
+
+  const canvas = document.getElementById('exportCanvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, width, height);
+
+  // Title bar
+  ctx.fillStyle = isLight ? '#f3f3f3' : '#161b22';
+  ctx.fillRect(0, 0, width, 28);
+  ctx.fillStyle = isLight ? '#999' : '#8b949e';
+  ctx.font = '11px -apple-system, sans-serif';
+  ctx.fillText('SQL Pretty Print - ' + (isLight ? 'Light' : 'Dark') + ' Theme', 10, 18);
+
+  // Draw the highlighted SQL using syntax coloring
+  ctx.font = fontSize + 'px SF Mono, Monaco, Consolas, monospace';
+
+  // Parse and color each line
+  for (let li = 0; li < lines.length; li++) {
+    const line = lines[li];
+    const y = padding + 28 + li * lineHeight + fontSize;
+    let x = padding;
+
+    // Tokenize the line (simple regex for export)
+    const tokens = tokenizeLine(line);
+    for (const t of tokens) {
+      ctx.fillStyle = getColorForClass(t.cls, isLight);
+      ctx.fillText(t.text, x, y);
+      x += ctx.measureText(t.text).width;
+    }
+  }
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'sql-pretty-print-' + Date.now() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast('PNG exported');
+}
+
+// Export as SVG
+function exportSVG() {
+  const text = getFormattedText();
+  if (!text) { showToast('Format some SQL first'); return; }
+
+  const isLight = currentTheme === 'light';
+  const bgColor = isLight ? '#ffffff' : '#0d1117';
+  const textColor = isLight ? '#24292e' : '#e6edf3';
+  const lines = text.split('\n');
+  const maxLineWidth = Math.max(...lines.map(l => l.length));
+  const fontSize = 14;
+  const lineHeight = fontSize * 1.55;
+  const padding = 24;
+  const charWidth = fontSize * 0.61;
+  const width = Math.max(400, Math.min(1200, maxLineWidth * charWidth + padding * 2));
+  const height = Math.max(100, lines.length * lineHeight + padding * 2 + 32);
+
+  const colors = {
+    keyword: isLight ? '#d73a49' : '#ff7b72',
+    function: isLight ? '#6f42c1' : '#d2a8ff',
+    string: isLight ? '#032f62' : '#a5d6ff',
+    number: isLight ? '#005cc5' : '#79c0ff',
+    comment: isLight ? '#6a737d' : '#8b949e',
+    operator: isLight ? '#d73a49' : '#ffa657',
+    punctuation: isLight ? '#24292e' : '#e6edf3',
+  };
+
+  let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">';
+  svg += '<rect width="100%" height="100%" fill="' + bgColor + '"/>';
+  svg += '<rect width="100%" height="28" fill="' + (isLight ? '#f3f3f3' : '#161b22') + '"/>';
+  svg += '<text x="10" y="18" font-family="-apple-system, sans-serif" font-size="11" fill="' + (isLight ? '#999' : '#8b949e') + '">SQL Pretty Print - ' + (isLight ? 'Light' : 'Dark') + ' Theme</text>';
+
+  for (let li = 0; li < lines.length; li++) {
+    const line = lines[li];
+    const y = padding + 28 + li * lineHeight + fontSize;
+    let x = padding;
+    const tokens = tokenizeLine(line);
+    for (const t of tokens) {
+      const c = colors[t.cls] || colors.punctuation;
+      svg += '<text x="' + x + '" y="' + y + '" font-family="SF Mono, Monaco, Consolas, monospace" font-size="' + fontSize + '" fill="' + c + '" xml:space="preserve">' + escapeXml(t.text) + '</text>';
+      x += measureTextWidth(t.text, fontSize);
+    }
+  }
+
+  svg += '</svg>';
+
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.download = 'sql-pretty-print-' + Date.now() + '.svg';
+  link.href = url;
+  link.click();
+  URL.revokeObjectURL(url);
+  showToast('SVG exported');
+}
+
+function escapeXml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function measureTextWidth(text, fontSize) {
+  // Approximate monospace width
+  return text.length * fontSize * 0.61;
+}
+
+function getColorForClass(cls, isLight) {
+  const map = {
+    keyword: isLight ? '#d73a49' : '#ff7b72',
+    function: isLight ? '#6f42c1' : '#d2a8ff',
+    string: isLight ? '#032f62' : '#a5d6ff',
+    number: isLight ? '#005cc5' : '#79c0ff',
+    comment: isLight ? '#6a737d' : '#8b949e',
+    operator: isLight ? '#d73a49' : '#ffa657',
+    punctuation: isLight ? '#24292e' : '#e6edf3',
+  };
+  return map[cls] || map.punctuation;
+}
+
+function tokenizeLine(line) {
+  // Simple regex-based tokenizer for a single line
+  const kw = '\\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|AS|ON|JOIN|LEFT|RIGHT|INNER|OUTER|CROSS|FULL|NATURAL|USING|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|INDEX|VIEW|IF|EXISTS|PRIMARY|KEY|FOREIGN|UNIQUE|REFERENCES|CASCADE|CONSTRAINT|DEFAULT|CHECK|INDEX|TYPE|BETWEEN|LIKE|ILIKE|ORDER\\s+BY|GROUP\\s+BY|HAVING|LIMIT|OFFSET|DISTINCT|TOP|ASC|DESC|CASE|WHEN|THEN|ELSE|END|BEGIN|COMMIT|ROLLBACK|TRANSACTION|WITH|RECURSIVE|RETURNING|EXCEPT|INTERSECT|UNION|ALL|ANY|SOME|EXISTS|CAST|COALESCE|NULLIF|TRUE|FALSE|OVER|PARTITION\\s+BY|WINDOW|ROWS|RANGE|UNBOUNDED|PRECEDING|FOLLOWING|CURRENT\\s+ROW|ROW|ROWS)\\b';
+  const func = '\\b(COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST|CONVERT|SUBSTRING|SUBSTR|TRIM|LENGTH|CHAR_LENGTH|UPPER|LOWER|REPLACE|CONCAT|NOW|CURDATE|CURTIME|DATE_FORMAT|DATE_ADD|DATE_SUB|DATEDIFF|EXTRACT|YEAR|MONTH|DAY|HOUR|MINUTE|SECOND|ROW_NUMBER|RANK|DENSE_RANK|NTILE|LAG|LEAD|FIRST_VALUE|LAST_VALUE|NTH_VALUE|ARRAY_AGG|STRING_AGG|GROUP_CONCAT|JSON_EXTRACT|JSON_UNQUOTE|JSON_KEYS|JSON_ARRAY|JSON_OBJECT|TO_CHAR|TO_DATE|TO_NUMBER|GREATEST|LEAST|ABS|ROUND|CEIL|FLOOR|MOD|POWER|SQRT|EXP|LN|LOG)\\b';
+  const str = "'(?:[^']|'')*'";
+  const num = '\\b\\d+(\\.\\d+)?\\b';
+  const op = '\\b(AND|OR|NOT|IS|NULL|IN|BETWEEN|LIKE|ILIKE|SIMILAR\\s+TO)\\b';
+
+  const re = new RegExp(kw + '|' + func + '|' + str + '|' + num + '|' + op + '|([,;()=<>!+\\-*\\/%])|(\\S+)', 'gi');
+  const tokens = [];
+  let m;
+  while ((m = re.exec(line)) !== null) {
+    const text = m[0];
+    let cls = 'punctuation';
+    if (m[1] !== undefined) cls = 'keyword';
+    else if (m[2] !== undefined) cls = 'function';
+    else if (m[3] !== undefined) cls = 'string';
+    else if (m[4] !== undefined) cls = 'number';
+    else if (m[5] !== undefined) cls = 'operator';
+    // m[6] is punctuation, m[7] is other text
+    tokens.push({ text, cls });
+  }
+  if (tokens.length === 0 && line.trim()) {
+    tokens.push({ text: line, cls: 'punctuation' });
+  }
+  return tokens;
+}
+</script>
+</body>
+</html>
