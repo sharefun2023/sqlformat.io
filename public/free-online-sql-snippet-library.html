@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Snippet Library — SQL Code Templates & Recipes | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL snippet library with categorized code templates and recipes. Browse reusable snippets for recursive CTEs, window functions, pagination, pivot tables, date queries, and more. One-click copy. 100% free, no signup.">
+  <meta name="keywords" content="free online SQL snippet library, SQL code templates, SQL code examples, SQL recipes, reusable SQL snippets, SQL cheat sheet, SQL code library online, SQL template repository, SQL code patterns, SQL query examples">
+  <meta property="og:title" content="Free Online SQL Snippet Library — SQL Code Templates & Recipes">
+  <meta property="og:description" content="Free online SQL snippet library with categorized code templates. Browse reusable snippets for CTEs, window functions, pagination, pivot tables, date queries, and more. One-click copy. 100% free.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-snippet-library">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-snippet-library">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online SQL Snippet Library",
+    "description": "Free online SQL snippet library with categorized, reusable SQL code templates and recipes. Browse snippets for recursive CTEs, window functions (ROW_NUMBER, RANK, LAG/LEAD), pagination (OFFSET/FETCH, keyset), pivot/unpivot tables, string aggregation (STRING_AGG, GROUP_CONCAT, LISTAGG), date/time queries, slow query analysis, MERGE/UPSERT patterns, and utility snippets. One-click copy to clipboard. 100% client-side, no signup required, no data sent to servers.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-sql-snippet-library",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL snippet library, SQL code templates, categorized SQL recipes, recursive CTE examples, window function templates, pagination snippets, pivot table SQL, string aggregation patterns, date query templates, performance analysis snippets, one-click copy, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online SQL Snippet Library", "item": "https://sqlformat.io/free-online-sql-snippet-library"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a SQL snippet library and why should I use one?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A SQL snippet library is a curated collection of reusable SQL code templates and recipes organized by category. Instead of writing common SQL patterns from scratch every time, you browse the library, find the snippet that matches your need, and copy it with one click. It saves hours of Googling and trial-and-error, especially for complex patterns like recursive CTEs, window functions, and pivot tables that have non-obvious syntax."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What categories of SQL snippets are available?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The library covers 10+ categories: Recursive CTEs (hierarchical queries, date range generation, category trees), Window Functions (ROW_NUMBER deduplication, running totals, LAG/LEAD comparisons, NTILE bucketing, FIRST_VALUE/LAST_VALUE), Pivot/Unpivot (CASE-based cross-tabs, native PIVOT operator, columns-to-rows), Pagination (OFFSET/FETCH, keyset/seek method, MySQL LIMIT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG with cross-dialect comparisons), Date/Time queries (truncation, age calculation, overlap detection, series generation), Performance analysis (missing indexes, blocking queries, slow query log), and MERGE/UPSERT patterns."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects do the snippets support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Snippets are provided with dialect-specific variations where syntax differs across databases. PostgreSQL, MySQL, SQL Server, Oracle, SQLite, and standard SQL are all covered. For example, string aggregation includes GROUP_CONCAT (MySQL/SQLite), STRING_AGG (PostgreSQL/SQL Server), and LISTAGG (Oracle). Each snippet is tagged with the dialects it supports so you can find what works for your database."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this SQL snippet library free to use with no signup?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The entire SQL snippet library is completely free with zero signup, zero limits, and zero data collection. All snippets are displayed client-side and copied directly to your clipboard. No account, no email, no credit card required. You can browse, copy, and use as many snippets as you need, as often as you want."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+      --border: #30363d; --text: #e6edf3; --text2: #8b949e;
+      --accent: #58a6ff; --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; display: flex; flex-direction: column; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header { border-bottom: 1px solid var(--border); padding: 16px 0; background: var(--surface); }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
+    nav a:hover { color: var(--accent); }
+    main { flex: 1; padding: 32px 0; }
+    h1 { font-size: 1.8rem; margin-bottom: 12px; }
+    .byline { color: var(--text2); font-size: 0.95rem; margin-bottom: 28px; }
+    h2 { font-size: 1.3rem; margin: 32px 0 12px; color: var(--accent); }
+    h3 { font-size: 1.05rem; margin: 24px 0 8px; }
+    p { margin-bottom: 14px; color: var(--text2); }
+    p strong { color: var(--text); }
+    ul { margin-bottom: 14px; padding-left: 22px; }
+    li { color: var(--text2); margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      margin: 32px 0;
+    }
+    .cta-box h3 { margin-bottom: 8px; }
+    .cta-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 28px;
+      background: var(--accent2);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .category-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .category-card h4 { font-size: 0.95rem; margin-bottom: 4px; }
+    .category-card p { font-size: 0.82rem; color: var(--text2); margin: 0; }
+    footer { margin-top: auto; border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--text2); font-size: 0.85rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    .related-links { display: flex; gap: 10px; flex-wrap: wrap; margin: 24px 0; }
+    .related-links a {
+      color: var(--accent); text-decoration: none; padding: 4px 12px;
+      border: 1px solid var(--border); border-radius: 4px; font-size: 0.88rem; transition: all 0.2s;
+    }
+    .related-links a:hover { border-color: var(--accent); }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.4rem; }
+      nav a { margin-left: 12px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/snippets">Snippets</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h1>Free Online SQL Snippet Library</h1>
+  <div class="byline">
+    Browse categorized, reusable SQL code templates and recipes. One-click copy. Covers 10+ categories from recursive CTEs to performance analysis.
+  </div>
+
+  <div class="cta-box">
+    <h3>Ready to browse the library?</h3>
+    <p style="margin:0;">300+ lines of battle-tested SQL code templates. Recursive queries, window functions, pivot tables, and more.</p>
+    <a href="/snippets" class="cta-btn">Open SQL Snippets Library</a>
+  </div>
+
+  <p>
+    The <strong><a href="/snippets">free online SQL snippet library</a></strong> at SQLFormat.io gives you instant access to a curated collection of SQL code templates and recipes. Every developer has written the same recursive CTE, the same ROW_NUMBER dedup pattern, the same pagination query — dozens of times. This library eliminates that repetition. Browse by category, find your pattern, copy, paste, move on.
+  </p>
+
+  <h2>Why Use a SQL Snippet Library?</h2>
+  <p>
+    SQL is declarative, which means there are often half a dozen ways to solve the same problem. The trick is knowing which one works in your dialect and handles your edge cases. The library doesn't just give you <strong>a</strong> solution — it gives you the <strong>right</strong> one, tested across PostgreSQL, MySQL, SQL Server, Oracle, and SQLite where applicable.
+  </p>
+  <ul>
+    <li><strong>Stop Googling the same patterns</strong> — Recursive CTEs, window function syntax, and date truncation are the most-Googled SQL patterns. They're all here.</li>
+    <li><strong>Dialect-aware examples</strong> — STRING_AGG for PostgreSQL, GROUP_CONCAT for MySQL, LISTAGG for Oracle. Each snippet knows its database.</li>
+    <li><strong>One-click copy</strong> — No selecting, no scrolling, no missing the trailing semicolon. Just click Copy and paste.</li>
+    <li><strong>Zero signup, zero cost</strong> — No account, no email, no limits. The snippets run in your browser, just like our other tools.</li>
+  </ul>
+
+  <h2>Category Overview</h2>
+
+  <div class="category-grid">
+    <div class="category-card">
+      <h4>Recursive CTEs</h4>
+      <p>Employee hierarchies, date range generation, category trees. Anchor + recursion term patterns.</p>
+    </div>
+    <div class="category-card">
+      <h4>Window Functions</h4>
+      <p>ROW_NUMBER dedup, running totals, LAG/LEAD comparisons, NTILE bucketing, RANK/DENSE_RANK top N.</p>
+    </div>
+    <div class="category-card">
+      <h4>Pivot & Unpivot</h4>
+      <p>CASE-based cross-tabs, native PIVOT, UNPIVOT, CROSS JOIN LATERAL column-to-row transforms.</p>
+    </div>
+    <div class="category-card">
+      <h4>Pagination</h4>
+      <p>OFFSET/FETCH, keyset seek method, MySQL LIMIT/OFFSET. Plus performance comparisons.</p>
+    </div>
+    <div class="category-card">
+      <h4>String Aggregation</h4>
+      <p>STRING_AGG, GROUP_CONCAT, LISTAGG — all four major dialects side by side.</p>
+    </div>
+    <div class="category-card">
+      <h4>Date & Time</h4>
+      <p>Date truncation, age calculation, overlap detection, date series generation.</p>
+    </div>
+    <div class="category-card">
+      <h4>Performance</h4>
+      <p>Missing indexes, running queries, table sizes, slow query log analysis.</p>
+    </div>
+    <div class="category-card">
+      <h4>MERGE / UPSERT</h4>
+      <p>INSERT ON CONFLICT, MERGE, INSERT IGNORE, REPLACE — every upsert pattern.</p>
+    </div>
+  </div>
+
+  <h2>Example: Recursive CTE for Employee Hierarchy</h2>
+  <p>
+    One of the most commonly requested SQL patterns is the hierarchical query. Given an <code>employees</code> table with columns <code>id</code>, <code>name</code>, and <code>manager_id</code>, you can traverse the management chain from any employee all the way up to the CEO:
+  </p>
+  <pre style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:var(--mono);font-size:0.82rem;line-height:1.6;overflow-x:auto;margin-bottom:20px;">WITH RECURSIVE org_tree AS (
+  SELECT id, name, manager_id, 1 AS level
+  FROM employees
+  WHERE id = 42
+  UNION ALL
+  SELECT e.id, e.name, e.manager_id, ot.level + 1
+  FROM employees e
+  JOIN org_tree ot ON e.id = ot.manager_id
+)
+SELECT * FROM org_tree ORDER BY level;</pre>
+  <p>
+    This pattern works in PostgreSQL, SQL Server, and SQLite (MySQL 8+ supports it too). The anchor clause selects the starting employee; the recursive clause climbs the chain. The full library includes similar recipes for date range generation, category path building, and more — all available at the <a href="/snippets">SQL Snippets Library</a>.
+  </p>
+
+  <h2>Example: Keyset Pagination for Large Datasets</h2>
+  <p>
+    When your table has millions of rows, OFFSET pagination gets progressively slower because the database must scan and discard all skipped rows. Keyset pagination (also called the "seek method") uses a WHERE clause instead:
+  </p>
+  <pre style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:var(--mono);font-size:0.82rem;line-height:1.6;overflow-x:auto;margin-bottom:20px;">-- First page
+SELECT * FROM products ORDER BY product_id LIMIT 10;
+
+-- Next page (pass the last product_id from previous page)
+SELECT * FROM products
+WHERE product_id > 42
+ORDER BY product_id
+LIMIT 10;</pre>
+  <p>
+    The difference is dramatic: OFFSET 100000 skips 100K rows; <code>WHERE id > 42</code> uses the index directly. The library includes both approaches with dialect-specific syntax.
+  </p>
+
+  <h2>Related Tools</h2>
+  <div class="related-links">
+    <a href="/">SQL Formatter</a>
+    <a href="/snippets">SQL Snippets Library</a>
+    <a href="/diff">SQL Diff Tool</a>
+    <a href="/explain">EXPLAIN Visualizer</a>
+    <a href="/pretty-print">SQL Pretty Print</a>
+    <a href="/data-generator">SQL Data Generator</a>
+    <a href="/dialect-converter">Dialect Converter</a>
+    <a href="/free-sql-formatter-online">Free SQL Formatter</a>
+  </div>
+
+  <div class="cta-box">
+    <h3>Browse the full library now</h3>
+    <p style="margin:0;">30+ snippets across 10 categories. All free, all client-side, all one-click copy.</p>
+    <a href="/snippets" class="cta-btn">Open SQL Snippets Library</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Snippets &amp; Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

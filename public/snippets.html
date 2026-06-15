@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Snippets Library — Free SQL Code Templates & Recipes | SQLFormat.io</title>
+  <meta name="description" content="Free library of reusable SQL code snippets and templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, slow query analysis, and more. One-click copy. 100% free.">
+  <meta name="keywords" content="SQL snippets, SQL code library, SQL templates, SQL recipes, SQL code examples, CTE snippet, window function examples, SQL pagination, SQL pivot, recursive CTE template, SQL slow query analysis, online SQL library, SQL cheat sheet, SQL code samples">
+  <meta property="og:title" content="SQL Snippets Library — Free SQL Code Templates & Recipes">
+  <meta property="og:description" content="Free library of reusable SQL code snippets and templates. Recursive CTEs, window functions, pagination, pivot tables, and more. One-click copy. 100% free, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/snippets">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/snippets">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Snippets Library",
+    "description": "Free library of reusable SQL code snippets and templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, slow query analysis, string aggregation, and more. One-click copy. 100% client-side, no data sent to servers.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/snippets",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL code snippets, SQL templates, SQL recipes, CTE examples, window function examples, pagination snippet, pivot table SQL, date query templates, slow query analysis, string aggregation, one-click copy, client-side processing"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Snippets Library", "item": "https://sqlformat.io/snippets"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What SQL snippets are available in the library?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The SQL Snippets Library covers 10+ categories: Recursive CTEs (hierarchical queries, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, ROW_NUMBER wrapper), Pivot Tables (CASE-based and standard PIVOT), Slow Query Analysis (EXPLAIN patterns, missing indexes, blocking queries), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date/Time queries, Common Table Expressions, MERGE/UPSERT patterns, and more. New snippets are added regularly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL snippets library free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely free. All snippets are accessible without any account, signup, or payment. Each snippet includes a description and ready-to-use SQL code that you can copy with a single click. No limits on how many snippets you can view or copy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects do the snippets support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Snippets are written in standard SQL and include dialect-specific variations where applicable (e.g., STRING_AGG for PostgreSQL vs GROUP_CONCAT for MySQL, LISTAGG for Oracle). Each snippet's description notes which dialects it targets. Most snippets work across PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minor adjustments."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I contribute or request new SQL snippets?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The library is maintained by the SQLFormat.io team and updated regularly. If you have a specific SQL pattern you'd like added, feel free to reach out. The tool runs entirely client-side with no server storage, so new snippets are added through site updates."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    main { flex: 1; padding: 32px 0; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+    .page-header p { color: var(--text2); font-size: 1rem; max-width: 650px; line-height: 1.6; }
+
+    /* Category tabs */
+    .category-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text2);
+      font-size: 0.83rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .category-tab:hover { border-color: var(--accent); color: var(--text); }
+    .category-tab.active {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+    }
+
+    /* Snippet cards */
+    .snippets-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .snippet-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .snippet-card:hover { border-color: var(--accent); }
+    .snippet-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 16px 20px 0;
+      gap: 12px;
+    }
+    .snippet-info { flex: 1; }
+    .snippet-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .snippet-info .description { color: var(--text2); font-size: 0.85rem; line-height: 1.5; }
+    .snippet-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .snippet-tag {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .snippet-code {
+      margin: 12px 20px;
+      position: relative;
+    }
+    .snippet-code pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: pre;
+      tab-size: 2;
+    }
+    .snippet-code pre .kw { color: #ff7b72; }
+    .snippet-code pre .fn { color: #d2a8ff; }
+    .snippet-code pre .str { color: #a5d6ff; }
+    .snippet-code pre .num { color: #79c0ff; }
+    .snippet-code pre .cm { color: #8b949e; }
+    .snippet-code pre .op { color: #ffa657; }
+    .snippet-code pre .type { color: #56d364; }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font);
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* Related tools */
+    .related-tools {
+      margin-top: 32px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .related-tools h3 { font-size: 1rem; margin-bottom: 12px; }
+    .related-tools .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .related-tools a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.88rem;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .related-tools a:hover { border-color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 1.4rem; }
+      nav a { margin-left: 12px; font-size: 0.8rem; }
+      .category-tabs { gap: 4px; }
+      .category-tab { font-size: 0.78rem; padding: 4px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/pretty-print">Pretty</a>
+      <a href="/snippets" class="active">Snippets</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-header">
+    <h1>SQL Snippets Library</h1>
+    <p>Browse categorized, reusable SQL code templates and recipes. Click any snippet to copy it instantly. Covers CTEs, window functions, pagination, pivot tables, date queries, performance analysis, and more.</p>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="category-tabs" id="categoryTabs">
+    <button class="category-tab active" data-cat="all">All</button>
+    <button class="category-tab" data-cat="cte">CTE & Recursive</button>
+    <button class="category-tab" data-cat="window">Window Functions</button>
+    <button class="category-tab" data-cat="pivot">Pivot / Unpivot</button>
+    <button class="category-tab" data-cat="pagination">Pagination</button>
+    <button class="category-tab" data-cat="aggregate">String Aggregation</button>
+    <button class="category-tab" data-cat="date">Date & Time</button>
+    <button class="category-tab" data-cat="performance">Performance</button>
+    <button class="category-tab" data-cat="merge">MERGE / UPSERT</button>
+    <button class="category-tab" data-cat="utility">Utility</button>
+  </div>
+
+  <!-- Snippets List -->
+  <div class="snippets-grid" id="snippetsGrid"></div>
+
+  <!-- Related Tools -->
+  <div class="related-tools">
+    <h3>Related SQL Tools</h3>
+    <div class="links">
+      <a href="/">SQL Formatter</a>
+      <a href="/diff">SQL Diff</a>
+      <a href="/explain">EXPLAIN Visualizer</a>
+      <a href="/pretty-print">SQL Pretty Print</a>
+      <a href="/validate">SQL Validator</a>
+      <a href="/dialect-converter">Dialect Converter</a>
+      <a href="/data-generator">Data Generator</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Snippets Library | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SNIPPETS = [
+  // ─── CTE / Recursive ───
+  {
+    cat: 'cte',
+    title: 'Recursive CTE — Employee Hierarchy',
+    desc: 'Traverse an organizational tree from any employee up to the CEO. Uses a recursive CTE with a UNION ALL anchor and recursion term.',
+    tags: ['CTE', 'Recursive', 'Hierarchy', 'PostgreSQL', 'SQL Server'],
+    code: `WITH RECURSIVE org_tree AS (
+  -- Anchor: start with a specific employee
+  SELECT id, name, manager_id, 1 AS level
+  FROM employees
+  WHERE id = 42
+  UNION ALL
+  -- Recursion: find managers up the chain
+  SELECT e.id, e.name, e.manager_id, ot.level + 1
+  FROM employees e
+  JOIN org_tree ot ON e.id = ot.manager_id
+)
+SELECT * FROM org_tree ORDER BY level;`
+  },
+  {
+    cat: 'cte',
+    title: 'Recursive CTE — Date Range Series',
+    desc: 'Generate a continuous sequence of dates between two bounds. Useful for filling gaps in calendar reporting.',
+    tags: ['CTE', 'Recursive', 'Date Series', 'PostgreSQL', 'Standard SQL'],
+    code: `WITH RECURSIVE date_range AS (
+  SELECT '2026-01-01'::DATE AS dt
+  UNION ALL
+  SELECT dt + INTERVAL '1 day'
+  FROM date_range
+  WHERE dt < '2026-12-31'::DATE
+)
+SELECT dt FROM date_range;`
+  },
+  {
+    cat: 'cte',
+    title: 'Recursive CTE — Category Tree (Adjacency List)',
+    desc: 'Flatten a nested category/subcategory table into a full path string. Works with any adjacency-list hierarchy.',
+    tags: ['CTE', 'Recursive', 'Category Tree', 'Path', 'PostgreSQL'],
+    code: `WITH RECURSIVE cat_tree AS (
+  SELECT id, name, parent_id, name::TEXT AS path
+  FROM categories WHERE parent_id IS NULL
+  UNION ALL
+  SELECT c.id, c.name, c.parent_id,
+         ct.path || ' > ' || c.name
+  FROM categories c
+  JOIN cat_tree ct ON c.parent_id = ct.id
+)
+SELECT id, path FROM cat_tree ORDER BY path;`
+  },
+
+  // ─── Window Functions ───
+  {
+    cat: 'window',
+    title: 'ROW_NUMBER — Deduplicate Rows',
+    desc: 'Remove duplicate rows keeping only the first occurrence per partition. Great for cleaning imported data.',
+    tags: ['Window', 'Dedup', 'ROW_NUMBER', 'PostgreSQL', 'MySQL 8+'],
+    code: `WITH deduped AS (
+  SELECT *,
+    ROW_NUMBER() OVER (
+      PARTITION BY email, name
+      ORDER BY created_at DESC
+    ) AS rn
+  FROM contacts
+)
+DELETE FROM contacts
+WHERE (email, name, created_at) IN (
+  SELECT email, name, created_at FROM deduped WHERE rn > 1
+);`
+  },
+  {
+    cat: 'window',
+    title: 'Running Total — Cumulative SUM',
+    desc: 'Compute a running total over an ordered partition. Supports framing to bound the window range.',
+    tags: ['Window', 'Running Total', 'Cumulative', 'PostgreSQL', 'Standard SQL'],
+    code: `SELECT
+  order_date,
+  amount,
+  SUM(amount) OVER (ORDER BY order_date) AS running_total
+FROM orders
+ORDER BY order_date;`
+  },
+  {
+    cat: 'window',
+    title: 'LAG/LEAD — Compare Row to Previous/Next',
+    desc: 'Access the value of a previous or next row without a self-join. Useful for period-over-period comparisons.',
+    tags: ['Window', 'LAG', 'LEAD', 'Comparison', 'PostgreSQL', 'MySQL 8+'],
+    code: `SELECT
+  date,
+  revenue,
+  LAG(revenue, 1) OVER (ORDER BY date) AS prev_day_revenue,
+  revenue - LAG(revenue, 1) OVER (ORDER BY date) AS daily_change,
+  LEAD(revenue, 1) OVER (ORDER BY date) AS next_day_revenue
+FROM daily_revenue
+ORDER BY date;`
+  },
+  {
+    cat: 'window',
+    title: 'RANK / DENSE_RANK — Top N Per Group',
+    desc: 'Rank rows within each partition and filter to the top N. DENSE_RANK avoids gaps when ties exist.',
+    tags: ['Window', 'RANK', 'DENSE_RANK', 'Top N', 'PostgreSQL', 'MySQL 8+'],
+    code: `WITH ranked AS (
+  SELECT
+    department_id,
+    employee_name,
+    salary,
+    DENSE_RANK() OVER (
+      PARTITION BY department_id
+      ORDER BY salary DESC
+    ) AS rank
+  FROM employees
+)
+SELECT * FROM ranked WHERE rank <= 3;`
+  },
+  {
+    cat: 'window',
+    title: 'FIRST_VALUE / LAST_VALUE — First/Last in Group',
+    desc: 'Extract the first or last value within each ordered partition. Handles framing correctly with RANGE BETWEEN.',
+    tags: ['Window', 'FIRST_VALUE', 'LAST_VALUE', 'PostgreSQL', 'Standard SQL'],
+    code: `SELECT
+  department_id,
+  employee_name,
+  salary,
+  FIRST_VALUE(employee_name) OVER (
+    PARTITION BY department_id
+    ORDER BY salary DESC
+  ) AS highest_paid,
+  LAST_VALUE(employee_name) OVER (
+    PARTITION BY department_id
+    ORDER BY salary DESC
+    RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+  ) AS lowest_paid
+FROM employees;`
+  },
+  {
+    cat: 'window',
+    title: 'NTILE — Bucket Rows into Quartiles',
+    desc: 'Distribute rows into N equal-sized buckets. Common for A/B test assignment, histogram buckets, or customer segmentation.',
+    tags: ['Window', 'NTILE', 'Quartile', 'Bucketing', 'PostgreSQL', 'Standard SQL'],
+    code: `SELECT
+  customer_id,
+  total_spent,
+  NTILE(4) OVER (ORDER BY total_spent DESC) AS quartile
+FROM customers
+ORDER BY total_spent DESC;`
+  },
+
+  // ─── Pivot / Unpivot ───
+  {
+    cat: 'pivot',
+    title: 'CASE-Based Pivot — Row to Column',
+    desc: 'Convert distinct row values into columns using conditional aggregation. Works on any database without native PIVOT.',
+    tags: ['Pivot', 'CASE', 'Cross-tab', 'PostgreSQL', 'MySQL', 'SQLite'],
+    code: `SELECT
+  department,
+  COUNT(CASE WHEN status = 'active' THEN 1 END) AS active,
+  COUNT(CASE WHEN status = 'inactive' THEN 1 END) AS inactive,
+  COUNT(CASE WHEN status = 'suspended' THEN 1 END) AS suspended,
+  COUNT(*) AS total
+FROM employees
+GROUP BY department
+ORDER BY department;`
+  },
+  {
+    cat: 'pivot',
+    title: 'Native PIVOT — SQL Server / Oracle',
+    desc: 'Use the native PIVOT operator for cleaner row-to-column transformation. Available in SQL Server and Oracle.',
+    tags: ['Pivot', 'PIVOT', 'SQL Server', 'Oracle'],
+    code: `SELECT *
+FROM (
+  SELECT year, product_category, revenue
+  FROM sales
+) src
+PIVOT (
+  SUM(revenue)
+  FOR product_category IN (
+    [Electronics], [Clothing], [Food], [Books]
+  )
+) pvt
+ORDER BY year;`
+  },
+  {
+    cat: 'pivot',
+    title: 'Unpivot — Columns to Rows',
+    desc: 'Convert multiple columns into key-value rows. Useful for normalizing wide tables for analysis.',
+    tags: ['Unpivot', 'Columns to Rows', 'SQL Server', 'PostgreSQL'],
+    code: `-- SQL Server / Oracle (UNPIVOT)
+SELECT customer_id, product, amount
+FROM (
+  SELECT customer_id, product_a, product_b, product_c
+  FROM customer_products
+) src
+UNPIVOT (
+  amount FOR product IN (product_a, product_b, product_c)
+) unpvt;
+
+-- PostgreSQL (CROSS JOIN LATERAL)
+SELECT customer_id, product, amount
+FROM customer_products
+CROSS JOIN LATERAL (
+  VALUES ('A', product_a), ('B', product_b), ('C', product_c)
+) AS p(product, amount)
+WHERE amount IS NOT NULL;`
+  },
+
+  // ─── Pagination ───
+  {
+    cat: 'pagination',
+    title: 'OFFSET / FETCH — Standard Pagination',
+    desc: 'ANSI-standard pagination using OFFSET and FETCH NEXT. Supported by PostgreSQL, SQL Server, Oracle 12c+, and DB2.',
+    tags: ['Pagination', 'OFFSET', 'FETCH', 'PostgreSQL', 'SQL Server'],
+    code: `SELECT *
+FROM products
+ORDER BY product_id
+OFFSET 20 ROWS
+FETCH NEXT 10 ROWS ONLY;`
+  },
+  {
+    cat: 'pagination',
+    title: 'Keyset Pagination (Seek Method)',
+    desc: 'Faster than OFFSET for large datasets. Uses a WHERE clause on the last seen value. Skips the full scan of skipped rows.',
+    tags: ['Pagination', 'Keyset', 'Seek', 'Performance', 'PostgreSQL', 'Standard SQL'],
+    code: `-- First page
+SELECT * FROM products
+ORDER BY product_id
+LIMIT 10;
+
+-- Next page (pass last product_id from previous page)
+SELECT * FROM products
+WHERE product_id > 42
+ORDER BY product_id
+LIMIT 10;`
+  },
+  {
+    cat: 'pagination',
+    title: 'MySQL Pagination (LIMIT / OFFSET)',
+    desc: 'Classic MySQL pagination syntax. Works in MariaDB and SQLite as well.',
+    tags: ['Pagination', 'LIMIT', 'MySQL', 'SQLite'],
+    code: `SELECT * FROM orders
+ORDER BY order_date DESC, id
+LIMIT 20 OFFSET 40;
+
+-- Short form (equivalent):
+SELECT * FROM orders
+ORDER BY order_date DESC, id
+LIMIT 40, 20;`
+  },
+
+  // ─── String Aggregation ───
+  {
+    cat: 'aggregate',
+    title: 'GROUP_CONCAT — MySQL / SQLite',
+    desc: 'Concatenate values from multiple rows into a single comma-separated string. Supports custom separators and ordering.',
+    tags: ['Aggregation', 'GROUP_CONCAT', 'MySQL', 'SQLite'],
+    code: `SELECT
+  department_id,
+  GROUP_CONCAT(employee_name ORDER BY hire_date SEPARATOR ', ') AS employee_list
+FROM employees
+GROUP BY department_id;`
+  },
+  {
+    cat: 'aggregate',
+    title: 'STRING_AGG — PostgreSQL / SQL Server 2017+',
+    desc: 'Modern string aggregation with built-in ordering. More standard than GROUP_CONCAT.',
+    tags: ['Aggregation', 'STRING_AGG', 'PostgreSQL', 'SQL Server'],
+    code: `-- PostgreSQL
+SELECT
+  department_id,
+  STRING_AGG(employee_name, ', ' ORDER BY hire_date) AS employee_list
+FROM employees
+GROUP BY department_id;
+
+-- SQL Server
+SELECT
+  department_id,
+  STRING_AGG(employee_name, ', ') WITHIN GROUP (ORDER BY hire_date) AS employee_list
+FROM employees
+GROUP BY department_id;`
+  },
+  {
+    cat: 'aggregate',
+    title: 'LISTAGG — Oracle',
+    desc: 'Oracle\'s string aggregation function. Supports deduplication with DISTINCT and overflow handling.',
+    tags: ['Aggregation', 'LISTAGG', 'Oracle'],
+    code: `SELECT
+  department_id,
+  LISTAGG(employee_name, ', ')
+    WITHIN GROUP (ORDER BY hire_date)
+    AS employee_list
+FROM employees
+GROUP BY department_id;
+
+-- With overflow handling (Oracle 12c R2+)
+SELECT
+  department_id,
+  LISTAGG(employee_name, ', ' ON OVERFLOW TRUNCATE '...' WITH COUNT)
+    WITHIN GROUP (ORDER BY hire_date)
+    AS employee_list
+FROM employees
+GROUP BY department_id;`
+  },
+
+  // ─── Date & Time ───
+  {
+    cat: 'date',
+    title: 'Date Truncation — Group by Month/Week/Year',
+    desc: 'Truncate timestamps to a specific precision for grouped reporting. PostgreSQL date_trunc is the most flexible.',
+    tags: ['Date', 'Truncation', 'PostgreSQL', 'Reporting'],
+    code: `-- PostgreSQL
+SELECT
+  DATE_TRUNC('month', order_date) AS month,
+  COUNT(*) AS orders,
+  SUM(amount) AS total
+FROM orders
+GROUP BY DATE_TRUNC('month', order_date)
+ORDER BY month;
+
+-- MySQL / SQL Server
+SELECT
+  DATE_FORMAT(order_date, '%Y-%m-01') AS month,
+  COUNT(*) AS orders,
+  SUM(amount) AS total
+FROM orders
+GROUP BY DATE_FORMAT(order_date, '%Y-%m-01')
+ORDER BY month;`
+  },
+  {
+    cat: 'date',
+    title: 'Age Calculation — Precise Time Difference',
+    desc: 'Calculate the difference between two dates in years, months, days. PostgreSQL age() returns a human-readable interval.',
+    tags: ['Date', 'Age', 'Interval', 'PostgreSQL', 'MySQL'],
+    code: `-- PostgreSQL (precise)
+SELECT
+  name,
+  birth_date,
+  AGE(birth_date) AS age,
+  EXTRACT(YEAR FROM AGE(birth_date)) AS age_years
+FROM employees;
+
+-- MySQL
+SELECT
+  name,
+  birth_date,
+  TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age_years
+FROM employees;`
+  },
+  {
+    cat: 'date',
+    title: 'Find Overlapping Date Ranges',
+    desc: 'Detect rows where two date ranges overlap. Classic Gantt-style conflict detection.',
+    tags: ['Date', 'Overlap', 'Range', 'PostgreSQL', 'Standard SQL'],
+    code: `SELECT
+  a.id AS booking_a,
+  b.id AS booking_b,
+  a.start_date, a.end_date,
+  b.start_date, b.end_date
+FROM bookings a
+JOIN bookings b ON a.id < b.id
+  AND a.start_date <= b.end_date
+  AND a.end_date >= b.start_date;`
+  },
+  {
+    cat: 'date',
+    title: 'Generate Series Between Two Dates',
+    desc: 'Create all dates between a start and end date. Useful for calendar heatmaps, availability calendars, and filling date gaps.',
+    tags: ['Date', 'Generate Series', 'Calendar', 'PostgreSQL'],
+    code: `-- PostgreSQL (using generate_series)
+SELECT
+  DATE(generate_series) AS day,
+  EXTRACT(DOW FROM generate_series) AS day_of_week,
+  EXTRACT(MONTH FROM generate_series) AS month
+FROM GENERATE_SERIES(
+  '2026-01-01'::DATE,
+  '2026-06-30'::DATE,
+  '1 day'
+);`
+  },
+
+  // ─── Performance ───
+  {
+    cat: 'performance',
+    title: 'Find Missing Indexes (PostgreSQL)',
+    desc: 'Identify queries performing sequential scans that could benefit from an index. Monitors pg_stat_all_tables for live data.',
+    tags: ['Performance', 'Missing Indexes', 'PostgreSQL', 'Sequential Scan'],
+    code: `SELECT
+  schemaname,
+  relname AS table_name,
+  seq_scan,
+  seq_tup_read,
+  idx_scan,
+  n_live_tup AS estimated_rows,
+  ROUND(seq_tup_read::NUMERIC / NULLIF(seq_scan, 0), 0) AS avg_rows_per_seq_scan
+FROM pg_stat_user_tables
+WHERE seq_scan > 100
+  AND seq_tup_read / NULLIF(seq_scan, 0) > 1000
+ORDER BY seq_tup_read DESC
+LIMIT 20;`
+  },
+  {
+    cat: 'performance',
+    title: 'Running Queries & Blocking (PostgreSQL)',
+    desc: 'View currently executing queries, their duration, and any blocking locks. Essential for diagnosing live performance issues.',
+    tags: ['Performance', 'Blocking', 'Monitoring', 'PostgreSQL'],
+    code: `SELECT
+  pid,
+  NOW() - pg_stat_activity.query_start AS duration,
+  state,
+  wait_event_type,
+  wait_event,
+  LEFT(query, 120) AS query_preview,
+  pg_blocking_pids(pid) AS blocked_by
+FROM pg_stat_activity
+WHERE state != 'idle'
+  AND query NOT LIKE '%pg_stat_activity%'
+ORDER BY duration DESC;`
+  },
+  {
+    cat: 'performance',
+    title: 'Table Size & Row Count (PostgreSQL)',
+    desc: 'List all tables with their estimated row counts and total on-disk size. Quickly find oversized or bloated tables.',
+    tags: ['Performance', 'Table Size', 'Monitoring', 'PostgreSQL'],
+    code: `SELECT
+  schemaname,
+  relname AS table_name,
+  n_live_tup AS estimated_rows,
+  pg_size_pretty(pg_total_relation_size(relid)) AS total_size,
+  pg_size_pretty(pg_relation_size(relid)) AS table_size,
+  pg_size_pretty(pg_total_relation_size(relid) - pg_relation_size(relid)) AS index_size
+FROM pg_stat_user_tables
+ORDER BY pg_total_relation_size(relid) DESC
+LIMIT 20;`
+  },
+  {
+    cat: 'performance',
+    title: 'Slow Query Log — Longest Running Queries',
+    desc: 'Find the N slowest queries from pg_stat_statements. Requires pg_stat_statements extension to be enabled.',
+    tags: ['Performance', 'Slow Query', 'pg_stat_statements', 'PostgreSQL'],
+    code: `SELECT
+  LEFT(query, 80) AS query_preview,
+  calls,
+  ROUND(total_exec_time::NUMERIC / 1000, 2) AS total_seconds,
+  ROUND(mean_exec_time::NUMERIC, 2) AS avg_ms,
+  ROUND((shared_blks_read + shared_blks_hit)::NUMERIC / NULLIF(calls, 0), 2) AS avg_blks_per_call,
+  ROUND(rows::NUMERIC / NULLIF(calls, 0), 2) AS avg_rows_per_call
+FROM pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 10;`
+  },
+
+  // ─── MERGE / UPSERT ───
+  {
+    cat: 'merge',
+    title: 'MERGE (Upsert) — PostgreSQL INSERT ON CONFLICT',
+    desc: 'Insert a row or update it if it already exists (upsert). PostgreSQL uses ON CONFLICT DO UPDATE.',
+    tags: ['MERGE', 'UPSERT', 'ON CONFLICT', 'PostgreSQL'],
+    code: `INSERT INTO customers (id, name, email, updated_at)
+VALUES (1001, 'Alice Smith', 'alice@example.com', NOW())
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  email = EXCLUDED.email,
+  updated_at = EXCLUDED.updated_at;`
+  },
+  {
+    cat: 'merge',
+    title: 'MERGE — SQL Server / Oracle',
+    desc: 'Standard MERGE statement for conditional insert/update/delete in a single pass.',
+    tags: ['MERGE', 'Upsert', 'SQL Server', 'Oracle'],
+    code: `MERGE INTO customers AS target
+USING (SELECT 1001 AS id, 'Alice Smith' AS name, 'alice@example.com' AS email) AS source
+ON target.id = source.id
+WHEN MATCHED THEN
+  UPDATE SET name = source.name, email = source.email, updated_at = GETDATE()
+WHEN NOT MATCHED THEN
+  INSERT (id, name, email, updated_at)
+  VALUES (source.id, source.name, source.email, GETDATE());`
+  },
+  {
+    cat: 'merge',
+    title: 'INSERT IGNORE — MySQL / SQLite',
+    desc: 'Insert rows silently skipping duplicates. Useful for batch imports where duplicates are expected.',
+    tags: ['UPSERT', 'INSERT IGNORE', 'MySQL', 'SQLite'],
+    code: `-- MySQL
+INSERT IGNORE INTO customers (id, name, email)
+VALUES (1001, 'Alice Smith', 'alice@example.com');
+
+-- SQLite
+INSERT OR IGNORE INTO customers (id, name, email)
+VALUES (1001, 'Alice Smith', 'alice@example.com');
+
+-- MySQL (full upsert with REPLACE)
+REPLACE INTO customers (id, name, email)
+VALUES (1001, 'Alice Smith', 'alice@example.com');`
+  },
+
+  // ─── Utility ───
+  {
+    cat: 'utility',
+    title: 'Find Tables by Column Name',
+    desc: 'Search the information_schema to find which tables contain a specific column. Invaluable for navigating unfamiliar databases.',
+    tags: ['Utility', 'Schema Search', 'Information Schema', 'PostgreSQL', 'MySQL'],
+    code: `SELECT
+  table_schema,
+  table_name,
+  column_name,
+  data_type,
+  is_nullable
+FROM information_schema.columns
+WHERE LOWER(column_name) LIKE LOWER('%email%')
+  AND table_schema NOT IN ('pg_catalog', 'information_schema')
+ORDER BY table_schema, table_name;`
+  },
+  {
+    cat: 'utility',
+    title: 'Random Sample — SELECT with Random Order',
+    desc: 'Fetch a random set of rows from a table. Useful for sampling data, A/B test assignment, or random spot-checks.',
+    tags: ['Utility', 'Random', 'Sample', 'PostgreSQL', 'MySQL'],
+    code: `-- PostgreSQL (fast for large tables)
+SELECT * FROM products
+ORDER BY RANDOM()
+LIMIT 10;
+
+-- MySQL
+SELECT * FROM products
+ORDER BY RAND()
+LIMIT 10;
+
+-- SQLite
+SELECT * FROM products
+ORDER BY RANDOM()
+LIMIT 10;
+
+-- PostgreSQL (faster for very large tables — Bernoulli sample)
+SELECT * FROM products
+TABLESAMPLE BERNOULLI(1)
+LIMIT 10;`
+  },
+  {
+    cat: 'utility',
+    title: 'Find Duplicate Rows',
+    desc: 'Identify rows that share the same values in key columns. Returns all instances so you can review before deleting.',
+    tags: ['Utility', 'Duplicate', 'Dedup', 'PostgreSQL', 'Standard SQL'],
+    code: `WITH dupes AS (
+  SELECT
+    email,
+    COUNT(*) AS cnt
+  FROM users
+  GROUP BY email
+  HAVING COUNT(*) > 1
+)
+SELECT u.*
+FROM users u
+JOIN dupes d ON u.email = d.email
+ORDER BY u.email, u.id;`
+  },
+  {
+    cat: 'utility',
+    title: 'Full Outer Join — Compare Two Tables',
+    desc: 'Find rows present in one table but not the other, plus matching rows. Essential for data reconciliation and migration verification.',
+    tags: ['Utility', 'Full Outer Join', 'Comparison', 'PostgreSQL', 'Standard SQL'],
+    code: `SELECT
+  COALESCE(a.id, b.id) AS id,
+  CASE
+    WHEN a.id IS NULL THEN 'only_in_right'
+    WHEN b.id IS NULL THEN 'only_in_left'
+    ELSE 'in_both'
+  END AS status
+FROM source_table a
+FULL OUTER JOIN target_table b ON a.id = b.id
+WHERE a.id IS NULL OR b.id IS NULL
+ORDER BY id;`
+  },
+  {
+    cat: 'utility',
+    title: 'Pivot Column Values to Comma-Separated Row',
+    desc: 'Concatenate values from multiple rows into a single column. Works on any database using STRING_AGG, GROUP_CONCAT, or LISTAGG.',
+    tags: ['Utility', 'Pivot', 'Aggregation', 'Multi-Dialect'],
+    code: `-- PostgreSQL: STRING_AGG
+SELECT department_id, STRING_AGG(employee_name, ', ' ORDER BY employee_name)
+FROM employees GROUP BY department_id;
+
+-- MySQL: GROUP_CONCAT
+SELECT department_id, GROUP_CONCAT(employee_name ORDER BY employee_name SEPARATOR ', ')
+FROM employees GROUP BY department_id;
+
+-- SQL Server: STRING_AGG
+SELECT department_id, STRING_AGG(employee_name, ', ') WITHIN GROUP (ORDER BY employee_name)
+FROM employees GROUP BY department_id;
+
+-- Oracle: LISTAGG
+SELECT department_id, LISTAGG(employee_name, ', ') WITHIN GROUP (ORDER BY employee_name)
+FROM employees GROUP BY department_id;
+
+-- SQLite: GROUP_CONCAT
+SELECT department_id, GROUP_CONCAT(employee_name, ', ')
+FROM employees GROUP BY department_id;`
+  }
+];
+
+function renderSnippets(filterCat) {
+  const grid = document.getElementById('snippetsGrid');
+  const filtered = filterCat === 'all'
+    ? SNIPPETS
+    : SNIPPETS.filter(s => s.cat === filterCat);
+
+  grid.innerHTML = filtered.map((s, i) => {
+    const id = 'snippet-' + i;
+    return `
+      <div class="snippet-card" data-cat="${s.cat}">
+        <div class="snippet-header">
+          <div class="snippet-info">
+            <h3>${s.title}</h3>
+            <div class="description">${s.desc}</div>
+            <div class="snippet-tags">
+              ${s.tags.map(t => `<span class="snippet-tag">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="snippet-code" data-id="${id}">
+          <button class="copy-btn" onclick="copySnippet('${id}', this)">Copy</button>
+          <pre>${highlightSQL(s.code)}</pre>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function highlightSQL(sql) {
+  return sql
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/(--[^\n]*)/g, '<span class="cm">$1</span>')
+    .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="cm">$1</span>')
+    .replace(/('(?:[^'\\]|\\.)*')/g, '<span class="str">$1</span>')
+    .replace(/\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|AS|ON|JOIN|LEFT|RIGHT|INNER|OUTER|CROSS|FULL|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|INDEX|VIEW|WITH|RECURSIVE|UNION|ALL|DISTINCT|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|FETCH|NEXT|ROWS|ONLY|CASE|WHEN|THEN|ELSE|END|EXISTS|BETWEEN|LIKE|ILIKE|ASC|DESC|COUNT|SUM|AVG|MIN|MAX|OVER|PARTITION|ROWS|RANGE|UNBOUNDED|PRECEDING|FOLLOWING|CURRENT|ROW|PIVOT|UNPIVOT|MERGE|MATCHED|REPLACE|IGNORE|RETURNING|COALESCE|NULLIF|CAST|BEGIN|COMMIT|ROLLBACK|TRUNCATE|EXPLAIN|ANALYZE)\b/gi,
+      '<span class="kw">$1</span>')
+    .replace(/\b(\d+)\b/g, '<span class="num">$1</span>')
+    .replace(/\b(INT|INTEGER|BIGINT|SMALLINT|TINYINT|VARCHAR|CHAR|TEXT|BOOLEAN|BOOL|DATE|DATETIME|TIMESTAMP|TIME|FLOAT|DOUBLE|DECIMAL|NUMERIC|BLOB|SERIAL|UUID|JSON|JSONB|ARRAY|INTERVAL)\b/gi,
+      '<span class="type">$1</span>')
+    .replace(/\b(ROW_NUMBER|RANK|DENSE_RANK|LAG|LEAD|FIRST_VALUE|LAST_VALUE|NTILE|COUNT|SUM|AVG|MIN|MAX|STRING_AGG|GROUP_CONCAT|LISTAGG|DATE_TRUNC|EXTRACT|AGE|GENERATE_SERIES|NOW|CURDATE|GETDATE|DATE_FORMAT|TIMESTAMPDIFF|ROUND|LEFT|COALESCE|NULLIF)\b/gi,
+      '<span class="fn">$1</span>');
+}
+
+function copySnippet(id, btn) {
+  const codeBlock = document.querySelector(`[data-id="${id}"] pre`);
+  const text = codeBlock.textContent || codeBlock.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// Tab switching
+document.getElementById('categoryTabs').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('category-tab')) return;
+  document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  renderSnippets(e.target.dataset.cat);
+});
+
+// Init
+renderSnippets('all');
+</script>
+</body>
+</html>
