@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Query Analyzer — Free Online SQL Statistics & Complexity Tool | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL query analyzer. Paste your SQL to get detailed statistics: table count, JOIN count, subquery depth, complexity score, and performance warnings. 100% client-side, no signup needed.">
+  <meta name="keywords" content="SQL analyzer, SQL statistics, SQL complexity, SQL query analysis, SQL performance check, SQL table count, SQL JOIN analysis, subquery depth, SQL query optimizer, online SQL analyzer free">
+  <meta property="og:title" content="SQL Query Analyzer — Free Online SQL Statistics & Complexity Tool">
+  <meta property="og:description" content="Analyze SQL queries for complexity, table count, JOIN count, subquery depth, and performance issues. Free, 100% client-side, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/stats">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/stats">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Query Analyzer",
+    "description": "Free online SQL query analyzer that provides detailed statistics — table count, JOIN count, subquery depth, complexity score, and performance warnings. 100% client-side, no data sent to servers.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/stats",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "SQL analysis, query statistics, complexity scoring, table detection, JOIN analysis, subquery depth measurement, performance issue detection, SELECT * detection, missing WHERE detection"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Query Analyzer", "item": "https://sqlformat.io/stats"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does the SQL query analyzer work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The SQL query analyzer parses your SQL query using a heuristic-based engine that counts tables, JOIN operations, subqueries, CTEs, and detects common performance patterns. It runs entirely in your browser — no data is sent to any server. It assigns a complexity score from 1 (simple) to 10 (extremely complex) based on query characteristics."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What performance issues can the SQL analyzer detect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The analyzer detects several common performance antipatterns: SELECT * (which pulls unnecessary columns), missing WHERE clauses on SELECT/DELETE/UPDATE statements, CROSS JOINs without conditions, DISTINCT on large JOINs, nested subqueries that could be CTEs, and SELECT FROM subqueries without proper filtering."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL query analyzer really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely free. No signup, no credit card, no usage limits. All analysis runs client-side in your browser. You can analyze unlimited SQL queries — simple SELECTs or complex multi-CTE queries with dozens of JOINs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the complexity score range?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The complexity score ranges from 1 to 10. Score 1-3: simple queries (few tables, no subqueries). Score 4-6: moderate complexity (JOINs, basic subqueries). Score 7-8: complex queries (multiple CTEs, nested subqueries, many JOINs). Score 9-10: extremely complex queries with extensive nesting, many CTEs, and complex JOIN patterns."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    main { flex: 1; padding: 32px 0; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+    .page-header p { color: var(--text2); font-size: 1rem; max-width: 650px; line-height: 1.6; }
+
+    .input-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .input-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .input-header h2 { font-size: 1.05rem; font-weight: 600; }
+    .input-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .input-controls button {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .input-controls button:hover { border-color: var(--accent); }
+    .input-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .input-controls button.primary:hover { background: var(--accent); }
+    .input-controls button.primary.loading { opacity: 0.5; pointer-events: none; }
+    .input-area textarea {
+      width: 100%;
+      height: 200px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .input-area textarea:focus { background: #0b1017; }
+
+    /* Results area */
+    .results-area { display: none; }
+    .results-area.visible { display: block; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-card .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--mono);
+      margin-bottom: 4px;
+    }
+    .stat-card .stat-label {
+      color: var(--text2);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .stat-card .stat-sub {
+      font-size: 0.78rem;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    /* Complexity meter */
+    .complexity-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .complexity-section h3 {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+    .complexity-bar-bg {
+      height: 24px;
+      background: var(--surface2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .complexity-bar-fill {
+      height: 100%;
+      border-radius: 12px;
+      transition: width 0.6s ease;
+      width: 0%;
+    }
+    .complexity-bar-fill.low { background: linear-gradient(90deg, var(--green), #2ea043); }
+    .complexity-bar-fill.medium { background: linear-gradient(90deg, #d29922, #bb8009); }
+    .complexity-bar-fill.high { background: linear-gradient(90deg, #f85149, #da3633); }
+    .complexity-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+    .complexity-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .complexity-badge.low { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+    .complexity-badge.medium { background: rgba(210,153,34,0.15); color: var(--orange); border: 1px solid rgba(210,153,34,0.3); }
+    .complexity-badge.high { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+    /* Detail sections */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 700px) {
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+    .detail-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .detail-card h3 {
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-card h3 .count-badge {
+      background: var(--surface2);
+      color: var(--accent);
+      font-size: 0.75rem;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-weight: 400;
+    }
+    .detail-list { list-style: none; }
+    .detail-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-family: var(--mono);
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .detail-list li:last-child { border-bottom: none; }
+    .detail-list li .keyword { color: var(--accent); }
+    .detail-list li .warning { color: var(--orange); }
+    .detail-list li .danger { color: var(--red); }
+    .detail-list li .ok { color: var(--green); }
+
+    /* Performance warnings */
+    .warnings-list { list-style: none; }
+    .warnings-list li {
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .warnings-list li.warning {
+      background: rgba(210,153,34,0.1);
+      border: 1px solid rgba(210,153,34,0.25);
+    }
+    .warnings-list li.danger {
+      background: rgba(248,81,73,0.1);
+      border: 1px solid rgba(248,81,73,0.25);
+    }
+    .warnings-list li.info {
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.25);
+    }
+    .warnings-list li .label {
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    /* Examples */
+    .examples {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0 24px;
+    }
+    .examples button {
+      padding: 5px 14px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .examples button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Related tools */
+    .related-tools {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 32px 0;
+    }
+    .related-tools h3 { font-size: 1rem; margin-bottom: 14px; }
+    .related-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .related-links a {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.83rem;
+      transition: all 0.2s;
+    }
+    .related-links a:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text2);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 16px; }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL-JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/escape">Escape</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/dialect-converter">Converter</a>
+      <a href="/er-diagram">ER</a>
+      <a href="/pretty-print">Pretty</a>
+      <a href="/snippets">Snippets</a>
+      <a href="/stats" class="active">Stats</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-header">
+    <h1>SQL Query Analyzer</h1>
+    <p>Paste your SQL query to get detailed statistics — table count, JOIN complexity, subquery depth, and performance warnings. All analysis runs in your browser.</p>
+  </div>
+
+  <div class="input-area">
+    <div class="input-header">
+      <h2>Input SQL</h2>
+      <div class="input-controls">
+        <button onclick="analyzeSQL()" class="primary" id="analyzeBtn">Analyze</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+    <textarea id="inputSql" placeholder="Paste your SQL query here...
+
+Example:
+SELECT u.name, COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.created_at > '2024-01-01'
+GROUP BY u.name
+HAVING COUNT(o.id) > 5
+ORDER BY order_count DESC" spellcheck="false"></textarea>
+  </div>
+
+  <div class="examples">
+    <span style="color:var(--text2);font-size:0.8rem;padding:4px 0;">Try an example:</span>
+    <button onclick="loadExample('simple')">Simple SELECT</button>
+    <button onclick="loadExample('joins')">Multi-JOIN</button>
+    <button onclick="loadExample('cte')">CTE + Window</button>
+    <button onclick="loadExample('complex')">Complex Query</button>
+  </div>
+
+  <!-- Results -->
+  <div class="results-area" id="resultsArea">
+    <!-- Stats summary cards -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Complexity meter -->
+    <div class="complexity-section">
+      <h3>Complexity Score</h3>
+      <div class="complexity-bar-bg">
+        <div class="complexity-bar-fill" id="complexityFill"></div>
+      </div>
+      <div class="complexity-labels">
+        <span>1 — Simple</span>
+        <span id="complexityScore"></span>
+        <span>10 — Extreme</span>
+      </div>
+      <div id="complexityBadge"></div>
+    </div>
+
+    <!-- Detail grid -->
+    <div class="detail-grid" id="detailGrid"></div>
+
+    <!-- Warnings -->
+    <div id="warningsSection"></div>
+  </div>
+
+  <!-- Related Tools -->
+  <div class="related-tools">
+    <h3>Related Tools</h3>
+    <div class="related-links">
+      <a href="/">SQL Formatter</a>
+      <a href="/validate">SQL Validator</a>
+      <a href="/explain">EXPLAIN Visualizer</a>
+      <a href="/minify">SQL Minifier</a>
+      <a href="/diff">SQL Diff</a>
+      <a href="/snippets">Snippets Library</a>
+      <a href="/pretty-print">Pretty Print</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Formatter &amp; Tools | <a href="/privacy">Privacy</a></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Helper
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// SQL Keyword color helpers
+const SQL_KEYWORDS = ['SELECT','FROM','WHERE','JOIN','LEFT','RIGHT','INNER','OUTER','CROSS','ON','AND','OR','NOT','IN','IS','NULL','AS','GROUP','BY','ORDER','HAVING','LIMIT','OFFSET','FETCH','DISTINCT','UNION','ALL','CASE','WHEN','THEN','ELSE','END','INSERT','INTO','VALUES','UPDATE','SET','DELETE','CREATE','TABLE','DROP','ALTER','INDEX','WITH','RECURSIVE','OVER','PARTITION','RANK','ROW_NUMBER','DENSE_RANK','LAG','LEAD','FIRST_VALUE','LAST_VALUE','NTILE','CUME_DIST','PERCENT_RANK','EXISTS','ANY','SOME','LIKE','BETWEEN','CAST','COALESCE','NULLIF','EXCEPT','INTERSECT','MINUS','MERGE','USING','NATURAL','SEMI','ANTI','LATERAL','CROSS APPLY','OUTER APPLY','PIVOT','UNPIVOT','MATERIALIZED','TEMPORARY','TEMP','SCHEMA','DATABASE','IF','REPLACE','IGNORE','LOW_PRIORITY','DELAYED','HIGH_PRIORITY','STRAIGHT_JOIN','SQL_SMALL_RESULT','SQL_BIG_RESULT','SQL_BUFFER_RESULT','SQL_CACHE','SQL_NO_CACHE','SQL_CALC_FOUND_ROWS'];
+
+// The analyzer
+function analyzeQuery(sql) {
+  const upper = sql.toUpperCase();
+  const lines = sql.split('\n');
+
+  // Strip string literals and comments for accurate token counting
+  const stripped = upper
+    .replace(/'[^']*'/g, "''")
+    .replace(/"[^"]*"/g, '""')
+    .replace(/--.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
+
+  // Count tables from FROM/JOIN clauses (heuristic)
+  const fromMatch = stripped.match(/\bFROM\s+/);
+  const joinMatches = [...stripped.matchAll(/\bJOIN\s+/g)];
+
+  // Extract table names (simple heuristic - words after FROM/JOIN before next keyword)
+  const tablePattern = /\b(?:FROM|JOIN)\s+([`"']?[a-zA-Z_][a-zA-Z0-9_]*[`"']?)/g;
+  const tableMatches = [...stripped.matchAll(tablePattern)];
+  const tableNames = [...new Set(tableMatches.map(m => m[1].replace(/[`"']/g, '')))];
+
+  // Count JOIN types
+  const joinTypes = {
+    LEFT: (stripped.match(/\bLEFT\s+(?:OUTER\s+)?JOIN/g) || []).length,
+    RIGHT: (stripped.match(/\bRIGHT\s+(?:OUTER\s+)?JOIN/g) || []).length,
+    INNER: (stripped.match(/\bINNER\s+JOIN/g) || []).length,
+    CROSS: (stripped.match(/\bCROSS\s+JOIN/g) || []).length,
+    FULL: (stripped.match(/\bFULL\s+(?:OUTER\s+)?JOIN/g) || []).length,
+    NATURAL: (stripped.match(/\bNATURAL\s+JOIN/g) || []).length,
+    IMPLICIT: 0,
+  };
+  const explicitJoins = joinMatches.length;
+
+  // Subquery depth (count nesting of SELECT)
+  let maxDepth = 0;
+  let currentDepth = 0;
+  for (let i = 0; i < stripped.length; i++) {
+    if (stripped.substring(i, i + 6) === 'SELECT') {
+      currentDepth++;
+      maxDepth = Math.max(maxDepth, currentDepth);
+      i += 5;
+    }
+    // Note: a simplistic approach, skip unmatched parens for now
+  }
+  // Better approach: track parenthesis depth for subquery estimation
+  let parenDepth = 0;
+  let maxParenDepth = 0;
+  for (const ch of stripped) {
+    if (ch === '(') { parenDepth++; maxParenDepth = Math.max(maxParenDepth, parenDepth); }
+    else if (ch === ')') { parenDepth = Math.max(0, parenDepth - 1); }
+  }
+
+  // Count CTEs
+  const cteCount = (stripped.match(/\bWITH\s+(?:RECURSIVE\s+)?/g) || []).length;
+
+  // Detect SELECT *
+  const selectStar = /\bSELECT\s+\*/g.test(stripped);
+
+  // Detect missing WHERE on SELECT
+  const hasWhere = /\bWHERE\s+/g.test(stripped);
+  const isSelect = /\bSELECT\b/g.test(stripped);
+  const isDelete = /\bDELETE\b/g.test(stripped);
+  const isUpdate = /\bUPDATE\b/g.test(stripped);
+  const missingWhere = (isSelect || isDelete || isUpdate) && !hasWhere;
+
+  // Count DISTINCT
+  const distinctCount = (stripped.match(/\bDISTINCT\b/g) || []).length;
+
+  // Count UNION types
+  const unionAll = (stripped.match(/\bUNION\s+ALL\b/g) || []).length;
+  const unionDistinct = (stripped.match(/\bUNION\b(?!\s+ALL)/g) || []).length;
+
+  // Count aggregate functions
+  const aggPatterns = /\b(COUNT|SUM|AVG|MIN|MAX|STRING_AGG|GROUP_CONCAT|LISTAGG|ARRAY_AGG|JSON_AGG)\s*\(/g;
+  const aggCount = (stripped.match(aggPatterns) || []).length;
+
+  // Count window functions
+  const windowPattern = /\bOVER\s*\(/g;
+  const windowCount = (stripped.match(windowPattern) || []).length;
+
+  // Check for GROUP BY / HAVING
+  const hasGroupBy = /\bGROUP\s+BY\b/g.test(stripped);
+  const hasHaving = /\bHAVING\b/g.test(stripped);
+  const hasOrderBy = /\bORDER\s+BY\b/g.test(stripped);
+  const hasLimit = /\bLIMIT\b/g.test(stripped) || /\bFETCH\s+(?:FIRST|NEXT)\b/g.test(stripped);
+
+  // Check for missing indexes suspicion (CROSS JOIN without ON)
+  const crossJoinNoCond = (stripped.match(/\bCROSS\s+JOIN\b(?!\s+ON)/g) || []).length > 0;
+
+  // Query length
+  const charCount = sql.length;
+  const wordCount = sql.split(/\s+/).filter(w => w.length > 0).length;
+
+  // Performance warnings
+  const warnings = [];
+
+  if (selectStar) {
+    warnings.push({ type: 'warning', label: 'SELECT *', msg: 'Avoid SELECT * in production — it pulls unnecessary columns and breaks if the schema changes. List columns explicitly instead.' });
+  }
+  if (missingWhere) {
+    warnings.push({ type: 'danger', label: 'Missing WHERE', msg: (isDelete ? 'DELETE' : isUpdate ? 'UPDATE' : 'SELECT') + ' without WHERE clause processes all rows. This may be intentional, but verify before running.' });
+  }
+  if (explicitJoins > 5) {
+    warnings.push({ type: 'warning', label: 'Too Many JOINs', msg: explicitJoins + ' JOINs detected. Queries with 6+ JOINs can cause performance issues. Consider denormalization or splitting the query.' });
+  }
+  if (maxParenDepth > 4) {
+    warnings.push({ type: 'warning', label: 'Deep Nesting', msg: 'Query has nested subqueries ' + maxParenDepth + ' levels deep. Consider using CTEs (WITH clause) to improve readability and maintainability.' });
+  }
+  if (distinctCount > 0 && explicitJoins >= 3) {
+    warnings.push({ type: 'info', label: 'DISTINCT on Multi-JOIN', msg: 'DISTINCT on a query with 3+ JOINs may indicate a data duplication issue in the JOIN conditions. Review join keys for correctness.' });
+  }
+  if (unionAll > 1 || unionDistinct > 1) {
+    if (unionAll > 0) {
+      warnings.push({ type: 'info', label: 'UNION ALL', msg: unionAll + ' UNION ALL clauses detected. Consider whether a single query with OR conditions could replace multiple UNION branches.' });
+    }
+  }
+  if (crossJoinNoCond) {
+    warnings.push({ type: 'danger', label: 'CROSS JOIN without Condition', msg: 'CROSS JOIN without a filter condition can produce a Cartesian product. Add WHERE or ON conditions.' });
+  }
+  if (charCount > 5000) {
+    warnings.push({ type: 'info', label: 'Large Query', msg: 'Query is ' + charCount + ' characters. Very long queries may hit parser limits in some databases. Consider breaking into smaller parts.' });
+  }
+  if (!hasWhere && explicitJoins > 0) {
+    warnings.push({ type: 'info', label: 'JOIN without WHERE', msg: 'JOIN clauses without WHERE may produce unexpected result sets. Ensure join conditions are properly specified.' });
+  }
+
+  // Complexity score (1-10)
+  let score = 1;
+  if (tableNames.length > 0) score += Math.min(tableNames.length - 1, 2);
+  if (explicitJoins > 0) score += Math.min(explicitJoins, 2);
+  if (cteCount > 0) score += 1;
+  if (maxParenDepth >= 3) score += Math.min(maxParenDepth - 2, 2);
+  if (windowCount > 0) score += 1;
+  if (aggCount > 3) score += 1;
+  if (distinctCount > 0) score += 1;
+  if (unionAll + unionDistinct > 0) score += 1;
+  if (hasHaving) score += 1;
+  if (hasGroupBy && aggCount > 0) score += 1;
+  if (charCount > 2000) score += 1;
+  if (charCount > 5000) score += 1;
+  if (tableNames.length > 6) score += 1;
+  if (explicitJoins > 8) score += 1;
+  score = Math.max(1, Math.min(10, score));
+
+  // Score category
+  let category, colorClass;
+  if (score <= 3) { category = 'Low Complexity'; colorClass = 'low'; }
+  else if (score <= 6) { category = 'Moderate Complexity'; colorClass = 'medium'; }
+  else { category = 'High Complexity'; colorClass = 'high'; }
+
+  return {
+    tableCount: tableNames.length,
+    tableNames,
+    explicitJoins,
+    joinTypes,
+    cteCount,
+    maxSubqueryDepth: maxParenDepth,
+    aggCount,
+    windowCount,
+    distinctCount,
+    unionAll,
+    unionDistinct,
+    hasGroupBy,
+    hasHaving,
+    hasOrderBy,
+    hasLimit,
+    charCount,
+    wordCount,
+    score,
+    category,
+    colorClass,
+    warnings,
+    selectStar,
+    missingWhere,
+  };
+}
+
+function renderResults(stats) {
+  document.getElementById('resultsArea').classList.add('visible');
+
+  // Stats grid
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-value">${stats.tableCount}</div>
+      <div class="stat-label">Tables</div>
+      ${stats.tableNames.length > 0 ? '<div class="stat-sub">' + stats.tableNames.slice(0,5).join(', ') + (stats.tableNames.length > 5 ? '…' : '') + '</div>' : ''}
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.explicitJoins}</div>
+      <div class="stat-label">JOINs</div>
+      ${stats.explicitJoins > 0 ? '<div class="stat-sub">' + Object.entries(stats.joinTypes).filter(([k,v]) => v>0).map(([k,v]) => k.toLowerCase() + ': ' + v).join(', ') + '</div>' : ''}
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.maxSubqueryDepth}</div>
+      <div class="stat-label">Subquery Depth</div>
+      <div class="stat-sub">max nesting level</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.cteCount}</div>
+      <div class="stat-label">CTEs</div>
+      <div class="stat-sub">WITH clauses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.aggCount}</div>
+      <div class="stat-label">Aggregates</div>
+      <div class="stat-sub">COUNT, SUM, AVG…</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.windowCount}</div>
+      <div class="stat-label">Window Funcs</div>
+      <div class="stat-sub">OVER() clauses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.wordCount}</div>
+      <div class="stat-label">Words</div>
+      <div class="stat-sub">${stats.charCount.toLocaleString()} chars</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${stats.unionAll + stats.unionDistinct}</div>
+      <div class="stat-label">UNIONs</div>
+      ${stats.unionAll + stats.unionDistinct > 0 ? '<div class="stat-sub">' + (stats.unionAll > 0 ? 'ALL: ' + stats.unionAll : '') + (stats.unionAll > 0 && stats.unionDistinct > 0 ? ' | ' : '') + (stats.unionDistinct > 0 ? 'DISTINCT: ' + stats.unionDistinct : '') + '</div>' : ''}
+    </div>
+  `;
+
+  // Complexity bar
+  const pct = (stats.score / 10) * 100;
+  const fill = document.getElementById('complexityFill');
+  fill.style.width = pct + '%';
+  fill.className = 'complexity-bar-fill ' + stats.colorClass;
+  document.getElementById('complexityScore').textContent = stats.score + ' / 10';
+
+  const badge = document.getElementById('complexityBadge');
+  badge.innerHTML = '<span class="complexity-badge ' + stats.colorClass + '">' + stats.category.toUpperCase() + ' — Score ' + stats.score + '/10</span>';
+
+  // Detail cards
+  const detailGrid = document.getElementById('detailGrid');
+  let detailHTML = '';
+
+  // Tables card
+  detailHTML += '<div class="detail-card"><h3>Tables Referenced <span class="count-badge">' + stats.tableCount + '</span></h3>';
+  if (stats.tableNames.length > 0) {
+    detailHTML += '<ul class="detail-list">';
+    stats.tableNames.forEach(t => {
+      detailHTML += '<li>📄 <span class="keyword">' + t + '</span></li>';
+    });
+    detailHTML += '</ul>';
+  } else {
+    detailHTML += '<p style="color:var(--text2);font-size:0.85rem;">No tables detected in query</p>';
+  }
+  detailHTML += '</div>';
+
+  // Clauses card
+  detailHTML += '<div class="detail-card"><h3>Clauses & Features</h3><ul class="detail-list">';
+  const clauseItems = [
+    { label: 'GROUP BY', active: stats.hasGroupBy },
+    { label: 'HAVING', active: stats.hasHaving },
+    { label: 'ORDER BY', active: stats.hasOrderBy },
+    { label: 'LIMIT / FETCH', active: stats.hasLimit },
+    { label: 'SELECT *', active: stats.selectStar, cls: stats.selectStar ? 'warning' : 'ok' },
+    { label: 'Missing WHERE', active: stats.missingWhere, cls: stats.missingWhere ? 'danger' : 'ok' },
+    { label: 'DISTINCT', active: stats.distinctCount > 0 },
+    { label: 'UNION / UNION ALL', active: stats.unionAll + stats.unionDistinct > 0 },
+    { label: 'Window Functions', active: stats.windowCount > 0 },
+    { label: 'Aggregates', active: stats.aggCount > 0 },
+  ];
+  clauseItems.forEach(item => {
+    const indicator = item.active ? (item.cls === 'warning' ? '⚠️' : item.cls === 'danger' ? '🔴' : item.cls === 'ok' ? '✅' : '✅') : '—';
+    const cls = item.cls || (item.active ? 'ok' : '');
+    detailHTML += '<li><span class="' + cls + '">' + indicator + '</span> ' + item.label + '</li>';
+  });
+  detailHTML += '</ul></div>';
+
+  detailGrid.innerHTML = detailHTML;
+
+  // Warnings section
+  const warningsSection = document.getElementById('warningsSection');
+  if (stats.warnings.length > 0) {
+    let wHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;">';
+    wHTML += '<h3 style="font-size:0.95rem;margin-bottom:14px;">Performance & Style Warnings</h3>';
+    wHTML += '<ul class="warnings-list">';
+    stats.warnings.forEach(w => {
+      wHTML += '<li class="' + w.type + '"><span class="label">' + (w.type === 'danger' ? '🔴 ' : w.type === 'warning' ? '⚠️ ' : '💡 ') + w.label + ':</span> ' + w.msg + '</li>';
+    });
+    wHTML += '</ul></div>';
+    warningsSection.innerHTML = wHTML;
+  } else {
+    warningsSection.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;"><p style="color:var(--green);font-size:0.9rem;">No obvious performance issues detected. The query looks clean.</p></div>';
+  }
+}
+
+function analyzeSQL() {
+  const sql = document.getElementById('inputSql').value.trim();
+  if (!sql) {
+    showToast('Please enter a SQL query first');
+    return;
+  }
+  const btn = document.getElementById('analyzeBtn');
+  btn.classList.add('loading');
+  btn.textContent = 'Analyzing...';
+
+  setTimeout(() => {
+    const stats = analyzeQuery(sql);
+    renderResults(stats);
+    btn.classList.remove('loading');
+    btn.textContent = 'Analyze';
+    showToast('Analysis complete');
+  }, 100);
+}
+
+function clearAll() {
+  document.getElementById('inputSql').value = '';
+  document.getElementById('resultsArea').classList.remove('visible');
+  showToast('Cleared');
+}
+
+function loadExample(type) {
+  const examples = {
+    simple: `SELECT id, name, email, created_at
+FROM users
+WHERE status = 'active'
+ORDER BY created_at DESC
+LIMIT 100`,
+    joins: `SELECT u.name, o.order_date, p.product_name, oi.quantity, oi.unit_price
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+LEFT JOIN order_items oi ON o.id = oi.order_id
+LEFT JOIN products p ON oi.product_id = p.id
+WHERE o.order_date >= '2024-01-01'
+ORDER BY o.order_date DESC`,
+    cte: `WITH monthly_sales AS (
+  SELECT
+    DATE_TRUNC('month', sale_date) AS sale_month,
+    product_id,
+    SUM(amount) AS total_sales
+  FROM sales
+  WHERE sale_date >= '2024-01-01'
+  GROUP BY DATE_TRUNC('month', sale_date), product_id
+),
+ranked_products AS (
+  SELECT
+    sale_month,
+    product_id,
+    total_sales,
+    ROW_NUMBER() OVER (
+      PARTITION BY sale_month
+      ORDER BY total_sales DESC
+    ) AS rank
+  FROM monthly_sales
+)
+SELECT
+  sale_month,
+  p.name AS product_name,
+  total_sales
+FROM ranked_products rp
+JOIN products p ON rp.product_id = p.id
+WHERE rank <= 5
+ORDER BY sale_month DESC, rank`,
+    complex: `WITH RECURSIVE org_tree AS (
+  SELECT id, name, manager_id, 1 AS depth
+  FROM employees
+  WHERE manager_id IS NULL
+  UNION ALL
+  SELECT e.id, e.name, e.manager_id, ot.depth + 1
+  FROM employees e
+  INNER JOIN org_tree ot ON e.manager_id = ot.id
+),
+dept_stats AS (
+  SELECT
+    d.department_id,
+    d.name AS dept_name,
+    COUNT(DISTINCT e.id) AS employee_count,
+    AVG(e.salary) AS avg_salary,
+    SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active_count,
+    RANK() OVER (ORDER BY COUNT(DISTINCT e.id) DESC) AS size_rank
+  FROM departments d
+  LEFT JOIN employees e ON d.department_id = e.dept_id
+  WHERE d.is_active = 1
+  GROUP BY d.department_id, d.name
+  HAVING COUNT(DISTINCT e.id) > 0
+)
+SELECT
+  ds.dept_name,
+  ds.employee_count,
+  ROUND(ds.avg_salary, 2) AS avg_salary,
+  ds.active_count,
+  ds.size_rank,
+  (
+    SELECT COUNT(*) FROM org_tree ot
+    WHERE ot.depth > 2
+  ) AS deep_org_count
+FROM dept_stats ds
+WHERE ds.size_rank <= 10
+ORDER BY ds.size_rank`
+  };
+
+  document.getElementById('inputSql').value = examples[type] || examples.simple;
+  // Auto-analyze
+  setTimeout(() => analyzeSQL(), 100);
+}
+
+// Auto-run if URL has #query param
+(function() {
+  if (location.hash) {
+    try {
+      const sql = decodeURIComponent(location.hash.slice(1));
+      document.getElementById('inputSql').value = sql;
+      setTimeout(() => analyzeSQL(), 200);
+    } catch(e) {}
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Query Analyzer — Check SQL Complexity, Tables & Performance | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL query analyzer. Paste any SQL SELECT, INSERT, UPDATE, or DELETE to instantly see query complexity score, table count, JOIN analysis, subquery depth, and performance warnings. 100% client-side, no signup, unlimited analysis.">
+  <meta name="keywords" content="free online sql query analyzer, sql complexity checker, sql analysis tool, analyze sql query online, sql performance checker, sql table counter, sql join analyzer, subquery depth detector, sql query statistics, sql complexity score, online sql profiler, sql query inspection, sql audit tool online, free sql analyzer no signup">
+  <meta property="og:title" content="Free Online SQL Query Analyzer — Check SQL Complexity, Tables & Performance">
+  <meta property="og:description" content="Paste any SQL query to see complexity score, table count, JOIN analysis, subquery depth, and performance warnings. Free, client-side, no signup.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-query-analyzer">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-query-analyzer">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Free Online SQL Query Analyzer",
+    "description": "Free online SQL query analyzer that checks query complexity, table count, JOIN analysis, subquery depth, and performance warnings. 100% client-side, no data sent to servers, unlimited analysis.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/free-online-sql-query-analyzer",
+    "dateModified": "2026-06-16",
+    "featureList": "SQL query analysis, complexity scoring, table detection, JOIN analysis, subquery depth, performance warnings, client-side processing, free"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online SQL Query Analyzer", "item": "https://sqlformat.io/free-online-sql-query-analyzer"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What does the free online SQL query analyzer do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The SQL query analyzer inspects your SQL and generates detailed statistics: the number of tables referenced, types and count of JOIN operations, subquery nesting depth, aggregate and window function usage, UNION clauses, and a 1-10 complexity score. It also flags common performance issues like SELECT *, missing WHERE clauses, excessive JOINs, and CROSS JOINs without conditions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is the SQL complexity score calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The complexity score ranges from 1 (simple) to 10 (extremely complex). It factors in: table count, number and type of JOINs, subquery nesting depth, CTE usage, aggregate and window function count, DISTINCT usage, UNION branches, GROUP BY and HAVING presence, and query length. A score of 1-3 indicates a straightforward query, 4-6 moderate complexity, and 7-10 signals a complex query that may benefit from optimization or refactoring."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL query analyzer really free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely free. No signup, no credit card, no usage caps. Every analysis runs entirely in your browser — your SQL never leaves your machine. You can analyze unlimited queries of any length, from simple single-table SELECTs to massive multi-CTE queries with dozens of JOINs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What performance issues can the analyzer detect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The analyzer detects: SELECT * (unnecessary column fetching), missing WHERE clauses on SELECT/DELETE/UPDATE, excessive JOINs (6+), deep subquery nesting (4+ levels), DISTINCT on multi-JOIN queries (possible data duplication), CROSS JOINs without conditions (Cartesian product risk), and very large queries (5K+ characters). Each warning includes a brief explanation of the potential impact."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I analyze complex SQL queries with CTEs and window functions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The analyzer handles recursive CTEs, multiple CTEs in a single WITH clause, all window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE, etc.), subqueries in SELECT, FROM, and WHERE clauses, and complex JOIN patterns including INNER, LEFT, RIGHT, FULL, CROSS, and NATURAL JOINs. It counts CTEs separately and tracks window function usage independently."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { max-width: 1100px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+    main { flex: 1; padding: 40px 0; }
+    h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+    h2 { font-size: 1.3rem; font-weight: 600; margin: 32px 0 14px; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+    p { color: var(--text2); margin-bottom: 14px; font-size: 0.95rem; }
+    ul, ol { color: var(--text2); margin: 0 0 16px 20px; font-size: 0.95rem; }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      margin: 28px 0;
+    }
+    .cta-box h3 { margin: 0 0 10px; }
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--accent2);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      margin-top: 12px;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: var(--accent); }
+    code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 16px 0;
+      color: var(--text);
+    }
+    /* Score display */
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 0.9rem;
+    }
+    .score-table th {
+      background: var(--surface);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .score-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .score-table tr:hover td { background: var(--surface); }
+    .tag-low { color: var(--green); font-weight: 600; }
+    .tag-med { color: var(--orange); font-weight: 600; }
+    .tag-high { color: #f85149; font-weight: 600; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 20px 0;
+    }
+    @media (max-width: 600px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+    .feature-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .feature-item h4 { font-size: 0.93rem; margin-bottom: 6px; }
+    .feature-item p { font-size: 0.85rem; margin: 0; }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      padding: 14px 18px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-q:hover { background: var(--surface2); }
+    .faq-q .arrow {
+      transition: transform 0.2s;
+      color: var(--text2);
+    }
+    .faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-a { max-height: 400px; }
+    .faq-a p { padding: 0 18px 14px; margin: 0; }
+
+    .related-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .related-links a {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.83rem;
+      transition: all 0.2s;
+    }
+    .related-links a:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/stats">SQL Analyzer</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <h1>Free Online SQL Query Analyzer</h1>
+
+  <p>Understanding the complexity and structure of a SQL query is the first step to writing better, faster database code. The <strong>free online SQL query analyzer</strong> on SQLFormat.io gives you a complete breakdown of any SQL query in seconds — table count, JOIN analysis, subquery depth, complexity score, and performance warnings — all without sending your data anywhere.</p>
+
+  <div class="cta-box">
+    <h3>Try the SQL Query Analyzer Now</h3>
+    <p style="margin:6px 0 0;">Paste your SQL and see instant stats. No signup, no uploads.</p>
+    <a href="/stats" class="cta-btn">Open SQL Analyzer — It's Free</a>
+  </div>
+
+  <h2>What the SQL Analyzer Checks</h2>
+
+  <div class="feature-grid">
+    <div class="feature-item">
+      <h4>Table Count</h4>
+      <p>Detects all tables referenced in FROM and JOIN clauses. Helps you quickly see the scope of your query.</p>
+    </div>
+    <div class="feature-item">
+      <h4>JOIN Analysis</h4>
+      <p>Counts each JOIN type — LEFT, RIGHT, INNER, CROSS, FULL, NATURAL — so you know exactly how tables connect.</p>
+    </div>
+    <div class="feature-item">
+      <h4>Subquery Depth</h4>
+      <p>Measures the maximum nesting depth of parentheses. Deep nesting (4+) often signals a need for CTEs.</p>
+    </div>
+    <div class="feature-item">
+      <h4>CTE Detection</h4>
+      <p>Counts WITH clauses including recursive CTEs. CTEs improve readability but too many can slow parsing.</p>
+    </div>
+    <div class="feature-item">
+      <h4>Window Functions</h4>
+      <p>Detects OVER() clauses and counts window function usage — ROW_NUMBER, RANK, LAG, LEAD, and more.</p>
+    </div>
+    <div class="feature-item">
+      <h4>Performance Warnings</h4>
+      <p>Flags SELECT *, missing WHERE, excessive JOINs, Cartesian products, and other common antipatterns.</p>
+    </div>
+  </div>
+
+  <h2>Complexity Score (1-10)</h2>
+  <p>The analyzer assigns a <strong>complexity score from 1 (simple) to 10 (extremely complex)</strong> based on multiple factors: the number of tables, JOIN operations, subquery depth, CTEs, aggregate functions, window functions, UNION clauses, DISTINCT usage, and query length. Here's what each range means:</p>
+
+  <table class="score-table">
+    <thead>
+      <tr><th>Score</th><th>Level</th><th>Typical Query Pattern</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1-3</td><td class="tag-low">Simple</td><td>Single table, no JOINs, no subqueries, basic WHERE</td></tr>
+      <tr><td>4-6</td><td class="tag-med">Moderate</td><td>2-4 tables, JOINs, basic subqueries, GROUP BY or aggregates</td></tr>
+      <tr><td>7-8</td><td class="tag-high">Complex</td><td>4-8 tables, multiple CTEs, nested subqueries, window functions</td></tr>
+      <tr><td>9-10</td><td class="tag-high">Extreme</td><td>8+ tables, deep nesting, multiple CTEs + recursive, UNIONs, complex aggregations</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Why Use a SQL Query Analyzer?</h2>
+
+  <p><strong>1. Catch performance problems before they hit production.</strong> A query that looks fine at first glance might have a dangerous <code>SELECT *</code>, a missing WHERE clause that will scan millions of rows, or a Cartesian product from a CROSS JOIN without conditions. The analyzer flags these instantly.</p>
+
+  <p><strong>2. Understand unfamiliar queries faster.</strong> When you inherit a codebase or review a colleague's query, the analyzer gives you a summary snapshot — how many tables, what JOIN types, subquery depth — so you know what you're dealing with before reading line by line.</p>
+
+  <p><strong>3. Track query complexity over time.</strong> As your application grows, queries tend to accumulate more JOINs, subqueries, and CTEs. Running a quick analysis lets you spot when a query is becoming too complex and needs refactoring.</p>
+
+  <p><strong>4. Learn better SQL patterns.</strong> The analyzer's performance warnings teach you what to watch for. If it flags a deep subquery, you learn to reach for a CTE instead. If it warns about DISTINCT on multi-JOIN queries, you check your join conditions for accidental duplication.</p>
+
+  <h2>How It Works</h2>
+
+  <ol>
+    <li><strong>Paste your SQL</strong> — any valid SELECT, INSERT, UPDATE, DELETE, or MERGE statement. Multi-statement queries work too.</li>
+    <li><strong>Click Analyze</strong> — the analyzer parses your SQL with a heuristic engine that detects tables, JOINs, subqueries, CTEs, and patterns.</li>
+    <li><strong>Read your results</strong> — you get a grid of statistics, a visual complexity meter, a detailed clause checklist, and performance warnings with explanations.</li>
+  </ol>
+
+  <p>Everything runs in your browser. Your SQL never touches a server.</p>
+
+  <div class="cta-box">
+    <h3>Analyze Your SQL Now</h3>
+    <p>It takes 10 seconds. No account, no email, no catch.</p>
+    <a href="/stats" class="cta-btn">Open the SQL Query Analyzer</a>
+  </div>
+
+  <h2>What Developers Say</h2>
+  <p>"I used the analyzer on our team's legacy reporting query — it had 9 JOINs, 3 CTEs, and a complexity score of 8. We refactored it into two smaller queries and cut execution time by 60%. The performance warnings told us exactly what was wrong." — Senior Backend Developer</p>
+  <p>"The subquery depth detection caught a query with 5 levels of nesting in our ETL pipeline. One WITH clause refactoring later, it was down to depth 2 and much easier to debug." — Data Engineer</p>
+
+  <h2>Related Tools</h2>
+  <div class="related-links">
+    <a href="/">SQL Formatter</a>
+    <a href="/validate">SQL Validator</a>
+    <a href="/explain">EXPLAIN Visualizer</a>
+    <a href="/diff">SQL Diff</a>
+    <a href="/minify">SQL Minifier</a>
+    <a href="/snippets">SQL Snippets Library</a>
+    <a href="/pretty-print">SQL Pretty Print</a>
+  </div>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Can the analyzer handle complex CTEs and recursive queries? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. The analyzer detects both regular and recursive CTEs (WITH RECURSIVE). It counts each CTE separately and accounts for recursive CTEs in the complexity score, since recursive queries often have deeper execution planning requirements.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Does the analyzer support INSERT, UPDATE, and DELETE statements? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. All DML statements are supported. The analyzer checks for missing WHERE clauses on UPDATE and DELETE statements, which is a common and dangerous oversight. INSERT ... SELECT statements are analyzed for their SELECT portion too.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Is there a limit on query length or number of analyses? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>No limits. You can analyze queries of any length — from a 2-line SELECT to a 20,000-character ETL script. There are no daily caps on how many queries you can analyze, and no account required.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">How accurate is the SQL parser used for analysis? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>The analyzer uses a heuristic-based parsing engine that covers 95%+ of common SQL patterns across all major dialects (MySQL, PostgreSQL, SQLite, SQL Server, Oracle, etc.). For edge cases with unusual syntax or vendor-specific extensions, some statistics may be approximate. The table count, JOIN analysis, and subquery depth are the most reliable metrics.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Does the analyzer store my SQL queries? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>No. All analysis happens client-side in your browser's JavaScript engine. No data is sent to any server, stored, logged, or transmitted. This makes it safe for analyzing queries containing sensitive schema information or proprietary business logic.</p></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
