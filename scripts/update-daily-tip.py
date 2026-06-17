@@ -29,7 +29,7 @@ def main():
     # Pattern: the <p> inside daily-tip-section
     old_pattern = r'(<div class="daily-tip-section"[^>]*>.*?<p[^>]*>).*?(</p>)'
     
-    new_tip_html = f'{tip["tip"]} <span style="color:var(--text2);font-size:0.78rem;margin-left:8px;">— {tip["dialect"]}</span>'
+    new_tip_html = f'{tip["tip"]} <span style="color:var(--text2);font-size:0.78rem;margin-left:8px;">— {tip["dialect"]}</span></p>'
     
     # Find and replace
     match = re.search(old_pattern, html, re.DOTALL)
