@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Online SQL Regex Replace Tool — Batch Rename Tables & Columns | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL regex replace tool. Batch rename tables, columns, and refactor SQL queries using regex. Preview changes, undo operations. 100% client-side, no signup required.">
+  <meta name="keywords" content="free sql regex replace, online SQL regex replace tool, batch rename SQL, SQL find and replace regex, rename tables regex, free SQL refactoring tool">
+  <meta property="og:title" content="Free Online SQL Regex Replace Tool — Batch Rename & Refactor">
+  <meta property="og:description" content="Use regex to batch rename tables, columns, and refactor SQL. Preview changes, undo any operation. Free, no signup, client-side processing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/free-online-sql-regex-replace">
+  <link rel="canonical" href="https://sqlformat.io/free-online-sql-regex-replace">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Regex Replace",
+    "description": "Free online SQL regex replace tool. Batch rename SQL tables, columns, and refactor queries using regular expressions. Preview changes, undo any operation. 100% client-side, no signup.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/regex-replace"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "Free Online SQL Regex Replace", "item": "https://sqlformat.io/free-online-sql-regex-replace"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I batch rename tables in SQL using regex?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like (users|orders|products), and a replacement like new_$1. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this SQL regex replace tool really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The tool is completely free with no signup, no credit card, and no usage limits. All regex matching runs in your browser — your SQL never leaves your machine. Use it as many times as you need for any size of SQL script."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I preview changes before applying them?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Click 'Preview Changes' to see every match highlighted with old → new values before committing. You can also undo the last operation or reset back to the original SQL at any point."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What regex features are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool uses JavaScript's RegExp engine supporting character classes, groups with backreferences ($1, $2...), alternation (|), quantifiers (*, +, ?), word boundaries (\\b), and flags: g (global), i (case-insensitive), m (multiline)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I scope regex to only specific parts of SQL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Choose from four scopes: Entire SQL (default), Table Names (targets table references in FROM/JOIN/INTO clauses), Column Names (targets column identifiers), and Comments (targets -- and /* */ style comments). This prevents accidental replacements in the wrong context."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.7; }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text2); text-decoration: none; margin-left: 24px; font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover { color: var(--accent); }
+    main { padding: 48px 0; }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+    .subtitle { color: var(--text2); font-size: 1.1rem; margin-bottom: 32px; max-width: 600px; }
+    .cta-box {
+      background: linear-gradient(135deg, var(--surface), var(--surface2));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .cta-box h2 { font-size: 1.4rem; margin-bottom: 12px; }
+    .cta-box p { color: var(--text2); margin-bottom: 20px; }
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 40px;
+      background: var(--accent2);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; color: var(--accent); }
+    .content-section p { color: var(--text2); margin-bottom: 14px; font-size: 0.95rem; }
+    .content-section ul { color: var(--text2); padding-left: 24px; margin-bottom: 14px; }
+    .content-section li { margin-bottom: 6px; font-size: 0.95rem; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .feature-card h3 { font-size: 0.95rem; margin-bottom: 6px; }
+    .feature-card p { color: var(--text2); font-size: 0.85rem; }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      white-space: pre;
+    }
+    .related-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    .related-box h3 { font-size: 1.1rem; margin-bottom: 14px; }
+    .related-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .related-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.88rem;
+      padding: 6px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .related-links a:hover { border-color: var(--accent); }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 16px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: inherit;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-q .arrow { font-size: 0.7rem; color: var(--text2); transition: transform 0.2s; }
+    .faq-a { display: none; padding: 0 0 16px; color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+    .faq-a.open { display: block; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+      background: var(--surface);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 1.5rem; }
+      nav a { margin-left: 12px; font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/regex-replace">Regex Replace</a>
+      <a href="/diff">Diff</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h1>Free Online SQL Regex Replace Tool</h1>
+  <p class="subtitle">Batch rename tables, columns, and refactor SQL queries using regular expressions. Preview every change, undo mistakes, and clean up legacy SQL scripts — all in your browser, no signup needed.</p>
+
+  <div class="cta-box">
+    <h2>Try SQL Regex Replace Now</h2>
+    <p>Paste your SQL, enter a regex pattern, and see every match before you commit. Free, private, instant.</p>
+    <a href="/regex-replace" class="btn-primary">Open Regex Replace Tool</a>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>Batch Table Renames</h3>
+      <p>Rename every reference to a table across FROM, JOIN, and subquery clauses with one regex pattern.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Scoped Matching</h3>
+      <p>Limit regex to table names, column names, comments, or the full SQL. No accidental replacements in wrong contexts.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Full Preview</h3>
+      <p>See every match highlighted with old → new values before committing. Verify all changes at a glance.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Undo Support</h3>
+      <p>Every operation is tracked. Undo the last replace or reset to the original SQL at any time.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Use Regex for SQL Refactoring?</h2>
+    <p>Manually renaming tables or columns across a large SQL script is tedious and error-prone. A single <code>users</code> reference might appear in SELECT lists, WHERE clauses, JOIN conditions, and subqueries — and missing one breaks the query. Regex replace finds them all.</p>
+    <p>The key advantage of regex over plain find-and-replace is precision. You can use word boundaries (<code>\b</code>) to avoid partial matches, character classes for pattern matching, and backreferences to carry parts of the original text into the replacement.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li><strong>Add table prefixes or schemas</strong> — e.g., rename <code>users</code> to <code>app_schema.users</code> across an entire migration script</li>
+      <li><strong>Strip deprecated column prefixes</strong> — remove legacy <code>tbl_</code> or <code>col_</code> prefixes from column names</li>
+      <li><strong>Standardize naming conventions</strong> — convert snake_case to camelCase or PascalCase</li>
+      <li><strong>Clean up comments</strong> — remove TODO markers, old author notes, or debug comments from production SQL</li>
+      <li><strong>Bulk parameterize values</strong> — replace hardcoded IDs or dates with bind variables</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example: Rename All Customer Columns</h2>
+    <p>Start with a query that has verbose <code>customer_</code> prefixes on every column:</p>
+    <div class="code-block">SELECT
+  customer_id,
+  customer_name,
+  customer_email,
+  customer_phone
+FROM customers
+WHERE customer_status = 'active'</div>
+    <p>Set regex to <strong><code>customer_</code></strong>, replacement to <strong><code>cust_</code></strong>, scope to Entire SQL. Result:</p>
+    <div class="code-block">SELECT
+  cust_id,
+  cust_name,
+  cust_email,
+  cust_phone
+FROM customers
+WHERE cust_status = 'active'</div>
+    <p>Notice <code>customers</code> (the table name) was not changed — the regex <code>customer_</code> followed by an underscore only matched column names. For even tighter control, use scope "Column Names" to restrict matching to identifiers only.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Regex Flags Explained</h2>
+    <p>The tool exposes three regex flags as toggles:</p>
+    <ul>
+      <li><strong>g (global)</strong> — Replace all matches, not just the first. Always on by default.</li>
+      <li><strong>i (case-insensitive)</strong> — Treat uppercase and lowercase as identical. Useful when SQL has mixed casing.</li>
+      <li><strong>m (multiline)</strong> — Makes <code>^</code> and <code>$</code> match line boundaries, not just the full string. Essential for comment cleaning.</li>
+    </ul>
+  </div>
+
+  <div class="related-box">
+    <h3>Related SQL Tools</h3>
+    <div class="related-links">
+      <a href="/">SQL Formatter</a>
+      <a href="/regex-replace">SQL Regex Replace</a>
+      <a href="/diff">SQL Diff</a>
+      <a href="/validate">SQL Validator</a>
+      <a href="/dialect-converter">Dialect Converter</a>
+      <a href="/minify">SQL Minifier</a>
+      <a href="/stats">SQL Stats Analyzer</a>
+      <a href="/snippets">Snippets Library</a>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">How do I batch rename tables in SQL using regex? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like <code>(users|orders|products)</code>, and a replacement like <code>new_$1</code>. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Is this tool really free? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. No signup, no credit card, no limits. Everything runs client-side — your SQL never leaves your browser.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Can I undo a regex replace? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. Every operation is tracked in a history stack. Undo the last replacement or reset back to the original query at any time.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What scopes can I limit my regex to? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Four scopes: Entire SQL (default), Table Names, Column Names, and Comments. Scoping prevents accidental replacements in unintended contexts.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Does the tool support lookaheads and backreferences? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. JavaScript regex supports lookaheads (<code>(?=...)</code>, <code>(?!...)</code>), capturing groups with backreferences (<code>$1</code>, <code>$2</code>...), and all standard quantifiers and character classes.</p></div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const answer = el.nextElementSibling;
+  const arrow = el.querySelector('.arrow');
+  const isOpen = answer.classList.contains('open');
+  answer.classList.toggle('open');
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+</script>
+</body>
+</html>

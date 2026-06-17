@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Regex Replace — Batch Rename Tables, Fields & Comments | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL regex replace tool. Batch rename tables, columns, and comments in your SQL using regex patterns. Preview changes before applying. 100% client-side.">
+  <meta name="keywords" content="SQL regex replace, SQL batch rename, SQL find and replace, SQL refactor tool, regex SQL, bulk rename SQL, SQL search replace, SQL table rename regex">
+  <meta property="og:title" content="SQL Regex Replace — Batch Rename & Refactor SQL Queries">
+  <meta property="og:description" content="Use regex to batch rename tables, columns, and clean up SQL queries. Preview all changes, undo any operation. Free, no signup, client-side.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/regex-replace">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/regex-replace">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Regex Replace",
+    "description": "Free online SQL regex replace tool for batch renaming tables, columns, and cleaning up SQL queries using regular expressions. Preview changes, undo any operation. 100% client-side.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://sqlformat.io/regex-replace",
+    "browserRequirements": "Requires JavaScript",
+    "featureList": "regex replace, batch rename SQL, table rename, column rename, find and replace, preview changes, undo, regex testing, SQL refactoring"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Regex Replace", "item": "https://sqlformat.io/regex-replace"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does the SQL regex replace tool work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your SQL, enter a regex pattern and replacement text, then click Preview to see all matches highlighted. You can scope the replacement to table names only, column names only, comments only, or the entire SQL. Each replacement is shown individually so you can verify before applying. All processing happens in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I batch rename multiple tables at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Set the scope to 'Table Names' and use a regex like (orders|users|products) with a replacement like new_$1_schema. All matching table references across the entire SQL will be renamed in one operation. The preview shows each match before you commit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there an undo function?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Every replace operation is tracked. You can undo the last replace or reset to the original SQL at any time. The tool keeps the original input so you never lose your starting query."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What regex flavor does this tool use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool uses JavaScript's RegExp engine (ECMAScript regex). This supports all standard features: character classes, groups, backreferences ($1, $2...), alternation, quantifiers, lookaheads, and word boundaries. Flags like g (global) and i (case-insensitive) are exposed as toggles."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL data sent to a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. All regex matching, previewing, and replacement runs entirely in your browser using client-side JavaScript. Nothing is transmitted, stored, or logged. This makes it safe for proprietary SQL and schema information."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--accent); }
+    main { flex: 1; padding: 32px 0; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+    .page-header p { color: var(--text2); font-size: 1rem; max-width: 650px; line-height: 1.6; }
+
+    .input-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .input-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .input-header h2 { font-size: 1.05rem; font-weight: 600; }
+    .input-area textarea {
+      width: 100%;
+      height: 180px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+
+    .regex-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .regex-panel h3 { font-size: 1rem; font-weight: 600; margin-bottom: 14px; }
+    .regex-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .regex-row label {
+      font-size: 0.85rem;
+      color: var(--text2);
+      white-space: nowrap;
+      min-width: 70px;
+    }
+    .regex-row input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 9px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .regex-row input[type="text"]:focus { border-color: var(--accent); }
+    .regex-row input.error { border-color: var(--red); }
+    .regex-flags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .flag-toggle {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text2);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--mono);
+    }
+    .flag-toggle.active {
+      background: var(--accent2);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .scope-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .scope-btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scope-btn:hover { border-color: var(--accent); }
+    .scope-btn.active { background: var(--accent2); border-color: var(--accent); color: #fff; }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn {
+      padding: 9px 20px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .btn.primary:hover { background: var(--accent); }
+    .btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+    .output-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .output-area.visible { display: block; }
+    .output-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .output-header h2 { font-size: 1.05rem; font-weight: 600; }
+    .output-header .stats { font-size: 0.82rem; color: var(--text2); }
+    .output-header .stats span { color: var(--accent); font-weight: 600; }
+    .output-area textarea {
+      width: 100%;
+      height: 300px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      white-space: pre;
+    }
+
+    .preview-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .preview-area.visible { display: block; }
+    .preview-area h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; }
+    .preview-area .match-list { max-height: 240px; overflow-y: auto; }
+    .preview-area .match-item {
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .preview-area .match-num {
+      color: var(--text2);
+      font-size: 0.75rem;
+      min-width: 28px;
+      padding-top: 1px;
+    }
+    .preview-area .match-old {
+      color: var(--red);
+      background: rgba(248,81,73,0.1);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .preview-area .match-arrow { color: var(--text2); }
+    .preview-area .match-new {
+      color: var(--green);
+      background: rgba(63,185,80,0.1);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .no-matches {
+      color: var(--orange);
+      font-size: 0.85rem;
+      padding: 12px;
+    }
+
+    .undo-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .undo-bar.visible { display: flex; }
+    .undo-bar span { font-size: 0.85rem; color: var(--text2); }
+
+    .examples { margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .related-tools {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 8px;
+    }
+    .related-tools h3 { font-size: 1rem; margin-bottom: 14px; }
+    .related-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .related-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.88rem;
+      padding: 6px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .related-links a:hover { border-color: var(--accent); background: var(--bg); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+      background: var(--surface);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      nav a { margin-left: 14px; font-size: 0.78rem; }
+      .regex-row { flex-direction: column; }
+      .regex-row input[type="text"] { width: 100%; }
+      .scope-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/sql-to-json">SQL-JSON</a>
+      <a href="/validate">Validator</a>
+      <a href="/diff">Diff</a>
+      <a href="/explain">EXPLAIN</a>
+      <a href="/escape">Escape</a>
+      <a href="/data-generator">Data Gen</a>
+      <a href="/dialect-converter">Converter</a>
+      <a href="/er-diagram">ER</a>
+      <a href="/pretty-print">Pretty</a>
+      <a href="/snippets">Snippets</a>
+      <a href="/stats">Stats</a>
+      <a href="/regex-replace" class="active">Regex</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-header">
+    <h1>SQL Regex Replace</h1>
+    <p>Batch rename tables, columns, and refactor SQL queries using regular expressions. Preview every change before applying. Undo any operation. Free, private, 100% client-side.</p>
+  </div>
+
+  <!-- Input SQL -->
+  <div class="input-area">
+    <div class="input-header">
+      <h2>Input SQL</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="resetAll()">Reset All</button>
+      </div>
+    </div>
+    <textarea id="inputSql" placeholder="Paste your SQL query here...
+
+Example:
+SELECT u.id, u.name, u.email, o.total
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'completed'
+ORDER BY o.total DESC" spellcheck="false"></textarea>
+  </div>
+
+  <!-- Regex Config -->
+  <div class="regex-panel">
+    <h3>Replace Configuration</h3>
+
+    <div class="regex-row">
+      <label>Find (regex):</label>
+      <input type="text" id="regexPattern" placeholder="e.g. users|orders|\bproduct\w*" spellcheck="false">
+    </div>
+
+    <div class="regex-row">
+      <label>Replace with:</label>
+      <input type="text" id="regexReplacement" placeholder="e.g. new_$0" spellcheck="false">
+    </div>
+
+    <div class="regex-row">
+      <label>Flags:</label>
+      <div class="regex-flags">
+        <button class="flag-toggle active" data-flag="g" onclick="toggleFlag(this)">g (global)</button>
+        <button class="flag-toggle" data-flag="i" onclick="toggleFlag(this)">i (case-insensitive)</button>
+        <button class="flag-toggle" data-flag="m" onclick="toggleFlag(this)">m (multiline)</button>
+      </div>
+    </div>
+
+    <div class="regex-row">
+      <label>Scope:</label>
+      <div class="scope-row">
+        <button class="scope-btn active" data-scope="all" onclick="setScope(this)">Entire SQL</button>
+        <button class="scope-btn" data-scope="tables" onclick="setScope(this)">Table Names</button>
+        <button class="scope-btn" data-scope="columns" onclick="setScope(this)">Column Names</button>
+        <button class="scope-btn" data-scope="comments" onclick="setScope(this)">Comments</button>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn primary" id="previewBtn" onclick="previewReplace()">Preview Changes</button>
+      <button class="btn" id="applyBtn" onclick="applyReplace()" disabled>Apply Replace</button>
+      <button class="btn" onclick="undoReplace()">Undo</button>
+      <span style="font-size:0.8rem;color:var(--text2);" id="matchCount"></span>
+    </div>
+  </div>
+
+  <!-- Preview Matches -->
+  <div class="preview-area" id="previewArea">
+    <h3>Preview (matches found)</h3>
+    <div class="match-list" id="matchList"></div>
+  </div>
+
+  <!-- Undo Bar -->
+  <div class="undo-bar" id="undoBar">
+    <span id="undoMsg">Last operation: --</span>
+    <button class="btn" onclick="undoReplace()">Undo</button>
+  </div>
+
+  <!-- Output -->
+  <div class="output-area" id="outputArea">
+    <div class="output-header">
+      <h2>Result</h2>
+      <div class="stats"><span id="replaceCount">0</span> replacements applied</div>
+    </div>
+    <textarea id="outputSql" readonly placeholder="Result will appear here..." spellcheck="false"></textarea>
+    <div style="padding:14px 18px;display:flex;gap:8px;">
+      <button class="btn primary" onclick="copyResult()">Copy Result</button>
+      <button class="btn" onclick="useAsInput()">Use as New Input</button>
+    </div>
+  </div>
+
+  <!-- Examples -->
+  <div class="examples">
+    <span style="color:var(--text2);font-size:0.8rem;padding:4px 0;">Try an example:</span>
+    <button class="btn" onclick="loadExample('prefix')">Add table prefix</button>
+    <button class="btn" onclick="loadExample('rename')">Rename columns</button>
+    <button class="btn" onclick="loadExample('clean')">Clean comments</button>
+    <button class="btn" onclick="loadExample('camel')">snake_case → camelCase</button>
+  </div>
+
+  <!-- Related Tools -->
+  <div class="related-tools">
+    <h3>Related Tools</h3>
+    <div class="related-links">
+      <a href="/">SQL Formatter</a>
+      <a href="/validate">SQL Validator</a>
+      <a href="/diff">SQL Diff</a>
+      <a href="/dialect-converter">Dialect Converter</a>
+      <a href="/minify">SQL Minifier</a>
+      <a href="/snippets">Snippets Library</a>
+      <a href="/stats">SQL Stats Analyzer</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Regex Replace &amp; More | <a href="/privacy">Privacy</a></p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// State
+let originalSQL = '';
+let currentSQL = '';
+let historyStack = [];
+let currentPreview = null;
+let activeFlags = new Set(['g']);
+let activeScope = 'all';
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function toggleFlag(el) {
+  el.classList.toggle('active');
+  if (el.classList.contains('active')) {
+    activeFlags.add(el.dataset.flag);
+  } else {
+    activeFlags.delete(el.dataset.flag);
+  }
+}
+
+function setScope(el) {
+  document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeScope = el.dataset.scope;
+}
+
+function getRegex() {
+  const pattern = document.getElementById('regexPattern').value;
+  if (!pattern) return null;
+  try {
+    const flags = [...activeFlags].join('');
+    return new RegExp(pattern, flags);
+  } catch(e) {
+    showToast('Invalid regex: ' + e.message);
+    document.getElementById('regexPattern').classList.add('error');
+    setTimeout(() => document.getElementById('regexPattern').classList.remove('error'), 2000);
+    return null;
+  }
+}
+
+function getReplacement() {
+  return document.getElementById('regexReplacement').value;
+}
+
+function getTargetScope(sql, scope) {
+  const result = { matches: [], replaced: sql, ranges: [] };
+
+  if (scope === 'all') return null; // signal: match entire SQL
+
+  // Tokenize SQL and match in specific contexts
+  const tokenPatterns = {
+    tables: /(?<=FROM\s+|JOIN\s+|INTO\s+|UPDATE\s+|TABLE\s+|ON\s)([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)?)/gi,
+    columns: /([a-zA-Z_]\w*)\.([a-zA-Z_]\w*)|(?<=SELECT\s|,\s)([a-zA-Z_]\w*)(?=\s*,|\s+FROM|\s*$|\s+AS)/gi,
+    comments: /(--[^\n]*|\/\*[\s\S]*?\*\/)/g,
+  };
+
+  if (!tokenPatterns[scope]) return { matches: [], replaced: sql, ranges: [] };
+
+  const combined = [...sql.matchAll(tokenPatterns[scope])];
+  return { matches: combined.map(m => m[0]), replaced: sql, ranges: combined.map(m => ({ start: m.index, end: m.index + m[0].length })) };
+}
+
+function previewReplace() {
+  const regex = getRegex();
+  if (!regex) return;
+
+  const replacement = getReplacement();
+  currentSQL = document.getElementById('inputSql').value;
+  if (!currentSQL.trim()) { showToast('Please enter SQL first'); return; }
+  if (!originalSQL) originalSQL = currentSQL;
+
+  const scopeData = getTargetScope(currentSQL, activeScope);
+  let targetSQL = currentSQL;
+  let matches = [];
+
+  if (scopeData === null) {
+    // Match entire SQL
+    const m = [...currentSQL.matchAll(new RegExp(regex.source, [...activeFlags].join('')))];
+    matches = m;
+    currentPreview = { regex, replacement, matches };
+  } else if (scopeData.matches.length === 0) {
+    // Try matching in scope
+    const m = [...currentSQL.matchAll(new RegExp(regex.source, [...activeFlags].join('')))];
+    // Filter to scope ranges
+    const scopeMatches = scopeData.ranges;
+    matches = m.filter(match => scopeMatches.some(r => match.index >= r.start && match.index < r.end));
+    currentPreview = { regex, replacement, matches };
+  } else {
+    const m = [...currentSQL.matchAll(new RegExp(regex.source, [...activeFlags].join('')))];
+    const scopeMatches = scopeData.ranges;
+    matches = m.filter(match => scopeMatches.some(r => match.index >= r.start && match.index < r.end));
+    currentPreview = { regex, replacement, matches };
+  }
+
+  // Render preview
+  const previewArea = document.getElementById('previewArea');
+  const matchList = document.getElementById('matchList');
+  const applyBtn = document.getElementById('applyBtn');
+  const matchCount = document.getElementById('matchCount');
+
+  if (matches.length === 0) {
+    matchList.innerHTML = '<div class="no-matches">No matches found. Try adjusting your regex or scope.</div>';
+    applyBtn.disabled = true;
+  } else {
+    let html = '';
+    matches.forEach((m, i) => {
+      const replaced = m[0].replace(regex, replacement);
+      html += `<div class="match-item">
+        <span class="match-num">#${i + 1}</span>
+        <span class="match-old">${escapeHTML(m[0])}</span>
+        <span class="match-arrow">→</span>
+        <span class="match-new">${escapeHTML(replaced)}</span>
+      </div>`;
+    });
+    matchList.innerHTML = html;
+    applyBtn.disabled = false;
+  }
+
+  matchCount.textContent = matches.length + ' match' + (matches.length !== 1 ? 'es' : '');
+  previewArea.classList.add('visible');
+}
+
+function applyReplace() {
+  if (!currentPreview || currentPreview.matches.length === 0) {
+    showToast('Preview changes first');
+    return;
+  }
+
+  const { regex, replacement, matches } = currentPreview;
+  const newSQL = currentSQL.replace(regex, replacement);
+
+  historyStack.push({ before: currentSQL, after: newSQL, count: matches.length });
+  currentSQL = newSQL;
+
+  // Update input and output
+  document.getElementById('inputSql').value = newSQL;
+  document.getElementById('outputSql').value = newSQL;
+  document.getElementById('outputArea').classList.add('visible');
+  document.getElementById('replaceCount').textContent = matches.length;
+
+  // Show undo bar
+  document.getElementById('undoMsg').textContent = 'Last operation: ' + matches.length + ' replacement(s)';
+  document.getElementById('undoBar').classList.add('visible');
+
+  // Clear preview
+  document.getElementById('previewArea').classList.remove('visible');
+  document.getElementById('applyBtn').disabled = true;
+  document.getElementById('matchCount').textContent = '';
+
+  showToast(matches.length + ' replacement(s) applied');
+}
+
+function undoReplace() {
+  if (historyStack.length === 0) {
+    showToast('Nothing to undo');
+    return;
+  }
+
+  const prev = historyStack.pop();
+  currentSQL = prev.before;
+  document.getElementById('inputSql').value = currentSQL;
+  document.getElementById('outputSql').value = currentSQL;
+
+  if (historyStack.length === 0) {
+    document.getElementById('undoBar').classList.remove('visible');
+    document.getElementById('outputArea').classList.remove('visible');
+  } else {
+    document.getElementById('undoMsg').textContent = 'Last operation: ' + historyStack[historyStack.length - 1].count + ' replacement(s)';
+  }
+
+  showToast('Undone');
+}
+
+function resetAll() {
+  originalSQL = '';
+  currentSQL = '';
+  historyStack = [];
+  currentPreview = null;
+  document.getElementById('inputSql').value = '';
+  document.getElementById('outputSql').value = '';
+  document.getElementById('outputArea').classList.remove('visible');
+  document.getElementById('previewArea').classList.remove('visible');
+  document.getElementById('undoBar').classList.remove('visible');
+  document.getElementById('regexPattern').value = '';
+  document.getElementById('regexReplacement').value = '';
+  document.getElementById('matchCount').textContent = '';
+  document.getElementById('applyBtn').disabled = true;
+  showToast('Reset');
+}
+
+function useAsInput() {
+  const output = document.getElementById('outputSql').value;
+  document.getElementById('inputSql').value = output;
+  currentSQL = output;
+  showToast('Output set as input — apply another replace');
+}
+
+function copyResult() {
+  const output = document.getElementById('outputSql').value;
+  if (!output) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output).then(() => showToast('Copied!'));
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function loadExample(type) {
+  const examples = {
+    prefix: {
+      sql: `SELECT u.id, u.name, u.email, o.total, o.status
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+JOIN products p ON o.product_id = p.id
+WHERE o.status = 'completed'
+  AND o.total > 100
+ORDER BY o.total DESC`,
+      regex: '\\b(users|orders|products)\\b',
+      replacement: 'app_$1',
+      scope: 'tables',
+      flags: ['g']
+    },
+    rename: {
+      sql: `SELECT
+  customer_id,
+  customer_name,
+  customer_email,
+  customer_phone,
+  customer_created_at
+FROM customers
+WHERE customer_status = 'active'`,
+      regex: 'customer_',
+      replacement: 'cust_',
+      scope: 'all',
+      flags: ['g']
+    },
+    clean: {
+      sql: `-- TODO: optimize this query
+SELECT id, name -- user identifier
+FROM users -- main table
+WHERE status = 'active' -- only active users
+  -- AND created_at > '2024-01-01'
+ORDER BY name`,
+      regex: '\\s*--.*$',
+      replacement: '',
+      scope: 'comments',
+      flags: ['g', 'm']
+    },
+    camel: {
+      sql: `CREATE TABLE user_orders (
+  order_id INT PRIMARY KEY,
+  user_email VARCHAR(255),
+  shipping_address TEXT,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
+);`,
+      regex: '_([a-z])',
+      replacement: '$1',
+      scope: 'columns',
+      flags: ['g']
+    }
+  };
+
+  const ex = examples[type];
+  if (!ex) return;
+
+  document.getElementById('inputSql').value = ex.sql;
+  document.getElementById('regexPattern').value = ex.regex;
+  document.getElementById('regexReplacement').value = ex.replacement;
+
+  // Set scope
+  activeScope = ex.scope;
+  document.querySelectorAll('.scope-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.scope === ex.scope);
+  });
+
+  // Set flags
+  activeFlags = new Set(ex.flags);
+  document.querySelectorAll('.flag-toggle').forEach(b => {
+    b.classList.toggle('active', ex.flags.includes(b.dataset.flag));
+  });
+
+  originalSQL = ex.sql;
+  currentSQL = ex.sql;
+  showToast('Example loaded: ' + type);
+}
+</script>
+</body>
+</html>
