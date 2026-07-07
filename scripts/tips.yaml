@@ -1,4 +1,4 @@
-last_used: 11
+last_used: 12
 tips:
 - tip: 用 `EXPLAIN ANALYZE` 代替 `EXPLAIN`，可以看到实际执行时间而不仅是预估计划
   dialect: PostgreSQL
