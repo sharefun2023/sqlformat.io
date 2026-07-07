@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Format SQL in SSMS — SQL Formatting in SQL Server Management Studio | SQLFormat.io</title>
+  <meta name="description" content="Learn how to format SQL in SSMS (SQL Server Management Studio). Step-by-step guide with built-in shortcuts, third-party tools, and our free online SQL formatter for T-SQL.">
+  <meta name="keywords" content="format SQL in SSMS, SQL Server Management Studio format SQL, T-SQL formatter, format SQL queries SSMS">
+  <meta property="og:title" content="How to Format SQL in SSMS — Format Your T-SQL Queries Properly">
+  <meta property="og:description" content="Step-by-step guide to formatting SQL in SSMS. Use built-in shortcuts, third-party add-ins, or our free online T-SQL formatter to clean up your queries.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-to-format-sql-in-ssms">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-to-format-sql-in-ssms">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Format SQL in SSMS — Format Your T-SQL Queries Properly","description":"Learn multiple ways to format SQL in SSMS (SQL Server Management Studio): built-in keyboard shortcuts, third-party add-ins, paste-as-format, and free online formatters for T-SQL.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-07","dateModified":"2026-07-07","url":"https://sqlformat.io/blog/how-to-format-sql-in-ssms","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Format SQL in SSMS","item":"https://sqlformat.io/blog/how-to-format-sql-in-ssms"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can SSMS format SQL automatically?","acceptedAnswer":{"@type":"Answer","text":"Yes. SSMS has a built-in formatter accessible via Edit > Advanced > Format Document or using the shortcut Ctrl+K, Ctrl+D to format the whole document, and Ctrl+K, Ctrl+F to format a selected block."}},{"@type":"Question","name":"Does SSMS have a SQL beautifier built in?","acceptedAnswer":{"@type":"Answer","text":"SSMS includes a basic SQL formatter that handles indentation and keyword capitalization. For more advanced formatting — custom indentation, line breaks, spacing rules — third-party add-ins or online formatters are recommended."}},{"@type":"Question","name":"What is the shortcut to format SQL in SSMS?","acceptedAnswer":{"@type":"Answer","text":"The default shortcut is Ctrl+K then Ctrl+D (format document) or select text and press Ctrl+K then Ctrl+F (format selection). You can customize these shortcuts under Tools > Options > Environment > Keyboard."}},{"@type":"Question","name":"Can I use an online SQL formatter for T-SQL?","acceptedAnswer":{"@type":"Answer","text":"Yes. SQLFormat.io supports T-SQL dialect. Simply paste your T-SQL code into the editor, select T-SQL as the dialect, and format instantly — no installation needed."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:16px 0 8px}.content-section p{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:12px}.content-section ul,.content-section ol{padding-left:20px;color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:12px}.content-section li{margin-bottom:6px}.content-section blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:var(--surface);border-radius:0 var(--radius) var(--radius) 0;color:var(--text2);font-size:.9rem}.content-section blockquote strong{color:var(--text)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin:12px 0;overflow-x:auto;font-size:.88rem}.content-section pre code{background:none;padding:0;color:var(--text)}.cta-box{background:var(--surface);border:1px solid var(--accent2);border-radius:var(--radius);padding:20px;margin:24px 0;text-align:center}.cta-box h3{color:var(--text);margin-bottom:8px;font-size:1.1rem}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:12px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:6px;text-decoration:none;font-weight:500;transition:background .2s}.cta-box a:hover{background:var(--accent)}.related-section{margin:32px 0;padding-top:20px;border-top:1px solid var(--border)}.related-section h2{font-size:1.1rem;margin-bottom:12px}.related-grid{display:flex;flex-wrap:wrap;gap:8px}.related-grid a{color:var(--text2);text-decoration:none;font-size:.85rem;padding:6px 12px;border:1px solid var(--border);border-radius:6px;transition:all .2s}.related-grid a:hover{color:var(--accent);border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.85rem}footer a{color:var(--accent);text-decoration:none}</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Format SQL in SSMS (SQL Server Management Studio)</h1>
+<div class="meta">Published: July 7, 2026 | Updated: July 7, 2026</div>
+<div class="content">
+<p>If you write T-SQL queries in <strong>SQL Server Management Studio (SSMS)</strong>, you have probably wondered how to <strong>format SQL in SSMS</strong> without copying code to an external tool every time. Fortunately, SSMS includes several built-in formatting features, and you can extend them with third-party add-ins or use a <a href="/">free online SQL formatter</a> for T-SQL.</p>
+<p>This guide covers every method to format SQL in SSMS — from built-in keyboard shortcuts to professional formatters — so you can keep your T-SQL clean, readable, and consistent.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#built-in">Built-in SSMS SQL Formatter (Keyboard Shortcuts)</a></li>
+<li><a href="#third-party">Third-Party SSMS SQL Formatting Add-Ins</a></li>
+<li><a href="#paste-as-format">Paste-as-Format in SSMS</a></li>
+<li><a href="#online">Using an Online SQL Formatter for T-SQL</a></li>
+<li><a href="#tips">Tips for Clean T-SQL Formatting</a></li>
+<li><a href="#faq">FAQ — Format SQL in SSMS</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="built-in">
+<h2>1. Built-in SSMS SQL Formatter (Keyboard Shortcuts)</h2>
+<p>SSMS ships with a basic built-in SQL formatter that handles indentation and keyword capitalization. This is the quickest way to format SQL in SSMS without installing anything.</p>
+
+<h3>Default Keyboard Shortcuts</h3>
+<ul>
+<li><strong>Ctrl+K, Ctrl+D</strong> — Format the entire document (all SQL in the current query window)</li>
+<li><strong>Ctrl+K, Ctrl+F</strong> — Format only the selected text (highlight a block of SQL first)</li>
+</ul>
+
+<p>To use these, open a query window in SSMS, write or paste your T-SQL, then press the shortcut. SSMS immediately reformats the keywords to uppercase and adjusts indentation.</p>
+
+<h3>How to Customize SSMS Formatting Shortcuts</h3>
+<p>If the default shortcuts conflict with other tools you use:</p>
+<ol>
+<li>Go to <strong>Tools &gt; Options &gt; Environment &gt; Keyboard</strong></li>
+<li>Search for <code>Edit.FormatDocument</code> or <code>Edit.FormatSelection</code></li>
+<li>Assign your preferred key combination</li>
+</ol>
+
+<blockquote><strong>Note:</strong> The built-in SSMS formatter is intentionally simple. It capitalizes keywords and adds indentation but does not offer options like custom spacing, alignment, or formatting-specific SQL constructs (such as CTEs or window functions) the way a dedicated SQL beautifier does.</blockquote>
+</section>
+
+<section class="content-section" id="third-party">
+<h2>2. Third-Party SSMS SQL Formatting Add-Ins</h2>
+<p>For professional T-SQL formatting with full control over styles, third-party SSMS add-ins are the next step. These tools integrate directly into SSMS and format your SQL with a single click or shortcut.</p>
+
+<h3>Popular SSMS SQL Formatting Tools</h3>
+<ul>
+<li><strong>ApexSQL Refactor</strong> — Free add-in with extensive formatting options, including custom layouts, indentation rules, and keyword casing control</li>
+<li><strong>SQL Complete (Devart)</strong> — Paid tool with a rich SQL formatter, code completion, and refactoring features</li>
+<li><strong>Redgate SQL Prompt</strong> — Industry-standard SQL formatting and intellisense for SSMS. Offers customizable formatting styles</li>
+<li><strong>Poor Man's T-SQL Formatter</strong> — Free, open-source SSMS add-in with basic but reliable T-SQL formatting</li>
+</ul>
+
+<p>Most of these tools add a new toolbar or menu item in SSMS under a "Format SQL" or "Refactor" heading. Once installed, you can format your queries with minimal friction — often with keyboard shortcuts you define.</p>
+</section>
+
+<section class="content-section" id="paste-as-format">
+<h2>3. Paste-as-Format in SSMS</h2>
+<p>SSMS includes a lesser-known <strong>"Paste as Format"</strong> feature. When you paste code from the clipboard, SSMS can format it automatically:</p>
+<ol>
+<li>Copy your T-SQL from any source (another editor, a log file, an email, etc.)</li>
+<li>Right-click inside the SSMS query window you want to paste into</li>
+<li>Select <strong>Paste &gt; Paste as Format</strong> (or press <strong>Ctrl+Shift+V</strong>)</li>
+</ol>
+<p>This reformats the pasted SQL immediately using SSMS's built-in formatter. It is especially useful when you grab T-SQL snippets from email, documentation, or web pages where the formatting is inconsistent.</p>
+</section>
+
+<section class="content-section" id="online">
+<h2>4. Using an Online SQL Formatter for T-SQL</h2>
+<p>When you are not running SSMS — for example, you are reading a query in a browser, Slack, or a blog post — a <strong>free online SQL formatter</strong> is the fastest way to format T-SQL. Our online formatter supports the <strong>T-SQL dialect</strong> natively.</p>
+
+<div class="cta-box">
+<h3>Format T-SQL Online — Free, No Signup</h3>
+<p>Paste your T-SQL below, select T-SQL (SQL Server) as the dialect, and format instantly. Zero data leaves your browser.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<p>The online formatter supports all T-SQL features: CTEs (WITH clauses), window functions, MERGE statements, TRY...CATCH blocks, dynamic SQL, and more. Just paste your T-SQL into the input box, select "T-SQL" as the dialect, and the formatter handles the rest.</p>
+
+<h3>When to Use an Online Formatter vs. SSMS Built-in</h3>
+<ul>
+<li><strong>Use SSMS built-in:</strong> When you are already in SSMS and need a quick reformat</li>
+<li><strong>Use a third-party add-in:</strong> When you format T-SQL daily and want consistent team styles</li>
+<li><strong>Use an online formatter:</strong> When you are not in SSMS, are on another machine, or want to share a clean version of a query with someone</li>
+</ul>
+</section>
+
+<section class="content-section" id="tips">
+<h2>5. Tips for Clean T-SQL Formatting</h2>
+<p>Regardless of which tool you use to format SQL in SSMS, these best practices keep your queries readable and maintainable.</p>
+
+<h3>Use Consistent Keyword Casing</h3>
+<p><code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code>, <code>ORDER BY</code> should use the same case throughout your codebase. Upper case for keywords is the industry standard.</p>
+
+<h3>Align Columns in SELECT Statements</h3>
+<p>When you have multiple columns in a SELECT, put each column on its own line with consistent indentation:</p>
+<pre><code>SELECT
+    u.UserID,
+    u.UserName,
+    u.Email,
+    o.OrderID,
+    o.OrderTotal
+FROM dbo.Users u
+    INNER JOIN dbo.Orders o
+        ON u.UserID = o.UserID
+WHERE o.OrderDate &gt;= '2026-01-01'
+    AND o.Status = 'Shipped'
+ORDER BY o.OrderDate DESC;</code></pre>
+
+<h3>Structure CTEs and Subqueries Clearly</h3>
+<p>CTEs (WITH clauses) should show the structure at a glance. Each CTE on its own line, followed by the main query distinctly separated:</p>
+<pre><code>WITH RecentOrders AS (
+    SELECT
+        UserID,
+        COUNT(*) AS OrderCount,
+        MAX(OrderDate) AS LastOrderDate
+    FROM dbo.Orders
+    WHERE OrderDate &gt;= DATEADD(month, -3, GETDATE())
+    GROUP BY UserID
+)
+SELECT
+    u.UserName,
+    ro.OrderCount,
+    ro.LastOrderDate
+FROM dbo.Users u
+    INNER JOIN RecentOrders ro
+        ON u.UserID = ro.UserID
+ORDER BY ro.OrderCount DESC;</code></pre>
+
+<blockquote><strong>Pro tip:</strong> If you inherit legacy T-SQL that is poorly formatted, paste it into the <a href="/">free online SQL formatter</a> with T-SQL dialect selected. Watch as the entire query transforms into a readable structure.</blockquote>
+</section>
+
+<section class="content-section" id="faq">
+<h2>6. FAQ — Format SQL in SSMS</h2>
+<div class="faq-item"><h3>Can SSMS format SQL automatically?</h3><p>Yes. SSMS has a built-in formatter accessible via Edit &gt; Advanced &gt; Format Document or using the shortcut Ctrl+K, Ctrl+D to format the whole document, and Ctrl+K, Ctrl+F to format a selected block.</p></div>
+<div class="faq-item"><h3>Does SSMS have a SQL beautifier built in?</h3><p>SSMS includes a basic SQL formatter that handles indentation and keyword capitalization. For more advanced formatting — custom indentation, line breaks, spacing rules — third-party add-ins or online formatters are recommended.</p></div>
+<div class="faq-item"><h3>What is the shortcut to format SQL in SSMS?</h3><p>The default shortcut is Ctrl+K then Ctrl+D (format document) or select text and press Ctrl+K then Ctrl+F (format selection). You can customize these shortcuts under Tools &gt; Options &gt; Environment &gt; Keyboard.</p></div>
+<div class="faq-item"><h3>Can I use an online SQL formatter for T-SQL?</h3><p>Yes. SQLFormat.io supports T-SQL dialect. Simply paste your T-SQL code into the editor, select T-SQL as the dialect, and format instantly — no installation needed.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/online-sql-beautifier">SQL Beautifier</a>
+<a href="/auto-format-sql-online">Auto Format SQL</a>
+<a href="/free-sql-formatter-online">Free SQL Formatter</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>
