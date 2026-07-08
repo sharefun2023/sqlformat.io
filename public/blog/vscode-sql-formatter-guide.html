@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSCode SQL Formatter — Best Extensions & Setup Guide for VS Code | SQLFormat.io</title>
+  <meta name="description" content="Learn how to set up a VSCode SQL formatter step by step. Compare the best VS Code SQL formatting extensions — SQL Formatter, Prettier, and more — and format SQL instantly online.">
+  <meta name="keywords" content="vscode sql formatter, vs code sql formatting, format sql in vscode, sql formatter extension vscode, vscode sql beautifier">
+  <meta property="og:title" content="VSCode SQL Formatter — Best Extensions & Setup Guide for VS Code">
+  <meta property="og:description" content="Complete guide to setting up a SQL formatter in VS Code. Compare the best extensions, configure formatting-on-save, and format SQL online for free.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/vscode-sql-formatter-guide">
+  <link rel="canonical" href="https://sqlformat.io/blog/vscode-sql-formatter-guide">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"VSCode SQL Formatter — Best Extensions & Setup Guide for VS Code","description":"Complete guide to formatting SQL in Visual Studio Code. Compare the best VS Code SQL formatting extensions, configure format-on-save, and format T-SQL online for free.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-08","dateModified":"2026-07-08","url":"https://sqlformat.io/blog/vscode-sql-formatter-guide","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"VSCode SQL Formatter Guide","item":"https://sqlformat.io/blog/vscode-sql-formatter-guide"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the best SQL formatter extension for VS Code?","acceptedAnswer":{"@type":"Answer","text":"The most popular choice is the SQL Formatter extension by adpyke, which supports 15+ dialects and integrates with the sql-formatter library. For codebases already using Prettier, the prettier-plugin-sql plugin is a great option. Both support format-on-save."}},{"@type":"Question","name":"How do I format SQL on save in VS Code?","acceptedAnswer":{"@type":"Answer","text":"Install a SQL formatting extension (e.g. SQL Formatter by adpyke), then add \"editor.formatOnSave\": true to your VS Code settings.json, or set \"[sql]\": {\"editor.formatOnSave\": true} to enable it only for SQL files."}},{"@type":"Question","name":"Does VS Code have a built-in SQL formatter?","acceptedAnswer":{"@type":"Answer","text":"No, VS Code does not include a built-in SQL formatter. You need to install an extension from the marketplace to format SQL files. The most common choices are SQL Formatter (adpyke), Prettier with prettier-plugin-sql, or a dialect-specific extension like sqlfluff."}},{"@type":"Question","name":"Can I format SQL online without installing an extension?","acceptedAnswer":{"@type":"Answer","text":"Yes. SQLFormat.io is a free online SQL formatter that supports 15+ dialects including MySQL, PostgreSQL, T-SQL, and more. Just paste your SQL, select the dialect, and format instantly — no installation or signup required."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--text)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit}.content-section blockquote{background:var(--surface);border-left:3px solid var(--accent);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0;color:var(--text2);font-size:.9rem}.content-section blockquote strong{color:var(--text)}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px;cursor:pointer}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>VSCode SQL Formatter — The Complete Setup Guide</h1>
+<div class="meta">Published: July 8, 2026 | Updated: July 8, 2026</div>
+<div class="content">
+<p>If you write SQL in <strong>Visual Studio Code</strong>, you have probably looked for a <strong>VSCode SQL formatter</strong> to keep your queries clean and readable. Unlike SSMS, VS Code does not ship with a built-in SQL formatter — but the extension ecosystem fills the gap beautifully.</p>
+<p>This guide compares the best <strong>VS Code SQL formatting extensions</strong>, shows you how to configure each one, and walks through setting up format-on-save so your SQL files stay clean automatically. When you need a quick fix without leaving the browser, use our <a href="/">free online SQL formatter</a>.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#why-format">Why You Need a SQL Formatter in VS Code</a></li>
+<li><a href="#sql-formatter-ext">SQL Formatter (adpyke) — The Top Choice</a></li>
+<li><a href="#prettier">Prettier + prettier-plugin-sql</a></li>
+<li><a href="#sqlfluff">SQLFluff — For Teams and CI Pipelines</a></li>
+<li><a href="#format-on-save">How to Enable Format-on-Save for SQL</a></li>
+<li><a href="#online">Using an Online SQL Formatter</a></li>
+<li><a href="#faq">FAQ — Format SQL in VS Code</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="why-format">
+<h2>1. Why You Need a SQL Formatter in VS Code</h2>
+<p>Formatted SQL is easier to read, debug, and maintain. When you write SQL queries manually, indentation drifts, keywords get mixed case, and complex clauses become hard to follow. A good <strong>VSCode SQL formatter</strong> gives you:</p>
+<ul>
+<li><strong>Consistent keyword casing</strong> — All keywords uppercase, identifiers lowercase (or your preferred style)</li>
+<li><strong>Proper indentation</strong> — Subqueries, JOINs, and WHERE clauses align correctly</li>
+<li><strong>Readable line breaks</strong> — Each major clause on its own line</li>
+<li><strong>Team consistency</strong> — Everyone on the team uses the same formatting rules</li>
+</ul>
+<p>VS Code alone cannot do this. You must install a formatting extension. The three best options are covered below.</p>
+</section>
+
+<section class="content-section" id="sql-formatter-ext">
+<h2>2. SQL Formatter (adpyke) — The Top Choice</h2>
+<p>The <a href="https://marketplace.visualstudio.com/items?itemName=adpyke.vscode-sql-formatter" target="_blank" rel="noopener">SQL Formatter</a> extension by <strong>adpyke</strong> is the most popular VS Code SQL formatter on the marketplace, with millions of installs. It uses the <code>sql-formatter</code> library under the hood — the same engine that powers many online formatters.</p>
+
+<h3>Installation</h3>
+<ol>
+<li>Open VS Code</li>
+<li>Go to the Extensions view (Ctrl+Shift+X)</li>
+<li>Search for "SQL Formatter" by adpyke</li>
+<li>Click Install</li>
+</ol>
+<p>Or install via the command line: <code>code --install-extension adpyke.vscode-sql-formatter</code></p>
+
+<h3>Dialect Support</h3>
+<p>This extension supports 15+ SQL dialects: MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. You can set a default dialect in VS Code settings.</p>
+
+<h3>Configuration</h3>
+<p>In your VS Code <code>settings.json</code>, you can customize:</p>
+<pre><code>{
+  "sql-formatter.uppercase": true,
+  "sql-formatter.linesBetweenQueries": 2,
+  "sql-formatter.tabWidth": 2,
+  "sql-formatter.dialect": "postgresql"
+}</code></pre>
+<p>These settings control keyword casing, spacing between queries, and the default dialect. The extension picks them up immediately without reloading.</p>
+
+<blockquote><strong>Pro tip:</strong> Pair this extension with <a href="/">SQLFormat.io</a> for quick online formatting when you are reviewing or sharing SQL outside VS Code. Both use the same formatting engine, so the output matches.</blockquote>
+</section>
+
+<section class="content-section" id="prettier">
+<h2>3. Prettier + prettier-plugin-sql</h2>
+<p>If your project already uses <strong>Prettier</strong> for JavaScript, TypeScript, CSS, or JSON, adding SQL support is straightforward with the <code>prettier-plugin-sql</code> plugin. This keeps your formatting toolchain unified across languages.</p>
+
+<h3>Setup</h3>
+<ol>
+<li>Install Prettier globally or locally: <code>npm install --save-dev prettier</code></li>
+<li>Install the SQL plugin: <code>npm install --save-dev prettier-plugin-sql</code></li>
+<li>Create or update <code>.prettierrc</code> in your project root:</li>
+</ol>
+<pre><code>{
+  "plugins": ["prettier-plugin-sql"],
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "keywordCase": "upper",
+  "language": "postgresql"
+}</code></pre>
+
+<h3>Format-on-Save with Prettier</h3>
+<p>In VS Code, install the <strong>Prettier - Code formatter</strong> extension, then add to <code>settings.json</code>:</p>
+<pre><code>{
+  "[sql]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  }
+}</code></pre>
+<p>Now every SQL file formats automatically when saved, using your Prettier configuration.</p>
+
+<blockquote><strong>Note:</strong> prettier-plugin-sql supports fewer dialects than the adpyke extension. If you work with T-SQL, PL/SQL, or Snowflake, prefer the dedicated SQL Formatter extension instead.</blockquote>
+</section>
+
+<section class="content-section" id="sqlfluff">
+<h2>4. SQLFluff — For Teams and CI Pipelines</h2>
+<p><strong>SQLFluff</strong> is a dialect-aware SQL linter and formatter that works as both a VS Code extension and a command-line tool. It is ideal for teams that need consistent SQL style enforced in CI/CD pipelines.</p>
+
+<h3>Installation</h3>
+<ol>
+<li>Install the Python package: <code>pip install sqlfluff</code></li>
+<li>Install the VS Code extension: Search for "SQLFluff" in the Extensions marketplace</li>
+<li>Create a <code>.sqlfluff</code> config file in your project root:</li>
+</ol>
+<pre><code>[sqlfluff]
+dialect = postgresql
+max_line_length = 100
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+[sqlfluff:rules:indentation]
+indent_unit = space
+tab_space_size = 2</code></pre>
+
+<h3>When to Choose SQLFluff</h3>
+<ul>
+<li>You need SQL linting <strong>and</strong> formatting in one tool</li>
+<li>Your team uses a CI pipeline that checks SQL style on every PR</li>
+<li>You work with complex SQL that needs rule-based validation (e.g., forbidden patterns, naming conventions)</li>
+</ul>
+
+<p>SQLFluff is more opinionated and stricter than the other options. For simple formatting needs, the adpyke extension or Prettier plugin are faster to set up.</p>
+</section>
+
+<section class="content-section" id="format-on-save">
+<h2>5. How to Enable Format-on-Save for SQL</h2>
+<p>Once you have installed a SQL formatting extension, the final step is turning on format-on-save so every SQL file is automatically cleaned up when you press Ctrl+S.</p>
+
+<h3>Global Format-on-Save</h3>
+<pre><code>// settings.json
+{
+  "editor.formatOnSave": true
+}</code></pre>
+<p>This enables format-on-save for all file types. If you want it only for SQL files:</p>
+
+<h3>Language-Specific Format-on-Save</h3>
+<pre><code>// settings.json
+{
+  "[sql]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+  }
+}</code></pre>
+
+<h3>Verification</h3>
+<p>To verify it works:</p>
+<ol>
+<li>Open a <code>.sql</code> file in VS Code</li>
+<li>Add messy SQL like <code>select * from users where id=1;</code></li>
+<li>Press Ctrl+S</li>
+<li>Watch the query reformat to <code>SELECT * FROM users WHERE id = 1;</code></li>
+</ol>
+
+<p>If format-on-save does not trigger, check the VS Code Output panel (View &gt; Output) and select "Log (Window)" from the dropdown. Look for errors from your formatter extension.</p>
+</section>
+
+<section class="content-section" id="online">
+<h2>6. Using an Online SQL Formatter</h2>
+<p>Even with the best <strong>VS Code SQL formatter</strong> configured, there are times when you need to format SQL outside the editor — when reviewing a colleague's query in a pull request, pasting from an email, or working on a machine without your setup.</p>
+
+<div class="cta-box">
+<h3>Format SQL Online — Free, No Signup</h3>
+<p>Paste your SQL query, select your dialect, and format instantly. Works for MySQL, PostgreSQL, SQL Server, and 12+ other dialects. All processing happens in your browser.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<p>Our online formatter supports all the same dialects as the VS Code extensions: MySQL, PostgreSQL, T-SQL, BigQuery, Snowflake, SQLite, and more. It handles complex queries with CTEs, subqueries, window functions, and nested joins.</p>
+
+<h3>When to Use Each Tool</h3>
+<ul>
+<li><strong>VS Code extension:</strong> Your daily driver for writing and editing SQL files</li>
+<li><strong>Online formatter:</strong> Quick formatting on any device, sharing clean SQL, or format-on-paste from external sources</li>
+<li><strong>SQLFluff:</strong> Team-wide style enforcement and CI pipeline checks</li>
+</ul>
+</section>
+
+<section class="content-section" id="faq">
+<h2>7. FAQ — Format SQL in VS Code</h2>
+<div class="faq-item"><h3>What is the best SQL formatter extension for VS Code?</h3><p>The most popular choice is the <strong>SQL Formatter</strong> extension by adpyke, which supports 15+ dialects and integrates with the sql-formatter library. For codebases already using Prettier, the prettier-plugin-sql plugin is a great option. Both support format-on-save.</p></div>
+<div class="faq-item"><h3>How do I format SQL on save in VS Code?</h3><p>Install a SQL formatting extension, then add <code>"editor.formatOnSave": true</code> to your VS Code settings.json. To scope it only to SQL files, use <code>"[sql]": {"editor.formatOnSave": true, "editor.defaultFormatter": "adpyke.vscode-sql-formatter"}</code>.</p></div>
+<div class="faq-item"><h3>Does VS Code have a built-in SQL formatter?</h3><p>No, VS Code does not include a built-in SQL formatter. You need to install an extension from the marketplace. The most common options are SQL Formatter (adpyke), Prettier with prettier-plugin-sql, or SQLFluff for linting plus formatting.</p></div>
+<div class="faq-item"><h3>Can I format SQL online without installing an extension?</h3><p>Yes. SQLFormat.io is a free online SQL formatter that supports 15+ dialects including MySQL, PostgreSQL, T-SQL, and more. Just paste your SQL, select the dialect, and format instantly — no installation required.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/blog/how-to-format-sql-in-ssms">Format SQL in SSMS</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/online-sql-beautifier">SQL Beautifier</a>
+<a href="/auto-format-sql-online">Auto Format SQL</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>
