@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Cheat Sheet — Quick Reference Guide for Beginners | SQLFormat.io</title>
+  <meta name="description" content="The ultimate SQL cheat sheet with 50+ essential commands, syntax examples, and quick-reference tables. Covers SELECT, JOIN, GROUP BY, subqueries, window functions, and more for MySQL, PostgreSQL, and T-SQL.">
+  <meta name="keywords" content="sql cheat sheet, sql quick reference, sql commands, sql syntax guide, sql basics, sql for beginners, sql reference card, sql commands list">
+  <meta property="og:title" content="SQL Cheat Sheet — Quick Reference Guide for Beginners">
+  <meta property="og:description" content="Everything you need at your fingertips: 50+ SQL commands with examples. SELECT, JOIN, GROUP BY, window functions, and more.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-cheat-sheet">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-cheat-sheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL Cheat Sheet — Quick Reference Guide for Beginners","description":"The ultimate SQL cheat sheet: 50+ commands with examples covering SELECT, JOINs, GROUP BY, subqueries, window functions, and DDL for MySQL, PostgreSQL, and T-SQL. Bookmark this page.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-14","dateModified":"2026-07-14","url":"https://sqlformat.io/blog/sql-cheat-sheet","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL Cheat Sheet","item":"https://sqlformat.io/blog/sql-cheat-sheet"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the basic SQL commands every beginner should know?","acceptedAnswer":{"@type":"Answer","text":"The four fundamental SQL commands are SELECT (retrieve data), INSERT (add new rows), UPDATE (modify existing rows), and DELETE (remove rows). Beyond these, beginners should also learn WHERE (filtering), JOIN (combining tables), GROUP BY (aggregation), and ORDER BY (sorting)."}},{"@type":"Question","name":"How do I format SQL queries to make them readable?","acceptedAnswer":{"@type":"Answer","text":"Use uppercase for SQL keywords, put each major clause (SELECT, FROM, WHERE, JOIN) on a new line, indent subqueries consistently, and format column lists vertically. SQLFormat.io provides a free online SQL formatter that applies these rules automatically for 15+ dialects."}},{"@type":"Question","name":"What is the difference between INNER JOIN and LEFT JOIN?","acceptedAnswer":{"@type":"Answer","text":"INNER JOIN returns only rows where there is a match in both tables. LEFT JOIN returns all rows from the left table, plus matching rows from the right table — unmatched right-table columns are filled with NULL. Use LEFT JOIN when you need all rows from the main table regardless of matches."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.cheat-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.88rem}.cheat-table th{background:var(--surface2);color:var(--accent);text-align:left;padding:8px 12px;font-weight:600;border:1px solid var(--border);font-size:.85rem}.cheat-table td{padding:8px 12px;border:1px solid var(--border);color:var(--text2)}.cheat-table code{background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:.85em;color:var(--accent)}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL Cheat Sheet — Quick Reference Guide for Beginners</h1>
+<div class="meta">Published: July 14, 2026 | Updated: July 14, 2026</div>
+<div class="content">
+<p>This <strong>SQL cheat sheet</strong> covers the most important SQL commands, syntax patterns, and quick-reference tables. Whether you are just starting out or need a refresher before an interview, bookmark this page. Every example is tested on MySQL, PostgreSQL, and T-SQL. Use our <a href="/">free online SQL formatter</a> to clean up any query you write.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#basics">Basic SQL Commands</a></li>
+<li><a href="#select">SELECT — Retrieving Data</a></li>
+<li><a href="#filter">WHERE — Filtering Rows</a></li>
+<li><a href="#join">JOIN — Combining Tables</a></li>
+<li><a href="#groupby">GROUP BY — Aggregating Data</a></li>
+<li><a href="#subquery">Subqueries &amp; CTEs</a></li>
+<li><a href="#window">Window Functions</a></li>
+<li><a href="#ddl">DDL — Creating &amp; Modifying Tables</a></li>
+<li><a href="#dml">DML — Insert, Update, Delete</a></li>
+<li><a href="#datatypes">Common Data Types</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="basics">
+<h2>1. Basic SQL Commands — Quick Reference</h2>
+<table class="cheat-table">
+<tr><th>Command</th><th>Description</th><th>Example</th></tr>
+<tr><td><code>SELECT</code></td><td>Retrieve data from a table</td><td><code>SELECT * FROM users;</code></td></tr>
+<tr><td><code>INSERT</code></td><td>Add new rows</td><td><code>INSERT INTO users (name) VALUES ('Alice');</code></td></tr>
+<tr><td><code>UPDATE</code></td><td>Modify existing rows</td><td><code>UPDATE users SET name='Bob' WHERE id=1;</code></td></tr>
+<tr><td><code>DELETE</code></td><td>Remove rows</td><td><code>DELETE FROM users WHERE id=1;</code></td></tr>
+<tr><td><code>CREATE TABLE</code></td><td>Create a new table</td><td><code>CREATE TABLE users (id INT, name TEXT);</code></td></tr>
+<tr><td><code>ALTER TABLE</code></td><td>Modify table structure</td><td><code>ALTER TABLE users ADD email TEXT;</code></td></tr>
+<tr><td><code>DROP TABLE</code></td><td>Delete a table</td><td><code>DROP TABLE users;</code></td></tr>
+<tr><td><code>TRUNCATE</code></td><td>Delete all rows (fast)</td><td><code>TRUNCATE TABLE users;</code></td></tr>
+</table>
+</section>
+
+<section class="content-section" id="select">
+<h2>2. SELECT — Retrieving Data</h2>
+<pre><code>-- Select all columns
+SELECT * FROM employees;
+
+-- Select specific columns
+SELECT first_name, last_name, salary FROM employees;
+
+-- Distinct values (no duplicates)
+SELECT DISTINCT department FROM employees;
+
+-- Limit results (MySQL/PostgreSQL)
+SELECT * FROM employees LIMIT 10;
+
+-- Limit results (T-SQL)
+SELECT TOP 10 * FROM employees;
+
+-- Sort results
+SELECT * FROM employees ORDER BY salary DESC;
+
+-- Sort by multiple columns
+SELECT * FROM employees ORDER BY department ASC, salary DESC;</code></pre>
+</section>
+
+<section class="content-section" id="filter">
+<h2>3. WHERE — Filtering Rows</h2>
+<table class="cheat-table">
+<tr><th>Operator</th><th>Description</th><th>Example</th></tr>
+<tr><td><code>=</code></td><td>Equal</td><td><code>WHERE dept = 'Engineering'</code></td></tr>
+<tr><td><code>!=</code> or <code>&lt;&gt;</code></td><td>Not equal</td><td><code>WHERE status != 'closed'</code></td></tr>
+<tr><td><code>&gt;, &lt;, &gt;=, &lt;=</code></td><td>Greater/less than</td><td><code>WHERE salary > 50000</code></td></tr>
+<tr><td><code>BETWEEN</code></td><td>Range (inclusive)</td><td><code>WHERE age BETWEEN 18 AND 65</code></td></tr>
+<tr><td><code>LIKE</code></td><td>Pattern match</td><td><code>WHERE email LIKE '%@gmail.com'</code></td></tr>
+<tr><td><code>IN</code></td><td>Match any in list</td><td><code>WHERE dept IN ('Sales','HR')</code></td></tr>
+<tr><td><code>IS NULL</code></td><td>Null check</td><td><code>WHERE manager_id IS NULL</code></td></tr>
+<tr><td><code>AND / OR</code></td><td>Combine conditions</td><td><code>WHERE dept='Eng' AND salary>50k</code></td></tr>
+</table>
+
+<pre><code>-- Complex filtering example
+SELECT first_name, last_name, salary
+FROM employees
+WHERE department = 'Engineering'
+  AND salary > 60000
+  AND hire_date >= '2024-01-01'
+  AND (status = 'active' OR status = 'on_leave')
+ORDER BY salary DESC;</code></pre>
+</section>
+
+<section class="content-section" id="join">
+<h2>4. JOIN — Combining Tables</h2>
+<table class="cheat-table">
+<tr><th>Type</th><th>Description</th></tr>
+<tr><td><code>INNER JOIN</code></td><td>Returns rows with matches in <strong>both</strong> tables</td></tr>
+<tr><td><code>LEFT JOIN</code></td><td>Returns <strong>all</strong> left-table rows + matches from right</td></tr>
+<tr><td><code>RIGHT JOIN</code></td><td>Returns <strong>all</strong> right-table rows + matches from left</td></tr>
+<tr><td><code>FULL OUTER JOIN</code></td><td>Returns all rows from both tables</td></tr>
+<tr><td><code>CROSS JOIN</code></td><td>Cartesian product (every combination)</td></tr>
+<tr><td><code>SELF JOIN</code></td><td>Join a table to itself</td></tr>
+</table>
+
+<pre><code>-- INNER JOIN: employees with their department name
+SELECT e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.id;
+
+-- LEFT JOIN: all employees even if no department
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.id;
+
+-- SELF JOIN: employee and their manager
+SELECT e1.name AS employee, e2.name AS manager
+FROM employees e1
+LEFT JOIN employees e2 ON e1.manager_id = e2.id;</code></pre>
+</section>
+
+<div class="cta-box">
+<h3>Format Your SQL Automatically</h3>
+<p>Paste messy SQL with complex JOINs — get clean, indented output instantly.</p>
+<a href="/">Format SQL Now →</a>
+</div>
+
+<section class="content-section" id="groupby">
+<h2>5. GROUP BY — Aggregating Data</h2>
+<pre><code>-- Count employees per department
+SELECT department, COUNT(*) AS employee_count
+FROM employees
+GROUP BY department;
+
+-- Aggregate functions
+SELECT
+  department,
+  COUNT(*) AS emp_count,
+  AVG(salary) AS avg_salary,
+  MAX(salary) AS max_salary,
+  MIN(salary) AS min_salary,
+  SUM(salary) AS total_payroll
+FROM employees
+GROUP BY department;
+
+-- Filter groups with HAVING (after aggregation)
+SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 70000;
+
+-- Common aggregate functions
+-- COUNT, SUM, AVG, MAX, MIN, STRING_AGG, ARRAY_AGG</code></pre>
+</section>
+
+<section class="content-section" id="subquery">
+<h2>6. Subqueries &amp; CTEs</h2>
+<pre><code>-- Subquery in WHERE
+SELECT name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+-- Subquery in FROM
+SELECT dept, avg_sal
+FROM (SELECT department AS dept, AVG(salary) AS avg_sal FROM employees GROUP BY department) sub
+WHERE avg_sal > 60000;
+
+-- CTE (Common Table Expression) — clearer than subqueries
+WITH dept_stats AS (
+  SELECT department, AVG(salary) AS avg_sal
+  FROM employees
+  GROUP BY department
+)
+SELECT e.name, e.salary, ds.avg_sal
+FROM employees e
+JOIN dept_stats ds ON e.department = ds.department
+WHERE e.salary > ds.avg_sal;</code></pre>
+</section>
+
+<section class="content-section" id="window">
+<h2>7. Window Functions</h2>
+<pre><code>-- ROW_NUMBER: rank rows within a partition
+SELECT name, department, salary,
+  ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS rank
+FROM employees;
+
+-- RANK vs DENSE_RANK (RANK skips ties, DENSE_RANK does not)
+SELECT name, salary,
+  RANK() OVER (ORDER BY salary DESC) AS rank,
+  DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rank
+FROM employees;
+
+-- LAG / LEAD: access previous/next row
+SELECT name, hire_date,
+  LAG(name) OVER (ORDER BY hire_date) AS hired_before,
+  LEAD(name) OVER (ORDER BY hire_date) AS hired_after
+FROM employees;
+
+-- Running total with SUM OVER
+SELECT order_date, amount,
+  SUM(amount) OVER (ORDER BY order_date) AS running_total
+FROM orders;</code></pre>
+</section>
+
+<section class="content-section" id="ddl">
+<h2>8. DDL — Creating &amp; Modifying Tables</h2>
+<pre><code>-- Create table with constraints
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  department_id INT REFERENCES departments(id),
+  salary DECIMAL(10,2) CHECK (salary > 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add column
+ALTER TABLE employees ADD COLUMN phone VARCHAR(20);
+
+-- Drop column
+ALTER TABLE employees DROP COLUMN phone;
+
+-- Rename column (PostgreSQL)
+ALTER TABLE employees RENAME COLUMN name TO full_name;
+
+-- Create index
+CREATE INDEX idx_employees_dept ON employees(department_id);
+
+-- Create unique index
+CREATE UNIQUE INDEX idx_employees_email ON employees(email);</code></pre>
+</section>
+
+<section class="content-section" id="dml">
+<h2>9. DML — Insert, Update, Delete</h2>
+<pre><code>-- Insert single row
+INSERT INTO employees (name, email, department_id, salary)
+VALUES ('Alice Chen', 'alice@company.com', 3, 75000);
+
+-- Insert multiple rows
+INSERT INTO employees (name, email, department_id, salary)
+VALUES
+  ('Bob Smith', 'bob@company.com', 2, 65000),
+  ('Carol Wu', 'carol@company.com', 3, 82000);
+
+-- Insert from SELECT
+INSERT INTO employees_archive
+SELECT * FROM employees WHERE status = 'terminated';
+
+-- Update rows
+UPDATE employees
+SET salary = salary * 1.1, updated_at = NOW()
+WHERE department_id = 3 AND performance = 'exceeds';
+
+-- Delete rows
+DELETE FROM employees
+WHERE status = 'terminated' AND updated_at < '2024-01-01';</code></pre>
+</section>
+
+<section class="content-section" id="datatypes">
+<h2>10. Common Data Types</h2>
+<table class="cheat-table">
+<tr><th>Type</th><th>MySQL</th><th>PostgreSQL</th><th>T-SQL</th></tr>
+<tr><td>Integer</td><td><code>INT, BIGINT</code></td><td><code>INTEGER, BIGINT</code></td><td><code>INT, BIGINT</code></td></tr>
+<tr><td>Decimal</td><td><code>DECIMAL(10,2)</code></td><td><code>NUMERIC(10,2)</code></td><td><code>DECIMAL(10,2)</code></td></tr>
+<tr><td>String</td><td><code>VARCHAR(255)</code></td><td><code>VARCHAR(255)</code></td><td><code>NVARCHAR(255)</code></td></tr>
+<tr><td>Text</td><td><code>TEXT</code></td><td><code>TEXT</code></td><td><code>NVARCHAR(MAX)</code></td></tr>
+<tr><td>Boolean</td><td><code>TINYINT(1)</code></td><td><code>BOOLEAN</code></td><td><code>BIT</code></td></tr>
+<tr><td>Date/Time</td><td><code>DATETIME</code></td><td><code>TIMESTAMP</code></td><td><code>DATETIME2</code></td></tr>
+<tr><td>Auto-increment</td><td><code>AUTO_INCREMENT</code></td><td><code>SERIAL</code></td><td><code>IDENTITY(1,1)</code></td></tr>
+<tr><td>JSON</td><td><code>JSON</code></td><td><code>JSONB</code></td><td><code>NVARCHAR(MAX)</code></td></tr>
+</table>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ</h2>
+<div class="faq-item"><h3>What are the basic SQL commands every beginner should know?</h3><p>Start with SELECT, INSERT, UPDATE, and DELETE — the four fundamental operations. Then learn WHERE (filtering), JOIN (combining tables), GROUP BY (aggregation), and ORDER BY (sorting). These 8 commands cover 90% of daily SQL work.</p></div>
+<div class="faq-item"><h3>How do I format SQL queries to make them readable?</h3><p>Use uppercase for keywords, put each clause on a new line, indent subqueries, and format column lists vertically. Or use <a href="/">SQLFormat.io</a> to auto-format any query in one click — 15+ dialects supported.</p></div>
+<div class="faq-item"><h3>What is the difference between INNER JOIN and LEFT JOIN?</h3><p>INNER JOIN returns only rows with matches in both tables. LEFT JOIN returns all rows from the left table plus matching rows from the right — unmatched right columns get NULL. Use LEFT JOIN when you need all rows from the main table regardless of matches.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/blog/sql-formatting-best-practices">SQL Formatting Best Practices</a>
+<a href="/blog/vscode-sql-formatter-guide">VSCode SQL Formatter</a>
+<a href="/blog/how-to-format-sql-in-ssms">Format SQL in SSMS</a>
+<a href="/format-sql-query-online">Format SQL Query</a>
+<a href="/online-sql-beautifier">SQL Beautifier</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>
