@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Query Optimization — 10 Tips to Write Faster Queries | SQLFormat.io</title>
+  <meta name="description" content="Speed up your SQL queries with these 10 proven optimization techniques. Learn index strategies, avoiding SELECT *, efficient JOINs, EXPLAIN plans, and more for MySQL, PostgreSQL, and T-SQL.">
+  <meta name="keywords" content="sql query optimization, sql performance tuning, speed up sql queries, sql optimization techniques, optimize sql queries, sql performance tips, slow query fix">
+  <meta property="og:title" content="SQL Query Optimization — 10 Tips to Write Faster Queries">
+  <meta property="og:description" content="10 practical SQL optimization techniques that actually work. Indexes, query plans, JOIN order, and more.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-query-optimization-tips">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-query-optimization-tips">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL Query Optimization — 10 Tips to Write Faster Queries","description":"10 proven SQL optimization techniques: indexing strategies, avoiding SELECT *, efficient JOINs, EXPLAIN plans, CTE vs subquery, and dialect-specific tips for MySQL, PostgreSQL, and T-SQL.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-14","dateModified": "2026-07-19","url":"https://sqlformat.io/blog/sql-query-optimization-tips","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL Query Optimization Tips","item":"https://sqlformat.io/blog/sql-query-optimization-tips"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the fastest way to optimize a slow SQL query?","acceptedAnswer":{"@type":"Answer","text":"Start by running EXPLAIN (or EXPLAIN ANALYZE) to see the query execution plan. Look for sequential scans (Seq Scan) on large tables — these usually indicate missing indexes. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses. Then re-run EXPLAIN to confirm the optimizer is using your index."}},{"@type":"Question","name":"Why is SELECT * bad for performance?","acceptedAnswer":{"@type":"Answer","text":"SELECT * forces the database to read every column from disk, including large TEXT/BLOB columns you may not need. It also prevents index-only scans — even when an index covers all the columns you actually need, SELECT * forces a trip to the main table. Always specify exactly the columns you need."}},{"@type":"Question","name":"How do I fix a slow JOIN query?","acceptedAnswer":{"@type":"Answer","text":"Ensure both sides of the JOIN condition have indexes. For INNER JOINs, put the smaller table first (or let the optimizer decide). For LEFT JOINs, add filters in the WHERE clause rather than the ON clause when filtering the left table. Use EXPLAIN to check that the JOIN uses indexes, not full table scans."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL Query Optimization — 10 Tips to Write Faster Queries</h1>
+<div class="meta">Published: July 14, 2026 | Updated: July 14, 2026</div>
+<div class="content">
+<p>A slow query can bring your application to its knees. The difference between a query that takes 50ms and one that takes 5 seconds is often just a few small changes. This guide covers <strong>10 proven SQL query optimization techniques</strong> that work across MySQL, PostgreSQL, and T-SQL. Each tip includes a concrete before-and-after example so you can apply it immediately. Bookmark this page — and use our <a href="/">free online SQL formatter</a> to keep your optimized queries clean and readable.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#tip1">1. Use EXPLAIN Before Touching Anything</a></li>
+<li><a href="#tip2">2. Index Columns in WHERE, JOIN, and ORDER BY</a></li>
+<li><a href="#tip3">3. Stop Using SELECT *</a></li>
+<li><a href="#tip4">4. Filter Early — Put Conditions in WHERE, Not HAVING</a></li>
+<li><a href="#tip5">5. Use INNER JOIN Instead of WHERE for Clarity</a></li>
+<li><a href="#tip6">6. Avoid Functions on Indexed Columns in WHERE</a></li>
+<li><a href="#tip7">7. Use EXISTS Instead of IN for Subqueries</a></li>
+<li><a href="#tip8">8. Be Careful with OR Conditions</a></li>
+<li><a href="#tip9">9. Use LIMIT with ORDER BY</a></li>
+<li><a href="#tip10">10. Batch INSERT and UPDATE Statements</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="tip1">
+<h2>1. Use EXPLAIN Before Touching Anything</h2>
+<p>The single most important optimization tool in SQL is <code>EXPLAIN</code> (or <code>EXPLAIN ANALYZE</code> in PostgreSQL). It shows you exactly how the database executes your query — which indexes it uses, how many rows it scans, and where the bottlenecks are. <strong>Never optimize blind. Always EXPLAIN first.</strong></p>
+
+<h3>MySQL / PostgreSQL / T-SQL</h3>
+<pre><code>-- MySQL &amp; PostgreSQL
+EXPLAIN SELECT * FROM orders WHERE user_id = 42 AND status = 'pending';
+
+-- PostgreSQL with actual timing
+EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42 AND status = 'pending';
+
+-- T-SQL (SQL Server)
+SET SHOWPLAN_TEXT ON;
+SELECT * FROM orders WHERE user_id = 42 AND status = 'pending';
+SET SHOWPLAN_TEXT OFF;</code></pre>
+
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Look for "Seq Scan" (PostgreSQL), "ALL" in the type column (MySQL), or "Table Scan" (T-SQL). These mean the database is reading every row in the table — a clear sign you need an index.
+</div>
+</section>
+
+<section class="content-section" id="tip2">
+<h2>2. Index Columns in WHERE, JOIN, and ORDER BY</h2>
+<p>Indexes are the most powerful performance lever in SQL. A well-placed index can turn a 10-second full table scan into a 5-millisecond index lookup. The columns you should index are those used in:</p>
+<ul>
+<li><strong>WHERE</strong> clauses (filtering)</li>
+<li><strong>JOIN</strong> conditions (table relationships)</li>
+<li><strong>ORDER BY</strong> (sorting)</li>
+</ul>
+
+<h3>Before (no index — full scan)</h3>
+<pre><code>SELECT * FROM orders WHERE user_id = 42 AND status = 'pending';</code></pre>
+<p><em>Without an index on <code>user_id</code>, the database scans all 5 million rows.</em></p>
+
+<h3>After (composite index)</h3>
+<pre><code>CREATE INDEX idx_orders_user_status ON orders(user_id, status);
+
+-- Now the same query uses the index — reads only matching rows
+SELECT * FROM orders WHERE user_id = 42 AND status = 'pending';</code></pre>
+
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> For composite indexes, put the most selective column first (the one with the most unique values). The database can use a <code>(user_id, status)</code> index for queries on <code>user_id</code> alone, but not for <code>status</code> alone.
+</div>
+</section>
+
+<section class="content-section" id="tip3">
+<h2>3. Stop Using SELECT *</h2>
+<p><code>SELECT *</code> is the most common performance anti-pattern in SQL. It forces the database to read every column from disk — including large <code>TEXT</code>, <code>BLOB</code>, or <code>JSON</code> columns you do not need. It also prevents <strong>index-only scans</strong>: even when an index covers all the columns you actually need, <code>SELECT *</code> forces a trip to the main table for the extra columns.</p>
+
+<h3>Bad</h3>
+<pre><code>SELECT * FROM users WHERE id = 42;</code></pre>
+
+<h3>Good</h3>
+<pre><code>SELECT id, name, email FROM users WHERE id = 42;</code></pre>
+
+<p>This single change can reduce I/O by 90% on tables with wide rows. Always list exactly the columns you need.</p>
+</section>
+
+<section class="content-section" id="tip4">
+<h2>4. Filter Early — Use WHERE, Not HAVING</h2>
+<p><code>WHERE</code> filters rows <em>before</em> aggregation. <code>HAVING</code> filters <em>after</em>. If you put a condition in <code>HAVING</code> that could have been in <code>WHERE</code>, the database does extra work on rows it will later discard.</p>
+
+<h3>Bad — filter in HAVING</h3>
+<pre><code>SELECT department, AVG(salary)
+FROM employees
+GROUP BY department
+HAVING department != 'Interns' AND AVG(salary) > 50000;</code></pre>
+
+<h3>Good — filter early in WHERE</h3>
+<pre><code>SELECT department, AVG(salary)
+FROM employees
+WHERE department != 'Interns'
+GROUP BY department
+HAVING AVG(salary) > 50000;</code></pre>
+
+<p>The second query excludes Interns rows <em>before</em> calculating averages — less data to aggregate, faster result.</p>
+</section>
+
+<div class="cta-box">
+<h3>Clean SQL Runs Faster</h3>
+<p>Well-formatted queries are easier to optimize. Let our formatter clean up your SQL first.</p>
+<a href="/">Format Your SQL →</a>
+</div>
+
+<section class="content-section" id="tip5">
+<h2>5. Use Explicit JOINs, Not Implicit WHERE Joins</h2>
+<p>Implicit joins (comma-separated tables in <code>FROM</code> + conditions in <code>WHERE</code>) are harder for both humans and optimizers to parse. Explicit <code>JOIN</code> syntax separates join conditions from filter conditions, making the query's intent clear.</p>
+
+<h3>Bad — implicit join</h3>
+<pre><code>SELECT u.name, o.total
+FROM users u, orders o
+WHERE u.id = o.user_id AND o.status = 'completed';</code></pre>
+
+<h3>Good — explicit JOIN</h3>
+<pre><code>SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'completed';</code></pre>
+
+<p>While most modern optimizers produce the same plan for both, explicit JOINs prevent accidental cross joins and make query intent obvious during code review.</p>
+</section>
+
+<section class="content-section" id="tip6">
+<h2>6. Avoid Functions on Indexed Columns in WHERE</h2>
+<p>Wrapping an indexed column in a function prevents the database from using the index. The optimizer cannot "see through" the function to the underlying column.</p>
+
+<h3>Bad — function on indexed column</h3>
+<pre><code>-- Cannot use index on created_at
+SELECT * FROM orders WHERE DATE(created_at) = '2026-07-14';
+
+-- Cannot use index on name (case-insensitive search in MySQL)
+SELECT * FROM users WHERE LOWER(name) = 'alice';</code></pre>
+
+<h3>Good — compare against the column directly</h3>
+<pre><code>-- Range query uses the index on created_at
+SELECT * FROM orders
+WHERE created_at >= '2026-07-14'
+  AND created_at < '2026-07-15';
+
+-- Use a function-based index (PostgreSQL) or computed column (T-SQL)
+CREATE INDEX idx_users_name_lower ON users(LOWER(name));
+SELECT * FROM users WHERE LOWER(name) = 'alice';</code></pre>
+</section>
+
+<section class="content-section" id="tip7">
+<h2>7. Use EXISTS Instead of IN for Subqueries</h2>
+<p><code>EXISTS</code> stops scanning as soon as it finds a match. <code>IN</code> often materializes the entire subquery result set before checking. For large subquery results, <code>EXISTS</code> is significantly faster.</p>
+
+<h3>Slower — IN with large subquery</h3>
+<pre><code>SELECT * FROM users
+WHERE id IN (SELECT user_id FROM orders WHERE total > 1000);</code></pre>
+
+<h3>Faster — EXISTS stops at first match</h3>
+<pre><code>SELECT * FROM users u
+WHERE EXISTS (
+  SELECT 1 FROM orders o
+  WHERE o.user_id = u.id AND o.total > 1000
+);</code></pre>
+
+<p>The <code>EXISTS</code> version can use a semi-join optimization and stops scanning orders as soon as it finds one qualifying row per user. The <code>IN</code> version may scan the entire orders subquery.</p>
+</section>
+
+<section class="content-section" id="tip8">
+<h2>8. Be Careful with OR Conditions</h2>
+<p><code>OR</code> can prevent index usage because the database may need to scan for two separate conditions. Rewrite <code>OR</code> using <code>UNION</code> or <code>IN</code> when possible.</p>
+
+<h3>Problematic — OR prevents index use</h3>
+<pre><code>SELECT * FROM users WHERE id = 42 OR email = 'alice@example.com';</code></pre>
+
+<h3>Better — UNION uses both indexes</h3>
+<pre><code>SELECT * FROM users WHERE id = 42
+UNION
+SELECT * FROM users WHERE email = 'alice@example.com';</code></pre>
+
+<p>The <code>UNION</code> version can use the index on <code>id</code> for the first part and the index on <code>email</code> for the second — each subquery gets an optimal plan. Use <code>UNION ALL</code> if you know the results will not overlap (faster, no dedup step).</p>
+</section>
+
+<section class="content-section" id="tip9">
+<h2>9. Always Use LIMIT with ORDER BY</h2>
+<p>When you only need the top N rows, <code>LIMIT</code> (or <code>TOP</code> in T-SQL) lets the database stop early. Without it, the database sorts the entire result set even if you only want the first 10 rows.</p>
+
+<h3>Without LIMIT — database sorts everything</h3>
+<pre><code>SELECT * FROM orders ORDER BY total DESC;</code></pre>
+
+<h3>With LIMIT — database stops early</h3>
+<pre><code>SELECT * FROM orders ORDER BY total DESC LIMIT 10;</code></pre>
+
+<p>When combined with an index on <code>total</code>, the database can read the index in reverse order and stop after 10 rows — it never touches the main table for the other millions of rows.</p>
+</section>
+
+<section class="content-section" id="tip10">
+<h2>10. Batch INSERT and UPDATE Statements</h2>
+<p>Running 1,000 individual <code>INSERT</code> statements means 1,000 round trips to the database, 1,000 transactions, and 1,000 index updates. Batching them into a single statement reduces the overhead dramatically.</p>
+
+<h3>Bad — 1000 individual inserts</h3>
+<pre><code>INSERT INTO logs (message) VALUES ('row 1');
+INSERT INTO logs (message) VALUES ('row 2');
+-- ... 998 more ...</code></pre>
+
+<h3>Good — single batch insert</h3>
+<pre><code>INSERT INTO logs (message) VALUES
+  ('row 1'),
+  ('row 2'),
+  ('row 3'),
+  -- ... up to 1000 rows per batch
+  ('row 1000');</code></pre>
+
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> For MySQL, batch sizes of 500-1000 rows are optimal. For PostgreSQL, COPY is even faster than multi-row INSERT for bulk loads. For T-SQL, use table-valued parameters or bulk insert.
+</div>
+</section>
+
+<div class="cta-box">
+<h3>Optimize + Format in One Flow</h3>
+<p>After you apply these optimization tips, format your query for readability. Clean SQL is optimizable SQL.</p>
+<a href="/">Format Your SQL Now →</a>
+</div>
+
+<section class="content-section" id="faq">
+<h2>FAQ — SQL Query Optimization</h2>
+<div class="faq-item"><h3>What is the fastest way to optimize a slow SQL query?</h3><p>Start with <code>EXPLAIN</code> (or <code>EXPLAIN ANALYZE</code> in PostgreSQL) to see the execution plan. Look for sequential scans on large tables. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses. Then re-run EXPLAIN to verify the optimizer uses your new index. Always measure before and after — never guess.</p></div>
+<div class="faq-item"><h3>Why is SELECT * bad for performance?</h3><p>SELECT * reads every column from disk, including large TEXT/BLOB columns. It prevents index-only scans — the database must visit the main table even when an index covers the needed columns. Always specify exactly the columns you need.</p></div>
+<div class="faq-item"><h3>How do I fix a slow JOIN query?</h3><p>Ensure both sides of the JOIN have indexes. Check with EXPLAIN that the JOIN type is "ref" or "eq_ref" (MySQL) or "Index Scan" / "Nested Loop" (PostgreSQL) — not "ALL" or "Seq Scan". For complex multi-table JOINs, consider denormalizing or using materialized views if the data changes infrequently.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/blog/sql-formatting-best-practices">SQL Formatting Best Practices</a>
+<a href="/blog/sql-cheat-sheet">SQL Cheat Sheet</a>
+<a href="/blog/vscode-sql-formatter-guide">VSCode SQL Formatter Guide</a>
+<a href="/blog/how-to-format-sql-in-ssms">Format SQL in SSMS</a>
+<a href="/format-sql-query-online">Format SQL Query Online</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>
