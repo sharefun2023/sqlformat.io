@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/explain",
-    "dateModified": "2026-08-04"
+    "dateModified": "2026-08-05"
   }
   </script>
   <script type="application/ld+json">
@@ -33,6 +33,54 @@
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
       {"@type": "ListItem", "position": 2, "name": "SQL EXPLAIN Visualizer", "item": "https://sqlformat.io/explain"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is SQL EXPLAIN and how does the visualizer help?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "EXPLAIN is a command that shows the query execution plan — how the database engine retrieves rows, joins tables, and filters results. The raw output is dense terminal text. Our visualizer turns it into a color-coded tree diagram so you can spot full table scans, index usage, nested loops, and bottlenecks at a glance without deciphering raw text."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I use the SQL EXPLAIN Visualizer online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Run EXPLAIN or EXPLAIN ANALYZE before your SQL query in MySQL, PostgreSQL, or SQLite. Copy the full output, paste it into the editor, and click Analyze Plan or press Ctrl+Enter. The tool auto-detects your database dialect and renders an interactive tree with color-coded operation nodes and actionable performance insights."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What databases does this execution plan analyzer support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool supports MySQL (tabular format with id, select_type, table, type, key, rows, Extra columns), PostgreSQL (tree-format EXPLAIN and EXPLAIN ANALYZE with cost, actual time, rows, and loops), and SQLite (opcode-level EXPLAIN with addr, opcode, p1-p5). It auto-detects the dialect from your pasted output."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I read a SQL execution plan tree?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Read the tree from innermost (leaf) nodes outward. Each node is one operation: red = full table scan (slow), green = index scan/seek (fast), blue = join, orange = sort. The cost field shows estimated I/O and CPU cost. Focus on red nodes first — they represent operations scanning every row, which are the primary optimization targets."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my EXPLAIN output safe? Does data leave my browser?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely safe. All parsing, analysis, and tree rendering runs 100% in your browser using client-side JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after loading and the tool works fully offline."
+        }
+      }
     ]
   }
   </script>
@@ -460,6 +508,44 @@ addr	opcode	p1	p2	p3
       <a href="/validate" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Validator</a>
     </div>
   </div>
+
+  <!-- Educational content section for SEO -->
+  <div style="margin:24px 0;padding:24px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+    <h2 style="font-size:1.15rem;margin-bottom:12px;color:var(--text);">What Is SQL EXPLAIN and Why Visualize It?</h2>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:16px;"><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:0.85rem;">EXPLAIN</code> is a command available in MySQL, PostgreSQL, and SQLite that reveals the <strong style="color:var(--text);">execution plan</strong> of a query — the step-by-step strategy the database engine uses to scan tables, join data, filter rows, and sort results. Raw EXPLAIN output is dense, tabular text that takes effort to decipher. This <strong style="color:var(--accent);">free online SQL EXPLAIN Visualizer</strong> transforms that text into an interactive, color-coded tree diagram so you can spot full table scans (red), index usage (green), joins (blue), and sort operations (orange) at a glance within seconds.</p>
+    <h2 style="font-size:1.15rem;margin-bottom:12px;color:var(--text);">How to Use the Online SQL Execution Plan Analyzer</h2>
+    <ol style="color:var(--text2);font-size:0.9rem;line-height:1.8;padding-left:20px;margin-bottom:16px;">
+      <li>Run <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:0.85rem;">EXPLAIN SELECT ...</code> or <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:0.85rem;">EXPLAIN ANALYZE SELECT ...</code> in your database client</li>
+      <li>Copy the full output — the tool auto-detects MySQL, PostgreSQL, or SQLite format</li>
+      <li>Paste into the editor above and click <strong style="color:var(--accent);">Analyze Plan</strong> (or press <kbd style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:0.82rem;border:1px solid var(--border);">Ctrl+Enter</kbd>)</li>
+      <li>Explore the tree: expand nested operations, read cost and row estimates, check the Performance Insights panel</li>
+    </ol>
+    <h2 style="font-size:1.15rem;margin-bottom:12px;color:var(--text);">Supported SQL Dialects</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
+      <div style="background:var(--surface2);padding:14px;border-radius:6px;border:1px solid var(--border);">
+        <h3 style="font-size:0.95rem;margin-bottom:6px;color:var(--accent);">MySQL EXPLAIN</h3>
+        <p style="color:var(--text2);font-size:0.82rem;line-height:1.6;">Parses tabular output with <code style="background:var(--bg);padding:1px 5px;border-radius:3px;font-size:0.8rem;">id, select_type, table, type, key, rows, Extra</code> columns. Flags ALL scans, index lookups, Using filesort, and Using temporary.</p>
+      </div>
+      <div style="background:var(--surface2);padding:14px;border-radius:6px;border:1px solid var(--border);">
+        <h3 style="font-size:0.95rem;margin-bottom:6px;color:var(--accent);">PostgreSQL EXPLAIN</h3>
+        <p style="color:var(--text2);font-size:0.82rem;line-height:1.6;">Handles both <code style="background:var(--bg);padding:1px 5px;border-radius:3px;font-size:0.8rem;">EXPLAIN</code> (estimated costs) and <code style="background:var(--bg);padding:1px 5px;border-radius:3px;font-size:0.8rem;">EXPLAIN ANALYZE</code> (actual timings). Renders tree-format output with cost, rows, width, and loop counts.</p>
+      </div>
+      <div style="background:var(--surface2);padding:14px;border-radius:6px;border:1px solid var(--border);">
+        <h3 style="font-size:0.95rem;margin-bottom:6px;color:var(--accent);">SQLite EXPLAIN</h3>
+        <p style="color:var(--text2);font-size:0.82rem;line-height:1.6;">Reads opcode-level <code style="background:var(--bg);padding:1px 5px;border-radius:3px;font-size:0.8rem;">addr, opcode, p1-p5</code> output. Useful for understanding low-level VDBE instruction sequences.</p>
+      </div>
+    </div>
+    <h2 style="font-size:1.15rem;margin-bottom:12px;color:var(--text);">Common Performance Issues to Look For</h2>
+    <ul style="color:var(--text2);font-size:0.9rem;line-height:1.8;padding-left:20px;margin-bottom:8px;">
+      <li><span style="color:var(--red);font-weight:600;">Full Table Scans (Seq Scan / type=ALL)</span> — scanning every row without an index. Add indexes on WHERE, JOIN, and ORDER BY columns</li>
+      <li><span style="color:var(--orange);font-weight:600;">Nested Loop Joins</span> on large tables — may benefit from hash joins. Verify join columns are indexed</li>
+      <li><span style="color:var(--orange);font-weight:600;">Sort Operations</span> with high row counts — consider composite indexes to cover ORDER BY clauses</li>
+      <li><span style="color:var(--red);font-weight:600;">High Row Estimates</span> (10K+) — add LIMIT or more selective WHERE filters to reduce scanned row volume</li>
+      <li><span style="color:var(--orange);font-weight:600;">Using filesort / Using temporary</span> in MySQL — query cannot use an index for sorting, causing disk I/O</li>
+    </ul>
+    <p style="color:var(--text2);font-size:0.85rem;line-height:1.7;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">Tip: Use <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:0.83rem;">EXPLAIN ANALYZE</code> over plain EXPLAIN when tuning — it executes the query and shows actual (not estimated) timings per operation, row counts, and loop iterations, which is critical for spotting the real bottlenecks.</p>
+  </div>
+
 </main>
 
 <footer>
