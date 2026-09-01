@@ -289,6 +289,14 @@
       .category-tabs { gap: 4px; }
       .category-tab { font-size: 0.78rem; padding: 4px 10px; }
     }
+    /* Content sections */
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
 </head>
@@ -331,6 +339,51 @@
 
   <!-- Snippets List -->
   <div class="snippets-grid" id="snippetsGrid"></div>
+
+  <!-- Content Sections -->
+  <div class="content-section">
+    <h2>What is the SQL Snippets Library?</h2>
+    <p>The SQL Snippets Library is a free collection of reusable SQL code templates and recipes that you can copy into your own queries with a single click. Instead of rewriting the same boilerplate every time you need a recursive CTE, a running total, or a paginated result set, you can grab a tested snippet, adjust a table or column name, and move on. The library is organized into categories — CTE &amp; Recursive, Window Functions, Pivot / Unpivot, Pagination, String Aggregation, Date &amp; Time, Performance, MERGE / UPSERT, and Utility — so you can jump straight to the pattern you need. Most snippets are written in standard SQL and include dialect-specific variants (for example <code>STRING_AGG</code> for PostgreSQL versus <code>GROUP_CONCAT</code> for MySQL) so they work across PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minimal changes. Every snippet includes a short description, dialect tags, and ready-to-run SQL, and the whole library runs in your browser — nothing you view or copy is ever sent to a server.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the Snippets Library</h2>
+    <ol>
+      <li>Open the Snippets page and scroll through all snippets, or use the category tabs at the top to filter the list.</li>
+      <li>Click a category such as <code>Window Functions</code>, <code>Pagination</code>, or <code>Performance</code> to narrow down to a specific pattern.</li>
+      <li>Read each snippet's title and description to confirm it matches what you are trying to do.</li>
+      <li>Click the <code>Copy</code> button on the snippet card to copy the SQL to your clipboard instantly.</li>
+      <li>Paste the snippet into your editor or query tool, then rename tables, columns, and values to fit your own schema.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Traversing hierarchical data such as employee org charts or category trees with a recursive CTE.</li>
+      <li>Deduplicating rows, computing running totals, or ranking results per group with window functions.</li>
+      <li>Adding OFFSET/FETCH or ROW_NUMBER-based pagination to list and search queries.</li>
+      <li>Building cross-tab reports by pivoting rows into columns.</li>
+      <li>Inspecting slow queries with EXPLAIN patterns and missing-index checks.</li>
+      <li>Upserting data with MERGE / ON CONFLICT recipes instead of hand-rolling conditional inserts.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example: Running Total with a Window Function</h2>
+    <div class="code-block">SELECT
+  order_date,
+  amount,
+  SUM(amount) OVER (ORDER BY order_date) AS running_total
+FROM orders
+ORDER BY order_date;</div>
+    <p>This snippet computes a cumulative sum of <code>amount</code> over time. Because the window function orders by <code>order_date</code>, each row's <code>running_total</code> is the sum of every amount up to and including that date — no self-join or subquery required, and the same pattern can be reused for any cumulative metric.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips for Getting the Most Out of the Library</h2>
+    <p>Always check the dialect tags on a snippet before pasting it into a production query — several recipes ship PostgreSQL and MySQL variants of the same pattern, and a function like <code>LISTAGG</code> only exists in Oracle. Treat snippets as starting points rather than finished code: rename aliases to match your conventions, add your own <code>WHERE</code> filters, and double-check that window-function framing behaves the way you expect before running anything against a large table. Finally, bookmark the categories you use most often so you can jump straight to them next time.</p>
+  </div>
 
   <!-- Related Tools -->
   <div class="related-tools">

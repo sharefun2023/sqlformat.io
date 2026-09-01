@@ -261,6 +261,13 @@
     .nav-row a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
     .nav-row a:hover { text-decoration: underline; }
     .loading { opacity: 0.5; pointer-events: none; }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -319,6 +326,55 @@ gtag('config', 'G-M3MYLE3P6F');
       <button onclick="loadExample('insert')">INSERT</button>
       <button onclick="loadExample('select')">SELECT results</button>
     </div>
+  </div>
+  <div class="content-section">
+    <h2>What is a SQL to JSON Converter?</h2>
+    <p>A SQL to JSON converter turns tabular SQL data into JSON &mdash; the de-facto data-exchange format of modern web APIs. Instead of hand-writing JSON fixtures or copy-pasting database output into a script, you paste SQL <code>INSERT</code> statements or <code>SELECT</code> result rows and the tool parses the column names and values into a clean JSON array of objects. It handles multi-row <code>VALUES</code> clauses, multiple <code>INSERT</code> statements, and common SQL literals such as <code>NULL</code>, <code>TRUE</code>, <code>FALSE</code>, and quoted strings with escaped quotes. The output is properly indented JSON ready for API mocks, test fixtures, front-end prototypes, or NoSQL migrations &mdash; all processed locally in your browser, so your data never leaves your machine. JSON is a natural target because it is language-agnostic, human-readable, and understood by every modern runtime, so the result needs no custom parsing on the other end.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the Converter</h2>
+    <ol>
+      <li>Choose a mode with the tabs at the top: <strong>INSERT &rarr; JSON</strong> for <code>INSERT</code> statements, or <strong>SELECT &rarr; JSON</strong> for query result rows.</li>
+      <li>Paste your SQL into the input panel (or click an <strong>Example</strong> button to load sample data).</li>
+      <li>Click <strong>Convert</strong>, or press <code>Ctrl+Enter</code>.</li>
+      <li>Review the JSON array in the output panel &mdash; each row becomes one object keyed by column name.</li>
+      <li>Click <strong>Copy</strong> to place the JSON on your clipboard, and <strong>Clear</strong> to start over.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Generating seed data and fixtures for automated tests and CI pipelines.</li>
+      <li>Converting database dumps into JSON documents for NoSQL stores like MongoDB or Elasticsearch.</li>
+      <li>Creating mock API responses while the back-end is still under development.</li>
+      <li>Moving small tables between a SQL database and a spreadsheet, chart, or visualization tool.</li>
+      <li>Sharing sample data with teammates in a format any language or tool can parse.</li>
+      <li>Feeding downstream ETL or reporting scripts that expect JSON input.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example</h2>
+    <p>Paste an <code>INSERT</code> statement and get back a JSON array where each row is an object.</p>
+    <div class="code-block">-- Input (INSERT mode):
+INSERT INTO users (id, name, email, age, active) VALUES
+(1, 'Alice', 'alice@example.com', 28, true),
+(2, 'Bob', 'bob@example.com', 35, false),
+(3, 'Charlie', NULL, 22, true);
+
+-- Output (JSON):
+[
+  { "id": 1, "name": "Alice", "email": "alice@example.com", "age": 28, "active": true },
+  { "id": 2, "name": "Bob", "email": "bob@example.com", "age": 35, "active": false },
+  { "id": 3, "name": "Charlie", "email": null, "age": 22, "active": true }
+]</div>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips</h2>
+    <p>Use <strong>INSERT</strong> mode for clean, typed conversion: numbers stay numbers, <code>TRUE</code>/<code>FALSE</code> become booleans, and <code>NULL</code> becomes JSON <code>null</code>. For <strong>SELECT</strong> mode, paste the query followed by a header row and data rows separated by pipes (<code>|</code>), tabs, or commas &mdash; separator lines like <code>---</code> are skipped automatically. Values are auto-typed, so quoted strings remain strings while bare numbers become numbers. If your output looks wrong, check that every data row has the same number of columns as the header. Because conversion is entirely client-side, you can safely process sensitive production data without uploading it anywhere. The output uses double-quoted keys and values, so it is valid JSON out of the box and can be validated with any JSON tool or pasted directly into a script.</p>
   </div>
   <div class="nav-row">
     <a href="/">← SQL Formatter</a>

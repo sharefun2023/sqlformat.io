@@ -273,6 +273,13 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -338,6 +345,58 @@ gtag('config', 'G-M3MYLE3P6F');
     </div>
   </div>
 
+  <div class="content-section">
+    <h2>What is a SQL Compare Tool?</h2>
+    <p>A SQL compare (or SQL diff) tool highlights the differences between two SQL scripts so you can see exactly what changed without squinting between two windows. Paste an original query and a modified version, and the tool lines them up using a longest-common-subsequence algorithm, marking added lines in green, removed lines in red, and modified lines in orange. On modified lines it goes a step further and highlights the individual tokens that changed, so a one-column rename or a changed join condition is obvious at a glance. It is the fastest way to review query edits, track schema changes, or understand what a colleague changed in a shared script. Unlike a plain text diff, a SQL-aware compare keeps the result readable by tokenizing keywords, strings, and identifiers, so the highlighted changes map directly to query semantics rather than raw characters. Because the comparison runs on SQL tokens rather than raw lines, it tolerates harmless reformatting while still surfacing real logic changes.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the Compare Tool</h2>
+    <ol>
+      <li>Paste the original SQL into the left panel (A) and the modified SQL into the right panel (B).</li>
+      <li>Click <strong>Compare</strong>, or press <code>Ctrl+Enter</code> in either panel.</li>
+      <li>Read the diff &mdash; green <code>+</code> marks added lines, red <code>&minus;</code> marks removed lines, and orange <code>~</code> marks modified lines.</li>
+      <li>On modified lines, inspect the inline highlighting to see the exact tokens that changed.</li>
+      <li>Use the stats bar (added / removed / modified / unchanged) to gauge how large the change is, or click <strong>Example</strong> to load a sample schema diff.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Reviewing pull requests that modify SQL migrations or stored procedures.</li>
+      <li>Comparing a query before and after an optimization to confirm only the intended parts changed.</li>
+      <li>Auditing schema differences between two versions of a database.</li>
+      <li>Verifying that a formatter or linter only reformatted code without changing logic.</li>
+      <li>Tracking edits made by teammates to shared reporting queries.</li>
+      <li>Comparing database schema exports across environments (dev, staging, production).</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example</h2>
+    <p>Compare two versions of a query &mdash; the tool marks the join change, the filter change, and the new column.</p>
+    <div class="code-block">-- Original (A):
+SELECT u.name, u.email, o.amount
+FROM users u
+JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'pending';
+
+-- Modified (B):
+SELECT u.name, u.email, u.phone, o.amount
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.status = 'completed';
+
+-- Detected: 'JOIN' -> 'LEFT JOIN' (modified),
+--           'pending' -> 'completed' (modified),
+--           'u.phone' (added)</div>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips</h2>
+    <p>The comparison is case-insensitive on trimmed line text, so formatting-only differences (extra spaces, line breaks) are surfaced as &ldquo;modified&rdquo; at the token level &mdash; perfect for verifying that a formatter didn't change logic. For large scripts, glance at the stats bar first, then scroll to the orange modified lines where the real logic lives. If two queries look wildly different because of reordering, run both through the <a href="/">SQL Formatter</a> first so the diff aligns on structure rather than whitespace. All processing happens in your browser, so you can safely compare sensitive or proprietary SQL without uploading it anywhere. If the two inputs are very long, paste only the changed region to keep the diff output fast and easy to scan.</p>
+  </div>
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
     <h3 style="font-size:1rem;margin-bottom:12px;">Related Tools</h3>
     <div style="display:flex;flex-wrap:wrap;gap:8px;">

@@ -230,6 +230,13 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -285,6 +292,54 @@ gtag('config', 'G-M3MYLE3P6F');
       <span>Minified: <strong id="minChars">0</strong> chars</span>
       <span>Saved: <strong id="savedPct">0%</strong></span>
     </div>
+  </div>
+  <div class="content-section">
+    <h2>What is a SQL Minifier?</h2>
+    <p>A SQL minifier (also called a SQL compressor) strips unnecessary whitespace, tabs, line breaks, and comments from a query and collapses the entire statement onto a single line. The important part is what it <em>doesn't</em> touch: keywords, table and column names, string literals, numbers, and operators are all preserved exactly as you wrote them. Because whitespace is insignificant in SQL outside of quoted strings, the minified query executes identically to the original. Developers reach for a minifier when they need to embed SQL inside application code, shrink the byte size of API payloads and logs, or squeeze a long query into a field that enforces a strict character limit. Minification is not the same as optimization: it does not rewrite joins, add indexes, or change the execution plan, so the database still receives identical logic &mdash; only the cosmetic overhead disappears.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the SQL Minifier</h2>
+    <ol>
+      <li>Paste your SQL query into the <strong>Input SQL</strong> panel.</li>
+      <li>Click the <strong>Minify</strong> button, or press <code>Ctrl+Enter</code> to run it straight from the keyboard.</li>
+      <li>The tool removes <code>/* block */</code> and <code>-- line</code> comments, then collapses every run of whitespace into a single space.</li>
+      <li>Read the result in the <strong>Minified Output</strong> panel &mdash; your query is now one compact line.</li>
+      <li>Click <strong>Copy</strong> to grab the compressed SQL, and use <strong>Clear</strong> to reset both panels for the next query. The stats bar shows original and minified character counts plus the percentage saved.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Embedding SQL into application source code where multi-line strings are awkward or break linting rules.</li>
+      <li>Reducing the payload size of SQL sent in HTTP requests and API responses to cut bandwidth and latency.</li>
+      <li>Fitting long queries into log messages, alerts, and error reports that enforce tight character limits.</li>
+      <li>Shrinking generated migration files and schema snapshots before committing them to version control.</li>
+      <li>Preparing one-liner queries for command-line tools, shell scripts, and database REPL sessions.</li>
+      <li>Storing queries compactly in configuration files, environment variables, and URL parameters.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example</h2>
+    <p>Here is a formatted query and its minified result. The trailing comment is removed and the whole statement collapses to a single line.</p>
+    <div class="code-block">-- Before:
+SELECT
+    id,
+    name,
+    email
+FROM users
+WHERE status = 'active'
+ORDER BY created_at DESC;
+
+-- After (minified):
+SELECT id, name, email FROM users WHERE status = 'active' ORDER BY created_at DESC;</div>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips</h2>
+    <p>The minifier never rewrites your SQL logic, so the output is always safe to execute. Still, keep a formatted copy of complex queries before minifying &mdash; once collapsed to a single line, a long query is much harder to read and debug. If you need to review or edit later, paste the minified result back into the <a href="/">SQL Formatter</a> to expand it again. String literals are fully protected: whitespace inside quotes is preserved, so values like <code>'San Francisco'</code> come through untouched. Finally, heavily formatted queries with 2- or 4-space indentation typically shrink by 40&ndash;60%, so the biggest savings appear exactly where readability mattered most. If you paste the minified result into a single-quoted shell string or a JSON value, remember to escape any embedded quotes afterward &mdash; the minifier preserves them literally, so values like <code>O''Brien</code> still need escaping in the surrounding language.</p>
   </div>
   <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
 

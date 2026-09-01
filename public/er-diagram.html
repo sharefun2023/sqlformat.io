@@ -265,6 +265,14 @@
     #downloadLink {
       display: none;
     }
+    /* Content sections */
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -334,6 +342,58 @@ gtag('config', 'G-M3MYLE3P6F');
       <button onclick="loadExample('blog')">Blog</button>
       <button onclick="loadExample('library')">Library</button>
     </div>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="content-section">
+    <h2>What is the SQL ER Diagram Generator?</h2>
+    <p>The SQL ER Diagram Generator turns your <code>CREATE TABLE</code> DDL into a visual entity-relationship diagram. Paste one or more table definitions and the tool parses each table's columns, data types, primary keys, and foreign keys, then draws the schema as an interactive diagram — tables rendered as boxes, relationships as connecting lines. You can zoom in and out, reset the view, and export the result as a PNG image. It supports standard DDL used by MySQL, PostgreSQL, and SQLite, including inline and table-level primary keys, <code>FOREIGN KEY ... REFERENCES</code>, NOT NULL, DEFAULT, UNIQUE, and AUTO_INCREMENT / SERIAL / IDENTITY columns. Everything runs client-side, so your schema never leaves your browser. Primary keys are marked inline, NOT NULL and UNIQUE constraints are reflected in each column's annotation, and every foreign key becomes a labeled relationship line, giving you an at-a-glance map of how your tables connect. A small info bar beneath the canvas reports the number of tables, columns, and foreign keys that were parsed, so you can quickly confirm the tool read your DDL correctly.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Generate an ER Diagram</h2>
+    <ol>
+      <li>Paste one or more <code>CREATE TABLE</code> statements into the DDL input area.</li>
+      <li>Optionally load a preset — <code>E-Commerce</code>, <code>Blog</code>, or <code>Library</code> — to see a working example.</li>
+      <li>Click <code>Generate Diagram</code>.</li>
+      <li>Use <code>Zoom +</code>, <code>Zoom -</code>, and <code>Reset</code> to navigate the diagram.</li>
+      <li>Click <code>Export PNG</code> to download the diagram as an image for documentation or sharing.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Visualizing a new schema before writing any application code.</li>
+      <li>Documenting an existing database for onboarding new developers.</li>
+      <li>Reviewing foreign key relationships to spot orphaned or missing references.</li>
+      <li>Creating diagrams for design docs, RFCs, and architecture reviews.</li>
+      <li>Quickly understanding an unfamiliar schema dumped from a production database.</li>
+      <li>Verifying that every foreign key in a schema points to an existing table.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example: Two Related Tables</h2>
+    <p>Pasting the following DDL draws two tables connected by a foreign key:</p>
+    <div class="code-block">CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);</div>
+    <p>The diagram shows a <code>users</code> box and an <code>orders</code> box, with the <code>id</code> columns marked as primary keys and a relationship line drawn from <code>orders.user_id</code> to <code>users.id</code>. Column data types and the NOT NULL and UNIQUE flags appear under each column name, so you can review constraints without reopening the raw DDL.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips for Cleaner ER Diagrams</h2>
+    <p>Keep your DDL focused on <code>CREATE TABLE</code> blocks — the parser ignores comments and <code>ALTER TABLE</code> lines, so you can safely paste an entire schema dump. Use consistent naming for primary and foreign key columns to make relationships easier to read. For large schemas, generate the diagram in sections (a few related tables at a time) so the layout stays legible, and export each section to PNG before moving on. Exporting at a higher zoom level produces a sharper image, so zoom in before you download if you plan to embed the diagram in a document or slide deck.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">

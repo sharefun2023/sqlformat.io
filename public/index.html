@@ -447,6 +447,12 @@
       font-size: 0.88rem;
       line-height: 1.6;
     }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -656,6 +662,37 @@ gtag('config', 'G-M3MYLE3P6F');
       <div class="desc">Convert any web page to clean Markdown for LLMs</div>
     </a>
   </div>
+
+  <!-- SEO Content Sections -->
+  <section class="content-section">
+    <h2>Why Use an Online SQL Formatter?</h2>
+    <p>SQL is one of the most widely used languages in the world, but it is also one of the easiest to write poorly. Queries copied from logs, exported from reporting tools, or thrown together in a hurry often arrive as a single unbroken line with no indentation, inconsistent casing, and confusing nesting. A good SQL formatter fixes all of this in seconds.</p>
+    <p>Readable SQL is easier to maintain. When indentation mirrors the logical structure of a query, you can see at a glance which clauses belong together, where each join begins, and how subqueries nest. That clarity matters most in a team: consistent formatting keeps code reviews focused on logic instead of style, so every developer reads the same structure. Well-formatted SQL also speeds up debugging, because a misplaced comma, a missing alias, or an unbalanced parenthesis jumps out immediately when the layout is clean. Finally, tidy queries belong in documentation, pull requests, and support tickets, where messy SQL would only distract from the point you are making.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Features</h2>
+    <ul>
+      <li><strong style="color:var(--text);">15+ SQL dialects</strong> — MySQL, PostgreSQL, SQLite, BigQuery, Snowflake, and more, each with its own syntax rules.</li>
+      <li><strong style="color:var(--text);">100% client-side</strong> — your SQL never leaves your browser, with no server processing and no data collection.</li>
+      <li><strong style="color:var(--text);">Configurable indentation</strong> — choose 2 spaces, 4 spaces, or tabs to match your team's style.</li>
+      <li><strong style="color:var(--text);">Automatic keyword casing</strong> — keywords, functions, and strings are formatted consistently for each dialect.</li>
+      <li><strong style="color:var(--text);">Free with no signup</strong> — no accounts, no credit cards, and no limits on query size or usage.</li>
+      <li><strong style="color:var(--text);">Copy, share, and history</strong> — copy the result in one click, share a query by link, and recall your five most recent formats.</li>
+      <li><strong style="color:var(--text);">Example queries</strong> — load ready-made SELECT, JOIN, and complex CTE examples to test formatting instantly.</li>
+      <li><strong style="color:var(--text);">Keyboard friendly</strong> — press <code>Ctrl+Enter</code> to format without lifting your hands from the keyboard.</li>
+    </ul>
+  </section>
+
+  <section class="content-section">
+    <h2>Supported SQL Dialects</h2>
+    <p>SQLFormat.io formats 15 database dialects, each with its own syntax rules and conventions. Supported engines include MySQL, PostgreSQL, SQLite, BigQuery, Snowflake, Redshift, and MariaDB, alongside T-SQL (SQL Server), PL/SQL (Oracle), Hive, Spark SQL, DB2, Trino, SingleStoreDB, and Standard SQL. Pick your dialect from the dropdown and the formatter applies the correct keyword casing, string handling, and function formatting for that engine. If you are not sure which option to choose, <code>Standard SQL</code> is a safe default that produces clean, portable output.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>How It Works</h2>
+    <p>Formatting a query takes three steps and a few seconds. First, paste your SQL into the input box. Second, choose your database dialect and preferred indentation from the dropdowns above. Third, click <strong style="color:var(--text);">Format</strong> — the result appears instantly and is ready to copy with a single click. Because everything runs in your browser, no data is ever uploaded to a server, and the page keeps working even after you load it offline.</p>
+  </section>
 
   <!-- Daily Tip -->
   <div class="daily-tip-section" style="background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--accent);border-radius:var(--radius);padding:24px 28px;margin:32px 0;">

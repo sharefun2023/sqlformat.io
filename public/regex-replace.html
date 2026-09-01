@@ -429,6 +429,14 @@
       .regex-row input[type="text"] { width: 100%; }
       .scope-row { flex-direction: column; }
     }
+    /* Content sections */
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
 </head>
@@ -553,6 +561,50 @@ ORDER BY o.total DESC" spellcheck="false"></textarea>
     <button class="btn" onclick="loadExample('rename')">Rename columns</button>
     <button class="btn" onclick="loadExample('clean')">Clean comments</button>
     <button class="btn" onclick="loadExample('camel')">snake_case → camelCase</button>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="content-section">
+    <h2>What is the SQL Regex Replace Tool?</h2>
+    <p>The SQL Regex Replace tool applies regular-expression find-and-replace across your SQL text, making batch refactoring quick and safe. Instead of editing dozens of table or column names by hand, you write one pattern and let the tool rewrite every match at once. You can scope the replacement to the entire SQL, table names only, column names only, or comments only, and toggle the <code>g</code> (global), <code>i</code> (case-insensitive), and <code>m</code> (multiline) flags. Before anything is changed, the preview panel lists every match so you can verify exactly what will be rewritten, and every operation can be undone while the original SQL is always preserved. It uses JavaScript's RegExp engine — supporting groups, backreferences (<code>$1</code>, <code>$2</code>), alternation, quantifiers, and word boundaries — and runs entirely in your browser. Because every replacement is recorded in a history stack, you can step backward through the undo log and restore the original input at any point, so no mistake is ever permanent. The four example presets — adding a table prefix, renaming columns, cleaning comments, and converting snake_case to camelCase — double as a quick tutorial for the most common refactors.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Refactor SQL with Regex</h2>
+    <ol>
+      <li>Paste your SQL into the <code>Input SQL</code> text area.</li>
+      <li>Enter a regular expression in the <code>Find (regex)</code> field and the replacement text in <code>Replace with</code>.</li>
+      <li>Choose a scope — <code>Entire SQL</code>, <code>Table Names</code>, <code>Column Names</code>, or <code>Comments</code> — and set the flags you need.</li>
+      <li>Click <code>Preview Changes</code> and review the list of matches before continuing.</li>
+      <li>Click <code>Apply Replace</code> to commit the change, then copy the result or use it as a new input for another pass.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Adding a schema prefix to every table name in a script with a single pattern.</li>
+      <li>Renaming a shared column prefix such as <code>customer_</code> to <code>cust_</code> throughout a query.</li>
+      <li>Stripping <code>--</code> and block comments to clean up code before shipping.</li>
+      <li>Converting <code>snake_case</code> identifiers to <code>camelCase</code> with a capture-group replacement.</li>
+      <li>Standardizing inconsistent naming across a large migration script.</li>
+      <li>Rewriting table aliases or identifiers in a generated query you want to reuse.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example: Adding a Table Prefix</h2>
+    <p>To prefix every table name with <code>app_</code>, set the scope to <code>Table Names</code> and use the pattern <code>(users|orders|products)</code> with the replacement <code>app_$1</code>:</p>
+    <div class="code-block">SELECT u.id, o.total
+FROM app_users u
+LEFT JOIN app_orders o ON u.id = o.user_id
+JOIN app_products p ON o.product_id = p.id;</div>
+    <p>Only the table references change; column names and aliases stay untouched because the replacement is scoped to table names.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips for Safe Regex Refactoring</h2>
+    <p>Always run a <code>Preview</code> before applying, and prefer the narrowest scope that fits your goal — a pattern like <code>id</code> on <code>Entire SQL</code> will match far more than you expect. Use word-boundary anchors (<code>\b</code>) to avoid partial matches, and capture groups (<code>$1</code>, <code>$2</code>) to reuse parts of each match in the replacement. If a pattern behaves unexpectedly, remember the tool uses JavaScript's RegExp engine, so features like lookbehind may not be available in every browser. For multi-step refactors, use the "Use as New Input" button to chain replacements together without losing your place.</p>
   </div>
 
   <!-- Related Tools -->

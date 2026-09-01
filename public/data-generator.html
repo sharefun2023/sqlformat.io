@@ -339,6 +339,14 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    /* Content sections */
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -419,6 +427,49 @@ gtag('config', 'G-M3MYLE3P6F');
         <span class="stat" id="statSize">Size: 0 B</span>
       </div>
     </div>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="content-section">
+    <h2>What is the SQL Data Generator?</h2>
+    <p>The SQL Data Generator builds realistic <code>INSERT</code> statements from a table schema you define right in the browser. You specify a table name, list columns with their data types, and choose how many rows to produce. The tool then generates believable mock data — real first and last names for name fields, email addresses, company and city names, random integers for ID columns, recent dates for <code>DATE</code> and <code>TIMESTAMP</code> columns, and realistic prices for <code>DECIMAL</code>. It supports <code>INT</code>, <code>VARCHAR</code>, <code>TEXT</code>, <code>BOOLEAN</code>, <code>DATE</code>, <code>TIMESTAMP</code>, <code>FLOAT</code>, <code>DECIMAL</code>, <code>UUID</code>, <code>JSON</code>, and <code>ENUM</code>, among others. It is ideal for seeding development databases, writing tests, and prototyping queries against realistic data. Everything runs client-side, so your schema never leaves your device, and there is no signup or usage limit. You can also load ready-made presets for common tables — Users, Products, Orders, and Employees — so you can produce useful sample data in just a couple of clicks, then tweak a column or two to fit your exact schema.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Generate Mock SQL Data</h2>
+    <ol>
+      <li>Enter a table name in the <code>Table Name</code> field, such as <code>users</code> or <code>orders</code>.</li>
+      <li>Add columns by clicking <code>+ Add Column</code>, then set each column's name and data type (e.g. <code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>).</li>
+      <li>Optionally type a hint in the <code>Options</code> field — for example <code>price</code> to get prices, or a comma-separated list of allowed values for an <code>ENUM</code>.</li>
+      <li>Set the number of rows you want in the <code>Rows</code> field.</li>
+      <li>Click <code>Generate</code>, then use <code>Copy</code> to grab the resulting <code>INSERT</code> statements for your database.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Seeding a local development database with sample rows instead of typing them by hand.</li>
+      <li>Generating test data for unit and integration tests that exercise your queries.</li>
+      <li>Prototyping a schema and immediately checking how a query behaves against realistic values.</li>
+      <li>Creating demo datasets for documentation, tutorials, and code reviews.</li>
+      <li>Populating staging environments without exposing real customer data.</li>
+      <li>Benchmarking query performance against a table of a known row count.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example: Generating an Orders Table</h2>
+    <p>Given an <code>orders</code> table with columns <code>order_id</code>, <code>customer_id</code>, <code>unit_price</code>, and <code>order_date</code>, the generator produces one INSERT statement per row, like this:</p>
+    <div class="code-block">INSERT INTO orders (order_id, customer_id, unit_price, order_date) VALUES (8371, 4821, 129.99, '2025-08-14 09:32:11');
+INSERT INTO orders (order_id, customer_id, unit_price, order_date) VALUES (2044, 1734, 54.25, '2025-06-02 18:07:45');
+INSERT INTO orders (order_id, customer_id, unit_price, order_date) VALUES (9156, 9087, 210.00, '2026-01-19 11:45:03');</div>
+    <p>Integer columns get random numeric values, <code>unit_price</code> (a <code>DECIMAL</code> with a <code>price</code> hint) receives a realistic price, and <code>order_date</code> (a <code>TIMESTAMP</code>) gets a plausible recent date and time.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips for Better Mock Data</h2>
+    <p>Name your columns after common fields the generator recognizes — <code>email</code>, <code>first_name</code>, <code>last_name</code>, <code>city</code>, <code>phone</code>, <code>department</code>, or <code>job_title</code> all produce far more realistic values than generic names. For <code>ENUM</code> columns, put the allowed values in the Options field as a comma-separated list, and use a <code>price</code> hint on <code>DECIMAL</code> columns to get currency-like values. Remember the output is randomized on every run, so click <code>Generate</code> again whenever you want a fresh dataset. If you need stable fixtures, copy the output and save it to a file rather than relying on the generator to reproduce the same rows.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">

@@ -320,6 +320,13 @@
       .tool-grid { grid-template-columns: 1fr; }
       header .container { flex-direction: column; }
     }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
 </head>
@@ -404,6 +411,56 @@
   <!-- Hidden canvas for PNG export -->
   <canvas id="exportCanvas" style="display:none;"></canvas>
 
+  <div class="content-section">
+    <h2>What is SQL Pretty Print?</h2>
+    <p>SQL pretty printing formats a query with consistent indentation and colors every element by type &mdash; keywords, functions, string literals, numbers, comments, and operators &mdash; so the query reads like well-structured code. This tool goes one step further than a plain formatter: it renders the highlighted output and exports it as a PNG or SVG image. That makes it ideal for documentation, slide decks, blog posts, and code reviews where a crisp, syntax-highlighted screenshot beats a plain-text code block. You can switch between dark and light themes to match your destination, and because rendering happens entirely in the browser, your SQL never touches a server. The result is not just well-formatted SQL &mdash; it is a presentation-ready asset you can drop into any document without reformatting.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the Pretty Printer</h2>
+    <ol>
+      <li>Paste your SQL into the input panel (a sample query is pre-filled to get you started).</li>
+      <li>Choose your database dialect from the dropdown so the formatter applies the right rules.</li>
+      <li>Pick a <strong>Dark</strong> or <strong>Light</strong> theme.</li>
+      <li>Click <strong>Format &amp; Highlight</strong> to see the color-coded result, with a stats bar showing line and character counts.</li>
+      <li>Click <strong>Export PNG</strong> or <strong>Export SVG</strong> to download the highlighted SQL as an image, or <strong>Copy</strong> to grab the plain formatted text.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Use Cases</h2>
+    <ul>
+      <li>Creating documentation screenshots for wikis, README files, and internal docs.</li>
+      <li>Dropping polished, syntax-highlighted SQL into presentations and slide decks.</li>
+      <li>Producing crisp code images for blog posts and tutorials about SQL.</li>
+      <li>Sharing readable query snippets in tickets, code reviews, and chat threads.</li>
+      <li>Generating SVG graphics that stay sharp at any resolution in print or PDF.</li>
+      <li>Creating consistent, branded SQL imagery for internal documentation and knowledge bases.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Example</h2>
+    <p>A dense single-line query is reformatted clause-by-clause with color-coded keywords, functions, strings, and numbers.</p>
+    <div class="code-block">-- Input:
+SELECT u.name, COUNT(o.id) AS order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE o.created_at >= '2025-01-01' GROUP BY u.name HAVING COUNT(o.id) > 5 ORDER BY order_count DESC;
+
+-- Formatted and highlighted output (one clause per line):
+SELECT
+    u.name,
+    COUNT(o.id) AS order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE o.created_at >= '2025-01-01'
+GROUP BY u.name
+HAVING COUNT(o.id) > 5
+ORDER BY order_count DESC;</div>
+  </div>
+
+  <div class="content-section">
+    <h2>Tips</h2>
+    <p>SVG is resolution-independent, so prefer it for documentation and print; use PNG when you need a quick raster image for chat or a ticket. Before exporting, switch themes to match the destination &mdash; light for white-background docs, dark for slides and developer blogs. The formatter uses your selected dialect, so pick the right one to get correct handling of dialect-specific constructs. If the parser can't format a query, it still renders the raw text with syntax highlighting, so you always get a usable image. For very long queries, format first, then export in sections so the text stays legible at a readable font size. Note that <strong>Copy</strong> captures the plain SQL text, not the colors &mdash; the highlighting only appears in the rendered panel and in the exported PNG or SVG images.</p>
+  </div>
   <div class="related-tools">
     <h3>Related Tools</h3>
     <div class="related-links">
