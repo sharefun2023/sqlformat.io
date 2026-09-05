@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Formatter Online — Free SQL Formatter in Your Browser | SQLFormat.io</title>
+  <meta name="description" content="SQL formatter online: paste messy SQL and get clean, well-indented code in seconds. Free, no signup, 15+ dialects including MySQL, PostgreSQL, and SQL Server. Everything runs in your browser.">
+  <meta name="keywords" content="sql formatter online, sql format online, online sql formatter, free sql formatter">
+  <meta property="og:title" content="SQL Formatter Online — Free SQL Formatter in Your Browser | SQLFormat.io">
+  <meta property="og:description" content="SQL formatter online: paste messy SQL and get clean, well-indented code in seconds. Free, no signup, 15+ dialects including MySQL, PostgreSQL, and SQL Server. Everything runs in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqlformat.io/sql-formatter-online">
+  <meta property="og:site_name" content="SQLFormat.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://sqlformat.io/sql-formatter-online">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SQL Formatter Online",
+    "description": "SQL formatter online: paste messy SQL and get clean, well-indented code in seconds. Free, no signup, 15+ dialects including MySQL, PostgreSQL, and SQL Server. Everything runs in your browser.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    "url": "https://sqlformat.io/sql-formatter-online",
+    "dateModified": "2026-09-05"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "SQLFormat.io", "item": "https://sqlformat.io"},
+      {"@type": "ListItem", "position": 2, "name": "SQL Formatter Online", "item": "https://sqlformat.io/sql-formatter-online"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a SQL formatter online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An online SQL formatter takes messy, unreadable SQL — often a single massive line — and rewrites it with proper indentation, line breaks, and keyword casing. The output keeps the exact same logic, so it runs identically, but you can finally see the structure: which JOIN belongs to which table, where each subquery starts and ends, and what that nested CASE statement is actually doing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this online SQL formatter free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, completely free. There is no signup, no trial counter, no watermark, and no premium tier hiding the features you actually need. Paste your SQL, pick a dialect, click Format, and copy the result — as many times as you want."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which SQL dialects does it support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The formatter supports 15+ dialects including MySQL, PostgreSQL, SQLite, SQL Server (T-SQL), BigQuery, Snowflake, Redshift, MariaDB, PL/SQL, DB2, Hive, Spark, Trino, and SingleStoreDB. Dialect-aware formatting matters because features like array syntax, window functions, and operator precedence differ between databases."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my SQL code safe to paste into an online formatter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Formatting runs entirely in your browser — your SQL never leaves your machine, so there is no upload, no server log, and no database of queries to worry about. This makes it safe to format queries that touch sensitive tables or contain credentials."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I format SQL on my phone or tablet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The page is fully responsive, so you can paste and format SQL from a phone, tablet, or any browser. It also works offline after the first load, since all processing is local JavaScript with no server dependency."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --accent: #58a6ff;
+      --accent2: #1f6feb;
+      --green: #3fb950;
+      --orange: #d29922;
+      --radius: 8px;
+    }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      background: var(--surface);
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--text2);
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+    .hero {
+      text-align: left;
+      padding: 40px 0 24px;
+    }
+    .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .hero .content { color: var(--text2); font-size: 0.95rem; line-height: 1.7; max-width: 780px; }
+    .hero .content p { margin-bottom: 12px; }
+    .hero .content code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: var(--accent);
+    }
+    .hero .content strong { color: var(--text); }
+    .tool-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .tool-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tool-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .tool-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tool-controls select, .tool-controls button {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tool-controls select:hover, .tool-controls button:hover {
+      border-color: var(--accent);
+    }
+    .tool-controls button.primary {
+      background: var(--accent2);
+      border-color: var(--accent2);
+      color: #fff;
+      font-weight: 500;
+    }
+    .tool-controls button.primary:hover { background: var(--accent); }
+    .tool-controls button.success {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .editor-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    @media (max-width: 768px) {
+      .editor-area { grid-template-columns: 1fr; }
+    }
+    .editor-pane { position: relative; }
+    .editor-pane label {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-pane textarea {
+      width: 100%;
+      height: 350px;
+      padding: 16px;
+      border: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+    }
+    .editor-pane textarea:focus { background: #0d1117; }
+    .feature-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 28px 0 8px;
+    }
+    .feature-strip .feat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .feature-strip .feat h3 { font-size: 0.95rem; margin-bottom: 6px; color: var(--accent); }
+    .feature-strip .feat p { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+    .related-section {
+      margin: 32px 0 48px;
+    }
+    .related-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: var(--text2);
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .related-grid a {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+    }
+    .related-grid a:hover { border-color: var(--accent); }
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo"><span>SQL</span> Format</a>
+    <nav>
+      <a href="/">Formatter</a>
+      <a href="/minify">Minifier</a>
+      <a href="/validate">Validator</a>
+      <a href="/sql-to-json">SQL→JSON</a>
+      <a href="/escape">Escape</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>SQL Formatter Online</h1>
+    <div class="content">
+            <p>You know the drill. Someone hands you a query that was hammered out as one continuous line — 2,000 characters of table aliases, nested <code>CASE</code> statements, and zero line breaks. Reading it feels like untangling headphone wires in the dark. An <strong>SQL formatter online</strong> sorts it out in one click: paste, format, and suddenly every <code>JOIN</code> lines up with its table, every subquery sits at the right depth, and you can actually tell where one part of the query ends and the next begins.</p>
+            <p>The formatter is dialect-aware, so it doesn't just indent blindly. Pick MySQL, PostgreSQL, SQL Server, BigQuery, or one of the other 15+ dialects and it respects how that database actually handles things — window functions, CTEs, array syntax, even the fiddly bits like <code>LIMIT</code> placement and quoted identifiers. It also handles the gnarly stuff other tools choke on: recursive CTEs, deeply nested subqueries, and multi-level <code>CASE</code> chains keep their logical flow instead of turning into a wall of noise.</p>
+            <p>And here's the part people don't expect: everything runs <strong>in your browser</strong>. No upload, no server round-trip, no "your SQL was saved to our database" fine print. You can format a query that references your <code>customers</code> table without wondering who else just saw it. It's fast, it's free, and it works even when you're pasting sensitive snippets — because the code never leaves your machine in the first place.</p>
+        </div>
+  </div>
+
+  <div class="tool-section">
+    <div class="tool-header">
+      <h2>🧹 SQL Formatter Online</h2>
+      <div class="tool-controls">
+        <select id="dialect">
+          <option value="sql" selected>Standard SQL</option>
+          <option value="mysql">MySQL</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+          <option value="bigquery">BigQuery</option>
+          <option value="db2">DB2</option>
+          <option value="hive">Hive</option>
+          <option value="mariadb">MariaDB</option>
+          <option value="plsql">PL/SQL</option>
+          <option value="redshift">Redshift</option>
+          <option value="singlestoredb">SingleStoreDB</option>
+          <option value="snowflake">Snowflake</option>
+          <option value="spark">Spark</option>
+          <option value="tsql">T-SQL</option>
+          <option value="trino">Trino</option>
+        </select>
+        <select id="indent">
+          <option value="2">2 spaces</option>
+          <option value="4" selected>4 spaces</option>
+          <option value="tab">Tabs</option>
+        </select>
+        <button onclick="runTool()" class="primary" id="actionBtn">🧹 Format</button>
+        <button onclick="copyResult()" class="success">📋 Copy</button>
+        <button onclick="clearAll()">🗑️ Clear</button>
+      </div>
+    </div>
+    <div class="editor-area">
+      <div class="editor-pane">
+        <label>Input</label>
+        <textarea id="inputText" placeholder="Paste your SQL here..." spellcheck="false">SELECT u.id,u.name,count(o.id) AS order_count FROM users u LEFT JOIN orders o ON o.user_id=u.id WHERE u.status='active' GROUP BY u.id,u.name HAVING count(o.id)>5 ORDER BY order_count DESC</textarea>
+      </div>
+      <div class="editor-pane">
+        <label>Output</label>
+        <textarea id="outputText" placeholder="Result will appear here..." spellcheck="false" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-strip">
+    <div class="feat">
+      <h3>Runs in your browser</h3>
+      <p>Your SQL never leaves your machine. No upload, no server logs — safe for queries that touch sensitive data.</p>
+    </div>
+    <div class="feat">
+      <h3>15+ SQL dialects</h3>
+      <p>MySQL, PostgreSQL, T-SQL, BigQuery, Snowflake and more. Formatting respects each database's real syntax.</p>
+    </div>
+    <div class="feat">
+      <h3>Free, no signup</h3>
+      <p>No account, no trial counter, no watermark. Paste, format, copy — as many times as you like.</p>
+    </div>
+  </div>
+
+  <div class="related-section">
+    <h2>More SQL Tools</h2>
+    <div class="related-grid"><a href="/free-sql-formatter-online">Free SQL Formatter Online</a><a href="/best-online-sql-formatter">Best Online SQL Formatter</a><a href="/online-sql-beautifier">SQL Beautifier</a><a href="/auto-format-sql-online">Auto Format SQL</a><a href="/format-sql-query-online">Format SQL Query Online</a><a href="/sql-format-with-syntax-highlighting">SQL with Syntax Highlighting</a><a href="/sql-formatter-mysql">MySQL Formatter</a><a href="/sql-formatter-postgresql">PostgreSQL Formatter</a><a href="/sql-formatter-no-signup">No Signup Formatter</a><a href="/format-large-sql-files-online">Format Large SQL Files</a><a href="/sql-minifier-online">SQL Minifier</a><a href="/pretty-print">Pretty Print SQL</a><a href="/explain">SQL EXPLAIN</a><a href="/diff">SQL Diff</a><a href="/validate">SQL Validator</a><a href="/blog/sql-formatting-best-practices">Formatting Best Practices</a><a href="/blog/vscode-sql-formatter-guide">VS Code SQL Formatter</a></div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | &copy; 2026</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="/sql-formatter.js"></script>
+<script>
+window._formatSql = sqlFormatter.format;
+
+function runTool() {
+  const input = document.getElementById('inputText');
+  const output = document.getElementById('outputText');
+  const btn = document.getElementById('actionBtn');
+  const sql = input.value.trim();
+  
+  if (!sql) { showToast('Please enter SQL first'); return; }
+  
+  btn.style.opacity = '0.5';
+  btn.textContent = '⏳ Processing...';
+  
+  setTimeout(() => {
+    try {
+      const dialect = document.getElementById('dialect').value;
+      const indentSel = document.getElementById('indent').value;
+      const indent = indentSel === 'tab' ? '\t' : ' '.repeat(parseInt(indentSel));
+      const formatted = window._formatSql(sql, { language: dialect, indent: indent });
+      output.value = formatted;
+      btn.textContent = '✨ Formatted';
+      showToast('✅ Done');
+    } catch (e) {
+      output.value = 'Error: ' + e.message;
+      showToast('❌ ' + e.message);
+    } finally {
+      btn.style.opacity = '1';
+    }
+  }, 50);
+}
+
+function copyResult() {
+  const output = document.getElementById('outputText');
+  if (!output.value.trim()) { showToast('Nothing to copy'); return; }
+  navigator.clipboard.writeText(output.value).then(() => {
+    showToast('📋 Copied to clipboard');
+  }).catch(() => {
+    output.select();
+    document.execCommand('copy');
+    showToast('📋 Copied to clipboard');
+  });
+}
+
+function clearAll() {
+  document.getElementById('inputText').value = '';
+  document.getElementById('outputText').value = '';
+  showToast('🗑️ Cleared');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Cmd/Ctrl+Enter to run
+document.getElementById('inputText').addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runTool();
+  }
+});
+</script>
+
+</body>
+</html>
