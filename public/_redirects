@@ -1,16 +1,32 @@
 # 301 redirects: thin pages → deep content pages
+# 每条同时覆盖干净 URL 和 .html 后缀版本（Google 历史索引的 .html URL）
 /sql-query-formatter /free-sql-formatter-online 301
+/sql-query-formatter.html /free-sql-formatter-online 301
 /format-sql-online-free /free-sql-formatter-online 301
+/format-sql-online-free.html /free-sql-formatter-online 301
 /sql-code-beautifier /online-sql-beautifier 301
+/sql-code-beautifier.html /online-sql-beautifier 301
 /compress-sql-online /sql-minifier-online 301
+/compress-sql-online.html /sql-minifier-online 301
 /beautify-sql-code-online /online-sql-beautifier 301
+/beautify-sql-code-online.html /online-sql-beautifier 301
 /sql-indentation-formatter /free-sql-formatter-online 301
+/sql-indentation-formatter.html /free-sql-formatter-online 301
 /sql-pretty-print-online /online-sql-beautifier 301
+/sql-pretty-print-online.html /online-sql-beautifier 301
 /online-sql-formatting-tool /free-sql-formatter-online 301
+/online-sql-formatting-tool.html /free-sql-formatter-online 301
 /clean-up-sql-online /free-sql-formatter-online 301
+/clean-up-sql-online.html /free-sql-formatter-online 301
 /sql-formatter-for-beginners /free-sql-formatter-online 301
+/sql-formatter-for-beginners.html /free-sql-formatter-online 301
 /sql-syntax-formatter-online /free-sql-formatter-online 301
+/sql-syntax-formatter-online.html /free-sql-formatter-online 301
 /fix-sql-formatting-online /free-sql-formatter-online 301
+/fix-sql-formatting-online.html /free-sql-formatter-online 301
 /sql-code-cleaner-online /online-sql-beautifier 301
+/sql-code-cleaner-online.html /online-sql-beautifier 301
 /sql-readability-formatter /best-online-sql-formatter 301
+/sql-readability-formatter.html /best-online-sql-formatter 301
 /instant-sql-formatter /auto-format-sql-online 301
+/instant-sql-formatter.html /auto-format-sql-online 301
