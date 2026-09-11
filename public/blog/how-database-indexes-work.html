@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Database Indexes Work — A Practical Guide | SQLFormat.io</title>
+  <meta name="description" content="Learn how database indexes work: B+ tree storage, clustered vs secondary indexes, composite index leftmost prefix rules, covering indexes, the four cases where indexes fail, write-side cost, and verifying usage with EXPLAIN.">
+  <meta name="keywords" content="database index, sql index optimization, composite index, covering index, clustered index, explain plan, index not used">
+  <meta property="og:title" content="How Database Indexes Work — A Practical Guide">
+  <meta property="og:description" content="How B+ tree indexes actually store data, why composite index column order decides whether your query uses them, when the optimizer ignores an index, and how to prove it with EXPLAIN.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-database-indexes-work">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-database-indexes-work">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How Database Indexes Work — A Practical Guide","description":"How B+ tree indexes store data, clustered vs secondary indexes, composite index leftmost prefix rules with concrete query examples, covering indexes, four cases where an index is ignored, write-side cost, and verifying index usage with EXPLAIN.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/how-database-indexes-work","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How Database Indexes Work — A Practical Guide","item":"https://sqlformat.io/blog/how-database-indexes-work"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between a clustered and a secondary index?","acceptedAnswer":{"@type":"Answer","text":"A clustered index stores the actual table rows in its leaf pages, so the table data is the index — InnoDB builds it on the PRIMARY KEY and there can be only one. A secondary index stores only the indexed columns plus a pointer (in InnoDB, the primary key value) back to the row, so a lookup that needs other columns requires a second traversal to the clustered index."}},{"@type":"Question","name":"Why is my composite index not being used?","acceptedAnswer":{"@type":"Answer","text":"Composite indexes are usable only from the leftmost column onward. An index on (customer_id, status, created_at) can serve queries filtering on customer_id, or customer_id plus status, or all three — but not a query that filters only on status or only on created_at. If the leading column is missing from the WHERE clause, the optimizer usually falls back to a full table scan."}},{"@type":"Question","name":"What is a covering index?","acceptedAnswer":{"@type":"Answer","text":"A covering index contains every column a query reads, so the database answers the query from the index alone without visiting the table. In MySQL, EXPLAIN shows this as Using index in the Extra column; in PostgreSQL it appears as an Index Only Scan. It trades a wider index and more write cost for much less I/O on reads."}},{"@type":"Question","name":"Why does adding an index slow down INSERT and UPDATE?","acceptedAnswer":{"@type":"Answer","text":"Every index is a separate sorted structure that must be kept consistent. Each INSERT, UPDATE, or DELETE on the table also modifies every affected index, and page splits inside the B+ tree add extra I/O. A table with eight indexes does roughly eight extra index operations per row written, which is why write-heavy tables should keep only the indexes their queries actually need."}},{"@type":"Question","name":"How do I know if my SQL used the index?","acceptedAnswer":{"@type":"Answer","text":"Prefix the query with EXPLAIN and inspect the access type and key columns. In MySQL, type=ALL and key=NULL mean a full table scan; ref or range plus a populated key column means the index was used. In PostgreSQL, EXPLAIN ANALYZE shows Seq Scan versus Index Scan, with the index conditions listed under Index Cond and any post-filter under Filter."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:18px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.95rem}.content-section strong{color:var(--text)}.content-section ul,.content-section ol{color:var(--text2);line-height:1.75;margin:0 0 14px 22px;font-size:.95rem}.content-section li{margin-bottom:6px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.86em;color:var(--accent);font-family:'SF Mono',Monaco,Consolas,monospace}.content-section pre{background:#010409;border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow-x:auto;margin:12px 0 16px}.content-section pre code{background:none;padding:0;color:#c9d1d9;font-size:.85rem;line-height:1.6}.content-section table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 12px;border:1px solid var(--border)}.content-section td{color:var(--text2);padding:10px 12px;border:1px solid var(--border)}.content-section blockquote{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;margin:14px 0;border-radius:0 var(--radius) var(--radius) 0}.content-section blockquote p{margin:0}.cta-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--accent2);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}.cta-box h3{color:var(--text);font-size:1.2rem;margin-bottom:8px}.cta-box p{color:var(--text2);margin-bottom:16px;font-size:.95rem}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.95rem}.cta-box a:hover{background:var(--accent)}.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:8px}.faq-item p{color:var(--text2);font-size:.92rem;line-height:1.7;margin:0}.related-section{margin:40px 0}.related-section h2{font-size:1.3rem;margin-bottom:16px}.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;color:var(--accent);text-decoration:none;font-size:.9rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:640px){.hero h1{font-size:1.5rem}.container{padding:0 14px}nav a{margin-left:14px;font-size:.82rem}}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How Database Indexes Work — A Practical Guide</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>Most slow queries are not slow because the server is weak. They are slow because the database read every row in the table instead of walking a small sorted structure to find the forty rows your query actually wanted. That structure is the <strong>database index</strong>, and understanding how it is physically laid out is what turns index tuning from guesswork into a checklist.</p>
+<p>This guide walks through the B+ tree underneath, the difference between clustered and secondary indexes, why a <strong>composite index</strong> on <code>(a, b)</code> helps a query on <code>a</code> but not one on <code>b</code>, covering indexes, the four most common reasons an index gets ignored, the write-side price you pay for each one, and how to confirm any of it with <code>EXPLAIN</code>. Every example is runnable SQL.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#b-tree">1. What an Index Actually Is: B+ Trees Without the Math</a></li>
+<li><a href="#clustered">2. Clustered vs Secondary Indexes</a></li>
+<li><a href="#composite">3. Composite Indexes and the Leftmost Prefix Rule</a></li>
+<li><a href="#covering">4. Covering Indexes: Answering a Query from the Index Alone</a></li>
+<li><a href="#fails">5. When SQL Index Optimization Fails: Four Ways the Optimizer Ignores You</a></li>
+<li><a href="#cost">6. The Write-Side Cost: Duplicate, Redundant, and Unused Indexes</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="b-tree">
+<h2>1. What an Index Actually Is: B+ Trees Without the Math</h2>
+<p>An index is a separate, sorted data structure that maps column values to row locations. Postgres, MySQL, and SQL Server all use the same family of structure for the default index type: a <strong>B+ tree</strong>. You do not need the algorithms to use it well, but you do need one mental picture.</p>
+<p>Think of the index on the back of a textbook. It does not duplicate the book — it lists terms in alphabetical order and points to page numbers. To find "normalization" you do not read every page; you jump to the N section and read a few lines. A B+ tree works the same way, with three kinds of pages:</p>
+<ul>
+<li><strong>Root page</strong> — one page, always in memory after the first read. It tells you which branch to follow.</li>
+<li><strong>Interior pages</strong> — the branches. Each holds separator keys and pointers to finer-grained pages.</li>
+<li><strong>Leaf pages</strong> — the sorted list of key/value entries. They are also linked to each other, left to right, which is what makes range scans cheap.</li>
+</ul>
+<p>The important property is <strong>fanout</strong>: a single 16 KB page holds hundreds of keys. With roughly 500 keys per page, three levels address 500 × 500 × 500 = 125 million entries. That is why a lookup on a 50-million-row table is still 3–4 page reads — the top two levels are usually already cached, so a real seek often costs a single disk read. A full table scan on the same table reads all 50 million rows.</p>
+<p>Sorted order buys you three things at once: equality lookups become a short descent, range conditions (<code>&gt;</code>, <code>BETWEEN</code>, <code>LIKE 'abc%'</code>) become "seek to the start, then walk the linked leaf pages", and <code>ORDER BY</code> on the indexed column can be satisfied for free because the data is already in that order.</p>
+
+<h3>A table to work with</h3>
+<p>The rest of this article uses this table. It is small enough to paste into a scratch schema, but pretend it holds five million rows — that assumption is what makes the plans interesting.</p>
+<pre><code>CREATE TABLE orders (
+  id          BIGINT        NOT NULL,
+  customer_id BIGINT        NOT NULL,
+  status      VARCHAR(20)   NOT NULL,
+  created_at  DATETIME      NOT NULL,
+  total       DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO orders (id, customer_id, status, created_at, total) VALUES
+  (1, 42, 'pending', '2026-01-05 09:12:00', 129.90),
+  (2, 42, 'shipped', '2026-01-06 11:40:00',  59.00),
+  (3, 77, 'pending', '2026-02-01 08:03:00', 310.50),
+  (4, 42, 'pending', '2026-02-14 17:25:00',  18.75);
+
+-- No index on customer_id yet: this scans every row.
+SELECT id, status, total FROM orders WHERE customer_id = 42;
+
+-- Now it descends the tree instead.
+CREATE INDEX idx_orders_customer ON orders (customer_id);
+SELECT id, status, total FROM orders WHERE customer_id = 42;</code></pre>
+<p>Both queries return the same rows. The first reads the whole table; the second reads a handful of index pages and then fetches the matching rows. On a large table that is the difference between tens of milliseconds and tens of seconds.</p>
+</section>
+
+<section class="content-section" id="clustered">
+<h2>2. Clustered vs Secondary Indexes</h2>
+<p>Not all indexes are equal, and the distinction that matters most is whether the index <em>is</em> the table or merely points at it.</p>
+<p>A <strong>clustered index</strong> stores the full row inside its leaf pages. InnoDB (the default MySQL engine) builds the clustered index on the <code>PRIMARY KEY</code>, which means the table data is physically ordered by primary key. There can only be one, because rows can only be sorted one way. In the table above, <code>PRIMARY KEY (id)</code> is the clustered index — a lookup by <code>id</code> walks one tree and is done.</p>
+<p>A <strong>secondary index</strong> stores only the indexed columns plus a pointer back to the row. In InnoDB that pointer is the primary key value. So this query does two traversals, not one:</p>
+<pre><code>CREATE INDEX idx_orders_status ON orders (status);
+
+-- Step 1: seek 'pending' in idx_orders_status -&gt; get primary key ids
+-- Step 2: for each id, seek the clustered index to fetch the rest of the row
+SELECT status, total FROM orders WHERE status = 'pending';</code></pre>
+<p>That second traversal is called a bookmark or row lookup, and it is why a query returning 100,000 matching rows can be slower with an index than without one: the optimizer may decide the random-access lookups cost more than a sequential scan and abandon your index on purpose. This is a real decision, not a bug.</p>
+
+<table>
+<thead><tr><th></th><th>Clustered index</th><th>Secondary index</th></tr></thead>
+<tbody>
+<tr><td>Leaf pages contain</td><td>The entire row</td><td>Indexed columns + primary key value</td></tr>
+<tr><td>How many per table</td><td>Exactly one</td><td>As many as you create</td></tr>
+<tr><td>Extra lookup needed</td><td>No</td><td>Yes, unless the index covers the query</td></tr>
+<tr><td>MySQL / InnoDB</td><td>On <code>PRIMARY KEY</code>; a surrogate auto-increment key is best</td><td>Every other index you define</td></tr>
+<tr><td>PostgreSQL</td><td>None by default — the heap is unordered; <code>CLUSTER</code> is a one-time rewrite</td><td>All indexes; lookups go back to the heap</td></tr>
+<tr><td>SQL Server</td><td>Default for the primary key unless <code>NONCLUSTERED</code> is specified</td><td>Add with <code>NONCLUSTERED</code></td></tr>
+</tbody>
+</table>
+
+<p>One practical consequence: because every secondary index in InnoDB carries the primary key, a wide or random primary key (say, a 36-character UUID) inflates every index on the table and turns sequential inserts into page splits scattered across the tree. An <code>BIGINT AUTO_INCREMENT</code> primary key keeps inserts at the right edge of the clustered index, appending instead of splitting.</p>
+</section>
+
+<section class="content-section" id="composite">
+<h2>3. Composite Indexes and the Leftmost Prefix Rule</h2>
+<p>A composite (multi-column) index sorts entries by the first column, then by the second within equal first values, and so on — exactly like a phone book sorted by last name, then first name. Everything about how it can be used follows from that one fact.</p>
+<blockquote><p><strong>The leftmost prefix rule:</strong> an index on <code>(a, b, c)</code> can be used for queries filtering on <code>a</code>, on <code>a, b</code>, or on <code>a, b, c</code>. It cannot be used for queries filtering only on <code>b</code>, only on <code>c</code>, or on <code>b, c</code> — you cannot find "all the Johns" in a phone book sorted by last name.</p></blockquote>
+
+<pre><code>CREATE INDEX idx_orders_cust_status_created
+  ON orders (customer_id, status, created_at);</code></pre>
+
+<p>Here is the same index tested against six realistic queries:</p>
+
+<table>
+<thead><tr><th>Query WHERE clause</th><th>Index usable?</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><code>customer_id = 42</code></td><td>Yes — <code>customer_id</code></td><td>Matches the leftmost prefix</td></tr>
+<tr><td><code>customer_id = 42 AND status = 'pending'</code></td><td>Yes — both columns</td><td>Prefix of two columns</td></tr>
+<tr><td><code>customer_id = 42 AND status = 'pending' AND created_at &gt;= '2026-01-01'</code></td><td>Yes — all three</td><td>Full index, range on the last column</td></tr>
+<tr><td><code>status = 'pending'</code></td><td>No</td><td>Skips the leading column</td></tr>
+<tr><td><code>created_at &gt;= '2026-01-01'</code></td><td>No</td><td>Leading columns absent</td></tr>
+<tr><td><code>status = 'pending' AND created_at &gt;= '2026-01-01'</code></td><td>No</td><td>Both non-leading columns</td></tr>
+</tbody>
+</table>
+
+<p>There is a subtler case that bites people in production:</p>
+<pre><code>-- Index (customer_id, status, created_at)
+-- Uses customer_id for the seek, then evaluates created_at as a filter
+-- on every row of that customer. The created_at ordering is NOT usable
+-- for the range, because status was skipped.
+SELECT id, total
+FROM orders
+WHERE customer_id = 42
+  AND created_at &gt;= '2026-01-01';
+
+-- Uses all three columns for the seek AND returns rows already in
+-- created_at order, so no sort step is needed.
+SELECT id, total
+FROM orders
+WHERE customer_id = 42
+  AND status = 'pending'
+  AND created_at &gt;= '2026-01-01'
+ORDER BY created_at;</code></pre>
+
+<p>That is why the ordering rule for composite index columns is: <strong>equality columns first, then the range or sort column last</strong>. Once a column is used with a range operator, the index can no longer be used to constrain anything to its right — the walk has become a scan segment. Put the range column first and every equality column after it becomes a filter instead of a seek.</p>
+<p>Among equality columns, order matters less for the "all of them present" query, but it matters a lot for the partial queries. If your application constantly filters <code>WHERE customer_id = ?</code> alone, <code>customer_id</code> must be first. If two single-column queries are equally common, you may need two indexes — a composite index cannot serve both leading columns.</p>
+</section>
+
+<div class="cta-box">
+<h3>Check Your Index Before You Ship the Query</h3>
+<p>Format and sanity-check the SQL you are about to profile — readable queries are far easier to reason about when the plan says "Seq Scan".</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<section class="content-section" id="covering">
+<h2>4. Covering Indexes: Answering a Query from the Index Alone</h2>
+<p>If a secondary index already contains every column a query reads, the database never has to visit the table. The index pages alone answer it. This is called a <strong>covering index</strong> (or an index-only scan), and it is often the single biggest win available for read-heavy workloads.</p>
+
+<pre><code>-- Index on (customer_id, status) only
+CREATE INDEX idx_orders_cust_status ON orders (customer_id, status);
+
+-- total is NOT in the index, so each match needs a row lookup
+SELECT status, total
+FROM orders
+WHERE customer_id = 42 AND status = 'pending';
+
+-- Add total to the index: now it covers the query
+CREATE INDEX idx_orders_cust_status_total
+  ON orders (customer_id, status, total);
+
+SELECT status, total
+FROM orders
+WHERE customer_id = 42 AND status = 'pending';   -- index-only scan</code></pre>
+
+<p>PostgreSQL spells the intent out with an <code>INCLUDE</code> clause, which appends payload columns without making them part of the sort key:</p>
+<pre><code>-- PostgreSQL: keep the key narrow, carry total along for the ride
+CREATE INDEX idx_orders_cust_status
+  ON orders (customer_id, status)
+  INCLUDE (total);</code></pre>
+
+<table>
+<thead><tr><th>What you see in EXPLAIN</th><th>Meaning</th><th>I/O</th></tr></thead>
+<tbody>
+<tr><td>MySQL: <code>Using index</code></td><td>Covering index — all columns came from the index</td><td>Index pages only</td></tr>
+<tr><td>MySQL: no <code>Using index</code>, <code>key</code> still set</td><td>Index used for the seek, then a row lookup per match</td><td>Index pages + random table reads</td></tr>
+<tr><td>PostgreSQL: <code>Index Only Scan</code></td><td>Covering — no heap access (when the visibility map is current)</td><td>Index pages only</td></tr>
+<tr><td>PostgreSQL: <code>Index Scan</code></td><td>Index seek plus heap fetch per row</td><td>Index pages + heap reads</td></tr>
+</tbody>
+</table>
+
+<p>The tradeoff is honest: a covering index is wider, so it takes more space and costs more on every write. Add <code>total</code> to an index only when a frequent query needs exactly that shape — and prefer copying a narrow column over dragging a <code>TEXT</code> or <code>JSON</code> column into the index.</p>
+</section>
+
+<section class="content-section" id="fails">
+<h2>5. When SQL Index Optimization Fails: Four Ways the Optimizer Ignores You</h2>
+<p>You created the index. The query did not get faster. In the overwhelming majority of cases one of these four patterns is responsible — and in every one of them the fix is to make the indexed column appear alone on the left side of the comparison.</p>
+
+<h3>5.1 A function wraps the indexed column</h3>
+<pre><code>-- BAD: created_at is buried inside YEAR(), so the index on it is unusable
+SELECT id, total FROM orders WHERE YEAR(created_at) = 2026;
+
+-- GOOD: rewrite as a range on the bare column -&gt; index range scan
+SELECT id, total
+FROM orders
+WHERE created_at &gt;= '2026-01-01'
+  AND created_at &lt;  '2027-01-01';</code></pre>
+<p>If the business genuinely needs the expression, index the expression instead of the column. PostgreSQL supports this directly; MySQL 8 supports functional indexes:</p>
+<pre><code>-- PostgreSQL expression index
+CREATE INDEX idx_orders_year ON orders ((EXTRACT(YEAR FROM created_at)));
+
+-- MySQL 8 functional index
+CREATE INDEX idx_orders_year ON orders ((YEAR(created_at)));</code></pre>
+
+<h3>5.2 Implicit type conversion</h3>
+<p>This is the nastiest one, because the query looks completely correct. A <code>VARCHAR</code> column compared against an unquoted number forces the database to convert the column side, not the literal side — and a converted column cannot be looked up in an index.</p>
+<pre><code>CREATE TABLE customers (
+  id    BIGINT      NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  PRIMARY KEY (id),
+  INDEX idx_phone (phone)
+);
+
+-- BAD: no quotes -&gt; MySQL converts every phone value to a number.
+-- Full scan. Every row re-typed before comparison.
+SELECT id FROM customers WHERE phone = 13800138000;
+
+-- GOOD: compare string to string -&gt; index seek
+SELECT id FROM customers WHERE phone = '13800138000';</code></pre>
+<p>Watch for the same trap on <code>DATETIME</code> versus <code>DATE</code>, and on <code>BIGINT</code> columns compared to string literals in languages that silently pass IDs as strings. If you apply a collation in the query that differs from the column's, the index is bypassed too.</p>
+
+<h3>5.3 LIKE with a leading wildcard</h3>
+<pre><code>-- BAD: leading % can match anywhere -&gt; full scan, nothing to seek to
+SELECT id FROM orders WHERE status LIKE '%pend%';
+
+-- GOOD: anchored prefix -&gt; the tree can seek to 'pend' and walk forward
+SELECT id FROM orders WHERE status LIKE 'pend%';</code></pre>
+<p>For genuine substring search, a B+ tree is the wrong tool. Use a full-text index (MySQL <code>FULLTEXT</code>, PostgreSQL <code>tsvector</code>) or PostgreSQL's <code>pg_trgm</code> GIN index, which is built for fuzzy and infix matching.</p>
+
+<h3>5.4 OR across different columns</h3>
+<pre><code>-- BAD: two different columns joined by OR. The optimizer usually
+-- cannot use either index and falls back to one full table scan.
+SELECT id, total FROM orders
+WHERE customer_id = 42 OR status = 'pending';
+
+-- GOOD: split into two index-friendly lookups
+SELECT id, total FROM orders WHERE customer_id = 42
+UNION
+SELECT id, total FROM orders WHERE status = 'pending';
+
+-- Use UNION ALL instead of UNION if duplicates are acceptable:
+-- it skips the deduplication sort.</code></pre>
+<p><code>OR</code> on the <em>same</em> column is a different story — that is equivalent to <code>IN</code> and the optimizer handles it as a range. It is only the cross-column <code>OR</code> that breaks index usage, and MySQL's index merge access path may still save it if both columns are indexed separately.</p>
+
+<h3>Prove it with EXPLAIN</h3>
+<p>Never assume — look. Prefix the statement with <code>EXPLAIN</code> and read the access type, the chosen key, the estimated rows, and the extra notes.</p>
+<pre><code>-- MySQL 8
+EXPLAIN
+SELECT id, total FROM orders
+WHERE customer_id = 42 AND status = 'pending'\G
+
+-- PostgreSQL, with real timing and buffer counts
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT id, total FROM orders
+WHERE customer_id = 42 AND status = 'pending';</code></pre>
+<p>What to look for in the MySQL output:</p>
+<ul>
+<li><code>type</code> — <code>ALL</code> is a full table scan. <code>ref</code>, <code>range</code>, <code>eq_ref</code>, and <code>const</code> mean an index was used. Anything starting with <code>index_merge</code> is using two indexes together.</li>
+<li><code>key</code> — which index was chosen. <code>NULL</code> means none.</li>
+<li><code>rows</code> — the optimizer's estimate of rows examined. A number near your table's total row count plus <code>type = ALL</code> is the signature of a missing index.</li>
+<li><code>Extra</code> — <code>Using index</code> is a covering index, <code>Using where</code> means rows are being filtered after retrieval, and <code>Using filesort</code> or <code>Using temporary</code> on a large result set is a sorting cost you may be able to index away.</li>
+</ul>
+<p>In PostgreSQL the labels differ but the story is the same: <code>Seq Scan</code> is the full scan, <code>Index Scan</code> and <code>Index Only Scan</code> are the good ones, <code>Index Cond</code> shows what the index was able to enforce, and <code>Filter</code> shows conditions applied afterward to discard rows. A long gap between <code>rows removed by filter</code> and the rows returned says your index stops short.</p>
+</section>
+
+<section class="content-section" id="cost">
+<h2>6. The Write-Side Cost: Duplicate, Redundant, and Unused Indexes</h2>
+<p>Indexes are not free. Every index is a second sorted structure that must stay consistent with the table, so each <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> pays for all of them. Inserting 10,000 rows into a table with eight indexes is 10,000 row writes plus roughly 80,000 index updates, plus every B+ tree page split that follows. On write-heavy tables — logs, events, telemetry, message queues — a surplus index is a direct tax on throughput.</p>
+<p>Two failure modes are common, and both are easy to find.</p>
+<p><strong>Duplicate indexes</strong> have the same column list under different names, usually created by two different developers or two migrations that never met:</p>
+<pre><code>CREATE INDEX idx_orders_customer ON orders (customer_id);
+CREATE INDEX idx_orders_customer_v2 ON orders (customer_id);   -- duplicate
+CREATE INDEX idx_cust ON orders (customer_id);                 -- duplicate again</code></pre>
+<p><strong>Redundant indexes</strong> are prefixes of longer ones. Given <code>(customer_id, status)</code>, a separate index on <code>(customer_id)</code> can never be used to do anything the longer index cannot — it just costs writes and disk forever:</p>
+<pre><code>-- index B makes index A redundant, because A is a leftmost prefix of B
+CREATE INDEX idx_a ON orders (customer_id);            -- redundant
+CREATE INDEX idx_b ON orders (customer_id, status);    -- supersedes it</code></pre>
+<p>Find them with catalog queries instead of reading your migrations:</p>
+<pre><code>-- List every index on a table with its columns in order
+SELECT index_name, column_name, seq_in_index
+FROM information_schema.statistics
+WHERE table_name = 'orders'
+ORDER BY index_name, seq_in_index;
+
+-- PostgreSQL: indexes that have never been used since the last stats reset
+SELECT relname, indexrelname, idx_scan
+FROM pg_stat_user_indexes
+WHERE schemaname = 'public'
+ORDER BY idx_scan ASC, pg_relation_size(indexrelid) DESC;
+
+-- MySQL 8: ready-made redundancy and usage views
+SELECT * FROM sys.schema_redundant_indexes
+WHERE table_schema = 'shop';
+
+SELECT * FROM sys.schema_unused_indexes;</code></pre>
+<p>Treat the unused-index list as evidence, not as an order. Two caveats before you drop anything: statistics reset when the server restarts, so an <code>idx_scan = 0</code> may just mean "no traffic since Tuesday"; and an index that only serves a quarterly report is still doing its job. Watch for one full business cycle — a month, or at minimum a release cycle — before removing an index that looks idle.</p>
+<p>The rule of thumb for write-heavy tables: <strong>prefer one composite index over three single-column indexes</strong>, keep the list as short as the query workload genuinely demands, and batch writes so index maintenance is amortized. A narrow, well-ordered index beats three convenient ones every time.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — Database Indexes</h2>
+<div class="faq-item"><h3>What is the difference between a clustered and a secondary index?</h3><p>A clustered index stores the full row in its leaf pages — the table <em>is</em> the index — so there can be only one (InnoDB builds it on the primary key, SQL Server uses it for the primary key by default). A secondary index stores only the indexed columns plus a pointer back to the row; in InnoDB that pointer is the primary key value, which is why a secondary lookup needs a second traversal unless the index covers the query. PostgreSQL has no clustered index by default: tables are heaps and every index is secondary.</p></div>
+<div class="faq-item"><h3>Why is my composite index not being used?</h3><p>Most likely the leading column is missing from the <code>WHERE</code> clause. An index on <code>(customer_id, status, created_at)</code> can serve a query filtering on <code>customer_id</code>, on <code>customer_id</code> plus <code>status</code>, or on all three — but not one filtering only on <code>status</code> or only on <code>created_at</code>. The other common cause is a range condition placed before an equality column, which stops the index from constraining anything to its right.</p></div>
+<div class="faq-item"><h3>What is a covering index?</h3><p>A covering index contains every column the query reads, so the database answers it entirely from the index without visiting the table. MySQL reports this as <code>Using index</code> in the <code>Extra</code> column; PostgreSQL calls it an <code>Index Only Scan</code>. You get dramatically less I/O on reads in exchange for a wider index and more work on writes, so add covering columns deliberately.</p></div>
+<div class="faq-item"><h3>Why does adding an index slow down INSERT and UPDATE?</h3><p>Because each index is a separate sorted structure that must be updated in step with the table. A table with eight indexes performs roughly eight extra index modifications plus any B+ tree page splits for every row written. On write-heavy tables, audit unused and redundant indexes first — removing a single duplicate index can measurably raise insert throughput.</p></div>
+<div class="faq-item"><h3>How do I know if my SQL used the index?</h3><p>Run <code>EXPLAIN</code> in front of the query. In MySQL, <code>type = ALL</code> with <code>key = NULL</code> is a full table scan, while <code>ref</code> or <code>range</code> with a populated <code>key</code> means the index was used; check <code>Extra</code> for <code>Using index</code>. In PostgreSQL, <code>EXPLAIN ANALYZE</code> prints <code>Seq Scan</code> versus <code>Index Scan</code>, with <code>Index Cond</code> showing what the index enforced and <code>Filter</code> showing what was applied afterward.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools &amp; Reading</h2>
+<div class="related-grid">
+<a href="/explain">SQL EXPLAIN Plan Explainer</a>
+<a href="/free-online-sql-query-analyzer">Free Online SQL Query Analyzer</a>
+<a href="/stats">SQL Query Statistics</a>
+<a href="/">SQL Formatter Online</a>
+<a href="/validate">SQL Validator</a>
+<a href="/blog/sql-query-optimization-tips">SQL Query Optimization Tips</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

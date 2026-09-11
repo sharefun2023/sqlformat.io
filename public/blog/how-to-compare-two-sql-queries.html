@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Compare Two SQL Queries — Methods and Best Practices | SQLFormat.io</title>
+  <meta name="description" content="Learn how to compare SQL queries reliably: why eyeball diffs fail, how to normalize formatting before comparing, text-level vs semantic-level SQL diff, git diff workflows, and stored procedure comparison.">
+  <meta name="keywords" content="compare sql queries, sql diff tool, sql compare, compare sql scripts, sql diff online">
+  <meta property="og:title" content="How to Compare Two SQL Queries — Methods and Best Practices">
+  <meta property="og:description" content="A practical guide to comparing SQL queries: normalize formatting first, know when a text diff tool is enough, and catch the cases where identical-looking queries behave differently.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-to-compare-two-sql-queries">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-to-compare-two-sql-queries">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Compare Two SQL Queries — Methods and Best Practices","description":"Practical methods for comparing two SQL queries: normalizing formatting before diffing, text-level vs semantic-level comparison, online SQL diff tools, git diff with formatting hooks, and comparing stored procedure changes.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/how-to-compare-two-sql-queries","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Compare Two SQL Queries","item":"https://sqlformat.io/blog/how-to-compare-two-sql-queries"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the best way to compare two SQL queries?","acceptedAnswer":{"@type":"Answer","text":"First normalize both queries with the same SQL formatter settings, then run them through a diff tool. Formatting removes cosmetic noise (line breaks, capitalization, indentation) so the remaining differences are the ones that actually matter. For logic-level questions, compare execution plans or result sets, not just text."}},{"@type":"Question","name":"Is there a free online tool to compare SQL queries?","acceptedAnswer":{"@type":"Answer","text":"Yes. The SQLFormat.io SQL Diff tool (sqlformat.io/diff) compares two queries side by side in the browser with highlighted differences. Nothing is uploaded — the comparison runs client-side, so it is safe for sensitive queries."}},{"@type":"Question","name":"What is the difference between a text diff and a semantic diff of SQL?","acceptedAnswer":{"@type":"Answer","text":"A text diff compares character-by-character or line-by-line and flags cosmetic changes like reformatting or reordered AND conditions as differences. A semantic diff understands SQL structure, so it ignores whitespace and comment changes and can tell you whether two queries return the same results. Most day-to-day tools are text diffs applied to pre-formatted SQL, which gets you most of the way."}},{"@type":"Question","name":"How do I compare SQL changes in Git so diffs stay readable?","acceptedAnswer":{"@type":"Answer","text":"Store one canonical formatting style in the repo and enforce it with a pre-commit hook that runs your SQL formatter on staged .sql files. Then git diff only shows real logic changes instead of whitespace churn. Configure git with core.whitespace checks and use git diff --word-diff for dense one-line changes."}},{"@type":"Question","name":"How do I compare two versions of a stored procedure?","acceptedAnswer":{"@type":"Answer","text":"Extract the current definition from the catalog — sys.sql_modules in SQL Server, pg_get_functiondef() in PostgreSQL, SHOW CREATE PROCEDURE or information_schema.ROUTINES in MySQL — paste it into a formatter, then diff it against the new version. Never diff the raw catalog text directly, because different servers re-wrap lines differently."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:16px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.93rem}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section li{color:var(--text2);line-height:1.65;margin-bottom:6px;font-size:.93rem}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;overflow-x:auto;margin-bottom:12px}.content-section pre code{background:none;padding:0;color:var(--green);font-size:.82rem;line-height:1.6;display:block}.content-section strong{color:var(--text)}.content-section blockquote{background:rgba(88,166,255,.06);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:16px;font-size:.9rem;color:var(--text2)}.content-section blockquote strong{color:var(--accent)}.cta-box{background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:var(--radius);padding:24px 28px;margin:24px 0;text-align:center}.cta-box h3{color:#fff;font-size:1.15rem;margin-bottom:8px;font-weight:600}.cta-box p{color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:#fff;color:var(--accent2);padding:10px 24px;border-radius:6px;font-weight:600;text-decoration:none;font-size:.9rem;transition:opacity .2s}.cta-box a:hover{opacity:.9}.table-wrap{overflow-x:auto;margin-bottom:16px}.content-section table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:8px}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 14px;border:1px solid var(--border);font-weight:600}.content-section td{padding:8px 14px;border:1px solid var(--border);color:var(--text2)}.content-section td code{font-size:.85em}.faq-item{margin-bottom:16px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:6px}.faq-item p{color:var(--text2);line-height:1.65;font-size:.93rem}.related-section{margin:32px 0 48px}.related-section h2{font-size:1.1rem;margin-bottom:16px;color:var(--text2)}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);text-decoration:none;font-size:.82rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{margin-top:auto;border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--text2);font-size:.85rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:768px){nav a{font-size:.8rem;margin-left:12px}.hero h1{font-size:1.5rem}}</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Compare Two SQL Queries — Methods and Best Practices</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>You have two SQL queries that are supposed to do the same thing — one from a colleague, one from production, one from a migration script, one from a bug report. You paste them side by side and start squinting. Ten minutes later you are still not sure whether that <code>LEFT JOIN</code> difference matters or whether someone just re-indented the whole thing.</p>
+<p>Comparing SQL by eye fails because <strong>formatting differences hide logic differences</strong>. This guide covers the workflow that actually works: normalize both queries with the same formatter first, then diff. It also covers the two failure modes that catch people — queries that look different but mean the same thing, and queries that look identical but mean something different — plus how to keep SQL diffs readable in Git and how to compare stored procedure changes safely.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#eyeball">Why Eyeballing SQL Diffs Doesn't Work</a></li>
+<li><a href="#normalize">The Workflow: Normalize First, Compare Second</a></li>
+<li><a href="#text-vs-semantic">Text-Level vs Semantic-Level Comparison</a></li>
+<li><a href="#online-diff">Comparing Two Queries with an Online SQL Diff Tool</a></li>
+<li><a href="#git">Comparing SQL Changes in Git</a></li>
+<li><a href="#procedures">Comparing Stored Procedure Changes</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="eyeball">
+<h2>1. Why Eyeballing SQL Diffs Doesn't Work</h2>
+<p>SQL is whitespace-insensitive. That single property is what makes visual comparison unreliable. The following two queries produce exactly the same result, but a human scanning them will spend real effort convincing themselves nothing changed:</p>
+<pre><code>-- Query A: written in a ticket comment, one line
+SELECT o.id, o.total, c.name FROM orders o JOIN customers c ON c.id = o.customer_id WHERE o.status = 'paid' AND o.total &gt; 100 ORDER BY o.created_at DESC;
+
+-- Query B: the same query after someone's editor reformatted it
+SELECT
+    o.id,
+    o.total,
+    c.name
+FROM orders AS o
+    JOIN customers AS c ON c.id = o.customer_id
+WHERE o.status = 'paid'
+    AND o.total &gt; 100
+ORDER BY o.created_at DESC;</code></pre>
+<p>The only structural difference is the optional <code>AS</code> keyword before the alias <code>c</code>. Everything else is line breaks, indentation, and capitalization. If you diff these two as raw text, nearly every line shows up as changed — the tool cannot help you find the <em>one</em> thing that matters because it is buried in forty lines of noise.</p>
+<p>The problem gets worse with realistic query sizes. A 200-line report query with CTEs, window functions, and a dozen joins cannot be held in working memory. Reviewers who try anyway develop two failure habits: they <strong>rubber-stamp</strong> diffs they didn't really read (the formatting noise trained them that "most changes don't matter"), and they <strong>miss single-token changes</strong> like <code>&gt;=</code> becoming <code>&gt;</code>, <code>AND</code> becoming <code>OR</code>, or <code>INNER JOIN</code> becoming <code>LEFT JOIN</code>. Those single-token changes are exactly the ones that cause production incidents.</p>
+<p>There is also an asymmetry people forget: a diff tool that reports "no differences" on visually identical text does <em>not</em> prove the queries are equivalent, and a tool that reports differences does not prove behavior changed. Text comparison is a starting point, not a verdict. More on that in section 3.</p>
+</section>
+
+<section class="content-section" id="normalize">
+<h2>2. The Workflow: Normalize First, Compare Second</h2>
+<p>The fix is mechanical, not skill-based: run <strong>both</strong> queries through the <strong>same formatter with the same settings</strong> before comparing them. Once both sides share one canonical layout, a plain text diff becomes useful again — the only remaining differences are real differences.</p>
+<p>The workflow:</p>
+<ol>
+<li><strong>Collect both versions as text.</strong> From files, from <code>sys.sql_modules</code>, from a ticket, from <code>EXPLAIN</code> output — wherever they live, get them into plain text.</li>
+<li><strong>Format both with identical settings.</strong> Same keyword case, same indentation, same comma placement, same line-width behavior. Formatting query A with one tool and query B with another defeats the purpose — two formatters disagree on style, and their disagreement shows up as fake diffs.</li>
+<li><strong>Diff the formatted outputs.</strong> Now a highlighted region means a token actually changed.</li>
+<li><strong>Classify each remaining difference.</strong> Cosmetic-but-structural (alias added, predicate reordered) versus behavioral (operator changed, join type changed, filter added). Section 3 gives you the categories.</li>
+<li><strong>Verify the behavioral ones.</strong> Run both queries against a representative dataset, or compare <code>EXPLAIN</code> plans, before concluding what the change does.</li>
+</ol>
+<p>Step 2 deserves emphasis because it is where teams skip. "It's already formatted nicely" is not the test — the test is <em>formatted by the same rules as the other side</em>. One useful discipline: keep a single formatter configuration in the repo, and treat any SQL that has not passed through it as uncommitted work.</p>
+<p>Applying the workflow to the example above collapses the comparison instantly. Both sides format to the same canonical text, the diff comes back empty, and the <code>AS</code> keyword is normalized away. Total time: seconds instead of ten minutes of squinting.</p>
+
+<div class="cta-box">
+<h3>Compare Two SQL Queries Side by Side</h3>
+<p>Paste both versions into the free SQL diff tool — differences are highlighted instantly, right in your browser.</p>
+<a href="/diff">Open SQL Diff Tool &rarr;</a>
+</div>
+</section>
+
+<section class="content-section" id="text-vs-semantic">
+<h2>3. Text-Level vs Semantic-Level Comparison</h2>
+<p>Not all "differences" are equal. A text diff answers <em>are these strings different?</em>; a semantic comparison answers <em>do these queries mean different things?</em>. The gap between those two questions is where review mistakes live.</p>
+<div class="table-wrap">
+<table>
+<tr><th>Aspect</th><th>Text-level diff</th><th>Semantic-level comparison</th></tr>
+<tr><td>Question answered</td><td>Do the characters/lines differ?</td><td>Do the queries behave differently?</td></tr>
+<tr><td>Whitespace &amp; case</td><td>Flags as differences</td><td>Ignored</td></tr>
+<tr><td>Comments</td><td>Flags as differences</td><td>Ignored (usually)</td></tr>
+<tr><td>Reordered AND/OR operands</td><td>Flags as a difference</td><td>Treated as equivalent</td></tr>
+<tr><td>Column order in SELECT</td><td>May show a small diff</td><td><strong>Meaningful</strong> — output changes</td></tr>
+<tr><td>Typical tools</td><td>git diff, online diff tools</td><td>Plan comparison, result-set comparison, formal equivalence checkers</td></tr>
+<tr><td>Cost</td><td>Free, instant</td><td>Requires a database or specialized tooling</td></tr>
+</table>
+</div>
+<p>Formatting-first (section 2) closes most of the gap for free, because it eliminates the whitespace and case rows. What remains are two categories that trip up even experienced reviewers.</p>
+
+<h3>Looks different, means the same</h3>
+<p>These pairs will show up as diffs in any text tool, yet the queries are equivalent. Do not "fix" them; just recognize them and move on:</p>
+<pre><code>-- Version 1
+SELECT id, email
+FROM users
+WHERE status = 'active' AND region = 'EU' AND deleted_at IS NULL;
+
+-- Version 2: predicate order changed, EXISTS rewritten as IN
+SELECT id, email
+FROM users AS u
+WHERE u.region = 'EU'
+  AND u.deleted_at IS NULL
+  AND u.status = 'active';</code></pre>
+<p><code>AND</code> is commutative — the optimizer evaluates the same conditions regardless of the order you write them. Similarly, <code>x IN (SELECT ...)</code> and <code>EXISTS (SELECT 1 ... WHERE ...)</code> are frequently interchangeable, as are <code>JOIN</code> and <code>INNER JOIN</code>, and quoted aliases with or without <code>AS</code>. A diff will flag all of these; none of them change results.</p>
+
+<h3>Looks the same, means something different</h3>
+<p>This is the dangerous direction. Two queries can share every table, every column, and nearly every character — and still return different data. The classic case is <strong>column order</strong>:</p>
+<pre><code>-- Query A
+SELECT customer_id, order_id, total
+FROM orders
+WHERE status = 'paid';
+
+-- Query B: same columns, same table, same filter — different ORDER of columns
+SELECT order_id, customer_id, total
+FROM orders
+WHERE status = 'paid';</code></pre>
+<p>If a human reads these at speed, they look identical — same three identifiers, same table. But the result sets have their first two columns swapped. For an interactive <code>SELECT</code> that is cosmetic. For anything that consumes the output positionally — <code>INSERT INTO target SELECT ...</code> without an explicit column list, a CSV export feeding an ETL job, application code reading rows by index — it is data corruption. Both columns here are integers, so the database will not even raise a type error; the wrong values simply land in the wrong columns.</p>
+<p>The same trap appears with:</p>
+<ul>
+<li><strong>Boundary operators:</strong> <code>total &gt; 100</code> vs <code>total &gt;= 100</code> — a one-character diff that silently includes or excludes a whole class of rows.</li>
+<li><strong>Join types:</strong> <code>LEFT JOIN</code> vs <code>INNER JOIN</code> — identical output when every row matches, wildly different when some don't.</li>
+<li><strong>Implicit ordering:</strong> a query without <code>ORDER BY</code> can return rows in any order; two "identical" runs are not guaranteed to agree, so comparing result sets requires adding a deterministic sort to both sides.</li>
+</ul>
+<p>The practical rule: after the text diff, <strong>read the changed tokens, not the changed lines</strong>. A small diff on an operator or join keyword deserves more scrutiny than a large diff that only moves predicates around.</p>
+</section>
+
+<section class="content-section" id="online-diff">
+<h2>4. Comparing Two Queries with an Online SQL Diff Tool</h2>
+<p>For one-off comparisons — auditing a vendor's migration script, checking whether a hotfix changed the query it claimed to change, reviewing SQL pasted into a ticket — an online diff tool is the fastest path. Here is the exact procedure with the <a href="/diff">SQLFormat.io diff tool</a>:</p>
+<ol>
+<li><strong>Format both sides first.</strong> Paste each query into the <a href="/">SQL formatter</a> with the same settings (keyword case, indentation, dialect) and copy the formatted output. This is the step that makes the diff trustworthy.</li>
+<li><strong>Paste into the two diff panes.</strong> Original/left pane gets the baseline (what is in production, the old version); right pane gets the candidate (the proposed change). Keep the direction consistent — reversing it mid-review makes "added" and "removed" swap meaning and invites mistakes.</li>
+<li><strong>Run the comparison and scan the highlighted regions.</strong> Ignore large blocks that differ only in structure you already know is cosmetic (predicate order, alias style). Stop on every highlighted operator, join keyword, identifier, and literal.</li>
+<li><strong>For each real difference, decide intent.</strong> Was this change supposed to happen? If you are reviewing someone else's work, every highlighted token that the change description does not mention is a question for the author.</li>
+<li><strong>Validate before trusting.</strong> Run both versions through the <a href="/validate">SQL validator</a> to catch syntax breakage, and if the diff touched joins or filters, run both against sample data and compare row counts.</li>
+</ol>
+<p>A note on sensitive queries: prefer tools that run the comparison client-side in your browser. The SQLFormat.io diff tool never sends your queries to a server, which matters when the query embeds connection details, internal table names, or customer data in literals.</p>
+<p>When is an online tool the wrong choice? When you are comparing hundreds of files (use Git, section 5), when the files are megabytes of DDL (use a desktop diff tool that streams), or when you need to prove behavioral equivalence rather than spot textual changes (compare execution plans and result sets instead).</p>
+</section>
+
+<section class="content-section" id="git">
+<h2>5. Comparing SQL Changes in Git</h2>
+<p>Once SQL lives in version control, <code>git diff</code> is your comparison tool — but only if the repo enforces consistent formatting. Without enforcement, every contributor's editor reformats on save, and the diff for a one-line logic change shows 80 modified lines. Reviewers learn to ignore the diff, and the review process dies.</p>
+<p>The fix is a formatting hook. A pre-commit hook that runs your SQL formatter on staged <code>.sql</code> files guarantees that committed SQL is always canonical, so <code>git diff</code> only ever shows real changes:</p>
+<pre><code>#!/bin/sh
+# .git/hooks/pre-commit — normalize SQL before it enters history
+for f in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.sql$'); do
+  sql-formatter --language postgresql --keyword-case upper "$f" &gt; "$f.tmp" \
+    && mv "$f.tmp" "$f"
+  git add "$f"
+done</code></pre>
+<p>Any formatter works — <code>sql-formatter</code> (npm), <code>sqlfluff fix</code>, or a small script wrapping your team's tool of choice. The requirement is that it is <em>one</em> tool with <em>one</em> committed config file, so CI and every developer produce byte-identical output. Add the same command to CI as a check (<code>sqlfluff lint</code> or a "formatted output equals committed output" assertion) to catch anyone with hooks disabled.</p>
+<p>Useful git flags for SQL review:</p>
+<div class="table-wrap">
+<table>
+<tr><th>Command</th><th>Use it when</th></tr>
+<tr><td><code>git diff --word-diff</code></td><td>Changes are inside long lines; word-level highlights show the exact token that moved instead of the whole line</td></tr>
+<tr><td><code>git diff --ignore-all-space</code></td><td>Legacy repo without formatting enforcement — strips whitespace churn as a stopgap</td></tr>
+<tr><td><code>git log -L '/CREATE PROC/,/^END/':schema/reporting.sql</code></td><td>Tracking the history of one procedure inside a big file</td></tr>
+<tr><td><code>git diff --stat origin/main...HEAD -- '*.sql'</code></td><td>Scoping a review to just the SQL changes in a branch</td></tr>
+</table>
+</div>
+<p>One structural practice beats every diff flag: <strong>one statement per file, filename matching the object name</strong>. When <code>fn_monthly_revenue.sql</code> changes, the file name alone tells the reviewer what is affected — and renames, deletions, and additions become unambiguous.</p>
+</section>
+
+<section class="content-section" id="procedures">
+<h2>6. Comparing Stored Procedure Changes</h2>
+<p>Stored procedures are the hardest comparison case because the "old version" usually lives inside a running database, not in a file. The workflow is the same — extract, normalize, diff — but extraction is dialect-specific, and there are extra traps.</p>
+<p>Pull the current definition from the system catalog:</p>
+<pre><code>-- SQL Server
+SELECT definition
+FROM sys.sql_modules
+WHERE object_id = OBJECT_ID('dbo.sp_monthly_revenue');
+
+-- PostgreSQL
+SELECT pg_get_functiondef('public.sp_monthly_revenue(bigint)'::regprocedure);
+
+-- MySQL
+SHOW CREATE PROCEDURE reporting.sp_monthly_revenue;</code></pre>
+<p>Feed that output and the proposed new version through the same formatter, then diff. Do not compare raw catalog text: <code>pg_get_functiondef()</code> re-wraps and re-cases the body, SQL Server preserves whatever was originally submitted, and MySQL strips comments depending on settings. Unformatted, two identical procedures can look completely different across catalogs.</p>
+<p>Traps specific to procedure comparison:</p>
+<ul>
+<li><strong>Whitespace inside string literals matters.</strong> A formatter normalizes layout but must never touch the contents of <code>'...'</code> literals — verify your tool preserves them, especially in procedures that build dynamic SQL with <code>EXECUTE</code> / <code>EXEC</code>.</li>
+<li><strong>Diff the signature separately from the body.</strong> A changed parameter type or a new <code>OUT</code> parameter breaks every caller even if the body is untouched. Review <code>CREATE</code>/<code>ALTER</code> header lines with extra suspicion.</li>
+<li><strong>Comment drift is noise; strip it deliberately.</strong> Teams argue over header comments in procedures. Decide once (keep changelog headers, or don't) and let the formatter/hook enforce it, so body diffs stay clean.</li>
+<li><strong>Test the deploy direction.</strong> Procedures are usually changed with <code>CREATE OR REPLACE</code> (Postgres) or <code>ALTER PROCEDURE</code> (SQL Server). Diff the exact statement you will run — not a hypothetical clean version — because <code>ALTER</code> keeps grants while <code>DROP</code>+<code>CREATE</code> silently discards them.</li>
+</ul>
+<p>Finally, for procedures the text diff is only half the review. A procedure's behavior includes side effects — inserts, updates, transaction boundaries — that no diff can verify. Pair the formatted-text comparison with a run against a staging copy and a check of row counts before and after.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ</h2>
+<div class="faq-item"><h3>What is the best way to compare two SQL queries?</h3><p>Normalize both with the same formatter settings, then diff the formatted text. Formatting strips cosmetic noise so the remaining highlighted differences are real. For anything the diff flags in joins, filters, or operators, verify behavior by running both versions against sample data or comparing <code>EXPLAIN</code> plans.</p></div>
+<div class="faq-item"><h3>Is there a free online tool to compare SQL queries?</h3><p>Yes — the <a href="/diff">SQLFormat.io SQL Diff tool</a> compares two queries side by side with highlighted differences, entirely in your browser. Pair it with the <a href="/">formatter</a> to normalize both sides first and the <a href="/validate">validator</a> to confirm both versions parse.</p></div>
+<div class="faq-item"><h3>What is the difference between a text diff and a semantic diff?</h3><p>A text diff compares strings and flags formatting, comments, and reordered conditions as changes. A semantic comparison understands SQL structure and asks whether the queries return the same results. Formatting both sides identically before a text diff gets you most of the way to semantic comparison without specialized tooling.</p></div>
+<div class="faq-item"><h3>How do I keep SQL diffs readable in Git?</h3><p>Enforce one canonical format with a pre-commit hook that runs your SQL formatter on staged <code>.sql</code> files, plus a CI check that re-runs it. Then <code>git diff</code> shows logic changes only. Use <code>--word-diff</code> for dense lines and <code>--ignore-all-space</code> as a stopgap in unformatted legacy repos.</p></div>
+<div class="faq-item"><h3>How do I compare two versions of a stored procedure?</h3><p>Extract the live definition from the catalog (<code>sys.sql_modules</code> in SQL Server, <code>pg_get_functiondef()</code> in PostgreSQL, <code>SHOW CREATE PROCEDURE</code> in MySQL), format both it and the new version with the same tool, then diff. Review signature changes separately from body changes, and confirm string literals survived formatting untouched.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools</h2>
+<div class="related-grid">
+<a href="/diff">SQL Diff Tool</a>
+<a href="/sql-diff-online">SQL Diff Online</a>
+<a href="/pretty-print">SQL Pretty Printer</a>
+<a href="/minify">SQL Minifier</a>
+<a href="/validate">SQL Validator</a>
+<a href="/">SQL Formatter Online</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

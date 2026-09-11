@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Generate Test Data in SQL — Sequences, Random Values, and a Million Rows | SQLFormat.io</title>
+  <meta name="description" content="Generate test data in SQL with recursive CTEs, RAND() and random(), and foreign-key-safe related rows. Complete runnable MySQL and PostgreSQL code for a million rows.">
+  <meta name="keywords" content="generate test data sql, sql mock data, fake data generator sql, insert random data mysql, generate_series postgresql">
+  <meta property="og:title" content="How to Generate Test Data in SQL — Sequences, Random Values, and a Million Rows">
+  <meta property="og:description" content="Recursive CTEs, RAND() vs random(), FK-safe related rows, and the batch-insert tricks that make a million rows land in seconds.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-to-generate-test-data-with-sql">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-to-generate-test-data-with-sql">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Generate Test Data in SQL — Sequences, Random Values, and a Million Rows","description":"Generate test data in SQL with recursive CTEs, RAND() and random(), and foreign-key-safe related rows. Complete runnable MySQL and PostgreSQL code for a million rows.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/how-to-generate-test-data-with-sql","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Generate Test Data in SQL","item":"https://sqlformat.io/blog/how-to-generate-test-data-with-sql"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I generate a sequence of numbers in SQL without creating a table?","acceptedAnswer":{"@type":"Answer","text":"Yes. MySQL 8+ and PostgreSQL both support recursive CTEs: WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n < N) SELECT n FROM seq. PostgreSQL also has generate_series(1, N) built in. MySQL has no generate_series, and recursive CTEs are capped by cte_max_recursion_depth (default 1000), so run SET SESSION cte_max_recursion_depth = 1000000 before a large generation or you get error 3636."}},{"@type":"Question","name":"What is the difference between RAND() and random() in SQL?","acceptedAnswer":{"@type":"Answer","text":"RAND() is MySQL and SQL Server; random() is PostgreSQL. Both return a float in the half-open range [0, 1). MySQL accepts a seed — RAND(42) is reproducible for the session. PostgreSQL has no seed argument, so call SELECT setseed(0.5) instead. SQL Server is the odd one out: RAND() is evaluated once per statement, so SELECT RAND() FROM t returns the same value for every row. Use ABS(CHECKSUM(NEWID())) when you need per-row randomness there."}},{"@type":"Question","name":"How do I insert a million rows into MySQL quickly?","acceptedAnswer":{"@type":"Answer","text":"Use INSERT ... SELECT from a numbers table — one statement, or a handful of large batches — never a million client-side inserts. Build the numbers table once from a six-way cross join of digits (10^6 rows in seconds). Drop indexes you do not need during the load, wrap batches in a transaction, disable the binary log on a dev box, and run ANALYZE TABLE afterwards so the optimizer has fresh statistics."}},{"@type":"Question","name":"How do I keep foreign keys valid when generating related test data?","acceptedAnswer":{"@type":"Answer","text":"Generate the parent key space first (ids 1..N), then derive every child foreign key with arithmetic that cannot leave that range: 1 + (n % N). Verify with SELECT COUNT(*) FROM child LEFT JOIN parent ON parent.id = child.parent_id WHERE parent.id IS NULL — it must be zero. You can disable foreign_key_checks during the load for speed, but only when the data is genuinely consistent."}},{"@type":"Question","name":"Can I generate test data in SQL Server or Oracle?","acceptedAnswer":{"@type":"Answer","text":"Yes. Neither has generate_series, so build a numbers table with the six-way digits cross join, which behaves identically in SQL Server, Oracle, and SQLite. Use NEWID() and CHECKSUM(NEWID()) for per-row randomness in SQL Server, and DATEADD for date math. Oracle dbms_random.value and DATE arithmetic cover the same ground."}}]}</script>
+  <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}
+.content-section table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.85rem}.content-section th,.content-section td{border:1px solid var(--border);padding:8px 10px;text-align:left;color:var(--text2);vertical-align:top}.content-section th{background:var(--surface2);color:var(--text);font-weight:600}.content-section td code{white-space:nowrap}.content-section tr:nth-child(even) td{background:var(--surface)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Generate Test Data in SQL — Sequences, Random Values, and a Million Rows</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>You need a database with realistic volume before you can trust a query plan, a pagination bug, or an index. Hand-typing rows stops being useful around fifty of them, and copying a sanitized production dump is often slower than generating the data directly in SQL. The good news: every mainstream engine can produce a million credible rows from a handful of statements, no external tooling required.</p>
+<p>This guide covers the whole pipeline for <strong>generating test data in SQL</strong>: building number sequences with recursive CTEs and <code>generate_series</code>, producing names, emails and dates with random functions, keeping foreign keys consistent across tables, and the batch-insert techniques that decide whether a million rows take seconds or an afternoon. It ends with how to prove the generated data is actually shaped the way you intended — using <code>EXPLAIN</code> and a distribution check, not hope.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#why">1. Why You Need Generated Test Data</a></li>
+<li><a href="#handwritten">2. Where Hand-Written INSERT Statements Fall Apart</a></li>
+<li><a href="#sequence">3. Number Sequences: Recursive CTEs and generate_series</a></li>
+<li><a href="#random">4. Random Names, Emails, and Dates</a></li>
+<li><a href="#related">5. Generating Related Rows Across Tables</a></li>
+<li><a href="#performance">6. Batch INSERT vs Row-by-Row</a></li>
+<li><a href="#million">7. Generating a Million Rows Without Melting the Server</a></li>
+<li><a href="#verify">8. Verifying Distribution with EXPLAIN and GROUP BY</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="why">
+<h2>1. Why You Need Generated Test Data</h2>
+<p>There are three distinct reasons to generate data in SQL, and they have different requirements. Confusing them is why test suites pass in CI and fall over on the first real deployment.</p>
+<ul>
+<li><strong>Development.</strong> You need enough rows that joins return more than one page, pagination hits the second page, and <code>NOT NULL</code> and unique constraints actually fire. Ten rows hide every off-by-one in a window function. You also want the data to be cheap to throw away and regenerate, because the schema will change tomorrow.</li>
+<li><strong>Load and stress testing.</strong> Here volume is the point. You need a million orders to see whether the query does a full scan at that size, how the buffer pool behaves, and whether the index you added is still chosen when 30% of the table shares one value. Random data with the wrong cardinality — every row a different customer — makes an index look artificially good.</li>
+<li><strong>Demos and screenshots.</strong> You need data that looks plausible to a human: real-looking names, coherent dates, totals that aren't all exactly <code>100.00</code>, and a foreign-key graph that doesn't produce empty grids in the UI.</li>
+</ul>
+<p>The shared constraint is that the data has to be generated, not found. Production data carries customer information you cannot ship to a laptop or a contractor, and hand-written fixtures don't scale past a screenful.</p>
+</section>
+
+<section class="content-section" id="handwritten">
+<h2>2. Where Hand-Written INSERT Statements Fall Apart</h2>
+<p>The starting point everyone writes looks like this, and for seeding reference data it is perfectly correct:</p>
+<pre><code>INSERT INTO customers (name, email, created_at) VALUES
+  ('Alice',  'alice@example.com',  '2024-01-01'),
+  ('Bob',    'bob@example.com',    '2024-01-02'),
+  ('Carol',  'carol@example.com',  '2024-01-03');
+-- ...and 47 more lines you typed by hand</code></pre>
+<p>Four problems show up as soon as you scale this:</p>
+<ul>
+<li><strong>It doesn't scale past a page.</strong> Fifty rows is a minute of work. Fifty thousand is not something a person types, and a generated file of literals still has to be pasted, escaped, and re-pasted every time the schema changes.</li>
+<li><strong>The distribution is fake.</strong> Every hand-written fixture has uniform dates and a suspiciously even spread of values. Real tables have a status column that is 90% one value and 1% each of five others. That skew is exactly what breaks query plans, and uniform test data never surfaces it.</li>
+<li><strong>IDs are guesswork.</strong> You write <code>customer_id = 3</code> in the orders insert because that's the third customer you typed. Add a row in the middle and every downstream reference is silently wrong.</li>
+<li><strong>It isn't reproducible in a test.</strong> You can't say "generate 10,000 rows for this test and 2 million for the load test" — the fixture is a fixed size, so the small test never exercises the code path the big data triggers.</li>
+</ul>
+<p>The fix is to stop thinking in terms of literal rows and start thinking in terms of a <em>number sequence</em> that you feed through expressions. That one idea unlocks everything below.</p>
+</section>
+
+<section class="content-section" id="sequence">
+<h2>3. Number Sequences: Recursive CTEs and generate_series</h2>
+<p>Every generator in this article is driven by a table of integers. You build it once, and then every <code>INSERT ... SELECT</code> reads from it and computes column values with arithmetic.</p>
+<h3>MySQL 8.0+ and MariaDB: recursive CTE</h3>
+<pre><code>SET SESSION cte_max_recursion_depth = 1000000;
+
+WITH RECURSIVE seq (n) AS (
+  SELECT 1
+  UNION ALL
+  SELECT n + 1 FROM seq WHERE n &lt; 100000
+)
+SELECT n FROM seq;</code></pre>
+<p>The first line is not optional. MySQL's default <code>cte_max_recursion_depth</code> is 1000, so the query above without the <code>SET</code> fails with error 3636, <em>"Recursive query aborted after 1001 iterations"</em>. Raising it to a million lets the CTE run, but a recursive CTE that walks a million iterations one row at a time is the slow way to build a big series — use it for thousands to tens of thousands of rows, and switch to the cross-join numbers table below for millions.</p>
+<h3>PostgreSQL: generate_series</h3>
+<pre><code>SELECT generate_series(1, 100000) AS n;</code></pre>
+<p>Postgres has this built in, it streams without materializing anything, and there is no recursion limit to raise. If you are on Postgres, <code>generate_series</code> is the whole answer and you can skip the rest of this section.</p>
+<h3>A portable numbers table for MySQL, SQL Server, Oracle, and SQLite</h3>
+<p>When you need millions of rows and no <code>generate_series</code>, build a reusable numbers table from a ten-row seed and a six-way cross join. Six digits positions give you 10<sup>6</sup> = 1,000,000 rows; add a seventh join for ten million.</p>
+<pre><code>CREATE TABLE digits (d INT NOT NULL);
+INSERT INTO digits (d) VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
+
+CREATE TABLE numbers (n INT NOT NULL PRIMARY KEY);
+INSERT INTO numbers (n)
+SELECT a.d
+     + b.d * 10
+     + c.d * 100
+     + d.d * 1000
+     + e.d * 10000
+     + f.d * 100000
+     + 1
+FROM digits a
+CROSS JOIN digits b
+CROSS JOIN digits c
+CROSS JOIN digits d
+CROSS JOIN digits e
+CROSS JOIN digits f;
+
+SELECT COUNT(*) FROM numbers;   -- 1000000</code></pre>
+<p>That insert finishes in a few seconds on a laptop, and the resulting table is a permanent, indexable sequence you can <code>JOIN</code> against from any generator for the rest of the project. Because the table is materialized and primary-keyed, filtering it with <code>WHERE n &lt;= 50000</code> uses the index instead of walking rows. This one table replaces every recursive CTE you would otherwise write, and it works identically in SQL Server, Oracle, and SQLite.</p>
+<div class="tip-box">
+<p><strong>Rule of thumb:</strong> recursive CTE for a few thousand rows where you want zero setup, a numbers table for everything above that, and <code>generate_series</code> whenever you're on PostgreSQL.</p>
+</div>
+</section>
+
+<section class="content-section" id="random">
+<h2>4. Random Names, Emails, and Dates</h2>
+<p>Random functions are what make generated data look real. The syntax differs enough between engines to bite you, so here is the honest comparison.</p>
+<table>
+<thead><tr><th>Engine</th><th>Random float</th><th>Range</th><th>Seeded / reproducible</th><th>Per-row gotcha</th></tr></thead>
+<tbody>
+<tr><td>MySQL</td><td><code>RAND()</code></td><td>[0, 1)</td><td><code>RAND(42)</code> per session</td><td>None in a <code>SELECT</code> list</td></tr>
+<tr><td>PostgreSQL</td><td><code>random()</code></td><td>[0, 1)</td><td><code>SELECT setseed(0.5)</code></td><td>None</td></tr>
+<tr><td>SQL Server</td><td><code>RAND()</code></td><td>[0, 1)</td><td><code>RAND(42)</code> once per query</td><td>Evaluates once per statement, not per row</td></tr>
+<tr><td>Oracle</td><td><code>dbms_random.value</code></td><td>[0, 1)</td><td><code>dbms_random.seed</code></td><td>None</td></tr>
+</tbody>
+</table>
+<p>The SQL Server row is the dangerous one. <code>SELECT RAND() FROM customers</code> returns <em>the same number for every row</em>, because <code>RAND()</code> is evaluated once before the scan. Use <code>ABS(CHECKSUM(NEWID()))</code> when you need a fresh value per row there. MySQL and PostgreSQL evaluate their random functions per row, so a plain <code>SELECT RAND()</code> does what you expect.</p>
+<p>Both MySQL's <code>RAND()</code> and Postgres's <code>random()</code> return a float in the half-open range <code>[0, 1)</code> — it can return 0 but never 1. To get an integer in an inclusive range, use <code>FLOOR(min + RAND() * (max - min + 1))</code>. Getting the <code>+ 1</code> wrong is the single most common bug in generated test data; you end up with ages that never reach 80 or dates that miss the last day of the window.</p>
+<pre><code>-- MySQL
+SELECT RAND()                                             AS r,          -- 0.0 &lt;= r &lt; 1.0
+       FLOOR(18 + RAND() * 63)                            AS age,        -- 18..80
+       DATE_ADD('2024-01-01', INTERVAL FLOOR(RAND() * 730) DAY) AS created_at;
+
+-- PostgreSQL
+SELECT random()                                           AS r,
+       FLOOR(18 + random() * 63)::int                     AS age,
+       DATE '2024-01-01' + (random() * 730)::int          AS created_at;</code></pre>
+<h3>Why RAND() is the wrong tool at volume</h3>
+<p>For a few thousand rows, random functions are fine. For a million, prefer <strong>modular arithmetic over the sequence</strong>. It is faster (no per-row PRNG call), it is reproducible (re-running gives byte-identical data, which makes failing tests reproducible), and the value space is explicit instead of emergent.</p>
+<pre><code>INSERT INTO customers (first_name, last_name, email, created_at)
+SELECT
+  ELT(1 + (n % 8), 'Alice','Bob','Carol','Dave','Erin','Frank','Grace','Heidi') AS first_name,
+  ELT(1 + (n % 6), 'Nguyen','Smith','Garcia','Khan','Okafor','Rossi')           AS last_name,
+  CONCAT('user', n, '@example.com')                                             AS email,
+  DATE_ADD('2024-01-01', INTERVAL (n * 37) % 730 DAY)                           AS created_at
+FROM numbers
+WHERE n &lt;= 50000;</code></pre>
+<p><code>ELT(N, ...)</code> is MySQL's 1-indexed list picker; <code>1 + (n % 8)</code> keeps the index inside the list. The email address is unique for free because the sequence number sits in the local part — no collision handling, no <code>UNIQUE</code> violation after five minutes of inserting. The multiply-then-modulo on the date (<code>(n * 37) % 730</code>) spreads dates across two years instead of clustering them on Mondays the way <code>n % 730</code> alone would.</p>
+<p>PostgreSQL equivalent, using an array index instead of <code>ELT</code>:</p>
+<pre><code>-- PostgreSQL: arrays are 1-indexed, same trick
+SELECT (ARRAY['Alice','Bob','Carol','Dave','Erin'])[1 + (n % 5)] AS first_name,
+       (ARRAY['Nguyen','Smith','Garcia','Khan'])[1 + (n % 4)]   AS last_name,
+       'user' || n || '@example.com'                            AS email,
+       DATE '2024-01-01' + ((n * 37) % 730)                     AS created_at
+FROM generate_series(1, 50000) AS n;</code></pre>
+<p>Mix the two approaches when you want both: deterministic keys and dates (so tests are stable) plus a random-looking numeric column like <code>total</code>. Reproducible structure, random noise.</p>
+</section>
+
+<section class="content-section" id="related">
+<h2>5. Generating Related Rows Across Tables</h2>
+<p>Single-table data is easy. The moment you add a foreign key, you have to guarantee that every child row points at a parent that exists — otherwise your test suite dies on a constraint violation instead of the bug you were hunting.</p>
+<p>The trick is to populate the parent key space first, then derive child foreign keys with arithmetic that <em>cannot</em> leave that range. If customers have ids 1 through 10,000, then <code>1 + (n % 10000)</code> is always between 1 and 10,000. There is no lookup and no possibility of an orphan.</p>
+<pre><code>-- 1. Customers with explicit ids 1..10000
+INSERT INTO customers (id, first_name, email, created_at)
+SELECT n,
+       ELT(1 + (n % 8), 'Alice','Bob','Carol','Dave','Erin','Frank','Grace','Heidi'),
+       CONCAT('user', n, '@example.com'),
+       DATE_ADD('2024-01-01', INTERVAL (n * 37) % 730 DAY)
+FROM numbers
+WHERE n &lt;= 10000;
+
+-- 2. Orders whose foreign key is guaranteed to resolve
+INSERT INTO orders (customer_id, order_date, total)
+SELECT
+  1 + (n % 10000)                                            AS customer_id,  -- always 1..10000
+  DATE_ADD('2024-01-01', INTERVAL (n * 13) % 730 DAY)        AS order_date,
+  ROUND(5 + (n % 400) * 1.37, 2)                             AS total
+FROM numbers
+WHERE n &lt;= 200000;</code></pre>
+<p>Note the difference between <code>1 + (n % 10000)</code> and <code>FLOOR(1 + RAND() * 10000)</code>. Both stay in range, but modulo gives every customer <em>exactly</em> 20 orders, while the random version gives a Poisson-like spread where some customers have 40 and some have 8. Which you want depends on the test: modulo for predictable, evenly-distributed loads; random for realism when you're testing "top 10 customers" queries that need a genuine long tail.</p>
+<p>You can deliberately create skew, which is far more useful than uniform noise. A table where 90% of orders are <code>'completed'</code> and 10% are spread across four other statuses mirrors production and exposes index and plan problems that uniform data hides:</p>
+<pre><code>-- 90% completed, 2.5% each of the rest
+INSERT INTO orders (customer_id, status, total)
+SELECT
+  1 + (n % 10000),
+  CASE
+    WHEN n % 100 &lt; 90 THEN 'completed'
+    WHEN n % 100 &lt; 92 THEN 'pending'
+    WHEN n % 100 &lt; 95 THEN 'shipped'
+    WHEN n % 100 &lt; 98 THEN 'cancelled'
+    ELSE 'refunded'
+  END,
+  ROUND(5 + (n % 400) * 1.37, 2)
+FROM numbers
+WHERE n &lt;= 200000;</code></pre>
+<p>Immediately after loading, prove the foreign keys actually resolve. This query must return zero, and running it takes a second:</p>
+<pre><code>SELECT COUNT(*) AS orphaned_orders
+FROM orders o
+LEFT JOIN customers c ON c.id = o.customer_id
+WHERE c.id IS NULL;   -- must be 0</code></pre>
+<p>Two other cross-table patterns are worth knowing. Many-to-many junctions are just two independent modulo keys — <code>1 + (n % 10000)</code> for <code>customer_id</code> and <code>1 + (n % 500)</code> for <code>product_id</code> — with a composite primary key on the pair. For nullable relationships, use <code>CASE WHEN n % 5 = 0 THEN NULL ELSE 1 + (n % 10000) END</code> so you actually exercise the <code>LEFT JOIN</code> path in your application; every generated row having a parent means that branch never runs.</p>
+</section>
+
+<div class="cta-box">
+<h3>Need Fake Data Without Writing the SQL?</h3>
+<p>The SQL Data Generator builds INSERT statements and CSV output from your schema — pick the tables, columns, row counts, and value ranges in the browser, then paste the result straight into MySQL or PostgreSQL.</p>
+<a href="/data-generator">Open SQL Data Generator &rarr;</a>
+</div>
+
+<section class="content-section" id="performance">
+<h2>6. Batch INSERT vs Row-by-Row</h2>
+<p>How you insert matters more than what you insert. The two extremes:</p>
+<pre><code>-- Slow: 200,000 statements, 200,000 round-trips
+INSERT INTO orders (customer_id, total) VALUES (1, 10.00);
+INSERT INTO orders (customer_id, total) VALUES (1, 10.00);
+-- ...199,998 more
+
+-- Fast: one statement, 200,000 rows, one round-trip
+INSERT INTO orders (customer_id, total)
+SELECT 1 + (n % 10000), ROUND(5 + (n % 400) * 1.37, 2)
+FROM numbers
+WHERE n &lt;= 200000;</code></pre>
+<p>The gap is not a constant factor, it's orders of magnitude, and it comes from three costs that the single-statement version pays once instead of 200,000 times:</p>
+<ul>
+<li><strong>Client round-trips.</strong> Each individual <code>INSERT</code> is a network exchange plus a parse. At a realistic 1 ms per round-trip, 200,000 inserts spend over three minutes just in latency — before the server does anything.</li>
+<li><strong>Transactions and durability.</strong> Each autocommitted insert is its own transaction. With <code>innodb_flush_log_at_trx_commit = 1</code>, that's a redo-log flush to disk per row. Set-based inserts pay that cost once per statement.</li>
+<li><strong>Index maintenance.</strong> Inserting rows in primary-key order (which the numbers sequence gives you) appends to the right edge of the B-tree. Random-id inserts scatter writes across every page in the index, causing page splits and a far larger working set. If you are generating UUID primary keys, expect the load to be several times slower than sequential integers — that's a real property of your schema worth discovering in testing, not production.</li>
+</ul>
+<p>For a disposable dev dataset, you can turn off durability machinery around the load and restore it afterwards. Do this on a developer machine, never on anything shared:</p>
+<pre><code>SET SESSION sql_log_bin        = 0;   -- skip binary logging for the load
+SET SESSION unique_checks      = 0;   -- trust the generated data
+SET SESSION foreign_key_checks = 0;   -- re-verified by the LEFT JOIN check above
+
+START TRANSACTION;
+INSERT INTO orders (customer_id, order_date, total)
+SELECT 1 + (n % 10000),
+       DATE_ADD('2024-01-01', INTERVAL (n * 13) % 730 DAY),
+       ROUND(5 + (n % 400) * 1.37, 2)
+FROM numbers WHERE n &lt;= 200000;
+COMMIT;
+
+SET SESSION foreign_key_checks = 1;
+SET SESSION unique_checks      = 1;
+SET SESSION sql_log_bin        = 1;</code></pre>
+<p>Two ceilings to respect. Keep any single <code>VALUES (...),(...)</code> statement under a few thousand tuples — beyond that the parser spends measurable time on a multi-megabyte string, and some clients refuse the request outright. And keep individual transactions to a manageable size (100k to 500k rows is a reasonable batch) so you don't build a giant undo log; chunking is exactly what the next section does.</p>
+</section>
+
+<section class="content-section" id="million">
+<h2>7. Generating a Million Rows Without Melting the Server</h2>
+<p>The numbers table already gives you the sequence. The remaining work is batching it so a million-row load stays flat in memory and survivable if it fails halfway. A stored procedure loop is the portable way to chunk in MySQL:</p>
+<pre><code>DELIMITER $$
+CREATE PROCEDURE load_orders()
+BEGIN
+  DECLARE i INT DEFAULT 0;
+  WHILE i &lt; 1000000 DO
+    INSERT INTO orders (customer_id, order_date, total)
+    SELECT 1 + ((n + i) % 10000),
+           DATE_ADD('2024-01-01', INTERVAL (n + i) % 730 DAY),
+           ROUND(5 + ((n + i) % 400) * 1.37, 2)
+    FROM numbers
+    WHERE n &gt; i AND n &lt;= i + 100000;
+    SET i = i + 100000;
+  END WHILE;
+END$$
+DELIMITER ;
+
+CALL load_orders();</code></pre>
+<p>Ten batches of 100k rows. Each iteration is one transaction (assuming autocommit), the query reads the numbers table by primary-key range rather than scanning it, and if batch seven fails you know exactly where to resume. The <code>(n + i)</code> offset keeps the generated values varying between batches instead of repeating the same 100k rows ten times.</p>
+<p>The rest of the million-row playbook, in rough order of payoff:</p>
+<ul>
+<li><strong>Drop non-essential indexes before the load, recreate after.</strong> Maintaining a secondary index row-by-row during a bulk insert is frequently more expensive than the insert itself. Keep the child-side foreign-key index if the constraint is enforced; drop secondary indexes you added for queries and rebuild them with a single <code>CREATE INDEX</code> at the end.</li>
+<li><strong>Use <code>INSERT ... SELECT</code>, not a literal list.</strong> A million-row <code>VALUES</code> clause is a multi-hundred-megabyte string. The set-based form never materializes it.</li>
+<li><strong>On PostgreSQL, prefer <code>COPY</code> for the initial load.</strong> <code>COPY orders FROM STDIN</code> skips most per-row overhead and is the fastest path for bulk data. Generate the stream with <code>generate_series</code> in a <code>COPY ... TO</code>, or pipe it from the data generator.</li>
+<li><strong>On MySQL past ~5M rows, consider <code>LOAD DATA INFILE</code>.</strong> It still beats set-based inserts at that size, at the cost of writing the file to disk and needing <code>local_infile</code> enabled.</li>
+<li><strong>Raise <code>innodb_redo_log_capacity</code> and consider <code>innodb_flush_log_at_trx_commit = 2</code> for the duration of the load</strong>, then restore them. On a dev box this can halve wall-clock time.</li>
+<li><strong>Run <code>ANALYZE TABLE</code> when you finish.</strong> The optimizer decides whether to use your indexes based on statistics that are now badly out of date. Skip this and every <code>EXPLAIN</code> you run afterwards is misleading — the table looks nearly empty to the planner.</li>
+</ul>
+<div class="tip-box">
+<p><strong>Time expectation:</strong> a million narrow rows through <code>INSERT ... SELECT</code> from a numbers table should land in tens of seconds to a couple of minutes on ordinary hardware. If it takes an hour, the cause is almost always row-by-row inserts, an index that should have been dropped, or per-row durability settings left on.</p>
+</div>
+</section>
+
+<section class="content-section" id="verify">
+<h2>8. Verifying Distribution with EXPLAIN and GROUP BY</h2>
+<p>Generated data is only useful if it's shaped the way you intended. A generator with a bug — an off-by-one range, a modulo that clusters every value, a <code>CASE</code> that never matches two of its branches — produces a database that makes your queries look fine while hiding the problem. Two checks catch nearly all of it.</p>
+<p>First, confirm the distribution. This is the step people skip, and it is the one that explains why a query was fast in testing and slow in production:</p>
+<pre><code>SELECT status, COUNT(*) AS row_count
+FROM orders
+GROUP BY status
+ORDER BY row_count DESC;</code></pre>
+<p>If you generated five statuses, you should see five rows with a ratio matching your <code>CASE</code> — roughly 180,000 completed, 5,000 each of the rest on a 200k-row table. Seeing four rows, or one status swallowing everything, means the generation logic is wrong. It's also worth checking date spread (<code>GROUP BY DATE(order_date)</code>) and numeric range (<code>SELECT MIN(total), MAX(total), AVG(total) FROM orders</code>) — an average that lands exactly on your midpoint formula rather than resembling a real order value is a sign the data is too regular.</p>
+<p>Second, refresh statistics and read the plan. This is where <strong>generated test data earns its keep</strong>: it lets you confirm the optimizer actually chooses the index at volume, before production does it for you.</p>
+<pre><code>ANALYZE TABLE orders;
+
+EXPLAIN SELECT * FROM orders WHERE customer_id = 42;</code></pre>
+<p>With 200,000 orders spread evenly across 10,000 customers, you should see <code>type=ref</code>, <code>key</code> set to your customer index, and <code>rows</code> near 20. If instead you get <code>type=ALL</code> with <code>key=NULL</code> and <code>rows</code> close to 200,000, either the index is missing, the statistics are stale, or the column type doesn't match the literal (a common trap when <code>customer_id</code> is <code>BIGINT</code> and you compare against a string). Fix the plan now, while the data is disposable.</p>
+<p>The high-cardinality case is the interesting one. Once you load a million rows, check a range predicate too:</p>
+<pre><code>EXPLAIN SELECT * FROM orders
+WHERE order_date &gt;= '2025-01-01'
+  AND total BETWEEN 100 AND 500;</code></pre>
+<p>On skewed status data, an index on <code>status</code> is often correctly ignored — the planner knows the value matches most of the table and a scan is cheaper. That's a real result worth learning from generated data rather than discovering under load. On MySQL 8 you can give the planner a histogram for the low-cardinality or unevenly-distributed columns so these estimates tighten up:</p>
+<pre><code>ANALYZE TABLE orders UPDATE HISTOGRAM ON total, status WITH 100 BUCKETS;</code></pre>
+<p>None of this is a substitute for a production-shaped sample when the stakes are high. But it is dramatically better than the alternative most teams end up with — a test database carrying a few thousand uniform rows, quietly certifying queries that will behave nothing like that at scale.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — Generating Test Data in SQL</h2>
+<div class="faq-item"><h3>Can I generate a sequence of numbers in SQL without creating a table?</h3><p>Yes. MySQL 8+ and PostgreSQL both support recursive CTEs: <code>WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n &lt; N) SELECT n FROM seq</code>. PostgreSQL also has <code>generate_series(1, N)</code> built in. MySQL has no <code>generate_series</code>, and recursive CTEs are capped by <code>cte_max_recursion_depth</code> (default 1000), so run <code>SET SESSION cte_max_recursion_depth = 1000000</code> before a large generation or you'll hit error 3636.</p></div>
+<div class="faq-item"><h3>What is the difference between RAND() and random() in SQL?</h3><p><code>RAND()</code> is MySQL and SQL Server; <code>random()</code> is PostgreSQL. Both return a float in the half-open range <code>[0, 1)</code>. MySQL accepts a seed — <code>RAND(42)</code> is reproducible for the session — while PostgreSQL needs <code>SELECT setseed(0.5)</code> because <code>random()</code> takes no argument. SQL Server is the odd one out: <code>RAND()</code> is evaluated once per statement, so <code>SELECT RAND() FROM t</code> returns the same value for every row. Use <code>ABS(CHECKSUM(NEWID()))</code> when you need per-row randomness there.</p></div>
+<div class="faq-item"><h3>How do I insert a million rows into MySQL quickly?</h3><p>Use <code>INSERT ... SELECT</code> from a numbers table — one statement, or a handful of large batches — never a million client-side inserts. Build the numbers table once from a six-way cross join of digits (10<sup>6</sup> rows in seconds). Drop indexes you don't need during the load, wrap batches in a transaction, disable the binary log on a dev box, and run <code>ANALYZE TABLE</code> afterwards so the optimizer has fresh statistics.</p></div>
+<div class="faq-item"><h3>How do I keep foreign keys valid when generating related test data?</h3><p>Generate the parent key space first (ids 1..N), then derive every child foreign key with arithmetic that cannot leave that range: <code>1 + (n % N)</code>. Verify with <code>SELECT COUNT(*) FROM child LEFT JOIN parent ON parent.id = child.parent_id WHERE parent.id IS NULL</code> — it must be zero. You can disable <code>foreign_key_checks</code> during the load for speed, but only when the data is genuinely consistent.</p></div>
+<div class="faq-item"><h3>How do I make generated data realistic rather than uniform?</h3><p>Deliberately skew it. Use a <code>CASE</code> on <code>n % 100</code> so 90% of orders are <code>'completed'</code> and the rest spread across four statuses, and give dates a multiplier before the modulo (<code>(n * 37) % 730</code>) so they don't cluster on one weekday. Skewed data is what exposes index and query-plan problems; perfectly even data hides them. Then confirm the shape with <code>GROUP BY</code> and a histogram before you trust any <code>EXPLAIN</code> you run against it.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools</h2>
+<div class="related-grid">
+<a href="/data-generator">SQL Data Generator</a>
+<a href="/free-online-sql-data-generator">Free Online SQL Data Generator</a>
+<a href="/er-diagram">SQL ER Diagram Generator</a>
+<a href="/explain">SQL EXPLAIN Tool</a>
+<a href="/snippets">SQL Snippet Library</a>
+<a href="/stats">SQL Query Statistics</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

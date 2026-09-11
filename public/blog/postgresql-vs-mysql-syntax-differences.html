@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostgreSQL vs MySQL — Key Syntax Differences, Side by Side | SQLFormat.io</title>
+  <meta name="description" content="PostgreSQL vs MySQL syntax differences explained with side-by-side SQL: identifier quoting, string concatenation, SERIAL vs AUTO_INCREMENT, date functions, UPSERT, pagination, and case sensitivity.">
+  <meta name="keywords" content="postgresql vs mysql, mysql to postgresql, sql syntax differences, on conflict vs on duplicate key, serial vs auto_increment">
+  <meta property="og:title" content="PostgreSQL vs MySQL — Key Syntax Differences, Side by Side">
+  <meta property="og:description" content="Seven syntax differences that break a straight MySQL to PostgreSQL port — identifier quoting, concatenation, types, dates, UPSERT, LIMIT, and case sensitivity, each with both dialects shown.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/postgresql-vs-mysql-syntax-differences">
+  <link rel="canonical" href="https://sqlformat.io/blog/postgresql-vs-mysql-syntax-differences">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"PostgreSQL vs MySQL — Key Syntax Differences, Side by Side","description":"PostgreSQL vs MySQL syntax differences explained with side-by-side SQL: identifier quoting, string concatenation, SERIAL vs AUTO_INCREMENT, date functions, UPSERT, pagination, and case sensitivity.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/postgresql-vs-mysql-syntax-differences","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"PostgreSQL vs MySQL Syntax Differences","item":"https://sqlformat.io/blog/postgresql-vs-mysql-syntax-differences"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I run MySQL queries directly in PostgreSQL?","acceptedAnswer":{"@type":"Answer","text":"No. Simple SELECT, JOIN, and WHERE logic usually transfers, but anything with backtick identifiers, the || operator used as OR, AUTO_INCREMENT columns, DATE_FORMAT(), ON DUPLICATE KEY UPDATE, or LIMIT offset, count will fail or silently change meaning. Port the DDL and the DML separately, then rewrite each of the seven constructs on this page by hand."}},{"@type":"Question","name":"What is the PostgreSQL equivalent of AUTO_INCREMENT?","acceptedAnswer":{"@type":"Answer","text":"The old answer is SERIAL (or BIGSERIAL for 64-bit), which creates an integer column backed by a sequence and sets a nextval() default. The modern answer, available since PostgreSQL 10, is GENERATED ALWAYS AS IDENTITY. Both produce an auto-incrementing integer; identity columns are the SQL-standard form and prevent accidental manual inserts."}},{"@type":"Question","name":"How do I get the ID of the row I just inserted in each database?","acceptedAnswer":{"@type":"Answer","text":"MySQL exposes it through LAST_INSERT_ID() in the same session. PostgreSQL has LASTVAL(), but the reliable, race-free pattern is to append RETURNING id to the INSERT statement itself, which returns the generated values as a result set. MySQL has no RETURNING clause at all."}},{"@type":"Question","name":"Is LIMIT offset, count valid in PostgreSQL?","acceptedAnswer":{"@type":"Answer","text":"No. PostgreSQL only accepts LIMIT count OFFSET offset (or the standard OFFSET offset FETCH FIRST count ROWS ONLY). MySQL accepts both LIMIT count OFFSET offset and the comma form LIMIT offset, count, which is the one people habitually write and the one Postgres rejects with a syntax error."}},{"@type":"Question","name":"Why does my LIKE query suddenly stop matching in PostgreSQL?","acceptedAnswer":{"@type":"Answer","text":"Because string comparison is case-sensitive by default in PostgreSQL, while MySQL's default collations (utf8mb4_0900_ai_ci and friends) make LIKE case-insensitive. Use ILIKE in PostgreSQL, or normalize with LOWER() on both sides, or switch the column to the citext type."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>PostgreSQL vs MySQL — Key Syntax Differences, Side by Side</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>Moving a schema from MySQL to PostgreSQL is not a find-and-replace job. Both databases speak SQL, but they disagree on how you quote an identifier, how you concatenate a string, how a boolean is stored, how you upsert a row, and how <code>LIKE</code> compares text. Each disagreement is small enough to survive code review and loud enough to break a running application.</p>
+<p>This guide puts the seven differences that cause the most porting pain side by side, with the same operation written in both dialects. It targets MySQL 8.0+ and PostgreSQL 13+ — the versions you are most likely to be running today — and flags where MariaDB or older releases behave differently. Everything here is written to be copied into <a href="/dialect-converter">a dialect converter</a> or an editor and run.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#identifier-quoting">1. Identifier Quoting — Double Quotes vs Backticks</a></li>
+<li><a href="#concatenation">2. String Concatenation — || vs CONCAT()</a></li>
+<li><a href="#auto-increment">3. Auto-Increment — SERIAL vs AUTO_INCREMENT</a></li>
+<li><a href="#booleans">4. Booleans — TRUE vs TINYINT(1)</a></li>
+<li><a href="#date-functions">5. Date and Time Functions</a></li>
+<li><a href="#upsert">6. UPSERT — ON CONFLICT vs ON DUPLICATE KEY UPDATE</a></li>
+<li><a href="#pagination">7. Pagination — LIMIT and OFFSET Details</a></li>
+<li><a href="#case-sensitivity">8. Case Sensitivity of Identifiers and Text</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="identifier-quoting">
+<h2>1. Identifier Quoting — Double Quotes vs Backticks</h2>
+<p>MySQL wraps table and column names in <strong>backticks</strong>: <code>`order`</code>. PostgreSQL wraps them in <strong>double quotes</strong>: <code>"order"</code>. The characters are not interchangeable — a backtick is a hard syntax error in PostgreSQL, and a double-quoted token in MySQL is a string literal unless you enabled <code>ANSI_QUOTES</code>.</p>
+<p>The reason both dialects have a quoting mechanism is that some identifiers collide with reserved words. You cannot write <code>SELECT order FROM orders</code> in either database, because <code>order</code> is part of <code>ORDER BY</code>. The fix is quoting:</p>
+<pre><code>-- MySQL
+SELECT `order`.`select`, `order`.`group`
+FROM `order`
+WHERE `order`.`status` = 'paid';
+
+-- PostgreSQL
+SELECT "order"."select", "order"."group"
+FROM "order"
+WHERE "order"."status" = 'paid';</code></pre>
+<p>Single quotes are string literals in both dialects, so that part ports unchanged. What does not port is escaping <em>inside</em> strings. MySQL allows backslash escapes everywhere, so <code>'it\'s'</code> is valid. PostgreSQL treats the backslash as an ordinary character unless the string is prefixed with <code>E</code>, which is why the standard form is to double the quote:</p>
+<pre><code>-- MySQL: backslash escape is on by default
+SELECT 'it\'s fine';
+
+-- PostgreSQL: E'' enables backslash escapes; otherwise double the quote
+SELECT 'it''s fine';
+SELECT E'it\'s fine';          -- equivalent, explicit escape string</code></pre>
+<p>PostgreSQL also has dollar quoting, which MySQL has no equivalent for. It exists so that function bodies full of single quotes do not turn into a wall of doubled apostrophes:</p>
+<pre><code>-- PostgreSQL only
+CREATE FUNCTION greet(name text) RETURNS text AS $$
+    SELECT 'hello, ' || name;
+$$ LANGUAGE sql;</code></pre>
+<p>One more trap: in PostgreSQL, an unquoted identifier is folded to lowercase, but a quoted one is kept exactly as written. <code>SELECT "UserId" FROM Users</code> looks for a column literally named <code>UserId</code> and a table literally named <code>Users</code> — it will not find <code>userid</code> or <code>users</code>. MySQL is far looser (see section 8), so code migrated from MySQL often carries double quotes that were harmless there and become strict name-matching here.</p>
+</section>
+
+<section class="content-section" id="concatenation">
+<h2>2. String Concatenation — || vs CONCAT()</h2>
+<p>This is the difference that silently produces wrong results rather than an error message. In PostgreSQL <code>||</code> is the string concatenation operator, straight from the SQL standard. In MySQL, with default settings, <code>||</code> is the <strong>logical OR</strong> operator. So <code>'a' || 'b'</code> returns <code>ab</code> in Postgres and <code>1</code> (meaning true) in MySQL.</p>
+<pre><code>-- MySQL
+SELECT CONCAT(first_name, ' ', last_name) AS full_name
+FROM users;
+
+-- PostgreSQL
+SELECT first_name || ' ' || last_name AS full_name
+FROM users;</code></pre>
+<p>MySQL can be made to treat <code>||</code> as concatenation by enabling the <code>PIPES_AS_CONCAT</code> SQL mode, but do not rely on a session setting to make ported code correct — a colleague reconnecting without it re-breaks the query. Write <code>CONCAT()</code> in MySQL and <code>||</code> in PostgreSQL.</p>
+<p>Both databases offer <code>CONCAT()</code>, but they treat NULL differently, and that difference is another silent data bug. The <code>||</code> operator propagates NULL: any NULL operand makes the whole expression NULL. PostgreSQL's <code>CONCAT()</code> function, added in 9.1, skips NULLs instead, treating them as empty strings.</p>
+<pre><code>-- PostgreSQL: same data, two different answers
+SELECT 'a' || NULL || 'b';        -- NULL   (operator propagates NULL)
+SELECT CONCAT('a', NULL, 'b');    -- 'ab'   (function skips NULL)
+
+-- Portable approach: decide explicitly and use COALESCE
+SELECT COALESCE(first_name, '') || ' ' || COALESCE(last_name, '')
+FROM users;</code></pre>
+<p>For joining a list of values where you want NULLs and empty strings both skipped, <code>CONCAT_WS()</code> (concatenate with separator) exists in both engines with the same semantics: it ignores NULL arguments and places the separator only between surviving values.</p>
+<pre><code>-- Works identically in MySQL and PostgreSQL
+SELECT CONCAT_WS(', ', city, state, country) AS location FROM addresses;</code></pre>
+</section>
+
+<section class="content-section" id="auto-increment">
+<h2>3. Auto-Increment — SERIAL vs AUTO_INCREMENT</h2>
+<p>A surrogate primary key is where the DDL diverges first. MySQL attaches <code>AUTO_INCREMENT</code> to the column. PostgreSQL reaches for a sequence object, and <code>SERIAL</code> is shorthand that creates one behind your back.</p>
+<pre><code>-- MySQL
+CREATE TABLE users (
+    id    BIGINT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+-- PostgreSQL: SERIAL is shorthand for a bigint column + sequence + default
+CREATE TABLE users (
+    id    BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL
+);
+
+-- PostgreSQL, modern form (10+): the SQL-standard identity column
+CREATE TABLE users (
+    id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR(255) NOT NULL
+);</code></pre>
+<p>Three practical consequences of the difference:</p>
+<ul>
+<li><strong>SERIAL is not a type.</strong> <code>BIGSERIAL</code> expands to <code>bigint NOT NULL DEFAULT nextval('users_id_seq')</code> plus sequence ownership. <code>\d users</code> in psql shows the column as plain <code>bigint</code>, which confuses people who go looking for a <code>serial</code> data type.</li>
+<li><strong>Sequences are independent objects.</strong> They live in the same schema, survive a <code>TRUNCATE</code> of the table (unless you use <code>TRUNCATE ... RESTART IDENTITY</code>), and must be reset by hand after a bulk data load: <code>SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));</code>. MySQL's counter also survives a truncate, but it lives inside the table definition, so <code>ALTER TABLE users AUTO_INCREMENT = 1;</code> resets it in one statement.</li>
+<li><strong>Identity columns reject manual inserts.</strong> <code>GENERATED ALWAYS AS IDENTITY</code> throws an error if you supply the value, which is a feature — it catches accidental id hard-coding. Use <code>GENERATED BY DEFAULT AS IDENTITY</code> if you need to load explicit ids in tests.</li>
+</ul>
+<p>Reading back the generated key differs too, and this one bites every ORM developer during a migration:</p>
+<pre><code>-- MySQL: insert, then ask the session for the last generated value
+INSERT INTO users (email) VALUES ('a@example.com');
+SELECT LAST_INSERT_ID();
+
+-- PostgreSQL: the INSERT itself returns the value
+INSERT INTO users (email) VALUES ('a@example.com')
+RETURNING id;</code></pre>
+<p><code>RETURNING</code> works on <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> in PostgreSQL, which makes the read-modify-write round trip a single statement. MySQL has no <code>RETURNING</code> clause — it is the single most requested MySQL feature for good reason.</p>
+</section>
+
+<section class="content-section" id="booleans">
+<h2>4. Booleans — TRUE vs TINYINT(1)</h2>
+<p>PostgreSQL has a real boolean type with three states: <code>true</code>, <code>false</code>, and <code>NULL</code>. MySQL has no boolean type at all — <code>BOOL</code> and <code>BOOLEAN</code> are aliases for <code>TINYINT(1)</code>, a one-byte integer where <code>0</code> means false and anything nonzero means true. <code>TRUE</code> and <code>FALSE</code> are just synonyms for <code>1</code> and <code>0</code>.</p>
+<pre><code>-- MySQL: the column is an integer wearing a boolean costume
+CREATE TABLE flags (id INT PRIMARY KEY, is_active BOOLEAN DEFAULT TRUE);
+INSERT INTO flags VALUES (1, TRUE);
+SELECT is_active, is_active = 1, is_active + 10 FROM flags;   -- 1, 1, 11
+
+-- PostgreSQL: a genuine boolean
+CREATE TABLE flags (id INT PRIMARY KEY, is_active BOOLEAN DEFAULT TRUE);
+INSERT INTO flags VALUES (1, TRUE);
+SELECT is_active, is_active = TRUE, NOT is_active FROM flags; -- t, t, f</code></pre>
+<p>The consequences are more than cosmetic. In MySQL, <code>SELECT is_active FROM flags</code> returns <code>1</code>, and a client library hands you an integer — which is why so much PHP and Java code tests <code>== 1</code> instead of <code>== true</code>. Port that to PostgreSQL and the comparison against <code>1</code> fails: <code>WHERE is_active = 1</code> raises <code>operator does not exist: boolean = integer</code>. Write <code>WHERE is_active = TRUE</code> or simply <code>WHERE is_active</code>.</p>
+<p>Literal handling differs too. PostgreSQL accepts <code>'t'</code>, <code>'true'</code>, <code>'yes'</code>, <code>'on'</code>, and <code>'1'</code> when casting a string to boolean, which makes data loads forgiving. MySQL is comparably lenient because it coerces to an integer, but the comparison result is a number, not a truth value. And a PostgreSQL boolean can be <code>NULL</code>, so a tri-state column (yes / no / unknown) is natural there; in MySQL you must remember that <code>0</code> and <code>NULL</code> are different things and write <code>IS NOT TRUE</code> rather than <code>!= 1</code> when the column is nullable.</p>
+</section>
+
+<div class="cta-box">
+<h3>Rewriting MySQL Queries for PostgreSQL?</h3>
+<p>Paste your query, pick the target dialect, and get back the same statement in PostgreSQL syntax — identifiers, functions, and all.</p>
+<a href="/dialect-converter">Open the Dialect Converter &rarr;</a>
+</div>
+
+<section class="content-section" id="date-functions">
+<h2>5. Date and Time Functions</h2>
+<p>Date arithmetic is where ports fail loudly, because the function names are <em>similar but not the same</em>. Both engines share <code>NOW()</code>, <code>CURRENT_TIMESTAMP</code>, <code>CURDATE()</code>/<code>CURRENT_DATE</code>, and <code>EXTRACT()</code>, and then diverge immediately after.</p>
+<table>
+<thead>
+<tr><th>Task</th><th>MySQL</th><th>PostgreSQL</th></tr>
+</thead>
+<tbody>
+<tr><td>Add 7 days</td><td><code>DATE_ADD(d, INTERVAL 7 DAY)</code></td><td><code>d + INTERVAL '7 days'</code></td></tr>
+<tr><td>Subtract 1 month</td><td><code>DATE_SUB(d, INTERVAL 1 MONTH)</code></td><td><code>d - INTERVAL '1 month'</code></td></tr>
+<tr><td>Difference in days</td><td><code>DATEDIFF(a, b)</code></td><td><code>a - b</code> (dates) or <code>AGE(a, b)</code></td></tr>
+<tr><td>Truncate to month</td><td><code>DATE_FORMAT(d, '%Y-%m-01')</code></td><td><code>DATE_TRUNC('month', d)</code></td></tr>
+<tr><td>Format as text</td><td><code>DATE_FORMAT(d, '%Y-%m-%d')</code></td><td><code>TO_CHAR(d, 'YYYY-MM-DD')</code></td></tr>
+<tr><td>Parse text to date</td><td><code>STR_TO_DATE(s, '%Y-%m-%d')</code></td><td><code>TO_DATE(s, 'YYYY-MM-DD')</code></td></tr>
+<tr><td>Extract year</td><td><code>YEAR(d)</code> / <code>EXTRACT(YEAR FROM d)</code></td><td><code>EXTRACT(YEAR FROM d)</code></td></tr>
+<tr><td>Unix epoch seconds</td><td><code>UNIX_TIMESTAMP(d)</code></td><td><code>EXTRACT(EPOCH FROM d)</code></td></tr>
+<tr><td>From epoch back</td><td><code>FROM_UNIXTIME(1700000000)</code></td><td><code>TO_TIMESTAMP(1700000000)</code></td></tr>
+</tbody>
+</table>
+<p>Two things stand out. First, the operators: PostgreSQL lets you add an interval to a date or timestamp with a plain <code>+</code>, and adding an integer to a <code>date</code> adds that many days — <code>CURRENT_DATE + 1</code> is tomorrow. MySQL requires the function form or <code>d + INTERVAL 1 DAY</code>. Second, the format strings are entirely different languages: MySQL uses <code>DATE_FORMAT</code> specifiers like <code>%Y-%m-%d %H:%i:%s</code>, PostgreSQL uses <code>TO_CHAR</code> patterns like <code>YYYY-MM-DD HH24:MI:SS</code>. Translating a format string is the most error-prone part of a port, because both languages accept many of the same letters with different meaning.</p>
+<pre><code>-- Group orders into monthly buckets
+
+-- MySQL
+SELECT DATE_FORMAT(created_at, '%Y-%m-01') AS month,
+       COUNT(*) AS orders
+FROM orders
+GROUP BY month
+ORDER BY month;
+
+-- PostgreSQL
+SELECT DATE_TRUNC('month', created_at) AS month,
+       COUNT(*) AS orders
+FROM orders
+GROUP BY month
+ORDER BY month;</code></pre>
+<p>Time zones add a final divergence. PostgreSQL has two distinct types — <code>TIMESTAMP WITHOUT TIME ZONE</code> and <code>TIMESTAMP WITH TIME ZONE</code> (<code>timestamptz</code>) — and <code>NOW()</code> returns the latter, stored as UTC and rendered in the session time zone. MySQL stores <code>DATETIME</code> with no zone information at all and <code>TIMESTAMP</code> as UTC-with-conversion, with a narrower range (1970–2038). If your application sends local wall-clock times, the same row means different instants after the move; store UTC explicitly and convert in the application or with <code>AT TIME ZONE</code>.</p>
+</section>
+
+<section class="content-section" id="upsert">
+<h2>6. UPSERT — ON CONFLICT vs ON DUPLICATE KEY UPDATE</h2>
+<p>Both databases can insert a row or update it if the key already exists, in a single statement. The syntax shares nothing beyond the words <code>INSERT</code> and <code>UPDATE</code>.</p>
+<pre><code>-- MySQL
+INSERT INTO counters (name, value)
+VALUES ('page_views', 1)
+ON DUPLICATE KEY UPDATE value = value + 1;
+
+-- PostgreSQL
+INSERT INTO counters (name, value)
+VALUES ('page_views', 1)
+ON CONFLICT (name) DO UPDATE SET value = counters.value + 1;</code></pre>
+<p>The structural difference matters. MySQL's clause fires on <em>any</em> unique key violation, and you cannot tell it which key you expected to conflict — the server picks whichever index happens to be violated. PostgreSQL's <code>ON CONFLICT</code> names the conflict target explicitly: <code>ON CONFLICT (name)</code> listens only to the unique index on <code>name</code>. If a different constraint fires, you get an honest error instead of an update happening on a row you did not mean to touch. Porting MySQL upserts to PostgreSQL is therefore not mechanical: for each statement you must know which column or columns carry the unique constraint.</p>
+<p>Reading the existing row's values differs too. PostgreSQL exposes the proposed new row as the pseudo-table <code>EXCLUDED</code>, while MySQL has historically used the <code>VALUES()</code> function, which was deprecated in MySQL 8.0.20 in favor of an aliased row.</p>
+<pre><code>-- PostgreSQL: EXCLUDED is the row you tried to insert
+INSERT INTO products (sku, price, updated_at)
+VALUES ('ABC-1', 19.99, NOW())
+ON CONFLICT (sku) DO UPDATE
+SET price      = EXCLUDED.price,
+    updated_at = EXCLUDED.updated_at;
+
+-- MySQL, classic form (VALUES() is deprecated in 8.0.20+)
+INSERT INTO products (sku, price, updated_at)
+VALUES ('ABC-1', 19.99, NOW())
+ON DUPLICATE KEY UPDATE
+    price      = VALUES(price),
+    updated_at = VALUES(updated_at);
+
+-- MySQL, modern alias form (8.0.19+)
+INSERT INTO products (sku, price, updated_at)
+VALUES ('ABC-1', 19.99, NOW()) AS new
+ON DUPLICATE KEY UPDATE
+    price      = new.price,
+    updated_at = new.updated_at;</code></pre>
+<p>For "insert only if absent, do nothing otherwise", the dialects are:</p>
+<pre><code>-- MySQL
+INSERT IGNORE INTO tags (name) VALUES ('sql');
+
+-- PostgreSQL
+INSERT INTO tags (name) VALUES ('sql') ON CONFLICT DO NOTHING;</code></pre>
+<p>Beware <code>INSERT IGNORE</code>: it downgrades <em>every</em> error to a warning, not just duplicate-key collisions, so a truncated value or a failed type coercion is silently swallowed. PostgreSQL's <code>ON CONFLICT DO NOTHING</code> suppresses only the unique-violation case, which is what you actually wanted. <code>REPLACE INTO</code> is not a substitute either — it deletes the conflicting row and inserts a new one, which resets the auto-increment id, fires <code>ON DELETE</code> triggers, and drops any column you did not list.</p>
+</section>
+
+<section class="content-section" id="pagination">
+<h2>7. Pagination — LIMIT and OFFSET Details</h2>
+<p>Both engines accept <code>LIMIT</code>, which is a MySQL extension that PostgreSQL adopted, but the offset forms are not the same set.</p>
+<pre><code>-- First page: identical in both
+SELECT id, title FROM posts ORDER BY created_at DESC LIMIT 10;
+
+-- Offset pagination
+
+-- MySQL: both of these mean "skip 20, take 10"
+SELECT id, title FROM posts ORDER BY created_at DESC LIMIT 10 OFFSET 20;
+SELECT id, title FROM posts ORDER BY created_at DESC LIMIT 20, 10;
+
+-- PostgreSQL: the comma form is a syntax error
+SELECT id, title FROM posts ORDER BY created_at DESC LIMIT 10 OFFSET 20;
+
+-- PostgreSQL also understands the SQL:2008 form (MySQL 8 does not)
+SELECT id, title FROM posts ORDER BY created_at DESC
+OFFSET 20 ROWS FETCH FIRST 10 ROWS ONLY;</code></pre>
+<p>So the one habit to break is <code>LIMIT offset, count</code>. It is the compact form every MySQL developer writes and the one that throws a syntax error the moment it reaches PostgreSQL. Note also that <code>ORDER BY</code> is not optional in practice even though both engines allow it — without it, which ten rows you get is undefined, and a query that appears to work in testing will shuffle in production.</p>
+<p>At large offsets both dialects have the same performance problem: <code>OFFSET 1000000</code> makes the server read and discard a million rows before returning anything. The fix is keyset pagination in both engines — page by the last seen value instead of by counting rows.</p>
+<pre><code>-- Keyset pagination: fast in both, no OFFSET scan
+
+-- MySQL
+SELECT id, title FROM posts
+WHERE created_at &lt; '2026-09-01 12:00:00'
+ORDER BY created_at DESC
+LIMIT 10;
+
+-- PostgreSQL
+SELECT id, title FROM posts
+WHERE created_at &lt; TIMESTAMP '2026-09-01 12:00:00'
+ORDER BY created_at DESC
+LIMIT 10;</code></pre>
+<p>PostgreSQL additionally supports <code>LIMIT ALL</code> (remove the limit) and can apply <code>LIMIT</code> to a <code>WITH</code> subquery that MySQL constrains differently, but the practical set is above: use <code>LIMIT n OFFSET m</code> in both, never use the comma form, and switch to keyset pagination before your offset crosses five figures.</p>
+</section>
+
+<section class="content-section" id="case-sensitivity">
+<h2>8. Case Sensitivity of Identifiers and Text</h2>
+<p>Keywords and function names are case-insensitive in both databases — <code>select</code>, <code>SELECT</code>, and <code>SeLeCt</code> are the same token. Everything else is where they part ways, and the divergence has two independent halves.</p>
+<h3>Identifiers</h3>
+<p>PostgreSQL lowercases unquoted identifiers, so <code>Users</code>, <code>users</code>, and <code>USERS</code> all resolve to the same table — as long as you never quote them. Quote one and it becomes exact-match and case-sensitive: <code>"Users"</code> and <code>"users"</code> are two different tables that can coexist.</p>
+<p>MySQL's behavior depends on the storage layer. Column names are case-insensitive on every platform. Table names follow <code>lower_case_table_names</code>: on Linux the default is <code>0</code>, meaning table names are <em>case-sensitive</em> on a case-sensitive filesystem; on Windows and macOS the default is <code>1</code>, meaning names are folded to lowercase and therefore case-insensitive. This is why a schema that runs on a developer's Mac fails to deploy on a Linux CI box, and it is the single most common "works on my machine" incident after a MySQL-to-Linux move.</p>
+<h3>Text comparison — the bigger surprise</h3>
+<p>Here the defaults are opposite, and this is the difference most likely to ship a wrong answer rather than an error:</p>
+<pre><code>-- MySQL: default collation utf8mb4_0900_ai_ci is case-insensitive
+SELECT id, email FROM users WHERE email LIKE 'alice%';   -- matches 'Alice@...'
+
+-- PostgreSQL: default collation is case-sensitive
+SELECT id, email FROM users WHERE email LIKE 'alice%';   -- does NOT match 'Alice@...'
+
+-- PostgreSQL fixes: ILIKE, or normalize both sides
+SELECT id, email FROM users WHERE email ILIKE 'alice%';
+SELECT id, email FROM users WHERE LOWER(email) LIKE 'alice%';</code></pre>
+<p>PostgreSQL has <code>ILIKE</code> for exactly this purpose, and it also supports the <code>~*</code> operator for case-insensitive regular matching. MySQL's case-insensitivity is a property of the column's collation — you can force a case-sensitive comparison with the <code>BINARY</code> keyword or a <code>_bin</code> collation, but the default is the forgiving one. Moving to PostgreSQL therefore <em>tightens</em> matching: queries that returned extra rows now return fewer, and users notice missing results before they notice errors.</p>
+<h3>Quick checklist for a port</h3>
+<ul>
+<li>Reject any query containing backticks; convert to double quotes only where the identifier is genuinely mixed-case or reserved.</li>
+<li>Rewrite <code>||</code> used as OR into <code>OR</code>, and <code>CONCAT()</code> chains into <code>||</code> or <code>COALESCE</code>.</li>
+<li>Replace <code>AUTO_INCREMENT</code> with <code>GENERATED ... AS IDENTITY</code> and add <code>RETURNING</code> where the application read <code>LAST_INSERT_ID()</code>.</li>
+<li>Convert <code>BOOL</code> columns to <code>BOOLEAN</code> and audit every comparison against <code>0</code> or <code>1</code>.</li>
+<li>Translate <code>DATE_FORMAT</code> specifiers to <code>TO_CHAR</code> patterns by hand, character group by character group.</li>
+<li>Split every <code>ON DUPLICATE KEY UPDATE</code> into <code>ON CONFLICT (columns) DO UPDATE</code>, naming the real unique key.</li>
+<li>Search for <code>LIMIT n, m</code> and <code>LIKE</code> patterns; both change meaning or break outright.</li>
+</ul>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — PostgreSQL vs MySQL Syntax</h2>
+<div class="faq-item"><h3>Can I run MySQL queries directly in PostgreSQL?</h3><p>No. Simple SELECT, JOIN, and WHERE logic usually transfers, but anything with backtick identifiers, the <code>||</code> operator used as OR, <code>AUTO_INCREMENT</code> columns, <code>DATE_FORMAT()</code>, <code>ON DUPLICATE KEY UPDATE</code>, or <code>LIMIT offset, count</code> will fail or silently change meaning. Port the DDL and the DML separately, then rewrite each of the seven constructs on this page by hand.</p></div><div class="faq-item"><h3>What is the PostgreSQL equivalent of AUTO_INCREMENT?</h3><p>The old answer is <code>SERIAL</code> (or <code>BIGSERIAL</code> for 64-bit), which creates an integer column backed by a sequence and sets a <code>nextval()</code> default. The modern answer, available since PostgreSQL 10, is <code>GENERATED ALWAYS AS IDENTITY</code>. Both produce an auto-incrementing integer; identity columns are the SQL-standard form and prevent accidental manual inserts.</p></div><div class="faq-item"><h3>How do I get the ID of the row I just inserted in each database?</h3><p>MySQL exposes it through <code>LAST_INSERT_ID()</code> in the same session. PostgreSQL has <code>LASTVAL()</code>, but the reliable, race-free pattern is to append <code>RETURNING id</code> to the <code>INSERT</code> statement itself, which returns the generated values as a result set. MySQL has no <code>RETURNING</code> clause at all.</p></div><div class="faq-item"><h3>Is <code>LIMIT offset, count</code> valid in PostgreSQL?</h3><p>No. PostgreSQL only accepts <code>LIMIT count OFFSET offset</code> (or the standard <code>OFFSET offset FETCH FIRST count ROWS ONLY</code>). MySQL accepts both <code>LIMIT count OFFSET offset</code> and the comma form <code>LIMIT offset, count</code>, which is the one people habitually write and the one Postgres rejects with a syntax error.</p></div><div class="faq-item"><h3>Why does my LIKE query suddenly stop matching in PostgreSQL?</h3><p>Because string comparison is case-sensitive by default in PostgreSQL, while MySQL's default collations (<code>utf8mb4_0900_ai_ci</code> and friends) make <code>LIKE</code> case-insensitive. Use <code>ILIKE</code> in PostgreSQL, or normalize with <code>LOWER()</code> on both sides, or switch the column to the <code>citext</code> type.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools &amp; Reading</h2>
+<div class="related-grid">
+<a href="/dialect-converter">SQL Dialect Converter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/validate">SQL Validator</a>
+<a href="/diff">SQL Diff Tool</a>
+<a href="/sql-to-json">SQL to JSON Converter</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

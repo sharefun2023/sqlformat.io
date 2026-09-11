@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Window Functions — ROW_NUMBER, RANK, LAG and Practical Examples | SQLFormat.io</title>
+  <meta name="description" content="Learn SQL window functions with practical examples: ROW_NUMBER OVER PARTITION BY for Top-N queries, RANK vs DENSE_RANK with ties, LAG/LEAD for month-over-month growth, running totals and frame clauses. Works in MySQL 8+ and PostgreSQL.">
+  <meta name="keywords" content="sql window functions, row_number over partition by, rank vs dense_rank, lag lead sql, running total sql, sql over clause">
+  <meta property="og:title" content="SQL Window Functions — ROW_NUMBER, RANK, LAG and Practical Examples">
+  <meta property="og:description" content="ROW_NUMBER, RANK, DENSE_RANK, LAG/LEAD, running totals and frame clauses — with three production patterns: Top-N per group, consecutive login streaks, and moving averages.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-window-functions-guide">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-window-functions-guide">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL Window Functions — ROW_NUMBER, RANK, LAG and Practical Examples","description":"A practical guide to SQL window functions: the difference from GROUP BY, OVER/PARTITION BY/ORDER BY syntax, ROW_NUMBER vs RANK vs DENSE_RANK, LAG/LEAD, running totals with frame clauses, and three real-world patterns — Top-N per group, consecutive login detection, and moving averages. Covers MySQL 8+ and PostgreSQL.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/sql-window-functions-guide","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL Window Functions Guide","item":"https://sqlformat.io/blog/sql-window-functions-guide"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between a window function and GROUP BY?","acceptedAnswer":{"@type":"Answer","text":"GROUP BY collapses rows: ten orders become one summary row per group, and you can only select grouped or aggregated columns. A window function computes a value over a related set of rows but keeps every original row, so you can show each order next to its customer total in a single pass. Window functions run after WHERE, GROUP BY and HAVING, and before ORDER BY and LIMIT."}},{"@type":"Question","name":"Can I use a window function in a WHERE clause?","acceptedAnswer":{"@type":"Answer","text":"No. Window functions are evaluated after WHERE runs, so filtering on them directly is not allowed in MySQL or PostgreSQL. Wrap the query in a CTE or subquery and filter in the outer query, for example WHERE rn &lt;= 3 on a ROW_NUMBER alias. Some dialects (Snowflake, BigQuery, DuckDB) offer a QUALIFY shortcut, but MySQL and PostgreSQL do not."}},{"@type":"Question","name":"What is the difference between ROW_NUMBER, RANK and DENSE_RANK?","acceptedAnswer":{"@type":"Answer","text":"All three number rows by an ORDER BY inside the window, but they handle ties differently. ROW_NUMBER gives every row a unique number and breaks ties arbitrarily. RANK gives tied rows the same number and skips the next positions (1, 1, 3). DENSE_RANK gives tied rows the same number without skipping (1, 1, 2). Use ROW_NUMBER for pagination and Top-N, RANK for competition-style scoring, DENSE_RANK when you need the top N distinct values."}},{"@type":"Question","name":"Which MySQL version supports window functions?","acceptedAnswer":{"@type":"Answer","text":"MySQL 8.0, released in 2018, added window functions including ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, and the ROWS/RANGE frame clause. MySQL 5.7 and earlier have no window function support at all — you must emulate them with variables or self-joins, which is a common reason to upgrade. PostgreSQL has supported window functions since version 8.4 (2009), and SQL Server since 2005, with LAG/LEAD and offset frames added in SQL Server 2012."}},{"@type":"Question","name":"Are window functions bad for performance?","acceptedAnswer":{"@type":"Answer","text":"Usually the opposite. A window function needs one sort or hash pass per distinct window definition, while the equivalent correlated subquery or self-join re-executes per row. Multiple window functions that share the same PARTITION BY and ORDER BY reuse a single sort in PostgreSQL and MySQL. An index on (partition_column, order_column) can eliminate the sort entirely. Always confirm with EXPLAIN rather than guessing."}}]}</script>
+  <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:18px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.95rem}.content-section strong{color:var(--text)}.content-section ul,.content-section ol{color:var(--text2);line-height:1.75;margin:0 0 14px 22px;font-size:.95rem}.content-section li{margin-bottom:6px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.86em;color:var(--accent);font-family:'SF Mono',Monaco,Consolas,monospace}.content-section pre{background:#010409;border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow-x:auto;margin:12px 0 16px}.content-section pre code{background:none;padding:0;color:#c9d1d9;font-size:.85rem;line-height:1.6}.content-section table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 12px;border:1px solid var(--border)}.content-section td{color:var(--text2);padding:10px 12px;border:1px solid var(--border)}.content-section blockquote{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;margin:14px 0;border-radius:0 var(--radius) var(--radius) 0}.content-section blockquote p{margin:0}.cta-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--accent2);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}.cta-box h3{color:var(--text);font-size:1.2rem;margin-bottom:8px}.cta-box p{color:var(--text2);margin-bottom:16px;font-size:.95rem}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.95rem}.cta-box a:hover{background:var(--accent)}.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:8px}.faq-item p{color:var(--text2);font-size:.92rem;line-height:1.7;margin:0}.related-section{margin:40px 0}.related-section h2{font-size:1.3rem;margin-bottom:16px}.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;color:var(--accent);text-decoration:none;font-size:.9rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:640px){.hero h1{font-size:1.5rem}.container{padding:0 14px}nav a{margin-left:14px;font-size:.82rem}}</style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL Window Functions — ROW_NUMBER, RANK, LAG and Practical Examples</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>Window functions are the line between intermediate and advanced SQL. They compute a value over a set of rows related to the current row — a ranking, a previous month's revenue, a running total — <strong>without collapsing those rows</strong> the way <code>GROUP BY</code> does. Once you internalize <code>OVER (PARTITION BY ... ORDER BY ...)</code>, a large class of queries that used to need self-joins or correlated subqueries become one readable pass over the data.</p>
+<p>This guide covers the core toolkit — <code>ROW_NUMBER</code>, <code>RANK</code>, <code>DENSE_RANK</code>, <code>LAG</code>, <code>LEAD</code>, <code>SUM() OVER</code>, and the <code>ROWS BETWEEN</code> frame clause — then puts it to work on three patterns you will actually ship: Top-N per group, consecutive login streak detection, and moving averages. Every example runs on <strong>MySQL 8.0+</strong> and <strong>PostgreSQL</strong> (window functions have existed there since 8.4). Where the two dialects differ, the difference is called out. Window queries nest quickly, so run the final SQL through the <a href="/">free online SQL formatter</a> before it goes into code review.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#why">1. Why Window Functions Beat GROUP BY</a></li>
+<li><a href="#syntax">2. The OVER Clause: PARTITION BY, ORDER BY, Frame</a></li>
+<li><a href="#ranking">3. ROW_NUMBER vs RANK vs DENSE_RANK (Ties Demo)</a></li>
+<li><a href="#lag-lead">4. LAG and LEAD: Period-over-Period Comparisons</a></li>
+<li><a href="#frames">5. Running Totals and the Frame Clause</a></li>
+<li><a href="#patterns">6. Three Practical Patterns</a></li>
+<li><a href="#support">7. Version Support and Performance Notes</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="why">
+<h2>1. Why Window Functions Beat GROUP BY</h2>
+<p><code>GROUP BY</code> is a reduction: N rows go in, one row per group comes out. That is exactly what you want for a summary report — and exactly wrong when you need <em>detail rows plus context</em>. Say you want every order listed alongside that customer's lifetime order total. With <code>GROUP BY</code> you either lose the individual orders or bolt on a self-join:</p>
+<pre><code>-- The GROUP BY-era workaround: join the table to its own aggregate
+SELECT o.order_id, o.customer_id, o.amount, t.customer_total
+FROM orders o
+JOIN (
+  SELECT customer_id, SUM(amount) AS customer_total
+  FROM orders
+  GROUP BY customer_id
+) t ON t.customer_id = o.customer_id;</code></pre>
+<p>The window function version does the same job in one pass, with no join and no duplicated scan of the table:</p>
+<pre><code>SELECT order_id,
+       customer_id,
+       amount,
+       SUM(amount) OVER (PARTITION BY customer_id) AS customer_total
+FROM orders;</code></pre>
+<p>Each order row survives intact; the aggregate is simply <em>attached</em> to it. The execution order explains why this works: window functions are evaluated <strong>after</strong> <code>WHERE</code>, <code>GROUP BY</code>, and <code>HAVING</code>, and <strong>before</strong> <code>ORDER BY</code> and <code>LIMIT</code>. Two consequences worth memorizing:</p>
+<ul>
+<li>You cannot filter on a window function result in the same query's <code>WHERE</code> — <code>WHERE</code> has already run. Wrap the query in a CTE or subquery and filter outside (every Top-N example below does this).</li>
+<li>You <em>can</em> mix window functions with <code>GROUP BY</code>: the grouping collapses rows first, then the window function sees one row per group.</li>
+</ul>
+<table>
+<tr><th></th><th>GROUP BY</th><th>Window function</th></tr>
+<tr><td>Rows returned</td><td>One per group (rows collapse)</td><td>One per input row (nothing collapses)</td></tr>
+<tr><td>Non-aggregated columns</td><td>Must appear in GROUP BY</td><td>Any column, freely</td></tr>
+<tr><td>Detail + aggregate together</td><td>Requires self-join</td><td>Built in</td></tr>
+<tr><td>Usable in WHERE</td><td>Yes (via HAVING for aggregates)</td><td>No — filter in an outer query</td></tr>
+</table>
+</section>
+
+<section class="content-section" id="syntax">
+<h2>2. The OVER Clause: PARTITION BY, ORDER BY, Frame</h2>
+<p>Every window function has the same shape. The function itself (<code>ROW_NUMBER</code>, <code>SUM</code>, <code>LAG</code>...) computes a value; the <code>OVER</code> clause defines <em>which rows it sees</em>:</p>
+<pre><code>function_name(arguments) OVER (
+    PARTITION BY column          -- split rows into independent groups
+    ORDER BY column              -- impose an order inside each group
+    ROWS BETWEEN ... AND ...     -- optional frame: narrow the rows further
+)</code></pre>
+<p>The three parts do different jobs:</p>
+<ul>
+<li><strong>PARTITION BY</strong> divides the result set into partitions; the function restarts for each one. Omit it and the entire result set is a single partition. Note the name: it is <code>PARTITION BY</code>, not <code>GROUP BY</code> — no collapsing happens.</li>
+<li><strong>ORDER BY</strong> sorts rows within each partition. It is mandatory for ranking functions (<code>ROW_NUMBER</code>, <code>RANK</code>) and <code>LAG</code>/<code>LEAD</code>, optional for aggregates like <code>SUM</code>. It also changes the default frame — more on that trap in <a href="#frames">section 5</a>.</li>
+<li><strong>The frame</strong> (<code>ROWS</code>/<code>RANGE</code> clause) further restricts which rows inside the partition feed the calculation, e.g. "the current row and the six before it" for a 7-day moving average.</li>
+</ul>
+<p>A concrete example combining all three — each employee's salary, their department's payroll, and their rank within the department:</p>
+<pre><code>SELECT name,
+       department,
+       salary,
+       SUM(salary) OVER (PARTITION BY department)                    AS dept_payroll,
+       RANK()      OVER (PARTITION BY department ORDER BY salary DESC) AS dept_rank
+FROM employees;</code></pre>
+<p>Both MySQL 8+ and PostgreSQL also let you define a window once and reuse it, which keeps wide SELECT lists readable:</p>
+<pre><code>SELECT name,
+       SUM(salary)  OVER w AS dept_payroll,
+       AVG(salary)  OVER w AS dept_avg,
+       RANK()       OVER w AS dept_rank
+FROM employees
+WINDOW w AS (PARTITION BY department ORDER BY salary DESC);</code></pre>
+</section>
+
+<section class="content-section" id="ranking">
+<h2>3. ROW_NUMBER vs RANK vs DENSE_RANK (Ties Demo)</h2>
+<p>The three ranking functions behave identically until two rows tie — then they diverge, and picking the wrong one silently breaks "top 3" logic. Here is exam data engineered with ties:</p>
+<pre><code>-- exam_scores
+-- name   score
+-- Alice  95
+-- Bob    95
+-- Carol  92
+-- Dave   90
+-- Eve    90
+-- Frank  90
+-- Grace  88
+
+SELECT name,
+       score,
+       ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num,
+       RANK()       OVER (ORDER BY score DESC) AS rnk,
+       DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rnk
+FROM exam_scores;</code></pre>
+<p>Result:</p>
+<table>
+<tr><th>name</th><th>score</th><th>row_num</th><th>rnk</th><th>dense_rnk</th></tr>
+<tr><td>Alice</td><td>95</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>Bob</td><td>95</td><td>2</td><td>1</td><td>1</td></tr>
+<tr><td>Carol</td><td>92</td><td>3</td><td>3</td><td>2</td></tr>
+<tr><td>Dave</td><td>90</td><td>4</td><td>4</td><td>3</td></tr>
+<tr><td>Eve</td><td>90</td><td>5</td><td>4</td><td>3</td></tr>
+<tr><td>Frank</td><td>90</td><td>6</td><td>4</td><td>3</td></tr>
+<tr><td>Grace</td><td>88</td><td>7</td><td>7</td><td>4</td></tr>
+</table>
+<p>Read the divergences carefully:</p>
+<ul>
+<li><strong>ROW_NUMBER</strong> — always unique, always sequential. Ties are broken <em>arbitrarily</em>: run the query twice and Alice/Bob may swap. If determinism matters, add a tiebreaker: <code>ORDER BY score DESC, name</code>.</li>
+<li><strong>RANK</strong> — tied rows share a rank, and the next rank <em>skips</em> (1, 1, 3). This is Olympic-medal semantics: two golds, no silver.</li>
+<li><strong>DENSE_RANK</strong> — tied rows share a rank, no skipping (1, 1, 2). The rank always equals "how many distinct higher values exist, plus one."</li>
+</ul>
+<p>Which one you want depends on the question. "Give me exactly 3 rows per group" → <code>ROW_NUMBER</code>. "Give me everyone in the top 3 scores" → <code>RANK</code> (may return more than 3 rows). "Give me rows at the top 3 <em>distinct</em> salary levels" → <code>DENSE_RANK</code>. Notice <code>RANK() &lt;= 3</code> above returns six people, while <code>ROW_NUMBER() &lt;= 3</code> would cut Frank and Eve on a coin flip — that difference is the entire point of this section.</p>
+</section>
+
+<section class="content-section" id="lag-lead">
+<h2>4. LAG and LEAD: Period-over-Period Comparisons</h2>
+<p><code>LAG</code> reaches back to a previous row within the partition; <code>LEAD</code> reaches forward. Before window functions, month-over-month growth required a self-join of a table to itself offset by one month — painful to write and worse to read. Now:</p>
+<pre><code>SELECT month,
+       revenue,
+       LAG(revenue)  OVER (ORDER BY month) AS prev_revenue,
+       LEAD(revenue) OVER (ORDER BY month) AS next_revenue
+FROM monthly_revenue;</code></pre>
+<p>The full signature is <code>LAG(expr, offset, default)</code>. The offset defaults to 1; the default value substitutes for the <code>NULL</code> you would otherwise get at the partition edge (the first row has no predecessor, the last has no successor). Year-over-year is just <code>LAG(revenue, 12)</code> on monthly data.</p>
+<p>Growth percentage — the number every dashboard wants:</p>
+<pre><code>SELECT month,
+       revenue,
+       LAG(revenue) OVER (ORDER BY month) AS prev_revenue,
+       ROUND(
+         (revenue - LAG(revenue) OVER (ORDER BY month)) * 100.0
+         / NULLIF(LAG(revenue) OVER (ORDER BY month), 0),
+       1) AS growth_pct
+FROM monthly_revenue;</code></pre>
+<p>Two production details: <code>NULLIF(..., 0)</code> guards against division by zero when the previous month had no revenue, and if you need to <em>filter</em> on growth (say, months that declined), you must wrap the query — window results are invisible to <code>WHERE</code>:</p>
+<pre><code>WITH growth AS (
+  SELECT month,
+         revenue,
+         LAG(revenue) OVER (ORDER BY month) AS prev_revenue
+  FROM monthly_revenue
+)
+SELECT month, revenue, prev_revenue
+FROM growth
+WHERE revenue &lt; prev_revenue;   -- declining months only</code></pre>
+<p><code>LAG</code>/<code>LEAD</code> respect <code>PARTITION BY</code> like everything else: add <code>PARTITION BY region</code> and each region's timeline is compared only against itself, never bleeding across the boundary.</p>
+</section>
+
+<div class="cta-box">
+<h3>Window Queries Nest. Keep Them Readable.</h3>
+<p>CTEs inside subqueries inside OVER clauses — paste your query into our formatter before anyone has to review it.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<section class="content-section" id="frames">
+<h2>5. Running Totals and the Frame Clause</h2>
+<p>Add <code>ORDER BY</code> to an aggregate window function and you get a running total — the most-used window pattern in analytics:</p>
+<pre><code>SELECT user_id,
+       txn_date,
+       amount,
+       SUM(amount) OVER (PARTITION BY user_id
+                         ORDER BY txn_date
+                         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM transactions;</code></pre>
+<p>Each row shows the sum of that user's transactions from the beginning of time up to and including the current row. The <code>ROWS BETWEEN ... AND ...</code> part is the <strong>frame clause</strong>, and it is worth understanding rather than copy-pasting, because the default will bite you.</p>
+<p><strong>The default-frame trap.</strong> When a window has <code>ORDER BY</code> but no explicit frame, SQL defaults to <code>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code>. <code>RANGE</code> means "all rows that are <em>peers</em> of the current row under the ORDER BY" — so if two transactions share the same <code>txn_date</code>, both get the same running total that already includes <em>both</em> of them. <code>ROWS</code> counts physical rows instead and advances one row at a time. Rule of thumb: for running totals over data with possibly duplicated sort keys, always write <code>ROWS</code> explicitly.</p>
+<p>The frame vocabulary, in full:</p>
+<table>
+<tr><th>Frame bound</th><th>Means</th></tr>
+<tr><td><code>UNBOUNDED PRECEDING</code></td><td>First row of the partition</td></tr>
+<tr><td><code>n PRECEDING</code></td><td>n physical rows (ROWS) or n units of the sort value (RANGE) back</td></tr>
+<tr><td><code>CURRENT ROW</code></td><td>The row being computed</td></tr>
+<tr><td><code>n FOLLOWING</code></td><td>n rows/units forward</td></tr>
+<tr><td><code>UNBOUNDED FOLLOWING</code></td><td>Last row of the partition</td></tr>
+</table>
+<p>A frame must be a contiguous span, so legal windows look like <code>ROWS BETWEEN 6 PRECEDING AND CURRENT ROW</code> (a trailing 7-row window) or <code>ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</code> (the whole partition — which is what <code>SUM(amount) OVER (PARTITION BY user_id)</code> with no ORDER BY gives you). Both MySQL 8+ and PostgreSQL support the full <code>ROWS</code>/<code>RANGE</code> syntax, including <code>EXCLUDE</code> in PostgreSQL and <code>GROUPS</code> in both.</p>
+<blockquote><p>Quick check when a running total looks wrong: print <code>COUNT(*) OVER (...same frame...)</code> next to it. If the count jumps by 2 on some rows, you are on the default RANGE frame with tied sort values.</p></blockquote>
+</section>
+
+<section class="content-section" id="patterns">
+<h2>6. Three Practical Patterns</h2>
+
+<h3>6.1 Top-N per group — the canonical row_number over partition by</h3>
+<p>"Three highest-paid employees per department" cannot be expressed with <code>GROUP BY</code>: <code>MAX(salary)</code> gives you the value but not the rest of the winning row, and self-joining on the max breaks when two people tie. <code>ROW_NUMBER() OVER (PARTITION BY ...)</code> is the standard answer:</p>
+<pre><code>SELECT department, name, salary
+FROM (
+  SELECT department,
+         name,
+         salary,
+         ROW_NUMBER() OVER (PARTITION BY department
+                            ORDER BY salary DESC, employee_id) AS rn
+  FROM employees
+) ranked
+WHERE rn &lt;= 3;      -- WHERE can't see rn until it's an outer query</code></pre>
+<p>Details that matter in production: the inner query computes the rank, the outer one filters it (window functions run after <code>WHERE</code>, hence the nesting). <code>employee_id</code> as a secondary sort key makes the result deterministic when salaries tie — without it, "who is #3" can change between runs. Swap <code>ROW_NUMBER</code> for <code>DENSE_RANK</code> if ties should all qualify, or <code>RANK</code> for strict podium semantics. MySQL and PostgreSQL both optimize this into a single sort per partition.</p>
+
+<h3>6.2 Consecutive login streaks — gaps and islands</h3>
+<p>Detecting runs of consecutive days is a classic interview question and a real churn/engagement metric. The trick: for consecutive dates, <em>date minus its row number is constant</em>. That constant identifies each "island" of consecutive days:</p>
+<pre><code>-- MySQL 8+: find every login streak of 7+ days
+WITH distinct_logins AS (
+  SELECT DISTINCT user_id, login_date          -- multiple logins/day would break the math
+  FROM logins
+),
+grouped AS (
+  SELECT user_id,
+         login_date,
+         DATE_SUB(login_date,
+                  INTERVAL ROW_NUMBER() OVER (PARTITION BY user_id
+                                              ORDER BY login_date) DAY) AS island
+  FROM distinct_logins
+)
+SELECT user_id,
+       MIN(login_date) AS streak_start,
+       MAX(login_date) AS streak_end,
+       COUNT(*)        AS streak_days
+FROM grouped
+GROUP BY user_id, island
+HAVING COUNT(*) &gt;= 7
+ORDER BY streak_days DESC;</code></pre>
+<p>Walk through it: within a streak, day 1 minus 1, day 2 minus 2, day 3 minus 3 all land on the same date — the island ID. The moment a day is skipped, the subtraction result shifts and a new island begins. The outer <code>GROUP BY</code> then measures each island. In PostgreSQL the only change is the date arithmetic:</p>
+<pre><code>-- PostgreSQL variant of the island expression
+login_date - (ROW_NUMBER() OVER (PARTITION BY user_id
+                                 ORDER BY login_date))::int AS island</code></pre>
+<p>The <code>DISTINCT</code> in the first CTE is not optional — a user logging in twice on Tuesday would consume two row numbers for one date and fracture the streak.</p>
+
+<h3>6.3 Moving averages with a sliding frame</h3>
+<p>A 7-day moving average smooths noise in daily metrics. The frame <code>ROWS BETWEEN 6 PRECEDING AND CURRENT ROW</code> is literally "this row plus the six before it":</p>
+<pre><code>SELECT day,
+       close_price,
+       ROUND(AVG(close_price) OVER (ORDER BY day
+                                    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW), 2) AS ma_7day,
+       COUNT(*)              OVER (ORDER BY day
+                                    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)     AS rows_in_frame
+FROM stock_prices;</code></pre>
+<p>For the first six rows the frame is shorter than seven, so the "moving average" is really a partial average — the <code>rows_in_frame</code> column makes that visible. Two ways to handle it depending on taste: filter with an outer query (<code>WHERE rows_in_frame = 7</code>), or keep the partial values and let the charting layer decide. If your data has missing days (weekends, market holidays), <code>ROWS</code> counts <em>records</em>, not calendar days — switch to <code>RANGE BETWEEN INTERVAL '6 days' PRECEDING AND CURRENT ROW</code> in PostgreSQL, or <code>RANGE BETWEEN 6 PRECEDING</code> over a numeric day column, to average over true calendar windows.</p>
+</section>
+
+<section class="content-section" id="support">
+<h2>7. Version Support and Performance Notes</h2>
+<p>Window functions are standard SQL:2003, but "standard" and "your production server" are different things:</p>
+<table>
+<tr><th>Database</th><th>Window function support</th></tr>
+<tr><td>PostgreSQL</td><td>Since 8.4 (2009) — full set incl. ROWS/RANGE frames, named WINDOW clause</td></tr>
+<tr><td>MySQL</td><td>Since 8.0 (2018). <strong>5.7 and earlier: none</strong> — a major upgrade incentive</td></tr>
+<tr><td>SQL Server</td><td>2005 for basics; 2012 added LAG/LEAD and offset frames</td></tr>
+<tr><td>SQLite</td><td>Since 3.25 (2018)</td></tr>
+</table>
+<p>On performance, the mental model is simple: each <em>distinct</em> window definition (unique combination of PARTITION BY, ORDER BY, and frame) costs one sort or hash pass. Functions sharing a window definition share that pass — PostgreSQL will explicitly show a single <code>WindowAgg</code> node stacked over one <code>Sort</code>. Practical consequences:</p>
+<ul>
+<li>An index on <code>(partition_column, order_column)</code> can let the engine skip the sort entirely — the same composite-index logic as <a href="/blog/sql-query-optimization-tips">general query optimization</a>.</li>
+<li>A window function almost always beats the correlated subquery it replaces, which re-executes per row; verify with <code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code> using the <a href="/explain">online EXPLAIN reader</a> or your client.</li>
+<li>Reduce input rows with <code>WHERE</code> first — window functions see whatever survives filtering, so early filtering shrinks every partition.</li>
+</ul>
+<p>If you are stuck on a legacy MySQL 5.7 box, generate test data with the <a href="/data-generator">SQL data generator</a> and prototype the window version on any MySQL 8 sandbox before committing to the rewrite.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — SQL Window Functions</h2>
+<div class="faq-item"><h3>What is the difference between a window function and GROUP BY?</h3><p>GROUP BY collapses rows — ten orders become one summary row per group, and you can only select grouped or aggregated columns. A window function computes a value over a related set of rows but keeps every original row, so each order can carry its customer's total next to it. Window functions run after WHERE/GROUP BY/HAVING and before ORDER BY/LIMIT.</p></div>
+<div class="faq-item"><h3>Can I use a window function in a WHERE clause?</h3><p>No — window functions are evaluated after WHERE has already run, in both MySQL and PostgreSQL. Wrap the query in a CTE or subquery and filter in the outer query (e.g. <code>WHERE rn &lt;= 3</code>). Snowflake, BigQuery, and DuckDB offer a QUALIFY shortcut for this; MySQL and PostgreSQL do not.</p></div>
+<div class="faq-item"><h3>When should I use ROW_NUMBER vs RANK vs DENSE_RANK?</h3><p>ROW_NUMBER for "exactly N rows per group" (pagination, Top-N, deduplication) — remember it breaks ties arbitrarily, so add a tiebreaker to ORDER BY. RANK for competition scoring where ties share a place and the next place skips (1, 1, 3). DENSE_RANK when you need the top N distinct values without gaps (1, 1, 2).</p></div>
+<div class="faq-item"><h3>Which MySQL version supports window functions?</h3><p>MySQL 8.0 (2018) added the full set: ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE, FIRST_VALUE/LAST_VALUE, and ROWS/RANGE frames. MySQL 5.7 has none — you would emulate ranking with user variables, which is fragile and deprecated behavior. PostgreSQL has supported window functions since 8.4 (2009).</p></div>
+<div class="faq-item"><h3>Are window functions bad for performance?</h3><p>Rarely. Each distinct window definition costs one sort pass, and functions sharing a definition share the sort. That is usually far cheaper than the self-join or correlated subquery being replaced. An index on (partition_column, order_column) can eliminate the sort. Check the plan with EXPLAIN before assuming either way.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/explain">SQL EXPLAIN Viewer</a>
+<a href="/data-generator">SQL Data Generator</a>
+<a href="/blog/sql-query-optimization-tips">SQL Query Optimization Tips</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

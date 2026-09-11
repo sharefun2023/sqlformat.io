@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read an SQL EXPLAIN Plan — A Practical Guide | SQLFormat.io</title>
+  <meta name="description" content="Learn how to read an SQL EXPLAIN plan column by column: id, select_type, table, type, key, rows, and Extra. Spot full table scans, filesorts, and missing indexes with a real before-and-after example.">
+  <meta name="keywords" content="sql explain plan, how to read explain output, mysql explain, query execution plan, sql performance tuning">
+  <meta property="og:title" content="How to Read an SQL EXPLAIN Plan — A Practical Guide">
+  <meta property="og:description" content="Decode every column of a MySQL EXPLAIN plan, rank access types from system to ALL, and fix a slow query step by step.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-to-read-sql-explain-plan">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-to-read-sql-explain-plan">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Read an SQL EXPLAIN Plan — A Practical Guide","description":"Learn how to read an SQL EXPLAIN plan column by column (id, select_type, table, type, key, rows, Extra), understand access-type rankings, spot red flags like full table scans and filesorts, and fix a real slow query with indexes.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/how-to-read-sql-explain-plan","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Read an SQL EXPLAIN Plan","item":"https://sqlformat.io/blog/how-to-read-sql-explain-plan"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does type=ALL mean in an EXPLAIN plan?","acceptedAnswer":{"@type":"Answer","text":"type=ALL means MySQL is doing a full table scan — reading every row in the table to evaluate your WHERE condition. On small tables this is fine and sometimes even faster than an index lookup. On large tables it is the most common cause of slow queries, and usually means a missing index on a column used in WHERE or JOIN."}},{"@type":"Question","name":"What is the difference between EXPLAIN and EXPLAIN ANALYZE?","acceptedAnswer":{"@type":"Answer","text":"EXPLAIN shows the plan the optimizer intends to use, based on statistics, without executing the query. EXPLAIN ANALYZE (MySQL 8.0.18+ and PostgreSQL) actually runs the query and reports real execution times and actual row counts per step. Use EXPLAIN for a quick check and EXPLAIN ANALYZE when estimated rows and actual rows disagree."}},{"@type":"Question","name":"Why is Using filesort bad?","acceptedAnswer":{"@type":"Answer","text":"Using filesort means MySQL cannot satisfy your ORDER BY with an index and must sort the rows in memory (or on disk for large sets). It is not always a problem — sorting a few dozen rows is cheap. It becomes a problem when the sort input is large. A composite index matching the WHERE and ORDER BY columns usually eliminates the filesort."}},{"@type":"Question","name":"What does the rows column tell me?","acceptedAnswer":{"@type":"Answer","text":"rows is the optimizer's estimate of how many rows it must examine at that step — not the number of rows returned. Multiply the rows estimates across a JOIN to get a sense of total work. If rows is close to the table size, you are scanning nearly everything and probably need an index. If the estimate is far off from reality, run ANALYZE TABLE to refresh statistics."}},{"@type":"Question","name":"Does an index always improve an EXPLAIN plan?","acceptedAnswer":{"@type":"Answer","text":"No. If your WHERE condition matches a large fraction of the table (roughly more than 20-30%), a full table scan can be cheaper than thousands of random index lookups, and the optimizer may ignore your index on purpose. Indexes also slow down writes and consume disk space. Always confirm the plan changed and the query got faster with EXPLAIN ANALYZE."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}
+.content-section table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.85rem}.content-section th,.content-section td{border:1px solid var(--border);padding:8px 10px;text-align:left;color:var(--text2);vertical-align:top}.content-section th{background:var(--surface2);color:var(--text);font-weight:600}.content-section td code{white-space:nowrap}.content-section tr:nth-child(even) td{background:var(--surface)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Read an SQL EXPLAIN Plan — A Practical Guide</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>Every database ships with a tool that tells you exactly why your query is slow, and most developers never open it. <code>EXPLAIN</code> prints the optimizer's execution plan: which tables it reads, in what order, which indexes it uses, and how many rows it expects to touch. Once you can read that output, query tuning stops being guesswork.</p>
+<p>This guide walks through the <strong>SQL EXPLAIN plan</strong> column by column, ranks the <code>type</code> values from best to worst, lists the red flags that should make you stop scrolling, and finishes with a real slow query fixed by a single index — with the before-and-after plans to prove it. The examples use MySQL/InnoDB syntax; PostgreSQL and SQL Server equivalents are covered at the end.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#what-is">1. What an EXPLAIN Plan Actually Shows</a></li>
+<li><a href="#columns">2. The Columns: id, select_type, table, type, key, rows, Extra</a></li>
+<li><a href="#type-rank">3. The type Column, Ranked Best to Worst</a></li>
+<li><a href="#red-flags">4. Red Flags: ALL, Using filesort, Using temporary</a></li>
+<li><a href="#case-study">5. Case Study: Fixing a Slow Query with One Index</a></li>
+<li><a href="#other-databases">6. EXPLAIN in PostgreSQL and SQL Server</a></li>
+<li><a href="#workflow">7. A Practical Reading Workflow</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="what-is">
+<h2>1. What an EXPLAIN Plan Actually Shows</h2>
+<p>When you run a query, the optimizer picks a strategy before touching any data: which index to use, which table to read first in a JOIN, whether to sort with an index or in memory. <code>EXPLAIN</code> shows you that strategy without running the query. Prepend it to any <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code>:</p>
+<pre><code>EXPLAIN SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042
+ORDER BY order_date DESC;</code></pre>
+<p>You get one row of output per table access in the query. A three-table JOIN produces at least three rows. Each row describes <em>how</em> the engine plans to fetch rows from one table, and the rows together tell you the join order.</p>
+<p>Two variants are worth knowing:</p>
+<ul>
+<li><code>EXPLAIN ANALYZE</code> (MySQL 8.0.18+, PostgreSQL) — actually executes the query and reports <em>actual</em> time and row counts, not just estimates. This is what you use when the estimate-based plan looks fine but the query is still slow.</li>
+<li><code>EXPLAIN FORMAT=JSON</code> (MySQL) / <code>EXPLAIN (FORMAT JSON)</code> (PostgreSQL) — verbose output that includes cost estimates. Useful when you need to compare two candidate plans precisely.</li>
+</ul>
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Plain <code>EXPLAIN</code> is safe on production — it does not execute the query. <code>EXPLAIN ANALYZE</code> <em>does</em> execute it, so be careful running it on a heavy <code>UPDATE</code> or <code>DELETE</code>; wrap the statement in a transaction and roll back if needed.
+</div>
+</section>
+
+<section class="content-section" id="columns">
+<h2>2. The Columns: id, select_type, table, type, key, rows, Extra</h2>
+<p>Here is a typical MySQL EXPLAIN output for a two-table join, slightly trimmed to fit:</p>
+<pre><code>+----+-------------+-------+------+------------------+---------+---------+-----------------+--------+-----------------------+
+| id | select_type | table | type | possible_keys    | key     | key_len | ref             | rows   | Extra                 |
++----+-------------+-------+------+------------------+---------+---------+-----------------+--------+-----------------------+
+|  1 | SIMPLE      | c     | const| PRIMARY,idx_email| PRIMARY | 4       | const           |      1 | Using index           |
+|  1 | SIMPLE      | o     | ref  | idx_customer     | idx_customer | 4  | shopdb.c.id     |    214 | Using where; Using index |
++----+-------------+-------+------+------------------+---------+---------+-----------------+--------+-----------------------+</code></pre>
+<p>The columns you actually need to read, in the order that matters:</p>
+<table>
+<tr><th>Column</th><th>What it tells you</th><th>How to read it</th></tr>
+<tr><td><code>id</code></td><td>Identifier of the SELECT within the query</td><td>Rows with the same <code>id</code> are one query block, executed top to bottom. A higher <code>id</code> means a subquery, which runs first. If you see ids 1, 2, 3, the optimizer is executing nested subqueries — often a sign to rewrite with a JOIN.</td></tr>
+<tr><td><code>select_type</code></td><td>Kind of SELECT</td><td><code>SIMPLE</code> = no subqueries. <code>PRIMARY</code> = outermost of a nested query. <code>SUBQUERY</code> / <code>DEPENDENT SUBQUERY</code> = subquery; <code>DEPENDENT</code> means it re-runs per outer row (expensive). <code>DERIVED</code> = subquery in the FROM clause, materialized into a temp table.</td></tr>
+<tr><td><code>table</code></td><td>Which table (or alias) this row describes</td><td>Read the <code>table</code> rows top to bottom to see the join order. Values like <code>&lt;derived2&gt;</code> or <code>&lt;subquery3&gt;</code> mean a materialized intermediate result, not a base table.</td></tr>
+<tr><td><code>type</code></td><td>Access method — the single most important column</td><td>Ranges from <code>system</code>/<code>const</code> (one-row lookup, great) down to <code>ALL</code> (full table scan, usually bad). Full ranking in <a href="#type-rank">section 3</a>.</td></tr>
+<tr><td><code>key</code></td><td>The index actually used</td><td><code>NULL</code> means no index was used. Compare against <code>possible_keys</code>: if a useful index is listed there but <code>key</code> is NULL or different, the optimizer chose not to use it — usually because of low selectivity or stale statistics.</td></tr>
+<tr><td><code>rows</code></td><td>Estimated rows examined at this step</td><td>An estimate from index statistics, not an exact count. Multiply across join rows to gauge total work: 500 × 2,000 examined rows is a million-row nested loop. If <code>rows</code> is near the table size, you're scanning everything.</td></tr>
+<tr><td><code>Extra</code></td><td>Everything else the engine does</td><td>The warning panel. <code>Using index</code> is good (index-only scan). <code>Using filesort</code>, <code>Using temporary</code>, and <code>Using where</code> on huge row counts are the ones to investigate — see <a href="#red-flags">section 4</a>.</td></tr>
+</table>
+<p>Two supporting columns deserve a mention: <code>possible_keys</code> (indexes the optimizer could have used — if it's NULL, no index on your WHERE columns exists at all) and <code>key_len</code> (how many bytes of the index are used — a shorter <code>key_len</code> than the full composite index means only a prefix of the index matched, classic evidence of the leftmost-prefix rule at work).</p>
+</section>
+
+<section class="content-section" id="type-rank">
+<h2>3. The type Column, Ranked Best to Worst</h2>
+<p>The <code>type</code> column describes how rows are located. Memorize this ranking — it is the fastest way to <strong>read EXPLAIN output</strong> at a glance:</p>
+<table>
+<tr><th>Rank</th><th>type</th><th>Meaning</th><th>Typical trigger</th></tr>
+<tr><td>1</td><td><code>system</code></td><td>Table has exactly one row</td><td>System tables; you'll rarely see it in app code</td></tr>
+<tr><td>2</td><td><code>const</code></td><td>At most one matching row, read once</td><td><code>WHERE id = 42</code> on a PRIMARY KEY or UNIQUE index</td></tr>
+<tr><td>3</td><td><code>eq_ref</code></td><td>One matching row per combination from previous tables</td><td>JOIN on a PRIMARY_KEY / UNIQUE NOT NULL column — the best join type</td></tr>
+<tr><td>4</td><td><code>ref</code></td><td>All rows matching a non-unique index value</td><td><code>WHERE customer_id = 1042</code> with a non-unique index on customer_id</td></tr>
+<tr><td>5</td><td><code>range</code></td><td>Index scan over a bounded range</td><td><code>BETWEEN</code>, <code>&gt;</code>, <code>&lt;</code>, <code>IN (...)</code>, <code>LIKE 'abc%'</code></td></tr>
+<tr><td>6</td><td><code>index</code></td><td>Full scan of the index tree (not the table)</td><td>Covering-index scans; better than ALL, still reads every index entry</td></tr>
+<tr><td>7</td><td><code>ALL</code></td><td>Full table scan</td><td>No usable index — the thing you're usually hunting for</td></tr>
+</table>
+<p>Two practical readings of this table:</p>
+<ul>
+<li><strong>For lookups and joins, you want <code>const</code>, <code>eq_ref</code>, or <code>ref</code>.</strong> Anything below <code>range</code> on a table with more than a few thousand rows deserves a question: why didn't the optimizer find an index?</li>
+<li><strong><code>index</code> vs <code>ALL</code>:</strong> a full index scan still touches every entry, but an index is much smaller than the table (especially a covering index), so it's cheaper. It commonly appears for <code>ORDER BY</code> satisfied by index order, or for <code>COUNT(*)</code> on InnoDB. Don't confuse "Using index" in <code>Extra</code> (good: index-only) with <code>type=index</code> (meh: whole index scanned).</li>
+</ul>
+<p>One honest caveat: <code>type=ALL</code> on a 500-row lookup table is fine — reading 500 sequential rows beats an index dive. The ranking tells you what to investigate, not what to panic about. Table size and selectivity decide.</p>
+</section>
+
+<section class="content-section" id="red-flags">
+<h2>4. Red Flags: ALL, Using filesort, Using temporary</h2>
+<h3>Red flag #1 — type = ALL on a big table</h3>
+<p>A full table scan means every row is read into the buffer pool to test your WHERE condition. If <code>rows</code> is in the hundreds of thousands and <code>possible_keys</code> is NULL, you're missing an index entirely. If <code>possible_keys</code> lists an index but <code>key</code> is NULL, the optimizer rejected it — common causes:</p>
+<ul>
+<li>The predicate matches too many rows (low selectivity), so a scan is genuinely cheaper.</li>
+<li>A function or expression wraps the column: <code>WHERE DATE(created_at) = '2026-09-11'</code> defeats the index; <code>WHERE created_at &gt;= '2026-09-11' AND created_at &lt; '2026-09-12'</code> uses it.</li>
+<li>Implicit type conversion: <code>WHERE phone = 13800000000</code> against a VARCHAR column forces a scan.</li>
+<li>Stale statistics — run <code>ANALYZE TABLE orders;</code> and re-check.</li>
+</ul>
+<h3>Red flag #2 — Using filesort</h3>
+<p><code>Using filesort</code> in <code>Extra</code> means the ORDER BY couldn't be served by index order, so MySQL sorts the matched rows itself. Sorting 20 rows is nothing; sorting 200,000 rows before throwing away all but 10 is the classic slow pagination query. The fix is a composite index that matches WHERE first, then ORDER BY:</p>
+<pre><code>-- Query: filter by customer, sort by date, take latest 10
+SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042
+ORDER BY order_date DESC
+LIMIT 10;
+
+-- Index that removes both the scan AND the filesort:
+ALTER TABLE orders ADD INDEX idx_cust_date (customer_id, order_date);</code></pre>
+<p>With <code>(customer_id, order_date)</code>, MySQL jumps to customer 1042's entries via the index, walks them backwards (the index is already sorted by date within that customer), and stops after 10 rows. <code>Extra</code> should then show <code>Using where</code> with no filesort.</p>
+<h3>Red flag #3 — Using temporary</h3>
+<p><code>Using temporary</code> means MySQL builds an internal temp table — typical for <code>GROUP BY</code> on an unindexed column, <code>DISTINCT</code> over a join, or <code>UNION</code>. Temp tables start in memory but spill to disk past <code>tmp_table_size</code>/<code>max_heap_table_size</code>, and disk temp tables are brutally slow. Mitigations:</p>
+<ul>
+<li>Make the GROUP BY column(s) an index prefix so grouping uses index order instead of a temp table.</li>
+<li>Reduce the input: filter rows earlier, avoid <code>SELECT *</code> so the temp rows stay narrow.</li>
+<li>Accept it for small aggregates — a temp table over 300 rows costs nothing.</li>
+</ul>
+<p>Also watch for <code>DEPENDENT SUBQUERY</code> in <code>select_type</code>: the subquery re-executes for every outer row. A 10,000-row outer table turns a cheap subquery into 10,000 executions. Rewrite as a JOIN or a materialized derived table.</p>
+</section>
+
+<div class="cta-box">
+<h3>Paste Your Query, See the Plan Instantly</h3>
+<p>Our free EXPLAIN tool parses and visualizes your query's execution plan in the browser — no database connection required. Perfect for reading plans before you tune.</p>
+<a href="/explain">Open SQL EXPLAIN Tool &rarr;</a>
+</div>
+
+<section class="content-section" id="case-study">
+<h2>5. Case Study: Fixing a Slow Query with One Index</h2>
+<p>Here's a real shape of problem: an e-commerce order search that takes 4.2 seconds on a 1.2-million-row table. The schema (trimmed):</p>
+<pre><code>CREATE TABLE orders (
+  id           BIGINT PRIMARY KEY AUTO_INCREMENT,
+  customer_id  INT NOT NULL,
+  status       VARCHAR(20) NOT NULL,
+  order_date   DATETIME NOT NULL,
+  total        DECIMAL(10,2) NOT NULL,
+  KEY idx_status (status)
+) ENGINE=InnoDB;
+
+-- The slow query:
+SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042 AND status = 'shipped'
+ORDER BY order_date DESC
+LIMIT 10;</code></pre>
+<h3>Before — the EXPLAIN plan</h3>
+<pre><code>EXPLAIN SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042 AND status = 'shipped'
+ORDER BY order_date DESC LIMIT 10;
+
++----+-------------+--------+------+---------------+------------+---------+-------+---------+--------------------------------------------------------------+
+| id | select_type | table  | type | possible_keys | key        | key_len | ref   | rows    | Extra                                                        |
++----+-------------+--------+------+---------------+------------+---------+-------+---------+--------------------------------------------------------------+
+|  1 | SIMPLE      | orders | ALL  | idx_status    | NULL       | NULL    | NULL  | 1198432 | Using where; Using filesort                                  |
++----+-------------+--------+------+---------------+------------+---------+-------+---------+--------------------------------------------------------------+</code></pre>
+<p>Reading this plan like a checklist:</p>
+<ul>
+<li><code>type = ALL</code> with <code>rows ≈ 1.2M</code>: full table scan. The engine reads every row.</li>
+<li><code>possible_keys = idx_status</code> but <code>key = NULL</code>: the only candidate index was on <code>status</code>, and since 'shipped' matches ~40% of the table, the optimizer correctly decided the index wasn't worth it.</li>
+<li>No index on <code>customer_id</code> at all — the most selective column in the WHERE clause.</li>
+<li><code>Using filesort</code>: after filtering, it sorts all matching rows in memory just to keep the newest 10.</li>
+</ul>
+<h3>The fix — one composite index</h3>
+<pre><code>ALTER TABLE orders
+  ADD INDEX idx_cust_status_date (customer_id, status, order_date);</code></pre>
+<p>Column order matters: equality predicates first (<code>customer_id</code>, <code>status</code>), then the range/sort column (<code>order_date</code>). This single index serves the filter <em>and</em> the ORDER BY.</p>
+<h3>After — the EXPLAIN plan</h3>
+<pre><code>+----+-------------+--------+-------+----------------------+----------------------+---------+------+------+--------------------------------------------+
+| id | select_type | table  | type  | possible_keys        | key                  | key_len | ref  | rows | Extra                                      |
++----+-------------+--------+-------+----------------------+----------------------+---------+------+------+--------------------------------------------+
+|  1 | SIMPLE      | orders | ref   | idx_cust_status_date | idx_cust_status_date | 86      | const,const | 19 | Using where; Using index               |
++----+-------------+--------+-------+----------------------+----------------------+---------+------+------+--------------------------------------------+</code></pre>
+<p>What changed:</p>
+<table>
+<tr><th>Signal</th><th>Before</th><th>After</th></tr>
+<tr><td>type</td><td>ALL (full scan)</td><td>ref (index lookup)</td></tr>
+<tr><td>rows examined</td><td>1,198,432</td><td>19</td></tr>
+<tr><td>filesort</td><td>Using filesort</td><td>Gone — index supplies date order</td></tr>
+<tr><td>Table access</td><td>Every column of every row</td><td>Using index — covering, table never touched</td></tr>
+<tr><td>Wall time</td><td>4.2 s</td><td>3 ms</td></tr>
+</table>
+<p>Because the query only selects <code>id</code>, <code>order_date</code>, and <code>total</code> — and <code>id</code> is implicitly in every InnoDB secondary index — extending the index to <code>(customer_id, status, order_date, total)</code> would make it fully covering and print <code>Using index</code> without touching the clustered index at all. In this plan, <code>Using index</code> already appears because the needed columns fit the index plus primary key. 1.2M rows examined dropped to 19: that's what reading EXPLAIN output is for.</p>
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Confirm with <code>EXPLAIN ANALYZE</code> — it shows <code>actual time</code> and <code>actual rows</code> per step. If actual rows wildly exceed the estimate, run <code>ANALYZE TABLE orders;</code> to refresh optimizer statistics before drawing conclusions.
+</div>
+</section>
+
+<section class="content-section" id="other-databases">
+<h2>6. EXPLAIN in PostgreSQL and SQL Server</h2>
+<p>The MySQL columns above are InnoDB-specific, but the concepts port directly.</p>
+<h3>PostgreSQL</h3>
+<pre><code>EXPLAIN (ANALYZE, BUFFERS)
+SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042 AND status = 'shipped'
+ORDER BY order_date DESC
+LIMIT 10;</code></pre>
+<p>PostgreSQL prints a tree, not a table. Key node types to recognize: <code>Seq Scan</code> (= MySQL's ALL), <code>Index Scan</code>, <code>Index Only Scan</code> (= covering), <code>Bitmap Heap Scan</code> (index used as a row filter — good for medium selectivity), <code>Sort</code> with a large row count (= filesort), and <code>Hash Join</code> / <code>Nested Loop</code>. With <code>ANALYZE</code>, compare <code>estimated rows</code> vs <code>actual rows</code> at each node — a 100× mismatch is where plans go wrong, usually fixed with better statistics targets or a rewritten predicate.</p>
+<h3>SQL Server</h3>
+<pre><code>SET STATISTICS XML ON;
+SELECT id, order_date, total
+FROM orders
+WHERE customer_id = 1042 AND status = 'shipped'
+ORDER BY order_date DESC;
+SET STATISTICS XML OFF;</code></pre>
+<p>The XML plan (or the graphical plan in SSMS) flags <code>Table Scan</code> / <code>Clustered Index Scan</code> (= ALL), <code>Sort</code> operators (= filesort), and <code>Hash Match</code> with spools (= temporary). SSMS even labels "missing index" suggestions directly on the plan — treat them as candidates, not commands; verify each with the same before/after method as above.</p>
+</section>
+
+<section class="content-section" id="workflow">
+<h2>7. A Practical Reading Workflow</h2>
+<p>When a query is slow, work through the plan in this order:</p>
+<ol>
+<li><strong>Scan the <code>type</code> column first.</strong> Any <code>ALL</code> or <code>index</code> on a large table? That's your suspect.</li>
+<li><strong>Check <code>key</code> against <code>possible_keys</code>.</strong> NULL with candidates listed → optimizer rejected the index (selectivity, functions on columns, type mismatch). NULL with no candidates → create the index.</li>
+<li><strong>Look at <code>rows</code>.</strong> Estimates near table size confirm a scan; huge products across join rows confirm a nested-loop blowup.</li>
+<li><strong>Read <code>Extra</code> last, but seriously.</strong> <code>Using filesort</code> and <code>Using temporary</code> on large inputs are where the remaining milliseconds hide after indexing.</li>
+<li><strong>Verify with <code>EXPLAIN ANALYZE</code>.</strong> Estimates can lie; actuals can't. If actual rows deviate 10× from estimates, refresh statistics before tuning further.</li>
+<li><strong>Change one thing at a time</strong> — add the index, re-run EXPLAIN, confirm <code>type</code> improved and <code>rows</code> dropped. Then move to the next table in the plan.</li>
+</ol>
+<p>Reading plans is a habit, not a fire drill. Run EXPLAIN on every query that touches a table with more than ~100k rows <em>before</em> it ships, not after it pages you at 3 a.m. And when you paste the offending monster query into EXPLAIN, paste it through a <a href="/">SQL formatter</a> first — a formatted query makes the plan's table order and predicates far easier to line up.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — Reading SQL EXPLAIN Plans</h2>
+<div class="faq-item"><h3>What does type=ALL mean in an EXPLAIN plan?</h3><p>It means MySQL performs a full table scan, reading every row to evaluate the WHERE condition. On small tables this is fine and can even beat an index lookup. On large tables it's the most common slow-query cause and usually points to a missing index on a WHERE or JOIN column.</p></div>
+<div class="faq-item"><h3>What is the difference between EXPLAIN and EXPLAIN ANALYZE?</h3><p>EXPLAIN shows the planned strategy from optimizer statistics without executing the query. EXPLAIN ANALYZE (MySQL 8.0.18+, PostgreSQL) runs the query and reports real timings and actual row counts per step. Use ANALYZE whenever estimated and actual row counts might disagree.</p></div>
+<div class="faq-item"><h3>Why is Using filesort bad?</h3><p>It means ORDER BY couldn't use index order, so MySQL sorts rows itself — in memory, or on disk past a threshold. Sorting small results is cheap; sorting hundreds of thousands of rows to return the top 10 is not. A composite index matching your WHERE columns followed by the ORDER BY column usually eliminates it.</p></div>
+<div class="faq-item"><h3>What does the rows column tell me?</h3><p>It's the optimizer's estimate of rows <em>examined</em> at that step, not rows returned. Multiply estimates across join steps to gauge total work. Values near table size mean you're scanning everything; a large gap between estimate and actual means stale statistics — run ANALYZE TABLE.</p></div>
+<div class="faq-item"><h3>Does an index always improve an EXPLAIN plan?</h3><p>No. If a predicate matches a large share of the table (roughly 20–30% or more), sequential scanning can beat thousands of random index lookups, and the optimizer will ignore your index on purpose. Indexes also add write overhead and disk usage. Always verify with EXPLAIN ANALYZE that the plan changed and the query actually got faster.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools</h2>
+<div class="related-grid">
+<a href="/explain">SQL EXPLAIN Tool</a>
+<a href="/sql-explain-visualizer-online">SQL Explain Visualizer Online</a>
+<a href="/free-online-sql-query-analyzer">Free Online SQL Query Analyzer</a>
+<a href="/stats">SQL Query Statistics</a>
+<a href="/validate">SQL Validator</a>
+<a href="/">SQL Formatter Online</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

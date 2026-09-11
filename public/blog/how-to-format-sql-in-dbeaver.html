@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBeaver Format SQL — How to Format SQL in DBeaver | SQLFormat.io</title>
+  <meta name="description" content="Learn how to format SQL in DBeaver: use the built-in formatter (Ctrl+Shift+F), customize formatting profiles for indentation, keyword case and line breaks, share profiles with your team, and fix common problems.">
+  <meta name="keywords" content="dbeaver format sql, dbeaver sql formatter, format sql in dbeaver, dbeaver code formatting, dbeaver sql editor">
+  <meta property="og:title" content="DBeaver Format SQL — How to Format SQL in DBeaver">
+  <meta property="og:description" content="Step-by-step guide to formatting SQL in DBeaver. Configure the built-in formatter, tune indentation and keyword case, export profiles for your team, and fix CJK/comment and large-file issues.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/how-to-format-sql-in-dbeaver">
+  <link rel="canonical" href="https://sqlformat.io/blog/how-to-format-sql-in-dbeaver">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"DBeaver Format SQL — How to Format SQL in DBeaver","description":"Complete guide to formatting SQL in DBeaver. Configure the built-in formatter shortcut, build custom formatting profiles, export them for your team, wire up external formatters, and fix common issues.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/how-to-format-sql-in-dbeaver","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Format SQL in DBeaver","item":"https://sqlformat.io/blog/how-to-format-sql-in-dbeaver"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I format SQL in DBeaver?","acceptedAnswer":{"@type":"Answer","text":"Open the SQL script and press Ctrl+Shift+F (Cmd+Shift+F on macOS) to format the whole editor, or select a block and press the same shortcut to format only the selection. You can also use the menu SQL Editor > Format > Format SQL or the editor right-click context menu."}},{"@type":"Question","name":"Does DBeaver have a built-in SQL formatter?","acceptedAnswer":{"@type":"Answer","text":"Yes. Since version 6 DBeaver ships with its own SQL formatter (replacing the old Eclipse formatter). It handles indentation, keyword casing, line breaks, comma placement and alignment, and is configured under Window > Preferences > Editors > SQL Editor > Formatting."}},{"@type":"Question","name":"How do I change keyword case or indentation in DBeaver?","acceptedAnswer":{"@type":"Answer","text":"Go to Window > Preferences > Editors > SQL Editor > Formatting. Select a formatting profile, then set the tab and indent size, choose spaces or tabs, and set the keyword case to Upper, Lower or Keep as is. Line-break, comma and alignment rules live on the same page."}},{"@type":"Question","name":"Can I share DBeaver formatting settings with my team?","acceptedAnswer":{"@type":"Answer","text":"Yes. Export them with File > Export > General > Preferences to produce an .epf file, then have teammates import it with File > Import > General > Preferences. Alternatively copy the org.jkiss.dbeaver.ui.editors.sql.prefs file from the workspace .settings folder into a scripted setup."}},{"@type":"Question","name":"Why does DBeaver's formatter misalign Chinese characters or comments?","acceptedAnswer":{"@type":"Answer","text":"DBeaver's formatter counts characters, not display width, so CJK (full-width) text does not line up and comments can shift position. Disable the alignment options, keep line comments on their own lines, format a selection instead of the whole file, or use an external formatter such as SQLFluff, which handles Unicode width better."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--text)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit}.content-section blockquote{background:var(--surface);border-left:3px solid var(--accent);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0;color:var(--text2);font-size:.9rem}.content-section blockquote strong{color:var(--text)}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px;cursor:pointer}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}.content-section table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.85rem}.content-section th,.content-section td{border:1px solid var(--border);padding:8px 10px;text-align:left;color:var(--text2);vertical-align:top}.content-section th{background:var(--surface);color:var(--text);font-weight:600}</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Format SQL in DBeaver</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>DBeaver is a free, cross-platform database client, and unlike most of its competition it actually ships with a real <strong>SQL formatter</strong>. If your query scripts come out of a legacy tool looking like one long line, you do not need a plugin or a paid add-in — the <strong>DBeaver format SQL</strong> feature is already there, one shortcut away.</p>
+<p>This guide covers the built-in formatter and its shortcut, how to build and tune a formatting profile (indentation, keyword case, comma and line-break rules), how to export that profile so your whole team formats SQL the same way, how to wire DBeaver into an external formatter toolchain, and what to do when the formatter mangles Chinese characters, comments, or chokes on very large files. If you just need to clean up one query right now, paste it into our <a href="/">free online SQL formatter</a> instead.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#builtin">Format SQL in DBeaver with Ctrl+Shift+F</a></li>
+<li><a href="#configure">Configure the Formatter: Profiles, Indentation, Keyword Case</a></li>
+<li><a href="#share">Export &amp; Import Formatting Profiles for Your Team</a></li>
+<li><a href="#external">DBeaver + External Toolchain: Format on Save</a></li>
+<li><a href="#compare">DBeaver vs DataGrip vs SSMS vs VS Code</a></li>
+<li><a href="#problems">Common DBeaver Formatting Problems and Fixes</a></li>
+<li><a href="#faq">FAQ — DBeaver SQL Formatter</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="builtin">
+<h2>1. Format SQL in DBeaver with Ctrl+Shift+F</h2>
+<p>DBeaver bundles its own SQL formatter. Since version 6 it replaced the old Eclipse-based formatter, and it now understands SQL dialects well enough to keep CTEs, window functions and dialect-specific syntax intact.</p>
+<p>The default shortcut is <strong>Ctrl+Shift+F</strong> (Windows/Linux) or <strong>Cmd+Shift+F</strong> (macOS). There are three ways to trigger it:</p>
+<ul>
+<li><strong>Keyboard</strong> — press <code>Ctrl+Shift+F</code> with the SQL editor focused. With <em>no</em> selection, the whole script is formatted. With text selected, only that block is formatted.</li>
+<li><strong>Menu</strong> — <strong>SQL Editor &gt; Format &gt; Format SQL</strong>.</li>
+<li><strong>Context menu</strong> — right-click inside the editor and choose <strong>Format &gt; Format SQL</strong>.</li>
+</ul>
+<p>Here is a query that was pasted in from a log file. Everything is on one line, keywords are lowercase, and there is no spacing around operators:</p>
+<pre><code>select u.id,u.email,count(o.id) as orders from users u left join orders o on o.user_id=u.id where u.created_at&gt;='2026-01-01' and u.status='active' group by u.id,u.email having count(o.id)&gt;3 order by orders desc;</code></pre>
+<p>After pressing <code>Ctrl+Shift+F</code> with a default profile (keywords upper, 4-space indent), DBeaver reflows it into something a human can read and diff:</p>
+<pre><code>SELECT
+    u.id,
+    u.email,
+    COUNT(o.id) AS orders
+FROM
+    users u
+    LEFT JOIN orders o ON o.user_id = u.id
+WHERE
+    u.created_at &gt;= '2026-01-01'
+    AND u.status = 'active'
+GROUP BY
+    u.id,
+    u.email
+HAVING
+    COUNT(o.id) &gt; 3
+ORDER BY
+    orders DESC;</code></pre>
+<p>Every change the formatter makes is a normal editor edit, so <strong>Ctrl+Z</strong> undoes it in one step. If a profile reformats a file in a way you dislike, back out and edit the profile instead of the SQL.</p>
+<blockquote><strong>Tip:</strong> Formatting only the selection is the safe default while you are dialing in a profile. That way an imperfect rule set cannot rewrite a 2,000-line migration script faster than you can undo it.</blockquote>
+</section>
+
+<section class="content-section" id="configure">
+<h2>2. Configure the Formatter: Profiles, Indentation, Keyword Case</h2>
+<p>The formatter is configured under <strong>Window &gt; Preferences &gt; Editors &gt; SQL Editor &gt; Formatting</strong> (on macOS the same page lives under <strong>DBeaver &gt; Settings &gt; Editors &gt; SQL Editor &gt; Formatting</strong>). In older builds the page is labelled <strong>Code Formatting</strong>; the options are the same.</p>
+
+<h3>Formatting profiles</h3>
+<p>At the top of the page there is a <strong>formatting profile</strong> selector. DBeaver ships a small set of presets you can switch between, and you can derive your own:</p>
+<ol>
+<li>Open the Formatting page and pick the preset closest to your target style.</li>
+<li>Tune the options below it (indentation, keyword case, line breaks, alignment).</li>
+<li>Use the profile controls to save the tweaked set under a new name, e.g. <em>team-postgres</em>.</li>
+<li>Press <strong>Apply and Close</strong>, then re-format a script to confirm the result.</li>
+</ol>
+
+<h3>Indentation and whitespace</h3>
+<ul>
+<li><strong>Tab size / indent size</strong> — the width of one level. Two spaces is common for PostgreSQL and MySQL shops, four for enterprise T-SQL.</li>
+<li><strong>Use tab characters vs spaces</strong> — pick spaces unless your repo already standardises on tabs. Mixed tab/space output is the number-one cause of "it looks wrong in Git".</li>
+<li><strong>Trim trailing whitespace</strong> and <strong>max line length</strong> — the line-length limit is what makes the formatter wrap long boolean expressions instead of leaving 300-character lines.</li>
+</ul>
+
+<h3>Keyword and identifier case</h3>
+<p>The formatter can change the case of <strong>keywords</strong>, <strong>data types</strong>, <strong>functions</strong> and <strong>identifiers</strong> independently. Each has <em>Upper</em>, <em>Lower</em> and <em>Keep as is</em> options:</p>
+<ul>
+<li><strong>Keywords: Upper</strong> — the most common choice; <code>select</code> becomes <code>SELECT</code>.</li>
+<li><strong>Functions: Keep as is</strong> — avoids breaking case-sensitive identifiers and quoted names.</li>
+<li><strong>Identifiers: Keep as is</strong> — critical if your schema uses camelCase or quoted identifiers that PostgreSQL and Oracle treat as case-sensitive.</li>
+</ul>
+<p>A conservative starting point: keywords upper, everything else keep-as-is.</p>
+
+<h3>Line breaks, commas and alignment</h3>
+<p>These options decide how clauses are split and how lists are laid out:</p>
+<ul>
+<li><strong>Line break before/after</strong> major clauses (<code>FROM</code>, <code>WHERE</code>, <code>GROUP BY</code>, <code>AND</code>/<code>OR</code>). Enabling breaks before <code>AND</code>/<code>OR</code> turns an unreadable boolean wall into an indented list.</li>
+<li><strong>Comma position</strong> — leading (comma-first) or trailing (comma-last). Pick one and enforce it; mixing the two is what makes diffs noisy.</li>
+<li><strong>Alignment</strong> — align column definitions, assignments or aliases into columns. This is the option that produces the cleanest output and also the one that interacts badly with CJK text (see section 6).</li>
+</ul>
+<p>Apply a profile, then format a representative query to see the result. A dialect with heavy boilerplate — say PL/SQL with nested blocks — is the best template to test on, because it exposes bad indentation rules immediately.</p>
+</section>
+
+<section class="content-section" id="share">
+<h2>3. Export &amp; Import Formatting Profiles for Your Team</h2>
+<p>A DBeaver formatting profile is not a standalone file you can commit — it lives inside the workspace preferences. That said, there are two practical ways to get identical formatting across a team.</p>
+
+<h3>Option A: Eclipse preference export (.epf)</h3>
+<p>DBeaver is built on the Eclipse platform, so it inherits Eclipse's preference export:</p>
+<ol>
+<li><strong>File &gt; Export &gt; General &gt; Preferences</strong>.</li>
+<li>In the export dialog, restrict the exported preferences to the SQL editor keys (a filter keyword such as <code>dbeaver</code> narrows it down) so you do not ship unrelated UI settings.</li>
+<li>Choose a destination and finish. You get an <code>.epf</code> file.</li>
+<li>Commit that <code>.epf</code> to your repo, or attach it to your onboarding notes.</li>
+</ol>
+<p>Teammates import it with <strong>File &gt; Import &gt; General &gt; Preferences</strong>, select the file, and restart DBeaver. Their formatter now behaves exactly like yours.</p>
+
+<h3>Option B: copy the workspace preference file</h3>
+<p>For scripted or headless setup, the profile lives in a plain text preference file inside the DBeaver workspace. The locations to know:</p>
+<pre><code># Linux
+~/.local/share/DBeaverData/workspace6/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.jkiss.dbeaver.ui.editors.sql.prefs
+
+# Windows
+%APPDATA%\DBeaverData\workspace6\.metadata\.plugins\org.eclipse.core.runtime\.settings\org.jkiss.dbeaver.ui.editors.sql.prefs
+
+# macOS
+~/Library/DBeaverData/workspace6/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.jkiss.dbeaver.ui.editors.sql.prefs</code></pre>
+<p>Copy that file into a new install before DBeaver first starts, and the formatter settings — along with the rest of the SQL editor preferences — are already in place. This is the approach to use when you provision developer machines from a script rather than asking each person to click through the import dialog.</p>
+<blockquote><strong>Note:</strong> this file carries other SQL editor settings too, so treat it as "editor config". To share only the formatting rules, use the <code>.epf</code> export in Option A.</blockquote>
+</section>
+
+<section class="content-section" id="external">
+<h2>4. DBeaver + External Toolchain: Format on Save</h2>
+<p>DBeaver has no native "format on save" checkbox. If you want SQL formatted automatically rather than by pressing a shortcut, you have two routes: let DBeaver call an external formatter, or format outside DBeaver with a hook.</p>
+
+<h3>Route 1: the built-in external formatter hook</h3>
+<p>On the <strong>Formatting</strong> preference page, the formatter selector can be switched from <strong>DBeaver</strong> to <strong>External formatter</strong>. You then supply the command line for a tool that reads SQL from standard input and writes the formatted result to standard output. Any CLI formatter works — for example the popular Node <code>sql-formatter</code>:</p>
+<pre><code>sql-formatter --language postgresql</code></pre>
+<p>Or <code>pg_format</code> for PostgreSQL, or <code>sqlfluff format --dialect postgres</code>. The advantage is that the same binary can run in your editor, in a pre-commit hook and in CI, so the output is byte-for-byte identical everywhere.</p>
+
+<h3>Route 2: format-on-commit with a hook</h3>
+<p>The more robust pattern is to leave DBeaver's own formatter on for interactive work and enforce the canonical style at commit time. A pre-commit hook using SQLFluff does exactly that — DBeaver reloads the modified file from disk, so the SQL you committed is the SQL you see:</p>
+<pre><code># .pre-commit-config.yaml
+- repo: https://github.com/sqlfluff/sqlfluff
+  rev: 3.0.0
+  hooks:
+    - id: sqlfluff-fix
+      args: ["--dialect", "postgres"]</code></pre>
+<p>SQLFluff is deliberately stricter than DBeaver's formatter: it is rule-based, dialect-aware and configurable through a <code>.sqlfluff</code> file that you commit alongside the SQL. That makes it the natural way to keep a large repository consistent when several people format on different machines, or with different DBeaver profiles.</p>
+
+<div class="cta-box">
+<h3>Format SQL Online — No Install Needed</h3>
+<p>Working outside DBeaver, reviewing a query in a browser, or on a machine without your setup? Paste the SQL, pick the dialect, and format it instantly. Everything runs in your browser.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+</section>
+
+<section class="content-section" id="compare">
+<h2>5. DBeaver vs DataGrip vs SSMS vs VS Code</h2>
+<p>The four tools people most often compare for SQL formatting behave quite differently. The table below is the honest summary — DBeaver is the only free option with a genuinely configurable built-in formatter and a documented external-formatter hook.</p>
+<table>
+<thead>
+<tr><th>Capability</th><th>DBeaver</th><th>DataGrip</th><th>SSMS</th><th>VS Code</th></tr>
+</thead>
+<tbody>
+<tr><td>Built-in formatter</td><td>Yes, full engine</td><td>Yes, full engine</td><td>Basic (keywords + indent)</td><td>No — extension required</td></tr>
+<tr><td>Default shortcut</td><td><code>Ctrl+Shift+F</code></td><td><code>Ctrl+Alt+L</code></td><td><code>Ctrl+K, Ctrl+D</code></td><td><code>Shift+Alt+F</code></td></tr>
+<tr><td>Named formatting profiles</td><td>Yes (built-in profiles)</td><td>Yes (code styles, XML export)</td><td>Very limited</td><td>Through the extension's config</td></tr>
+<tr><td>Keyword-case control</td><td>Yes, per token type</td><td>Yes</td><td>Uppercase only</td><td>Yes, per extension</td></tr>
+<tr><td>Comma / line-break strategy</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td>External formatter hook</td><td>Yes (stdin/stdout command)</td><td>Yes (file watchers)</td><td>Only via add-ins</td><td>Yes, via extensions</td></tr>
+<tr><td>Native format on save</td><td>No</td><td>No (plugin)</td><td>No</td><td>Yes</td></tr>
+<tr><td>Dialect coverage</td><td>Very broad (drivers + formatter)</td><td>Broad</td><td>T-SQL only</td><td>Depends on extension</td></tr>
+<tr><td>Price</td><td>Free (Community)</td><td>Paid subscription</td><td>Free</td><td>Free</td></tr>
+</tbody>
+</table>
+<p>Short version: <strong>DBeaver</strong> for a free, capable formatter inside a database client; <strong>DataGrip</strong> if you already pay for JetBrains tools; <strong>SSMS</strong> only if a basic reformat is enough. For format-on-save in an editor, see our <a href="/blog/vscode-sql-formatter-guide">VS Code SQL formatter guide</a> and <a href="/blog/how-to-format-sql-in-ssms">formatting SQL in SSMS</a>.</p>
+</section>
+
+<section class="content-section" id="problems">
+<h2>6. Common DBeaver Formatting Problems and Fixes</h2>
+
+<h3>Chinese (CJK) characters and comments shift position</h3>
+<p>This is the most common complaint from developers who write SQL with Chinese comments or string literals. DBeaver's formatter measures a line in <em>characters</em>, not in display columns, and a full-width CJK character occupies roughly two monospace cells. When alignment is enabled, the formatter pads a comment or a column based on character count, so the visible result is a ragged edge — comments jump left or right, and aligned <code>AS</code> aliases no longer line up.</p>
+<p>What actually helps, in order of effort:</p>
+<ul>
+<li><strong>Turn off the alignment options</strong> on the Formatting page. Without alignment the formatter never pads, so nothing can drift.</li>
+<li><strong>Keep line comments on their own line.</strong> A trailing <code>-- 注释</code> on a long expression is the case that moves most often; moving it above the statement removes the problem.</li>
+<li><strong>Format a selection, not the whole file</strong>, when the script is mostly comments.</li>
+<li><strong>Use an external formatter.</strong> SQLFluff and most CLI formatters compute width from Unicode east-asian width properties, so CJK text stays aligned where DBeaver's does not.</li>
+</ul>
+
+<h3>The editor freezes on large files</h3>
+<p>Formatting a multi-thousand-statement dump — the kind of file you get from a full <code>pg_dump</code> — can hang the DBeaver UI for tens of seconds or exhaust the heap entirely. The formatter parses the whole script before it emits output, and on a huge file that is simply a lot of work.</p>
+<ul>
+<li><strong>Raise the heap.</strong> Add <code>-Xmx2g</code> (or more) to the VM arguments in <code>dbeaver.ini</code>. The default allocation is modest and is the usual cause of an <code>OutOfMemoryError</code> during formatting.</li>
+<li><strong>Format in chunks.</strong> Select the statement you are working on rather than running the shortcut on the entire script.</li>
+<li><strong>Do not keep the whole dump open.</strong> Split a generated dump into individual files and format just the parts you need to read.</li>
+<li><strong>Fall back to a CLI or online tool</strong> for the truly huge ones — for example our guide on <a href="/format-large-sql-files-online">formatting large SQL files online</a> covers the chunked approach that avoids loading everything into one editor at once.</li>
+</ul>
+
+<h3>Quoted identifiers get re-cased</h3>
+<p>If your schema uses quoted mixed-case identifiers (<code>"UserAccount"</code>) and the formatter rewrites them to <code>"useraccount"</code>, the query silently stops matching the table. Set <strong>Identifiers</strong> and <strong>Functions</strong> to <em>Keep as is</em> in the profile. Keyword casing is safe; identifier casing is not.</p>
+
+<h3>The formatted result is not what you wanted</h3>
+<p>Press <strong>Ctrl+Z</strong> immediately — the format is a single editor operation and undoes cleanly. Then change the profile rather than hand-fixing the SQL, because the next format will undo your hand edits anyway.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>7. FAQ — DBeaver SQL Formatter</h2>
+<div class="faq-item"><h3>How do I format SQL in DBeaver?</h3><p>Open the editor and press <code>Ctrl+Shift+F</code> (<code>Cmd+Shift+F</code> on macOS) to format the whole script, or select a block and press the same shortcut to format just the selection. The menu equivalent is <strong>SQL Editor &gt; Format &gt; Format SQL</strong>, also available from the editor right-click menu.</p></div>
+<div class="faq-item"><h3>Does DBeaver have a built-in SQL formatter?</h3><p>Yes. Since version 6 it ships its own formatter, which replaced the old Eclipse one. It handles indentation, keyword case, line breaks, comma placement and alignment, and is configured under <strong>Window &gt; Preferences &gt; Editors &gt; SQL Editor &gt; Formatting</strong>.</p></div>
+<div class="faq-item"><h3>How do I change keyword case or indentation in DBeaver?</h3><p>Open the Formatting preference page, select a formatting profile, then set the tab and indent size, choose spaces or tabs, and set the keyword case to Upper, Lower or Keep as is. Line-break, comma and alignment rules are on the same page. Press <strong>Apply and Close</strong> and re-format a query to check the result.</p></div>
+<div class="faq-item"><h3>Can I share DBeaver formatting settings with my team?</h3><p>Yes, two ways. Export with <strong>File &gt; Export &gt; General &gt; Preferences</strong> to produce an <code>.epf</code> file that teammates import via <strong>File &gt; Import &gt; General &gt; Preferences</strong>, or set up new machines by copying the <code>org.jkiss.dbeaver.ui.editors.sql.prefs</code> file in the workspace <code>.settings</code> folder.</p></div>
+<div class="faq-item"><h3>Why does formatting misalign Chinese characters or comments?</h3><p>The formatter counts characters rather than display width, and full-width CJK characters take about two cells, so aligned text drifts. Disable the alignment options, keep line comments on their own lines, format a selection instead of the whole file, or switch to an external formatter such as SQLFluff that handles Unicode width correctly.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/blog/vscode-sql-formatter-guide">VSCode SQL Formatter Guide</a>
+<a href="/blog/how-to-format-sql-in-ssms">Format SQL in SSMS</a>
+<a href="/pretty-print">SQL Pretty Print</a>
+<a href="/format-large-sql-files-online">Format Large SQL Files</a>
+<a href="/minify">SQL Minifier</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

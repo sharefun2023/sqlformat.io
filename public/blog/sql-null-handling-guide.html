@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL NULL Handling — Common Pitfalls and Fixes | SQLFormat.io</title>
+  <meta name="description" content="How NULL really behaves in SQL: three-valued logic, why = NULL never matches, the NOT IN trap, COUNT(col) vs COUNT(*), COALESCE across MySQL, PostgreSQL, Oracle and SQL Server, NULL sorting, and NOT NULL defaults.">
+  <meta name="keywords" content="sql null handling, sql coalesce, sql null comparison, sql not in null, isnull vs coalesce">
+  <meta property="og:title" content="SQL NULL Handling — Common Pitfalls and Fixes">
+  <meta property="og:description" content="Three-valued logic, the NOT IN trap, COUNT(col) vs COUNT(*), COALESCE dialect differences, and how NULLs sort — with runnable fixes for each.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-null-handling-guide">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-null-handling-guide">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL NULL Handling — Common Pitfalls and Fixes","description":"A practical guide to NULL in SQL: what NULL means, three-valued logic truth tables, why = NULL never matches, the NOT IN NULL trap, aggregate behavior with COUNT and AVG, COALESCE/IFNULL/NVL/ISNULL dialect differences, NULLIF, NULL ordering, and NOT NULL vs DEFAULT schema design.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/sql-null-handling-guide","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL NULL Handling","item":"https://sqlformat.io/blog/sql-null-handling-guide"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does WHERE col = NULL return no rows?","acceptedAnswer":{"@type":"Answer","text":"Because NULL is not a value you can compare with = . The expression col = NULL evaluates to UNKNOWN for every row, including rows where col is actually NULL, and WHERE only keeps rows whose predicate is TRUE. You must use IS NULL, or IS NOT NULL, or a null-safe operator such as IS DISTINCT FROM in PostgreSQL or <=> in MySQL."}},{"@type":"Question","name":"What is the difference between COUNT(*) and COUNT(column)?","acceptedAnswer":{"@type":"Answer","text":"COUNT(*) counts every row in the group, including rows where columns are NULL. COUNT(column) counts only rows where that specific column is not NULL. On a table where 400 of 1000 rows have a NULL email, COUNT(*) returns 1000 and COUNT(email) returns 600."}},{"@type":"Question","name":"Is COALESCE the same as IFNULL, NVL, and ISNULL?","acceptedAnswer":{"@type":"Answer","text":"Functionally they all return the first non-NULL argument, but they are not portable. COALESCE is SQL standard and works everywhere, and accepts any number of arguments. IFNULL is MySQL, MariaDB and SQLite with two arguments. NVL is Oracle with two arguments. ISNULL is SQL Server with two arguments, but in MySQL ISNULL(x) is a one-argument boolean test that returns 1 or 0, not a substitution function."}},{"@type":"Question","name":"How do I fix a NOT IN query that returns no rows?","acceptedAnswer":{"@type":"Answer","text":"If the subquery returns any NULL, NOT IN evaluates to UNKNOWN for every row and the result set is empty. Either add WHERE column IS NOT NULL inside the subquery, or rewrite the predicate as NOT EXISTS with a correlated join, which is NULL-safe and usually produces a better plan."}},{"@type":"Question","name":"Where do NULLs sort in ORDER BY?","acceptedAnswer":{"@type":"Answer","text":"It depends on the engine. PostgreSQL and Oracle treat NULL as larger than any value, so ascending order puts NULLs last. MySQL, SQLite and SQL Server treat NULL as smaller, so ascending order puts NULLs first. PostgreSQL, Oracle and SQLite 3.30+ accept an explicit NULLS FIRST or NULLS LAST clause; MySQL and SQL Server need a sort-key workaround like ORDER BY (col IS NULL), col."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL NULL Handling — Common Pitfalls and Fixes</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>NULL is the only value in SQL that is not equal to itself. Write <code>WHERE email = NULL</code> and you get zero rows back — not because every email is missing, but because the comparison itself evaluates to <strong>UNKNOWN</strong>, and <code>WHERE</code> keeps only rows whose predicate is <strong>TRUE</strong>. That single rule explains most NULL bugs that reach production: the <code>NOT IN</code> query that silently returns an empty set, the average that is too high because rows were quietly dropped, the sort order that flips when you move from MySQL to PostgreSQL.</p>
+<p>This guide covers the mechanics first — what NULL actually represents, and how three-valued logic changes <code>AND</code>, <code>OR</code>, and <code>NOT</code> — then the five failures people hit in real code: comparing with <code>=</code>, <code>NOT IN</code> against a nullable column, <code>COUNT(col)</code> versus <code>COUNT(*)</code>, COALESCE dialect differences, and NULL ordering. Every one gets a concrete example and a fix you can paste into your query.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#what-is-null">1. What NULL Means (and What It Doesn't)</a></li>
+<li><a href="#three-valued-logic">2. Three-Valued Logic: TRUE, FALSE, UNKNOWN</a></li>
+<li><a href="#comparing-null">3. Why <code>= NULL</code> Never Matches</a></li>
+<li><a href="#not-in-trap">4. The NOT IN Trap</a></li>
+<li><a href="#aggregates">5. Aggregates Ignore NULL: COUNT(col) vs COUNT(*)</a></li>
+<li><a href="#coalesce">6. COALESCE and the Dialect Zoo</a></li>
+<li><a href="#nullif">7. NULLIF: The Underrated One</a></li>
+<li><a href="#sorting">8. Sorting NULLs: ORDER BY and NULLS FIRST/LAST</a></li>
+<li><a href="#schema-design">9. Schema Design: NOT NULL and DEFAULT</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="what-is-null">
+<h2>1. What NULL Means (and What It Doesn't)</h2>
+<p>NULL marks the <em>absence of a value</em>. It is not zero, not an empty string, and not false. Those are all real values that happen to be small; NULL is the absence of information — the database has nothing to report for that cell.</p>
+<table>
+<thead>
+<tr><th>Value</th><th>Means</th><th>Example column</th></tr>
+</thead>
+<tbody>
+<tr><td><code>0</code></td><td>A known quantity of zero</td><td><code>balance</code> = 0 — the account is empty, and we know it</td></tr>
+<tr><td><code>''</code></td><td>A known string of length zero</td><td><code>middle_name</code> = '' — recorded, and known to be blank</td></tr>
+<tr><td><code>NULL</code></td><td>No value / unknown / not applicable</td><td><code>shipped_at</code> = NULL — the order has not shipped yet</td></tr>
+</tbody>
+</table>
+<p>The distinction matters because the first two are answerable questions and the third is not. "What is the balance?" has answer 0. "When did this ship?" has no answer at all.</p>
+<p>NULL propagates through expressions. Any arithmetic or function call that touches NULL returns NULL unless the function is written to handle it explicitly:</p>
+<pre><code>SELECT
+    NULL + 1                 AS a,   -- NULL  (arithmetic propagates)
+    LENGTH(NULL)             AS b,   -- NULL  (string functions too)
+    UPPER(NULL)              AS c,   -- NULL
+    NULL &lt; 5                AS d,   -- NULL  (comparison yields UNKNOWN)
+    COALESCE(NULL + 1, 0)    AS e;   -- 0     (handled explicitly)
+</code></pre>
+<p>Two practical notes before the rest of the article:</p>
+<ul>
+<li><strong>Oracle treats <code>''</code> as NULL.</strong> <code>INSERT INTO t (name) VALUES ('')</code> stores a NULL in Oracle, so <code>WHERE name IS NULL</code> matches it. MySQL, PostgreSQL, and SQL Server keep the empty string as a real, distinct value. Any code relying on <code>''</code> meaning "blank but present" behaves differently after an Oracle migration.</li>
+<li><strong>Stop overloading sentinels.</strong> Columns that use <code>-1</code>, <code>0</code>, or <code>'N/A'</code> to mean "unknown" force every downstream query to know that convention and to remember it in every aggregate. Let NULL do its job for unknown data, and keep real values for real values.</li>
+</ul>
+</section>
+
+<section class="content-section" id="three-valued-logic">
+<h2>2. Three-Valued Logic: TRUE, FALSE, UNKNOWN</h2>
+<p>SQL predicates are not two-valued. Any comparison involving NULL produces a third result, <strong>UNKNOWN</strong>, and <code>WHERE</code> filters it out because it keeps only rows where the condition is <strong>TRUE</strong>. UNKNOWN and FALSE are both discarded — which is why a NULL row disappears from <code>col = 5</code> <em>and</em> from <code>col &lt;&gt; 5</code>.</p>
+<h3>AND truth table</h3>
+<table>
+<thead>
+<tr><th>AND</th><th>TRUE</th><th>FALSE</th><th>UNKNOWN</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>TRUE</strong></td><td>TRUE</td><td>FALSE</td><td>UNKNOWN</td></tr>
+<tr><td><strong>FALSE</strong></td><td>FALSE</td><td>FALSE</td><td>FALSE</td></tr>
+<tr><td><strong>UNKNOWN</strong></td><td>UNKNOWN</td><td>FALSE</td><td>UNKNOWN</td></tr>
+</tbody>
+</table>
+<p>FALSE wins in an AND: if one side is definitely false, the whole thing is false even when the other side is unknown.</p>
+<h3>OR truth table</h3>
+<table>
+<thead>
+<tr><th>OR</th><th>TRUE</th><th>FALSE</th><th>UNKNOWN</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>TRUE</strong></td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+<tr><td><strong>FALSE</strong></td><td>TRUE</td><td>FALSE</td><td>UNKNOWN</td></tr>
+<tr><td><strong>UNKNOWN</strong></td><td>TRUE</td><td>UNKNOWN</td><td>UNKNOWN</td></tr>
+</tbody>
+</table>
+<p>TRUE wins in an OR, for the same reason: one known-true side settles it.</p>
+<h3>NOT</h3>
+<table>
+<thead>
+<tr><th>NOT</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td>NOT TRUE</td><td>FALSE</td></tr>
+<tr><td>NOT FALSE</td><td>TRUE</td></tr>
+<tr><td>NOT UNKNOWN</td><td>UNKNOWN</td></tr>
+</tbody>
+</table>
+<p>That last row is the one that bites. Negating an unknown predicate does not make it true — it stays unknown, and the row stays out of the result. A column <code>status</code> with values <code>'active'</code>, <code>'paused'</code>, and NULL behaves like this:</p>
+<pre><code>-- Rows with status = NULL are excluded from BOTH queries:
+SELECT * FROM accounts WHERE status = 'active';      -- returns active only
+SELECT * FROM accounts WHERE NOT (status = 'active'); -- returns paused only
+</code></pre>
+<p>If you want the NULL rows in that second result, say so explicitly: <code>WHERE status IS NULL OR status &lt;&gt; 'active'</code>. There is no shortcut — the engine cannot guess that you meant "everything except active" to include the rows it knows nothing about.</p>
+<div class="tip-box">
+<p><strong>Rule of thumb:</strong> whenever a predicate could run against a NULLable column, ask "what should happen to the NULL rows?" and write that branch by hand. NULL never fails loudly; it just removes rows.</p>
+</div>
+</section>
+
+<section class="content-section" id="comparing-null">
+<h2>3. Why <code>= NULL</code> Never Matches</h2>
+<p><code>col = NULL</code> produces UNKNOWN for every row — including rows where <code>col</code> is NULL, because NULL is not a value and "unknown = unknown" is still unknown. <code>WHERE col = NULL</code> therefore returns an empty set on a table full of NULLs. The operator is the problem, so SQL gives you a dedicated test instead of an equality operator: <code>IS NULL</code> and <code>IS NOT NULL</code> are the only correct way to ask about NULL.</p>
+<pre><code>-- All of these return zero rows, no matter how much data is NULL:
+SELECT * FROM users WHERE last_login =  NULL;
+SELECT * FROM users WHERE last_login != NULL;
+SELECT * FROM users WHERE last_login &lt;&gt; '2026-01-01';  -- also drops the NULL rows
+
+-- Correct forms:
+SELECT * FROM users WHERE last_login IS NULL;
+SELECT * FROM users WHERE last_login IS NOT NULL;
+
+-- Null-safe equality: 'IS DISTINCT FROM' is true when values differ OR exactly one is NULL
+-- (PostgreSQL, and SQL standard engines such as DuckDB and Oracle 23c)
+SELECT * FROM users WHERE last_login IS DISTINCT FROM '2026-01-01';
+</code></pre>
+<p>The null-safe operators are worth knowing because they let you compare "including NULLs" without a pile of OR clauses:</p>
+<table>
+<thead>
+<tr><th>Operator</th><th>Dialect</th><th>Behavior</th></tr>
+</thead>
+<tbody>
+<tr><td><code>IS NOT DISTINCT FROM</code></td><td>SQL standard, PostgreSQL, DuckDB</td><td>TRUE when both are NULL, and when both are equal non-NULLs</td></tr>
+<tr><td><code>&lt;=&gt;</code></td><td>MySQL, MariaDB</td><td>NULL-safe equal: returns 1 when both sides are NULL</td></tr>
+<tr><td><code>ISNULL(a, b)</code></td><td>SQL Server</td><td>Not a comparison — returns <code>b</code> when <code>a</code> is NULL</td></tr>
+</tbody>
+</table>
+<p>A related trap that costs people an afternoon: <code>&lt;&gt;</code> and <code>NOT IN</code> look like they should return "everything else", but they silently exclude NULL rows. Whenever you write a negative predicate against a nullable column, decide explicitly whether NULL belongs in the answer.</p>
+</section>
+
+<section class="content-section" id="not-in-trap">
+<h2>4. The NOT IN Trap</h2>
+<p>This is the most damaging NULL bug in everyday SQL, because the query runs without error and returns an empty result that looks like a valid answer. Set up two small tables:</p>
+<pre><code>customers: id 1, 2, 3
+orders:    (id 1, customer_id 1), (id 2, customer_id 1), (id 3, customer_id NULL)
+
+-- "Which customers have never placed an order?"
+SELECT id FROM customers
+WHERE id NOT IN (SELECT customer_id FROM orders);
+-- Returns 0 rows. Expectation: customer 2 and 3.
+</code></pre>
+<p>One NULL <code>customer_id</code> in the subquery poisons the entire predicate. <code>id NOT IN (1, NULL)</code> expands to <code>id &lt;&gt; 1 AND id &lt;&gt; NULL</code>. That second term is UNKNOWN for every row, and <code>TRUE AND UNKNOWN</code> is UNKNOWN — so no row ever passes. The subquery does not even need to contain a NULL that belongs to a real customer; a single nullable column with one missing value is enough.</p>
+<p>Two fixes, both reliable:</p>
+<pre><code>-- Fix 1: NOT EXISTS with a correlated subquery. NULL-safe, and usually the best plan.
+SELECT c.id
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1 FROM orders o WHERE o.customer_id = c.id
+);
+
+-- Fix 2: keep NOT IN but strip NULLs inside the subquery.
+SELECT id
+FROM customers
+WHERE id NOT IN (
+    SELECT customer_id FROM orders WHERE customer_id IS NOT NULL
+);
+</code></pre>
+<p>Both return customers 2 and 3. Prefer <code>NOT EXISTS</code>: it does not require the subquery to be NULL-free, it handles multi-column anti-joins naturally (<code>NOT EXISTS (SELECT 1 FROM o WHERE o.a = c.a AND o.b = c.b)</code>), and most optimizers turn it into an anti-join hash or merge instead of evaluating the list per row.</p>
+<div class="tip-box">
+<p><strong>Interview-grade detail:</strong> <code>IN</code> has the mirror behavior. <code>WHERE id IN (1, NULL)</code> does <em>not</em> become empty — it still matches 1, because <code>TRUE OR UNKNOWN</code> is TRUE. Only the negated form collapses, which is exactly why the bug shows up in <code>NOT IN</code> and nobody documents it until a production report comes back blank.</p>
+</div>
+</section>
+
+<div class="cta-box">
+<h3>Format and validate NULL-heavy queries before they reach production</h3>
+<p>Paste a query with COALESCE, IS NULL, and NOT IN into the formatter to catch the structure at a glance, then validate the syntax before you run it.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<section class="content-section" id="aggregates">
+<h2>5. Aggregates Ignore NULL: COUNT(col) vs COUNT(*)</h2>
+<p>Every aggregate except <code>COUNT(*)</code> skips NULL inputs. <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, and <code>MAX</code> evaluate only the rows where the argument is not NULL — and that changes the answers in ways that are easy to miss.</p>
+<pre><code>-- accounts.balance: 100, NULL, 200
+
+SELECT
+    COUNT(*)                   AS all_rows,        -- 3   every row
+    COUNT(balance)             AS rows_with_data,  -- 2   NULL excluded
+    SUM(balance)               AS total,           -- 300
+    AVG(balance)               AS avg_balance,     -- 150 NOT 100
+    COALESCE(SUM(balance), 0)  AS total_or_zero    -- 300 (0 when the group is all NULL)
+FROM accounts;
+</code></pre>
+<p>The <code>AVG</code> result is the one that surprises people. It divides by the <em>non-NULL count</em>, not by the row count, so 300 / 2 = 150 rather than 300 / 3 = 100. If your business rule says a missing balance counts as zero, you must say so — <code>AVG(COALESCE(balance, 0))</code> gives 100, and that is a deliberate analytical choice, not the database's job to infer.</p>
+<p>Two more behaviors to internalize:</p>
+<ul>
+<li><strong>An aggregate over zero non-NULL rows returns NULL, not 0.</strong> <code>SUM(balance)</code> on a group where every balance is NULL returns NULL; <code>COUNT</code> is the only aggregate that returns 0. When a dashboard shows a blank instead of "0", this is why — wrap it: <code>COALESCE(SUM(balance), 0)</code>.</li>
+<li><strong><code>GROUP BY</code> treats NULLs as equal to each other.</strong> This is the opposite of <code>WHERE</code>. All NULL rows land in a single group, so you get one row with a NULL group key. <code>DISTINCT</code> and <code>UNION</code> behave the same way: they treat NULLs as not distinct and collapse them together. Equality in a predicate says "unknown"; grouping says "same bucket". Both are correct — they answer different questions.</li>
+</ul>
+</section>
+
+<section class="content-section" id="coalesce">
+<h2>6. COALESCE and the Dialect Zoo</h2>
+<p><code>COALESCE</code> returns the first argument that is not NULL. It is SQL standard, exists in every major engine, and takes an arbitrary number of arguments evaluated left to right, stopping at the first non-NULL. Reach for it instead of vendor functions whenever the query might travel.</p>
+<pre><code>SELECT
+    username,
+    COALESCE(nickname, display_name, username, 'anonymous') AS shown_name,
+    COALESCE(phone, 'not provided')                         AS contact_phone
+FROM users;
+
+-- Backfill a NULLable column with a real default value
+UPDATE orders SET discount = 0 WHERE discount IS NULL;
+</code></pre>
+<p>The same idea goes by four different names across engines. They are not interchangeable in code you intend to port:</p>
+<table>
+<thead>
+<tr><th>Function</th><th>Engines</th><th>Arguments</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>COALESCE</code></td><td>All engines (SQL standard)</td><td>Variadic</td><td>Preferred. Short-circuits at the first non-NULL result.</td></tr>
+<tr><td><code>IFNULL</code></td><td>MySQL, MariaDB, SQLite</td><td>Exactly 2</td><td>No standard alternative name needed — COALESCE covers it.</td></tr>
+<tr><td><code>NVL</code></td><td>Oracle</td><td>Exactly 2</td><td>Oracle-specific. <code>NVL2(a, b, c)</code> returns <code>b</code> when <code>a</code> is not NULL, else <code>c</code>.</td></tr>
+<tr><td><code>ISNULL</code></td><td>SQL Server</td><td>Exactly 2</td><td>In MySQL, <code>ISNULL(x)</code> is a <em>different</em> function: a one-argument test returning 1 or 0.</td></tr>
+</tbody>
+</table>
+<p>Two subtleties worth knowing before you pick a favorite:</p>
+<ul>
+<li><strong>Return type resolution.</strong> In SQL Server, <code>ISNULL(a, b)</code> takes the data type of the first argument, so <code>ISNULL(varchar_col, 'none')</code> can truncate the replacement to the column's declared length. <code>COALESCE</code> follows the standard's type-resolution rules and returns the higher-precedence type. For strings, COALESCE is the safer choice.</li>
+<li><strong>Short-circuit evaluation.</strong> COALESCE stops evaluating as soon as one argument is non-NULL, which is what makes it safe as a guard for a value that would otherwise error (see NULLIF below). Older vendor functions are not always documented to short-circuit, another reason the standard form is the default.</li>
+</ul>
+<h3>NULL and string concatenation</h3>
+<p>Concatenation propagates NULL. In PostgreSQL, Oracle, SQL Server, and MySQL's <code>CONCAT</code>, stitching a NULL into a string yields NULL for the whole expression — so a single missing middle name blanks out a full name built from three columns:</p>
+<pre><code>-- NULL if either column is NULL
+SELECT first_name || ' ' || last_name AS full_name FROM users;
+
+-- Safe: neutralize each part first
+SELECT COALESCE(first_name, '') || ' ' || COALESCE(last_name, '') AS full_name FROM users;
+
+-- MySQL convention, which also collapses NULLs to empty strings
+SELECT CONCAT_WS(' ', first_name, middle_name, last_name) AS full_name FROM users;
+</code></pre>
+<p><code>CONCAT_WS</code> ("with separator") skips NULL arguments entirely — a MySQL and SQL Server convenience whose Oracle and PostgreSQL equivalents you would have to build with COALESCE.</p>
+</section>
+
+<section class="content-section" id="nullif">
+<h2>7. NULLIF: The Underrated One</h2>
+<p><code>NULLIF(a, b)</code> returns NULL when <code>a = b</code>, and returns <code>a</code> otherwise. It sounds backward until you see the two jobs it does well.</p>
+<h3>Guard against division by zero</h3>
+<p>Dividing by zero is an error in PostgreSQL, MySQL, and SQL Server (Oracle raises it too), so a naive average-per-group query can fail on exactly the rows that have no data yet. Wrapping the denominator in <code>NULLIF(expr, 0)</code> converts the zero into NULL, and any arithmetic with NULL yields NULL — a missing answer instead of a crashed query:</p>
+<pre><code>-- Crashes when orders_count = 0
+SELECT revenue / orders_count AS avg_order_value FROM daily_stats;
+
+-- Returns NULL for those rows instead
+SELECT revenue / NULLIF(orders_count, 0) AS avg_order_value FROM daily_stats;
+
+-- With a readable fallback
+SELECT COALESCE(revenue / NULLIF(orders_count, 0), 0) AS avg_order_value FROM daily_stats;
+</code></pre>
+<h3>Turn a sentinel into a real NULL</h3>
+<p>Legacy tables love magic values — <code>''</code> for "no email", <code>'N/A'</code> for "unknown region". <code>NULLIF</code> normalizes them to NULL at read time so that <code>IS NULL</code>, aggregates, and COALESCE all behave consistently, without touching the stored data:</p>
+<pre><code>SELECT
+    NULLIF(region_code, '')     AS region_code,   -- '' becomes NULL
+    NULLIF(status, 'UNKNOWN')   AS status,        -- sentinel becomes NULL
+    NULLIF(email, 'n/a')        AS email
+FROM staging_imports;
+</code></pre>
+<p>Note that because <code>NULLIF</code> is built on equality, <code>NULLIF(x, NULL)</code> can never fire — the comparison is UNKNOWN. It only matches real values, which is fine for sentinel cleanup and useless for NULL detection, where <code>IS NULL</code> is what you want.</p>
+</section>
+
+<section class="content-section" id="sorting">
+<h2>8. Sorting NULLs: ORDER BY and NULLS FIRST/LAST</h2>
+<p>Sort position for NULL differs by engine, but the SQL standard does not require a particular order — so a query that looks portable can produce two different reports. PostgreSQL and Oracle treat NULL as <em>larger</em> than any value (ascending puts NULLs last); MySQL, SQLite, and SQL Server treat it as <em>smaller</em> (ascending puts NULLs first).</p>
+<table>
+<thead>
+<tr><th>Engine</th><th>NULL position, ASC</th><th>NULL position, DESC</th><th>NULLS FIRST/LAST</th></tr>
+</thead>
+<tbody>
+<tr><td>PostgreSQL</td><td>Last</td><td>First</td><td>Supported</td></tr>
+<tr><td>Oracle</td><td>Last</td><td>First</td><td>Supported</td></tr>
+<tr><td>SQLite 3.30+</td><td>First</td><td>Last</td><td>Supported</td></tr>
+<tr><td>MySQL / MariaDB</td><td>First</td><td>Last</td><td>Not supported (workaround below)</td></tr>
+<tr><td>SQL Server</td><td>First</td><td>Last</td><td>Not supported (workaround below)</td></tr>
+</tbody>
+</table>
+<p>Where the clause exists, use it explicitly rather than relying on engine defaults — it documents the intent and makes the query portable:</p>
+<pre><code>-- Most recent logins first, but actually seen users before never-seen ones
+SELECT name, last_login
+FROM users
+ORDER BY last_login DESC NULLS LAST;
+</code></pre>
+<p>MySQL and SQL Server have no <code>NULLS FIRST</code> / <code>NULLS LAST</code> syntax, so you sort on a boolean sort key first. <code>(col IS NULL)</code> evaluates to 0 for real values and 1 for NULLs, so an ascending sort on that key pushes NULLs last:</p>
+<pre><code>-- MySQL / MariaDB: real values first, NULLs last
+SELECT name, last_login FROM users ORDER BY last_login IS NULL, last_login DESC;
+
+-- SQL Server: same idea with CASE
+SELECT name, last_login FROM users
+ORDER BY CASE WHEN last_login IS NULL THEN 1 ELSE 0 END, last_login DESC;
+</code></pre>
+<p>For <code>NULLS FIRST</code>, invert the key: <code>ORDER BY last_login IS NOT NULL, last_login</code>. And if NULLs must never appear in the output at all, filter instead of sorting around them — <code>WHERE last_login IS NOT NULL</code> is cheaper than any sort-key trick.</p>
+</section>
+
+<section class="content-section" id="schema-design">
+<h2>9. Schema Design: NOT NULL and DEFAULT</h2>
+<p>Half of production NULL bugs are decided at <code>CREATE TABLE</code> time. Two constraints do the work, and they do different jobs:</p>
+<ul>
+<li><strong><code>NOT NULL</code></strong> rejects any attempt to store NULL, whether explicit or implicit. It is a real guarantee: readers of that column never need a NULL branch.</li>
+<li><strong><code>DEFAULT</code></strong> supplies a value only when the column is <em>omitted</em> from an <code>INSERT</code>. It is not a guard — an explicit NULL still lands in the column unless <code>NOT NULL</code> is also present.</li>
+</ul>
+<pre><code>CREATE TABLE users (
+    id          BIGINT PRIMARY KEY,
+    email       VARCHAR(255) NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    credits     INTEGER      NOT NULL DEFAULT 0,
+    deleted_at  TIMESTAMP    NULL                      -- NULL = not deleted
+);
+
+-- DEFAULT applies: credits becomes 0
+INSERT INTO users (id, email) VALUES (1, 'a@example.com');
+
+-- DEFAULT is bypassed: this inserts NULL, which NOT NULL would reject
+INSERT INTO users (id, email, credits) VALUES (2, 'b@example.com', NULL);
+-- ERROR: null value in column "credits" violates not-null constraint
+</code></pre>
+<p>That is the single most misunderstood interaction in schema design. A column declared <code>credits INTEGER DEFAULT 0</code> without <code>NOT NULL</code> will happily store NULL the moment a client sends an explicit NULL, and then every <code>SUM(credits)</code> silently drops those rows. If the column should always have a value, declare both: <code>NOT NULL DEFAULT 0</code>. The default handles the polite inserts; the constraint handles the rest.</p>
+<p>Three more decisions that are cleaner when made up front:</p>
+<ul>
+<li><strong>Use NULL for "unknown", a default for "known typical".</strong> <code>signup_source</code> that the application always knows should be <code>NOT NULL</code> with a sensible default. <code>deleted_at</code> is genuinely unknown until deletion, so it is correctly NULLable — and <code>deleted_at IS NULL</code> is a meaningful, indexable predicate.</li>
+<li><strong>Unique indexes and NULL.</strong> PostgreSQL, MySQL, and Oracle allow many NULLs in a unique column, since two unknowns are not considered duplicates. SQL Server's unique index allows only one NULL in a single-column index. If "at most one row per NULL" matters, that is a constraint enforced in application code or with a partial/filtered unique index.</li>
+<li><strong><code>CHECK</code> constraints pass on UNKNOWN.</strong> <code>CHECK (age &gt; 0)</code> rejects ages of 0 and -5 but accepts NULL, because the constraint fails only when the expression is FALSE, not when it is UNKNOWN. Add <code>NOT NULL</code> to the column if NULL should be disallowed — a CHECK will not do it for you.</li>
+</ul>
+<div class="tip-box">
+<p><strong>Migration checklist:</strong> before adding <code>NOT NULL</code> to an existing column, run <code>SELECT COUNT(*) FROM t WHERE col IS NULL</code>. Backfill first with <code>UPDATE ... SET col = &lt;default&gt; WHERE col IS NULL</code>, then apply the constraint. On large tables, do the backfill in batches so you do not hold a long lock.</p>
+</div>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — SQL NULL Handling</h2>
+<div class="faq-item"><h3>Why does <code>WHERE col = NULL</code> return no rows?</h3><p>Because NULL is not a value you can test with <code>=</code>. The expression <code>col = NULL</code> evaluates to UNKNOWN for every row — including rows where <code>col</code> is actually NULL — and <code>WHERE</code> keeps only rows whose predicate is TRUE. Use <code>IS NULL</code> or <code>IS NOT NULL</code>, or a null-safe operator such as <code>IS DISTINCT FROM</code> (PostgreSQL) or <code>&lt;=&gt;</code> (MySQL).</p></div>
+<div class="faq-item"><h3>What is the difference between <code>COUNT(*)</code> and <code>COUNT(column)</code>?</h3><p><code>COUNT(*)</code> counts every row in the group. <code>COUNT(column)</code> counts only rows where that column is not NULL. On a 1000-row table where 400 emails are NULL, <code>COUNT(*)</code> is 1000 and <code>COUNT(email)</code> is 600. The same NULL-skipping applies to <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, and <code>MAX</code>.</p></div>
+<div class="faq-item"><h3>Is COALESCE the same as IFNULL, NVL, and ISNULL?</h3><p>They all return the first non-NULL argument, but they are not portable. COALESCE is SQL standard, works in every engine, and takes any number of arguments. IFNULL is MySQL/MariaDB/SQLite with two arguments. NVL is Oracle with two. ISNULL is SQL Server with two — but in MySQL, <code>ISNULL(x)</code> is a one-argument boolean test returning 1 or 0, not a substitution at all.</p></div>
+<div class="faq-item"><h3>How do I fix a NOT IN query that returns no rows?</h3><p>If the subquery returns even one NULL, <code>NOT IN</code> becomes UNKNOWN for every outer row and the result is empty. Either add <code>WHERE column IS NOT NULL</code> inside the subquery, or rewrite the predicate as <code>NOT EXISTS</code> with a correlated join — NULL-safe, and usually a better plan.</p></div>
+<div class="faq-item"><h3>Where do NULLs sort in ORDER BY?</h3><p>It depends on the engine. PostgreSQL and Oracle treat NULL as larger than any value, so ASC puts NULLs last. MySQL, SQLite, and SQL Server treat it as smaller, so ASC puts NULLs first. PostgreSQL, Oracle, and SQLite 3.30+ accept an explicit <code>NULLS FIRST</code> or <code>NULLS LAST</code>; MySQL and SQL Server need <code>ORDER BY (col IS NULL), col</code> or a <code>CASE</code> sort key.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools &amp; Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/validate">SQL Validator</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/pretty-print">SQL Pretty Printer</a>
+<a href="/blog/sql-cheat-sheet">SQL Cheat Sheet</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Fix MySQL Error 1064 (Syntax Error) — Causes, Examples &amp; Fixes | SQLFormat.io</title>
+  <meta name="description" content="MySQL error 1064 means the parser rejected your query. Learn the five most common causes — reserved words, bad quotes, typos, version syntax, comment spacing — with before/after fixes and how to catch SQL syntax errors before you run them.">
+  <meta name="keywords" content="mysql error 1064, fix sql syntax error, error 1064 42000, sql syntax error near, mysql reserved words">
+  <meta property="og:title" content="How to Fix MySQL Error 1064 (Syntax Error) — Causes, Examples & Fixes">
+  <meta property="og:description" content="The five causes behind MySQL error 1064, each with a broken query, the corrected version, and a workflow to catch syntax errors before they reach production.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/fix-mysql-error-1064">
+  <link rel="canonical" href="https://sqlformat.io/blog/fix-mysql-error-1064">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Fix MySQL Error 1064 (Syntax Error) — Causes, Examples & Fixes","description":"MySQL error 1064 explained: reserved words as column names, mismatched quotes, typos, version-specific syntax, and comment spacing — each with broken and corrected SQL, plus a prevention workflow using an online SQL validator.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/fix-mysql-error-1064","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Fix MySQL Error 1064","item":"https://sqlformat.io/blog/fix-mysql-error-1064"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does 'check the manual that corresponds to your MySQL server version for the right syntax to use near' mean?","acceptedAnswer":{"@type":"Answer","text":"It is the standard tail of MySQL error 1064. The quoted fragment after 'near' shows where the parser gave up. The actual mistake is usually at that token or in the one immediately before it, because MySQL parses left to right and only fails when it hits something it cannot continue with."}},{"@type":"Question","name":"Why does a simple SELECT query fail with error 1064?","acceptedAnswer":{"@type":"Answer","text":"The most common reason is a reserved word used as a column or table name — SELECT id, rank FROM players fails on MySQL 8.0 because RANK became reserved. Other frequent causes: a trailing comma before FROM, an unescaped apostrophe inside a string, or smart quotes pasted from a chat app or word processor."}},{"@type":"Question","name":"How do I escape reserved words in MySQL?","acceptedAnswer":{"@type":"Answer","text":"Wrap the identifier in backticks: `rank`, `order`, `group`. Backticks work regardless of SQL mode. Double quotes only work as identifier quotes when ANSI_QUOTES mode is enabled. The better long-term fix is renaming the column (rank to player_rank, order to orders) so every query stops needing escapes."}},{"@type":"Question","name":"Can MySQL error 1064 be caused by the server version?","acceptedAnswer":{"@type":"Answer","text":"Yes. CTEs (WITH ... AS) and window functions (RANK() OVER) require MySQL 8.0; EXCEPT and INTERSECT require 8.0.31. Running these on MySQL 5.7 produces error 1064 pointing near the new keyword. Check your server with SELECT VERSION(); and rewrite with subqueries or user variables when you must support older versions."}},{"@type":"Question","name":"How do I stop error 1064 from reaching production?","acceptedAnswer":{"@type":"Answer","text":"Validate before executing: paste the query into an online SQL validator to catch parse errors instantly, format the SQL so missing commas and unclosed parentheses become visible, use parameterized queries in application code to eliminate string-quoting bugs entirely, and test migrations against the oldest MySQL version you support."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:16px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.93rem}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section li{color:var(--text2);line-height:1.65;margin-bottom:6px;font-size:.93rem}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;overflow-x:auto;margin-bottom:12px}.content-section pre code{background:none;padding:0;color:var(--green);font-size:.82rem;line-height:1.6;display:block}.content-section strong{color:var(--text)}.content-section blockquote{background:rgba(88,166,255,.06);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:16px;font-size:.9rem;color:var(--text2)}.content-section blockquote strong{color:var(--accent)}.cta-box{background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:var(--radius);padding:24px 28px;margin:24px 0;text-align:center}.cta-box h3{color:#fff;font-size:1.15rem;margin-bottom:8px;font-weight:600}.cta-box p{color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:#fff;color:var(--accent2);padding:10px 24px;border-radius:6px;font-weight:600;text-decoration:none;font-size:.9rem;transition:opacity .2s}.cta-box a:hover{opacity:.9}.table-wrap{overflow-x:auto;margin-bottom:16px}.content-section table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:8px}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 14px;border:1px solid var(--border);font-weight:600}.content-section td{padding:8px 14px;border:1px solid var(--border);color:var(--text2)}.content-section td code{font-size:.85em}.faq-item{margin-bottom:16px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:6px}.faq-item p{color:var(--text2);line-height:1.65;font-size:.93rem}.related-section{margin:32px 0 48px}.related-section h2{font-size:1.1rem;margin-bottom:16px;color:var(--text2)}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);text-decoration:none;font-size:.82rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{margin-top:auto;border-top:1px solid var(--border);padding:24px 0;text-align:center;color:var(--text2);font-size:.85rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:768px){nav a{font-size:.8rem;margin-left:12px}.hero h1{font-size:1.5rem}}</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-M3MYLE3P6F');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>How to Fix MySQL Error 1064 (Syntax Error)</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p><strong>MySQL error 1064</strong> — <code>You have an error in your SQL syntax</code> — is the database's way of saying it could not parse your statement. It is not a permissions problem, not a missing table, not bad data. The query never ran at all: MySQL rejected the text before execution. That also makes it one of the easiest errors to <strong>fix</strong>, once you know how to read it.</p>
+<p>This guide walks through the five causes behind most 1064s — reserved words used as column names, mismatched or smart quotes, plain typos, syntax that your server version does not support, and <code>--</code> comments missing their space — each with the broken query, the corrected query, and how to spot it fast. At the end, a short workflow for catching <strong>SQL syntax errors</strong> before they ever reach MySQL.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#read-the-error">How to Read Error 1064 Correctly</a></li>
+<li><a href="#reserved-words">Cause 1: Reserved Words as Column or Table Names</a></li>
+<li><a href="#quotes">Cause 2: Mismatched, Unescaped, and Smart Quotes</a></li>
+<li><a href="#typos">Cause 3: Typos, Trailing Commas, and Missing Pieces</a></li>
+<li><a href="#versions">Cause 4: Syntax Your MySQL Version Doesn't Support</a></li>
+<li><a href="#comments">Cause 5: The <code>--</code> Comment Space Rule</a></li>
+<li><a href="#prevent">Preventing Error 1064: A Validation Workflow</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="read-the-error">
+<h2>1. How to Read Error 1064 Correctly</h2>
+<p>A typical 1064 looks like this:</p>
+<pre><code>mysql&gt; SELECT id, name, rank FROM players ORDER BY rank DESC;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual
+that corresponds to your MySQL server version for the right syntax to use
+near 'rank FROM players ORDER BY rank DESC' at line 1</code></pre>
+<p>Two details in that message do all the work:</p>
+<ul>
+<li><strong>The quoted fragment after <code>near</code></strong> is where the parser gave up. Everything from that token onward was unconsumed input.</li>
+<li><strong>The real mistake is usually at — or one token <em>before</em> — the start of the quote.</strong> MySQL parses left to right and only fails when it hits something it cannot continue with. In the example above, the quoted text starts at <code>rank</code>, and <code>rank</code> is the problem: it is a reserved word in MySQL 8.0.</li>
+</ul>
+<p>The <code>42000</code> is the SQLSTATE class for syntax errors and access violations — it tells you nothing beyond what 1064 already did. Ignore the "check the manual" sentence; it is boilerplate. Your debugging loop should be: find the quoted fragment, look at the token just before it, and match against the five causes below.</p>
+<blockquote><strong>One quirk worth knowing:</strong> when the error points <em>near the end</em> of your statement (or shows an empty quote like <code>near ''</code>), the parser ran out of input while still expecting something — an unclosed parenthesis, a missing closing quote, or a truncated statement. The bug is a missing character, not a wrong one.</blockquote>
+</section>
+
+<section class="content-section" id="reserved-words">
+<h2>2. Cause 1: Reserved Words as Column or Table Names</h2>
+<p>This is the single most common 1064, and it often appears <em>after a MySQL upgrade</em> — the query worked on 5.7 and breaks on 8.0 because 8.0 reserved new words like <code>RANK</code>, <code>GROUPS</code>, <code>LEAD</code>, and <code>SYSTEM</code>.</p>
+<h3>Broken vs. fixed</h3>
+<pre><code>-- FAILS on MySQL 8.0 (RANK is reserved)
+SELECT id, name, rank FROM players ORDER BY rank DESC;
+
+-- FIXED: backtick-quote the identifier
+SELECT id, name, `rank` FROM players ORDER BY `rank` DESC;
+
+-- BETTER FIX: rename the column once, never escape again
+ALTER TABLE players CHANGE `rank` player_rank INT;
+SELECT id, name, player_rank FROM players ORDER BY player_rank DESC;</code></pre>
+<p>The same trap hits table names. <code>order</code> is a classic in e-commerce schemas:</p>
+<pre><code>-- FAILS: 'order' is reserved
+CREATE TABLE order (id INT PRIMARY KEY, total DECIMAL(10,2));
+
+-- FIXED
+CREATE TABLE `order` (id INT PRIMARY KEY, total DECIMAL(10,2));
+
+-- What most teams eventually do: rename it
+CREATE TABLE orders (id INT PRIMARY KEY, total DECIMAL(10,2));</code></pre>
+<h3>Words that bite people most often</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Identifier</th><th>Why it breaks</th><th>Reserved since</th></tr>
+<tr><td><code>rank</code></td><td>Window function name</td><td>MySQL 8.0</td></tr>
+<tr><td><code>groups</code></td><td>Window frame keyword</td><td>MySQL 8.0</td></tr>
+<tr><td><code>lead</code> / <code>lag</code></td><td>Window function names</td><td>MySQL 8.0</td></tr>
+<tr><td><code>system</code></td><td>System variable keyword</td><td>MySQL 8.0.3</td></tr>
+<tr><td><code>order</code>, <code>group</code></td><td>ORDER BY / GROUP BY</td><td>Always</td></tr>
+<tr><td><code>key</code>, <code>condition</code></td><td>Index / handler keywords</td><td>Always</td></tr>
+<tr><td><code>rows</code>, <code>range</code></td><td>Window frame / partition keywords</td><td>MySQL 8.0</td></tr>
+</table>
+</div>
+<p>My recommendation: backticks are the correct fix, but if you find yourself escaping the same column in twenty queries, rename it. Escaped identifiers leak into ORM configs, export scripts, and hand-written reporting SQL where someone will inevitably forget the backticks.</p>
+</section>
+
+<section class="content-section" id="quotes">
+<h2>3. Cause 2: Mismatched, Unescaped, and Smart Quotes</h2>
+<p>MySQL uses three quote characters with different jobs, and mixing them up produces 1064 in several distinct ways.</p>
+<div class="table-wrap">
+<table>
+<tr><th>Quote</th><th>Correct use</th><th>Example</th></tr>
+<tr><td><code>'single'</code></td><td>String literals</td><td><code>WHERE name = 'Alice'</code></td></tr>
+<tr><td><code>`backtick`</code></td><td>Identifiers (tables, columns)</td><td><code>SELECT `order` FROM `group`</code></td></tr>
+<tr><td><code>"double"</code></td><td>String literals by default; identifiers only under <code>ANSI_QUOTES</code> mode</td><td>Depends on server config</td></tr>
+</table>
+</div>
+<h3>Unescaped apostrophe inside a string</h3>
+<pre><code>-- FAILS: the apostrophe in O'Brien closes the string early
+SELECT * FROM users WHERE name = 'O'Brien';
+
+-- FIXED: double the apostrophe
+SELECT * FROM users WHERE name = 'O''Brien';
+
+-- FIXED: backslash escape (MySQL-specific)
+SELECT * FROM users WHERE name = 'O\'Brien';
+
+-- ACTUALLY FIXED: parameterized query in application code
+-- Python:  cursor.execute("SELECT * FROM users WHERE name = %s", (name,))</code></pre>
+<h3>Quotes around identifiers instead of backticks</h3>
+<pre><code>-- FAILS: 'users' is a string literal, not a table name
+SELECT * FROM 'users';
+
+-- FIXED
+SELECT * FROM `users`;   -- or just: SELECT * FROM users;</code></pre>
+<h3>Smart quotes pasted from chat apps and documents</h3>
+<pre><code>-- FAILS: these are Unicode curly quotes (U+2018/U+2019), not ASCII apostrophes
+SELECT * FROM users WHERE name = ‘Alice’;
+
+-- FIXED: retype the quotes in your editor
+SELECT * FROM users WHERE name = 'Alice';</code></pre>
+<p>Smart quotes are nasty because they <em>look</em> correct on screen. If a query copied from Slack, Word, or a PDF fails with 1064 near a string literal, delete both quote characters and retype them. Pasting SQL through a plain-text editor or a formatter strips most of these on the way in.</p>
+</section>
+
+<section class="content-section" id="typos">
+<h2>4. Cause 3: Typos, Trailing Commas, and Missing Pieces</h2>
+<p>The unglamorous majority. Three patterns cover most of them.</p>
+<h3>Trailing comma before a keyword</h3>
+<pre><code>-- FAILS: comma before FROM
+SELECT id, name, email, FROM users;
+
+-- FIXED
+SELECT id, name, email FROM users;</code></pre>
+<p>The error will read <code>near 'FROM users'</code> — the parser expected another column expression after the comma and found a keyword instead. Same bug in other shapes:</p>
+<pre><code>-- FAILS: trailing comma in column list
+INSERT INTO users (id, name,) VALUES (1, 'Alice');
+
+-- FAILS: missing comma between values
+INSERT INTO users (id, name) VALUES (1 'Alice');
+
+-- BOTH FIXED
+INSERT INTO users (id, name) VALUES (1, 'Alice');</code></pre>
+<h3>Misspelled keywords</h3>
+<pre><code>-- FAILS
+SELCT * FROM users;
+UPDATE users SET active = 1 WHER id = 5;
+
+-- FIXED
+SELECT * FROM users;
+UPDATE users SET active = 1 WHERE id = 5;</code></pre>
+<p>A misspelled <em>first</em> keyword gives <code>near</code> the whole statement. A misspelled keyword mid-query (like <code>WHER</code>) points at the token after it, because MySQL happily reads <code>WHER</code> as... nothing it recognizes, and fails at the next word.</p>
+<h3>Unclosed parentheses and truncated statements</h3>
+<pre><code>-- FAILS: missing closing paren
+SELECT * FROM users WHERE (id = 5 AND active = 1;
+
+-- FIXED
+SELECT * FROM users WHERE (id = 5 AND active = 1);</code></pre>
+<p>These produce errors pointing near the <em>end</em> of the statement, which is why the "empty quote" variant (<code>near ''</code>) almost always means an unbalanced paren or quote. Count your openers against your closers — or format the query so each nesting level sits on its own line and the imbalance becomes visible.</p>
+</section>
+
+<section class="content-section" id="versions">
+<h2>5. Cause 4: Syntax Your MySQL Version Doesn't Support</h2>
+<p>Error 1064's message literally says "check the manual that corresponds to <em>your MySQL server version</em>" — because syntax support varies by version. A query can be perfectly valid on MySQL 8.4 and still throw 1064 on 5.7. First, find out what you're actually running:</p>
+<pre><code>SELECT VERSION();
+-- e.g. 5.7.44-log (no CTEs, no window functions)
+-- e.g. 8.0.36      (CTEs and window functions OK)</code></pre>
+<h3>CTEs and window functions on MySQL 5.7</h3>
+<pre><code>-- FAILS on 5.7: error near 'WITH active_users AS ...'
+WITH active_users AS (
+  SELECT * FROM users WHERE active = 1
+)
+SELECT * FROM active_users;
+
+-- FAILS on 5.7: error near 'OVER (ORDER BY score DESC)'
+SELECT name, RANK() OVER (ORDER BY score DESC) AS rnk FROM players;
+
+-- 5.7 WORKAROUND: derived table + user variable for row numbering
+SELECT name, @r := @r + 1 AS row_num
+FROM players CROSS JOIN (SELECT @r := 0) AS init
+ORDER BY score DESC;</code></pre>
+<h3>Feature-to-version reference</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Syntax</th><th>Minimum MySQL version</th><th>Error 1064 points near</th></tr>
+<tr><td>CTE (<code>WITH ... AS</code>)</td><td>8.0</td><td><code>WITH</code></td></tr>
+<tr><td>Window functions (<code>OVER</code>)</td><td>8.0</td><td><code>OVER (...</code></td></tr>
+<tr><td><code>EXCEPT</code> / <code>INTERSECT</code></td><td>8.0.31</td><td><code>EXCEPT</code></td></tr>
+<tr><td>Expressions in <code>DEFAULT</code></td><td>8.0.13</td><td><code>DEFAULT (...</code></td></tr>
+<tr><td>Enforced <code>CHECK</code> constraints</td><td>8.0.16</td><td><code>CHECK (...)</code></td></tr>
+<tr><td>JSON functions (<code>JSON_TABLE</code>)</td><td>8.0</td><td><code>JSON_TABLE</code></td></tr>
+</table>
+</div>
+<p>The reverse case exists too: MariaDB and MySQL diverged years ago, and syntax copied from a MariaDB tutorial can throw 1064 on MySQL (and vice versa). If a query "should work" per a blog post, check which engine and version that post was written against.</p>
+</section>
+
+<div class="cta-box">
+<h3>Catch Error 1064 Before MySQL Does</h3>
+<p>Paste your query into the free SQL validator — parse errors are flagged instantly, with the problem location highlighted, no database connection required.</p>
+<a href="/validate">Validate Your SQL Now &rarr;</a>
+</div>
+
+<section class="content-section" id="comments">
+<h2>6. Cause 5: The <code>--</code> Comment Space Rule</h2>
+<p>MySQL's double-dash comment has a rule most other databases do not: <code>--</code> only starts a comment if it is followed by a space (or a control character like a newline). This deviates from the SQL standard on purpose — it prevents <code>1--5</code> from being parsed as "1 comment".</p>
+<pre><code>-- FAILS: no space after the dashes, MySQL keeps parsing "get"
+SELECT * FROM users; --get all users
+
+-- FIXED: add the space
+SELECT * FROM users; -- get all users
+
+-- ALSO VALID: MySQL's hash comment
+SELECT * FROM users; # get all users
+
+-- ALSO VALID: standard block comment, safe on every engine
+SELECT * FROM users; /* get all users */</code></pre>
+<p>This bug loves generated SQL and one-liners squeezed into shell commands, where someone strips "unnecessary" whitespace. It also breaks copied code: <code>--TODO: refactor</code> with no space will take down the whole statement. If a query fails with 1064 pointing at text that <em>looks like a comment</em>, check the two dashes.</p>
+<p>One more comment gotcha: MySQL treats <code>/*! ... */</code> as an executable version-gated comment, not a comment at all. If you strip or reformat those blocks with a tool that doesn't understand MySQL, you can delete live SQL or expose syntax the server can't parse.</p>
+</section>
+
+<section class="content-section" id="prevent">
+<h2>7. Preventing Error 1064: A Validation Workflow</h2>
+<p>Fixing 1064s is fast once you can read them. Not getting them is better. This is the loop I use for any SQL that will run somewhere I can't watch it fail:</p>
+<h3>Step 1: Validate the parse before executing</h3>
+<p>Paste the statement into the <a href="/validate">SQL validator</a>. It parses the query and reports syntax problems with a location — the same information 1064 gives you, but before the statement touches a server, and without needing a database connection at all. For migration scripts and stored procedures, this alone catches the trailing commas, unbalanced parens, and misspelled keywords that make up most 1064s.</p>
+<h3>Step 2: Format it so structure is visible</h3>
+<p>A 200-character one-liner hides missing commas. Run the query through the <a href="/sql-formatter-mysql">MySQL formatter</a> so every clause and list item sits on its own line:</p>
+<pre><code>-- Before: where is the bug?
+SELECT u.id, u.name, o.total, FROM users u JOIN orders o ON o.user_id = u.id WHERE o.created &gt; '2026-01-01';
+
+-- After formatting: the trailing comma jumps out
+SELECT
+  u.id,
+  u.name,
+  o.total,        -- ← trailing comma before FROM
+FROM users u
+JOIN orders o ON o.user_id = u.id
+WHERE o.created &gt; '2026-01-01';</code></pre>
+<h3>Step 3: Match syntax to your oldest supported version</h3>
+<p>If production runs 5.7 but your laptop runs 8.4, develop against 5.7 syntax or you will ship CTEs that throw 1064 in production only. Keep the version table from <a href="#versions">section 5</a> handy, and run <code>SELECT VERSION();</code> on every environment — people are regularly surprised by what's actually deployed.</p>
+<h3>Step 4: Parameterize application queries</h3>
+<p>Prepared statements with bound parameters eliminate the entire quote-escaping class of 1064 (and SQL injection with it). If your application builds SQL by concatenating strings, that is the real bug; 1064 is just the symptom that occasionally surfaces.</p>
+<h3>Step 5: Check the plan of anything complex</h3>
+<p>Once a query parses, run it through <a href="/explain">EXPLAIN</a> before trusting it in production. It confirms MySQL understood your query the way <em>you</em> meant it — join order, index usage, row estimates — which catches semantic mistakes that 1064 can't.</p>
+<h3>Quick triage table</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Error points near...</th><th>Most likely cause</th><th>Fix</th></tr>
+<tr><td>A column name that's also a keyword</td><td>Reserved word</td><td>Backticks or rename</td></tr>
+<tr><td>A string with a name in it</td><td>Unescaped apostrophe or smart quotes</td><td><code>''</code> escape / retype quotes / parameterize</td></tr>
+<tr><td><code>FROM</code> or <code>VALUES</code></td><td>Trailing or missing comma</td><td>Fix the list punctuation</td></tr>
+<tr><td><code>OVER (</code>, <code>WITH</code>, <code>EXCEPT</code></td><td>Syntax newer than the server</td><td>Rewrite for your version</td></tr>
+<tr><td>Text that looks like a comment</td><td>Missing space after <code>--</code></td><td><code>-- comment</code> or <code>#</code></td></tr>
+<tr><td>End of statement / empty quote</td><td>Unclosed paren or quote</td><td>Balance the delimiters</td></tr>
+</table>
+</div>
+<p>Error 1064 has a reputation as a mystery, but it is the most forthcoming error MySQL produces: it quotes the exact spot where parsing died. Read the fragment, check the token before it, work down the five causes — and validate before you execute so most of them never reach the server in the first place.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ</h2>
+<div class="faq-item"><h3>What does "check the manual that corresponds to your MySQL server version for the right syntax to use near" mean?</h3><p>It is the standard tail of MySQL error 1064. The quoted fragment after <code>near</code> shows where the parser gave up. The actual mistake is usually at that token or in the one immediately before it, because MySQL parses left to right and only fails when it hits something it cannot continue with.</p></div>
+<div class="faq-item"><h3>Why does a simple SELECT query fail with error 1064?</h3><p>The most common reason is a reserved word used as a column or table name — <code>SELECT id, rank FROM players</code> fails on MySQL 8.0 because <code>RANK</code> became reserved. Other frequent causes: a trailing comma before <code>FROM</code>, an unescaped apostrophe inside a string, or smart quotes pasted from a chat app or word processor.</p></div>
+<div class="faq-item"><h3>How do I escape reserved words in MySQL?</h3><p>Wrap the identifier in backticks: <code>`rank`</code>, <code>`order`</code>, <code>`group`</code>. Backticks work regardless of SQL mode. Double quotes only work as identifier quotes when <code>ANSI_QUOTES</code> mode is enabled. The better long-term fix is renaming the column (<code>rank</code> to <code>player_rank</code>) so every query stops needing escapes.</p></div>
+<div class="faq-item"><h3>Can MySQL error 1064 be caused by the server version?</h3><p>Yes. CTEs (<code>WITH ... AS</code>) and window functions (<code>RANK() OVER</code>) require MySQL 8.0; <code>EXCEPT</code> and <code>INTERSECT</code> require 8.0.31. Running these on MySQL 5.7 produces error 1064 pointing near the new keyword. Check your server with <code>SELECT VERSION();</code> and rewrite with subqueries or user variables when you must support older versions.</p></div>
+<div class="faq-item"><h3>How do I stop error 1064 from reaching production?</h3><p>Validate before executing: paste the query into an online SQL validator to catch parse errors instantly, format the SQL so missing commas and unclosed parentheses become visible, use parameterized queries in application code to eliminate string-quoting bugs entirely, and test migrations against the oldest MySQL version you support.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools</h2>
+<div class="related-grid">
+<a href="/validate">SQL Validator</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/explain">SQL EXPLAIN Tool</a>
+<a href="/">SQL Formatter</a>
+<a href="/pretty-print">SQL Pretty Printer</a>
+<a href="/dialect-converter">SQL Dialect Converter</a>
+<a href="/diff">SQL Diff Checker</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

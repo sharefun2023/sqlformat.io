@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL GROUP BY and HAVING Explained — WHERE vs HAVING with Real Examples | SQLFormat.io</title>
+  <meta name="description" content="Learn SQL GROUP BY and HAVING with real order data: the execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY), why WHERE cannot use aggregates, COUNT(*) vs COUNT(col) vs COUNT(DISTINCT col), and GROUP_CONCAT.">
+  <meta name="keywords" content="sql group by, having vs where, sql having clause, count distinct sql, group_concat string_agg">
+  <meta property="og:title" content="SQL GROUP BY and HAVING Explained — WHERE vs HAVING with Real Examples">
+  <meta property="og:description" content="The execution order that explains everything: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY. Multi-column grouping, COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column), string aggregation, and the five mistakes that break grouped queries.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-group-by-having-explained">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-group-by-having-explained">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL GROUP BY and HAVING Explained — WHERE vs HAVING with Real Examples","description":"A practical guide to SQL GROUP BY and HAVING: the real execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY), why WHERE cannot filter on aggregates, grouping by multiple columns, COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column) with NULL handling, GROUP_CONCAT vs STRING_AGG, and the five errors that break grouped queries.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/sql-group-by-having-explained","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL GROUP BY and HAVING Explained","item":"https://sqlformat.io/blog/sql-group-by-having-explained"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between WHERE and HAVING?","acceptedAnswer":{"@type":"Answer","text":"WHERE filters individual rows before grouping and cannot reference aggregate functions. HAVING filters groups after aggregation and is the only place you can test SUM, COUNT, AVG, MIN or MAX. WHERE runs first in the execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY), so a condition that can be expressed either way should go in WHERE for performance."}},{"@type":"Question","name":"Why can't I use an aggregate function in a WHERE clause?","acceptedAnswer":{"@type":"Answer","text":"Because WHERE is evaluated before GROUP BY exists. At that point there are no groups to aggregate, so the engine has nothing to compute SUM or COUNT over. MySQL returns ERROR 1111 (Invalid use of group function) and PostgreSQL returns 'aggregate functions are not allowed in WHERE'. Move the condition to HAVING, or wrap the aggregate in a subquery or CTE and filter in the outer query."}},{"@type":"Question","name":"Do I always need GROUP BY when I use HAVING?","acceptedAnswer":{"@type":"Answer","text":"No. HAVING without GROUP BY treats the entire result set as one group, which is handy for conditional totals: SELECT SUM(amount) FROM orders HAVING SUM(amount) > 1000 returns one row or none. Most of the time, though, HAVING appears together with GROUP BY."}},{"@type":"Question","name":"Why is COUNT(column) smaller than COUNT(*)?","acceptedAnswer":{"@type":"Answer","text":"COUNT(*) counts rows, including rows where a column is NULL. COUNT(column) counts only non-NULL values of that column, so any NULLs are skipped. COUNT(DISTINCT column) counts distinct non-NULL values. On a table of 8 orders where 3 have a discount, COUNT(*) is 8 and COUNT(discount) is 3 — that difference is the fastest way to spot a nullable column in a report."}},{"@type":"Question","name":"Can I group by more than one column?","acceptedAnswer":{"@type":"Answer","text":"Yes, and it is common. GROUP BY region, status creates one output row per existing combination, in the order the columns are listed. A combination that does not appear in the data produces no row at all — unlike a pivot table, the database does not invent empty groups. Add WITH ROLLUP (MySQL, MariaDB, PostgreSQL 9.5+) for subtotal rows."}}]}</script>
+  <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:18px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.95rem}.content-section strong{color:var(--text)}.content-section ul,.content-section ol{color:var(--text2);line-height:1.75;margin:0 0 14px 22px;font-size:.95rem}.content-section li{margin-bottom:6px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.86em;color:var(--accent);font-family:'SF Mono',Monaco,Consolas,monospace}.content-section pre{background:#010409;border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow-x:auto;margin:12px 0 16px}.content-section pre code{background:none;padding:0;color:#c9d1d9;font-size:.85rem;line-height:1.6}.content-section table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 12px;border:1px solid var(--border)}.content-section td{color:var(--text2);padding:10px 12px;border:1px solid var(--border)}.content-section blockquote{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;margin:14px 0;border-radius:0 var(--radius) var(--radius) 0}.content-section blockquote p{margin:0}.cta-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--accent2);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}.cta-box h3{color:var(--text);font-size:1.2rem;margin-bottom:8px}.cta-box p{color:var(--text2);margin-bottom:16px;font-size:.95rem}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.95rem}.cta-box a:hover{background:var(--accent)}.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:8px}.faq-item p{color:var(--text2);font-size:.92rem;line-height:1.7;margin:0}.related-section{margin:40px 0}.related-section h2{font-size:1.3rem;margin-bottom:16px}.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;color:var(--accent);text-decoration:none;font-size:.9rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:640px){.hero h1{font-size:1.5rem}.container{padding:0 14px}nav a{margin-left:14px;font-size:.82rem}}</style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL GROUP BY and HAVING Explained — WHERE vs HAVING with Real Examples</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p><code>GROUP BY</code> and <code>HAVING</code> are the two clauses people use by trial and error: move the condition around until the error stops. That works until a report silently returns the wrong number. The whole topic becomes predictable once you know the order the database actually evaluates a query in — which is not the order you type it.</p>
+<p>This guide works through the real execution order, the <strong>WHERE vs HAVING</strong> split, multi-column grouping, the three flavours of <code>COUNT</code> and their NULL behaviour, string aggregation with <code>GROUP_CONCAT</code> and <code>STRING_AGG</code>, and the five errors that break grouped queries — all against a small <code>orders</code> table with numbers you can verify by hand. Examples run on <strong>MySQL 8.0+</strong> and <strong>PostgreSQL</strong>; dialect differences are noted where they matter.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#execution-order">1. The Execution Order That Explains Everything</a></li>
+<li><a href="#where-vs-having">2. WHERE vs HAVING: Row Filters and Group Filters</a></li>
+<li><a href="#multi-column">3. Grouping by Multiple Columns</a></li>
+<li><a href="#aggregates">4. COUNT(*), COUNT(col) and COUNT(DISTINCT col)</a></li>
+<li><a href="#strings">5. Aggregating Strings: GROUP_CONCAT and STRING_AGG</a></li>
+<li><a href="#mistakes">6. Five Mistakes That Break Grouped Queries</a></li>
+<li><a href="#worked-example">7. Full Worked Example: A Region Revenue Report</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="execution-order">
+<h2>1. The Execution Order That Explains Everything</h2>
+<p>SQL is declarative, but engines still evaluate clauses in a fixed sequence. For a query with every clause present, it looks like this:</p>
+<pre><code>FROM / JOIN      -- build the working set of rows
+WHERE            -- filter individual rows (before any grouping)
+GROUP BY         -- collapse rows into groups
+HAVING           -- filter groups (after aggregation)
+SELECT           -- evaluate the output list, aliases, aggregate results
+ORDER BY         -- sort the final result
+LIMIT            -- cut the result set</code></pre>
+<p>Two consequences follow directly, and between them they explain almost every error people hit with these clauses:</p>
+<ul>
+<li><code>WHERE</code> runs <em>before</em> grouping exists. There are no groups and no aggregates yet, so a condition like <code>SUM(amount) &gt; 200</code> has nothing to compute over. It is a hard error, not a warning: MySQL raises <code>ERROR 1111 (42000): Invalid use of group function</code>, PostgreSQL says <code>aggregate functions are not allowed in WHERE</code>.</li>
+<li><code>SELECT</code> runs <em>after</em> <code>GROUP BY</code>. Once rows are collapsed, the only values still available per group are the grouping columns and aggregates over the rest. Selecting a bare, ungrouped column is ambiguous — and modern engines refuse it rather than guess.</li>
+</ul>
+<p>One more asymmetry to memorise: <code>SELECT</code> aliases are invisible to <code>WHERE</code> and <code>GROUP BY</code>, but MySQL and PostgreSQL both accept them in <code>HAVING</code> and <code>ORDER BY</code>. So <code>ORDER BY total DESC</code> works while <code>WHERE total &gt; 100</code> fails with "unknown column".</p>
+</section>
+
+<section class="content-section" id="where-vs-having">
+<h2>2. WHERE vs HAVING: Row Filters and Group Filters</h2>
+<p>The distinction is one sentence: <strong>WHERE filters rows, HAVING filters groups.</strong> WHERE picks which records enter the aggregation; HAVING picks which aggregated results come out — "customers who spent more than 200" is a group filter:</p>
+<pre><code>SELECT customer_id, SUM(amount) AS total
+FROM orders
+WHERE SUM(amount) &gt; 200       -- ERROR 1111: Invalid use of group function
+GROUP BY customer_id;</code></pre>
+<p>The correct version moves the aggregate check into <code>HAVING</code> — and note that both filters can appear in the same query, doing different jobs:</p>
+<pre><code>SELECT customer_id,
+       SUM(amount) AS total,
+       COUNT(*)    AS order_count
+FROM orders
+WHERE status = 'shipped'      -- row filter: cancelled and pending rows never get grouped
+GROUP BY customer_id
+HAVING SUM(amount) &gt; 200      -- group filter: keep only groups whose total clears 200
+ORDER BY total DESC;</code></pre>
+<p>The <code>WHERE</code> clause reduces the working set early, which is exactly why it is also the faster place for any condition that does not involve an aggregate. A predicate in <code>HAVING</code> is evaluated after every group has been built and aggregated, so it cannot prune rows before the work happens. Rewriting <code>HAVING status = 'shipped'</code> as <code>WHERE status = 'shipped'</code> is a pure win whenever it is legal.</p>
+<table>
+<thead><tr><th></th><th>WHERE</th><th>HAVING</th></tr></thead>
+<tbody>
+<tr><td>Filters</td><td>Individual rows</td><td>Groups (aggregated rows)</td></tr>
+<tr><td>Runs</td><td>Before GROUP BY</td><td>After GROUP BY</td></tr>
+<tr><td>Aggregates allowed?</td><td>No (ERROR 1111)</td><td>Yes — this is its purpose</td></tr>
+<tr><td>Column aliases available?</td><td>No</td><td>Yes, in MySQL and PostgreSQL</td></tr>
+<tr><td>Can appear without the other?</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Performance</td><td>Prunes early, can use indexes</td><td>Runs after aggregation</td></tr>
+</tbody>
+</table>
+<p><code>HAVING</code> does not require <code>GROUP BY</code>. On its own it treats the entire result as a single group, which is a compact way to write a conditional total:</p>
+<pre><code>SELECT SUM(amount) AS revenue
+FROM orders
+WHERE status = 'shipped'
+HAVING SUM(amount) &gt; 1000;   -- returns one row, or no rows at all</code></pre>
+</section>
+
+<section class="content-section" id="multi-column">
+<h2>3. Grouping by Multiple Columns</h2>
+<p>Listing several columns in <code>GROUP BY</code> produces one output row per existing <em>combination</em> of their values — the same way a composite key works. Each level added refines the grain of the report:</p>
+<pre><code>SELECT region,
+       status,
+       COUNT(*)              AS orders,
+       SUM(amount)           AS revenue,
+       ROUND(AVG(amount), 2) AS avg_order
+FROM orders
+GROUP BY region, status
+ORDER BY region, status;</code></pre>
+<p>Run against our eight-order sample, the result is:</p>
+<table>
+<thead><tr><th>region</th><th>status</th><th>orders</th><th>revenue</th><th>avg_order</th></tr></thead>
+<tbody>
+<tr><td>North</td><td>cancelled</td><td>1</td><td>50.00</td><td>50.00</td></tr>
+<tr><td>North</td><td>shipped</td><td>2</td><td>200.00</td><td>100.00</td></tr>
+<tr><td>South</td><td>pending</td><td>2</td><td>710.00</td><td>355.00</td></tr>
+<tr><td>South</td><td>shipped</td><td>1</td><td>220.00</td><td>220.00</td></tr>
+<tr><td>West</td><td>shipped</td><td>2</td><td>140.00</td><td>70.00</td></tr>
+</tbody>
+</table>
+<p>Only five rows come back: <code>(West, cancelled)</code> never occurs in the data, so no row exists for it. <code>GROUP BY</code> is not a pivot table — it reports combinations that are present, not empty cells. To include zero counts, build the full key list in a CTE or calendar table and <code>LEFT JOIN</code> the aggregate to it.</p>
+<p>Both MySQL and PostgreSQL 9.5+ support <code>GROUP BY region, status WITH ROLLUP</code> for subtotal rows, which appends <code>NULL</code> in the rolled-up column and saves a second query for grand totals.</p>
+</section>
+
+<div class="cta-box">
+<h3>Reading a Grouped Query Gets Easier When It Is Indented</h3>
+<p>Long GROUP BY queries flatten into an unreadable line quickly. Paste yours into the formatter and check the clause order, indentation, and that every non-aggregated column is actually grouped.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+
+<section class="content-section" id="aggregates">
+<h2>4. COUNT(*), COUNT(col) and COUNT(DISTINCT col)</h2>
+<p>The five standard aggregates are <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code> and <code>MAX</code>. The one that causes silent wrong answers is <code>COUNT</code>, because three different spellings mean three different things — and the difference is entirely about <code>NULL</code>.</p>
+<table>
+<thead><tr><th>Expression</th><th>Counts</th><th>NULLs counted?</th></tr></thead>
+<tbody>
+<tr><td><code>COUNT(*)</code></td><td>Rows in the group</td><td>Yes — every row</td></tr>
+<tr><td><code>COUNT(column)</code></td><td>Rows where that column is not NULL</td><td>No — skipped</td></tr>
+<tr><td><code>COUNT(DISTINCT column)</code></td><td>Distinct non-NULL values</td><td>No — skipped</td></tr>
+<tr><td><code>SUM</code> / <code>AVG</code> / <code>MIN</code> / <code>MAX</code></td><td>Non-NULL values only</td><td>No — ignored</td></tr>
+</tbody>
+</table>
+<p>All four of the last group ignore <code>NULL</code>. That is consistent, and it is also where the classic <code>AVG</code> trap hides. Suppose three of the eight orders carry a discount and five have <code>discount = NULL</code>:</p>
+<pre><code>SELECT COUNT(*)               AS all_rows,        -- 8
+       COUNT(discount)        AS rows_with_disc,  -- 3
+       COUNT(DISTINCT region) AS regions,         -- 3
+       SUM(amount)            AS revenue,         -- 1320.00
+       ROUND(AVG(amount), 2)  AS avg_order,       -- 165.00
+       ROUND(AVG(discount), 2) AS avg_discount    -- 11.83  (35.50 / 3, not / 8)
+FROM orders;</code></pre>
+<p><code>AVG(discount)</code> divides by 3, the number of non-NULL discounts — not by 8. If your definition of "average discount" is "total discount spread across all orders", you have to say so explicitly:</p>
+<pre><code>SELECT ROUND(SUM(discount) / COUNT(*), 2) AS discount_per_order  -- 4.44
+FROM orders;</code></pre>
+<p>When a group contains only <code>NULL</code> values, <code>SUM</code>, <code>AVG</code>, <code>MIN</code> and <code>MAX</code> all return <code>NULL</code> (not zero), while <code>COUNT</code> returns 0. Wrap them in <code>COALESCE(AVG(discount), 0)</code> if the report expects a number.</p>
+</section>
+
+<section class="content-section" id="strings">
+<h2>5. Aggregating Strings: GROUP_CONCAT and STRING_AGG</h2>
+<p>Numbers are not the only thing you can aggregate. Collapsing a group's textual values into one delimited string is how you build comma-separated tag lists, status summaries, or audit one-liners per customer without a second query. The function name differs by dialect; the behaviour does not.</p>
+<pre><code>-- MySQL
+SELECT customer_id,
+       GROUP_CONCAT(DISTINCT status ORDER BY status SEPARATOR '|') AS statuses
+FROM orders
+GROUP BY customer_id;
+
+-- PostgreSQL (also SQL Server 2017+, with STRING_AGG)
+SELECT customer_id,
+       STRING_AGG(DISTINCT status, '|' ORDER BY status) AS statuses
+FROM orders
+GROUP BY customer_id;</code></pre>
+<p>Customer 102, who has a pending and a shipped order, comes back as <code>pending|shipped</code>. Note the argument order difference: MySQL takes its separator as a keyword argument, PostgreSQL as the second positional argument (Oracle calls it <code>LISTAGG</code>).</p>
+<p>One MySQL trap is worth pinning down: <code>GROUP_CONCAT</code> silently truncates at <code>group_concat_max_len</code>, which defaults to 1024 bytes. No warning, no error — just a string that stops in the middle. If the concatenated list can be long, raise it for the session first:</p>
+<pre><code>SET SESSION group_concat_max_len = 100000;</code></pre>
+<p>Unlike window functions, string aggregation has no per-row equivalent in MySQL — collapsing a group into one string is a genuinely aggregate-only operation.</p>
+</section>
+
+<section class="content-section" id="mistakes">
+<h2>6. Five Mistakes That Break Grouped Queries</h2>
+<h3>Mistake 1: Selecting a column that is neither grouped nor aggregated</h3>
+<pre><code>SELECT region, status, SUM(amount) AS revenue
+FROM orders
+GROUP BY region;   -- ERROR 1055 (42000): 'orders.status' isn't in GROUP BY</code></pre>
+<p>Every region has several statuses, so there is no single value to print. MySQL 5.7.5+ enables <code>ONLY_FULL_GROUP_BY</code> by default and rejects it; PostgreSQL has always rejected it with "column must appear in the GROUP BY clause or be used in an aggregate function". Older MySQL builds allowed it and returned an arbitrary row's value — a silent bug worth upgrading away from. The fix is to add the column to <code>GROUP BY</code> or wrap it: <code>GROUP_CONCAT(DISTINCT status)</code>, <code>MIN(status)</code>, or a <code>GROUP BY region, status</code>.</p>
+<h3>Mistake 2: An aggregate in the WHERE clause</h3>
+<pre><code>SELECT region, SUM(amount)
+FROM orders
+WHERE SUM(amount) &gt; 500    -- ERROR 1111: Invalid use of group function
+GROUP BY region;</code></pre>
+<p>Move it to <code>HAVING</code>. If the condition must run before grouping for some reason, compute it in a subquery or CTE and filter the outer query instead.</p>
+<h3>Mistake 3: Assuming COUNT(column) means "rows"</h3>
+<pre><code>SELECT COUNT(coupon_code) AS orders_with_coupon,   -- 3
+       COUNT(*)           AS orders                -- 8
+FROM orders;</code></pre>
+<p>Both statements look like a row count. Only one is. Reach for <code>COUNT(*)</code> unless you specifically want non-NULL values.</p>
+<h3>Mistake 4: Using a SELECT alias in WHERE</h3>
+<pre><code>SELECT region, SUM(amount) AS revenue
+FROM orders
+WHERE revenue &gt; 500        -- ERROR 1054: Unknown column 'revenue' in 'where clause'
+GROUP BY region;</code></pre>
+<p>The alias does not exist yet when <code>WHERE</code> runs. Use the full expression, or move the alias reference to <code>HAVING</code> or <code>ORDER BY</code>, where MySQL and PostgreSQL both resolve it.</p>
+<h3>Mistake 5: Putting a row filter in HAVING</h3>
+<pre><code>-- Works, but aggregates everything before discarding cancelled rows
+SELECT region, SUM(amount) AS revenue
+FROM orders
+GROUP BY region
+HAVING region != 'West' AND MAX(status) != 'cancelled';
+
+-- Same result, less work: prune the rows first
+SELECT region, SUM(amount) AS revenue
+FROM orders
+WHERE region != 'West' AND status != 'cancelled'
+GROUP BY region;</code></pre>
+<p>HAVING conditions that do not involve an aggregate are almost always meant to be WHERE conditions. There is one exception: <code>HAVING</code> is the only clause where a SELECT alias from an aggregate is legal, so <code>HAVING revenue &gt; 500</code> is a legitimate shortcut.</p>
+</section>
+
+<section class="content-section" id="worked-example">
+<h2>7. Full Worked Example: A Region Revenue Report</h2>
+<p>Here is the whole toolkit in one query. It counts shipped orders per region, counts distinct buyers, totals revenue, averages order size, and keeps only regions that cleared 200 in shipped revenue:</p>
+<pre><code>SELECT region,
+       COUNT(*)                    AS orders,
+       COUNT(DISTINCT customer_id) AS buyers,
+       SUM(amount)                 AS revenue,
+       ROUND(AVG(amount), 2)       AS avg_order,
+       MIN(amount)                 AS smallest_order,
+       MAX(amount)                 AS largest_order
+FROM orders
+WHERE status = 'shipped'          -- only completed sales count
+GROUP BY region
+HAVING SUM(amount) &gt;= 200         -- drop low-volume regions
+ORDER BY revenue DESC;</code></pre>
+<p>The sample data ships five orders; West totals only 140 and is filtered out by <code>HAVING</code>:</p>
+<table>
+<thead><tr><th>region</th><th>orders</th><th>buyers</th><th>revenue</th><th>avg_order</th><th>smallest_order</th><th>largest_order</th></tr></thead>
+<tbody>
+<tr><td>South</td><td>1</td><td>1</td><td>220.00</td><td>220.00</td><td>220.00</td><td>220.00</td></tr>
+<tr><td>North</td><td>2</td><td>1</td><td>200.00</td><td>100.00</td><td>80.00</td><td>120.00</td></tr>
+</tbody>
+</table>
+<p>Two things in that output are worth pausing on. North shows <code>orders = 2</code> but <code>buyers = 1</code>: customer 101 placed both, so <code>COUNT(DISTINCT customer_id)</code> collapses them while <code>COUNT(*)</code> does not — a one-line way to spot repeat buyers. And West's two shipped orders still exist in the table; they are simply missing from the report, because <code>HAVING</code> ran after grouping and removed the group.</p>
+<p>Now move the revenue threshold into <code>WHERE</code> and watch it break. <code>WHERE SUM(amount) &gt;= 200 GROUP BY region</code> is invalid for the same reason as Mistake 2, and the workaround people reach for — filtering on individual <code>amount</code> rows — answers a different question entirely. <code>HAVING SUM(...)</code> compares the group total; <code>WHERE amount &gt;= 200</code> compares single orders and would keep just one row from North. That distinction is the entire reason the clause exists.</p>
+<p>When the query grows to five or six of these, the clause order is the first thing a reviewer checks — run it through the <a href="/">online SQL formatter</a> to make the FROM → WHERE → GROUP BY → HAVING → ORDER BY flow visible, and check the plan with the <a href="/explain">EXPLAIN viewer</a> if a grouped query over a large table starts to drag.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — SQL GROUP BY and HAVING</h2>
+<div class="faq-item"><h3>What is the difference between WHERE and HAVING?</h3><p>WHERE filters individual rows before grouping and cannot reference aggregate functions. HAVING filters groups after aggregation and is the only place you can test SUM, COUNT, AVG, MIN or MAX. WHERE runs first in the execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY), so a condition that can be expressed either way belongs in WHERE.</p></div>
+<div class="faq-item"><h3>Why can't I use an aggregate function in a WHERE clause?</h3><p>Because WHERE is evaluated before GROUP BY exists — there are no groups to aggregate yet. MySQL returns <code>ERROR 1111 (Invalid use of group function)</code> and PostgreSQL returns "aggregate functions are not allowed in WHERE". Move the condition into HAVING, or wrap the aggregate in a subquery or CTE and filter in the outer query.</p></div>
+<div class="faq-item"><h3>Do I always need GROUP BY when I use HAVING?</h3><p>No. HAVING without GROUP BY treats the whole result set as one group, which is useful for conditional totals: <code>SELECT SUM(amount) FROM orders HAVING SUM(amount) &gt; 1000</code> returns one row or none. But most of the time HAVING appears alongside GROUP BY.</p></div>
+<div class="faq-item"><h3>Why is COUNT(column) smaller than COUNT(*)?</h3><p>COUNT(*) counts rows, including those where a column is NULL. COUNT(column) counts only non-NULL values, and COUNT(DISTINCT column) counts distinct non-NULL values. On a table of 8 orders where 3 carry a discount, COUNT(*) is 8 and COUNT(discount) is 3 — the gap immediately tells you the column is nullable.</p></div>
+<div class="faq-item"><h3>Can I group by more than one column?</h3><p>Yes. <code>GROUP BY region, status</code> produces one output row per existing combination, in the listed order. A combination absent from the data produces no row — the database does not invent empty groups the way a pivot table does. Add <code>WITH ROLLUP</code> (MySQL, MariaDB, PostgreSQL 9.5+) for subtotal rows.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/data-generator">SQL Data Generator</a>
+<a href="/explain">SQL EXPLAIN Viewer</a>
+<a href="/pretty-print">SQL Pretty Printer</a>
+<a href="/validate">SQL Validator</a>
+<a href="/blog/sql-cheat-sheet">SQL Cheat Sheet</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

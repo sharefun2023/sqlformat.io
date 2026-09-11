@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subquery vs JOIN — When to Use Each (With Performance Analysis) | SQLFormat.io</title>
+  <meta name="description" content="Subquery vs JOIN explained with runnable examples: the semantic difference, why correlated subqueries hurt, IN vs EXISTS including the NOT IN NULL trap, and how to verify with EXPLAIN.">
+  <meta name="keywords" content="subquery vs join, sql exists vs in, correlated subquery, sql performance, explain plan">
+  <meta property="og:title" content="Subquery vs JOIN — When to Use Each (With Performance Analysis)">
+  <meta property="og:description" content="Correlated subqueries, IN vs EXISTS, the NOT IN NULL trap, and EXPLAIN verification — a practical guide with runnable SQL examples.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-subquery-vs-join">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-subquery-vs-join">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Subquery vs JOIN — When to Use Each (With Performance Analysis)","description":"Subquery vs JOIN explained with runnable examples: the semantic difference, correlated subquery pitfalls, IN vs EXISTS including the NOT IN NULL trap, scalar subqueries, and EXPLAIN verification.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/sql-subquery-vs-join","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"Subquery vs JOIN — When to Use Each","item":"https://sqlformat.io/blog/sql-subquery-vs-join"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are subqueries slower than JOINs?","acceptedAnswer":{"@type":"Answer","text":"Usually not. Modern optimizers in PostgreSQL, MySQL 8+, and SQL Server rewrite most non-correlated subqueries into joins or semi-joins automatically. The real performance trap is the correlated subquery, which references the outer query and can execute once per outer row."}},{"@type":"Question","name":"Should I use IN or EXISTS in SQL?","acceptedAnswer":{"@type":"Answer","text":"For positive membership tests they perform the same on modern databases. The difference matters for negation: NOT IN returns an empty set if the subquery contains a single NULL, because NULL comparison yields UNKNOWN. NOT EXISTS has no such trap and is the safe default for anti-joins."}},{"@type":"Question","name":"When is a subquery clearer than a JOIN?","acceptedAnswer":{"@type":"Answer","text":"Scalar subqueries in the SELECT list are often clearer than joining a table just to fetch one extra column per row, for example attaching each customer's latest order total. They also express intent directly: one value per outer row."}},{"@type":"Question","name":"When must I use a JOIN instead of a subquery?","acceptedAnswer":{"@type":"Answer","text":"Whenever you need multiple columns from the related table, or need to aggregate or sort by its values. A scalar subquery returns exactly one column and one row, so fetching several columns means several subqueries scanning the same table repeatedly — a JOIN does it once."}},{"@type":"Question","name":"How do I verify subquery vs JOIN performance?","acceptedAnswer":{"@type":"Answer","text":"Run EXPLAIN (MySQL, PostgreSQL) or EXPLAIN ANALYZE (PostgreSQL, actual timings) on both query versions and compare. If both plans show the same semi-join or hash-join node, the optimizer already rewrote your subquery and the choice is purely stylistic."}}]}</script>
+  <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:18px 0 8px}.content-section p{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:.95rem}.content-section strong{color:var(--text)}.content-section ul,.content-section ol{color:var(--text2);line-height:1.75;margin:0 0 14px 22px;font-size:.95rem}.content-section li{margin-bottom:6px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.86em;color:var(--accent);font-family:'SF Mono',Monaco,Consolas,monospace}.content-section pre{background:#010409;border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow-x:auto;margin:12px 0 16px}.content-section pre code{background:none;padding:0;color:#c9d1d9;font-size:.85rem;line-height:1.6}.content-section table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}.content-section th{background:var(--surface2);color:var(--text);text-align:left;padding:10px 12px;border:1px solid var(--border)}.content-section td{color:var(--text2);padding:10px 12px;border:1px solid var(--border)}.content-section blockquote{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;margin:14px 0;border-radius:0 var(--radius) var(--radius) 0}.content-section blockquote p{margin:0}.cta-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--accent2);border-radius:var(--radius);padding:28px;margin:32px 0;text-align:center}.cta-box h3{color:var(--text);font-size:1.2rem;margin-bottom:8px}.cta-box p{color:var(--text2);margin-bottom:16px;font-size:.95rem}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.95rem}.cta-box a:hover{background:var(--accent)}.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px}.faq-item h3{font-size:1rem;color:var(--text);margin-bottom:8px}.faq-item p{color:var(--text2);font-size:.92rem;line-height:1.7;margin:0}.related-section{margin:40px 0}.related-section h2{font-size:1.3rem;margin-bottom:16px}.related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.related-grid a{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;color:var(--accent);text-decoration:none;font-size:.9rem;transition:border-color .2s}.related-grid a:hover{border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--accent);text-decoration:none}@media(max-width:640px){.hero h1{font-size:1.5rem}.container{padding:0 14px}nav a{margin-left:14px;font-size:.82rem}}</style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>Subquery vs JOIN — When to Use Each (With Performance Analysis)</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>"Rewrite that subquery as a JOIN — it'll be faster." This advice has been copy-pasted through SQL tutorials for twenty years, and on any database released in the last decade it is usually wrong. PostgreSQL, MySQL 8+, and SQL Server rewrite most subqueries into joins or semi-joins before execution ever begins. You can verify this yourself with <code>EXPLAIN</code> in about two minutes, and this article shows you exactly how.</p>
+<p>That said, the subquery-vs-JOIN choice is not purely cosmetic. There is one construct that genuinely wrecks performance — the <strong>correlated subquery</strong> — and one that silently returns wrong answers — <code>NOT IN</code> against a column containing <code>NULL</code>. Below we build a small demo dataset, walk through the semantic difference between the two approaches, compare <code>IN</code> vs <code>EXISTS</code>, and finish with a repeatable EXPLAIN workflow so you never have to guess again.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#setup">The Demo Dataset</a></li>
+<li><a href="#semantics">The Semantic Difference: Sets vs Rows</a></li>
+<li><a href="#performance">The Performance Truth: Optimizers Rewrite Most Subqueries</a></li>
+<li><a href="#correlated">The Real Trap: Correlated Subqueries</a></li>
+<li><a href="#in-vs-exists">IN vs EXISTS — and the NOT IN NULL Trap</a></li>
+<li><a href="#when-subquery">When a Subquery Is the Clearer Choice</a></li>
+<li><a href="#when-join">When a JOIN Is the Only Option</a></li>
+<li><a href="#explain">Verifying With EXPLAIN: A Practical Workflow</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="setup">
+<h2>1. The Demo Dataset</h2>
+<p>Every example below runs against two small tables. Create them once and follow along — the NULL trap in section 5 depends on this exact data.</p>
+<pre><code>CREATE TABLE customers (
+  customer_id INT PRIMARY KEY,
+  name        VARCHAR(50),
+  region_id   INT              -- intentionally nullable
+);
+
+CREATE TABLE orders (
+  order_id    INT PRIMARY KEY,
+  customer_id INT,
+  amount      DECIMAL(10,2),
+  ordered_at  DATE
+);
+
+INSERT INTO customers VALUES
+  (1, 'Alice', 10),
+  (2, 'Bob',   20),
+  (3, 'Carol', NULL),   -- the NULL that breaks NOT IN later
+  (4, 'Dave',  30);
+
+INSERT INTO orders VALUES
+  (101, 1, 250.00, '2026-08-01'),
+  (102, 1,  90.50, '2026-08-15'),
+  (103, 2, 480.00, '2026-08-20'),
+  (104, 4,  15.00, '2026-09-01');
+-- Note: Carol (customer_id = 3) has no orders.</code></pre>
+<p>Four customers, four orders. Alice ordered twice, Carol never did, and Carol's <code>region_id</code> is NULL. Keep those three facts in mind.</p>
+</section>
+
+<section class="content-section" id="semantics">
+<h2>2. The Semantic Difference: Sets vs Rows</h2>
+<p>A JOIN and a subquery answer different questions, and picking the one that matches your question is step one.</p>
+<p>A <strong>JOIN</strong> says: "combine rows from two tables where a condition holds." The result is a new relation — its row count depends on matches on both sides. If Alice has two orders, <code>customers JOIN orders</code> produces two Alice rows. That's a feature when you want order-level detail and a bug when you wanted one row per customer.</p>
+<pre><code>SELECT c.name, o.order_id, o.amount
+FROM customers c
+JOIN orders o ON o.customer_id = c.customer_id;</code></pre>
+<p>A <strong>subquery</strong> says: "evaluate this inner question first (or per-row), then use its result in the outer query." Depending on placement it returns a single value (scalar), a single column (used with <code>IN</code>/<code>EXISTS</code>), or a derived table (in the <code>FROM</code> clause). A membership test reads naturally as a subquery:</p>
+<pre><code>SELECT c.name
+FROM customers c
+WHERE c.customer_id IN (SELECT o.customer_id FROM orders o);</code></pre>
+<p>Both queries above return customers who ordered — but the JOIN needs <code>DISTINCT</code> to avoid duplicating Alice, while the <code>IN</code> version returns each customer at most once by definition. That deduplication guarantee is a semantic difference, not a style preference.</p>
+<table>
+<tr><th>Aspect</th><th>JOIN</th><th>Subquery</th></tr>
+<tr><td>Result shape</td><td>Combined columns from both tables</td><td>Outer table's columns (inner result is a filter or a value)</td></tr>
+<tr><td>Row multiplication</td><td>Possible (one-to-many fans out)</td><td>None for IN/EXISTS filters</td></tr>
+<tr><td>Columns retrievable from second table</td><td>Unlimited</td><td>One (scalar subquery) or zero (filter)</td></tr>
+<tr><td>Typical intent</td><td>"Show me detail from both tables"</td><td>"Filter or annotate rows of one table"</td></tr>
+</table>
+</section>
+
+<section class="content-section" id="performance">
+<h2>3. The Performance Truth: Optimizers Rewrite Most Subqueries</h2>
+<p>The folklore says JOINs are faster because subqueries "execute the inner query for every row." On modern engines this is simply not what happens for non-correlated subqueries. The optimizer flattens them.</p>
+<p>Run the <code>IN</code> query from section 2 through <code>EXPLAIN</code> in PostgreSQL:</p>
+<pre><code>EXPLAIN
+SELECT c.name
+FROM customers c
+WHERE c.customer_id IN (SELECT o.customer_id FROM orders o);</code></pre>
+<p>The plan shows a <code>Hash Semi Join</code> — the same semi-join operator you'd get from a deduplicated JOIN. There is no inner loop, no per-row re-execution. MySQL 8 behaves the same way; since 5.6 it converts <code>IN (subquery)</code> into a semi-join using materialization or first-match strategies. SQL Server has done this since roughly forever.</p>
+<p>So for a plain, non-correlated membership filter, the subquery-vs-JOIN performance debate is dead. Write whichever communicates intent better — for "find customers who ordered," <code>IN</code>/<code>EXISTS</code> usually reads more directly than <code>JOIN</code> + <code>DISTINCT</code>.</p>
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Semi-joins are not just "as fast" as joins — they can be faster, because the engine stops probing at the first match per outer row. A JOIN + DISTINCT must find <em>all</em> matches, then deduplicate. On one-to-many data, the semi-join form does strictly less work.
+</div>
+</section>
+
+<section class="content-section" id="correlated">
+<h2>4. The Real Trap: Correlated Subqueries</h2>
+<p>A subquery becomes <strong>correlated</strong> when it references a column from the outer query. The inner query can no longer be evaluated once on its own — its result depends on which outer row is currently being processed:</p>
+<pre><code>-- Correlated: the inner WHERE mentions c.customer_id
+SELECT c.name,
+       (SELECT MAX(o.amount)
+        FROM orders o
+        WHERE o.customer_id = c.customer_id) AS biggest_order
+FROM customers c;</code></pre>
+<p>Conceptually, the database evaluates the inner <code>SELECT MAX(...)</code> once per customer. With 4 customers that's nothing. With 10 million customers and no index on <code>orders.customer_id</code>, that's 10 million sequential scans of the orders table. This is the construct behind most genuinely slow "subquery" queries — not subqueries in general.</p>
+<p>Mitigations, in order of preference:</p>
+<ol>
+<li><strong>Index the correlation column.</strong> An index on <code>orders(customer_id, amount)</code> turns each inner execution into an index-only lookup. Often this alone makes the correlated form perfectly fast.</li>
+<li><strong>Rewrite as a JOIN against a pre-aggregated derived table</strong> — one scan, one grouping, one join:
+<pre><code>SELECT c.name, m.biggest_order
+FROM customers c
+LEFT JOIN (
+  SELECT customer_id, MAX(amount) AS biggest_order
+  FROM orders
+  GROUP BY customer_id
+) m ON m.customer_id = c.customer_id;</code></pre>
+Note the <code>LEFT JOIN</code>: the correlated scalar subquery returns NULL for Carol (no orders), and only LEFT JOIN reproduces that. An INNER JOIN would silently drop her.</li>
+<li><strong>Use a window function</strong> (PostgreSQL, MySQL 8+, SQL Server):
+<pre><code>SELECT DISTINCT name,
+       MAX(amount) OVER (PARTITION BY c.customer_id) AS biggest_order
+FROM customers c
+JOIN orders o ON o.customer_id = c.customer_id;</code></pre></li>
+</ol>
+<p>Also know that some engines decorrelate automatically — PostgreSQL rewrites many <code>EXISTS</code>/<code>IN</code> correlated subqueries into joins — but scalar correlated subqueries in the SELECT list are frequently executed per row even there. Check the plan (section 8) before assuming.</p>
+</section>
+
+<div class="cta-box">
+<h3>See What Your Database Actually Does</h3>
+<p>Paste your query with its EXPLAIN output into our visualizer and inspect join types, row estimates, and costs node by node — no DBA required.</p>
+<a href="/explain">Open SQL EXPLAIN Visualizer &rarr;</a>
+</div>
+
+<section class="content-section" id="in-vs-exists">
+<h2>5. IN vs EXISTS — and the NOT IN NULL Trap</h2>
+<p>The classic <code>IN</code> vs <code>EXISTS</code> comparison. For positive tests, both work and modern optimizers produce the same semi-join plan:</p>
+<pre><code>-- Version A: IN
+SELECT c.name FROM customers c
+WHERE c.customer_id IN (SELECT o.customer_id FROM orders o);
+
+-- Version B: EXISTS (correlated, but decorrelated by the optimizer)
+SELECT c.name FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o
+              WHERE o.customer_id = c.customer_id);</code></pre>
+<p>Alice, Bob, Dave. Identical results, identical plans on PostgreSQL and MySQL 8. Pick either; <code>EXISTS</code> scales slightly better in intent because it explicitly stops at the first match and never worries about the inner query returning many rows.</p>
+<h3>The negation is where they diverge — dangerously</h3>
+<p>Now find customers with <strong>no</strong> orders. The <code>NOT EXISTS</code> version does what you expect:</p>
+<pre><code>SELECT c.name FROM customers c
+WHERE NOT EXISTS (SELECT 1 FROM orders o
+                  WHERE o.customer_id = c.customer_id);
+-- Returns: Carol ✓</code></pre>
+<p>The <code>NOT IN</code> version looks equivalent. It is not:</p>
+<pre><code>SELECT c.name FROM customers c
+WHERE c.customer_id NOT IN (SELECT o.customer_id FROM orders o);
+-- Returns: (empty set) — if any orders.customer_id is NULL</code></pre>
+<p>Why? <code>x NOT IN (a, b, NULL)</code> expands to <code>x &lt;&gt; a AND x &lt;&gt; b AND x &lt;&gt; NULL</code>. The last comparison yields <code>UNKNOWN</code>, and <code>TRUE AND UNKNOWN</code> is <code>UNKNOWN</code> — which the WHERE clause treats as false. <strong>One NULL in the subquery column and NOT IN returns zero rows for the entire table.</strong> No error, no warning, just a silently empty result. In our demo <code>orders.customer_id</code> happens to be clean, so the query returns Carol — but the moment a nullable FK column admits a single NULL, it breaks.</p>
+<p>Rules that follow:</p>
+<ul>
+<li>Use <code>NOT EXISTS</code> (or a <code>LEFT JOIN ... IS NULL</code> anti-join) for "rows with no match." It is NULL-safe by construction.</li>
+<li>If you must use <code>NOT IN</code>, guard the subquery: <code>WHERE col NOT IN (SELECT x FROM t WHERE x IS NOT NULL)</code> — or declare the column <code>NOT NULL</code>.</li>
+<li>The trap is asymmetric: <code>IN</code> with NULLs merely fails to match the NULL (harmless); <code>NOT IN</code> with NULLs destroys the whole result (catastrophic).</li>
+</ul>
+<table>
+<tr><th>Construct</th><th>NULL in subquery result</th><th>Plan on modern engines</th><th>Verdict</th></tr>
+<tr><td><code>IN</code></td><td>Harmless — NULL just never matches</td><td>Semi-join</td><td>Fine</td></tr>
+<tr><td><code>EXISTS</code></td><td>Irrelevant — tests row existence</td><td>Semi-join (decorrelated)</td><td>Fine</td></tr>
+<tr><td><code>NOT IN</code></td><td><strong>Returns empty set</strong></td><td>Anti-join only if column is NOT NULL</td><td>Avoid</td></tr>
+<tr><td><code>NOT EXISTS</code></td><td>Safe</td><td>Anti-join</td><td>Preferred for anti-joins</td></tr>
+</table>
+</section>
+
+<section class="content-section" id="when-subquery">
+<h2>6. When a Subquery Is the Clearer Choice</h2>
+<p>JOINs aren't automatically "more readable." When you need exactly <em>one value per outer row</em>, a scalar subquery in the SELECT list states the intent without dragging a second table into the main relation:</p>
+<pre><code>SELECT c.name,
+       (SELECT COUNT(*) FROM orders o
+        WHERE o.customer_id = c.customer_id) AS order_count
+FROM customers c;</code></pre>
+<p>Compare the JOIN equivalent — it needs a GROUP BY that only exists to undo the fan-out the JOIN created:</p>
+<pre><code>SELECT c.name, COUNT(o.order_id) AS order_count
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.customer_id
+GROUP BY c.customer_id, c.name;</code></pre>
+<p>The scalar-subquery version keeps the outer query's grain obvious: one row per customer, full stop. It's especially good for annotating a report ("...and also show each customer's most recent order date") where adding JOIN + GROUP BY would ripple through the whole query. Two honest caveats: it's still a correlated subquery, so index the correlation column, and each additional scalar subquery is another pass — if you need three values from the same table, that's a signal to switch to the aggregate-JOIN form.</p>
+<p>Scalar subqueries also shine as single-value parameters, where no JOIN is even possible:</p>
+<pre><code>SELECT name FROM customers
+WHERE region_id = (SELECT region_id FROM customers WHERE name = 'Bob');
+-- and the classic:
+SELECT * FROM orders
+WHERE amount = (SELECT MAX(amount) FROM orders);</code></pre>
+</section>
+
+<section class="content-section" id="when-join">
+<h2>7. When a JOIN Is the Only Option</h2>
+<p>A scalar subquery returns <strong>one row, one column</strong> — that's enforced by the engine, and violating it at runtime is an error, not a silent wrong answer. So the moment you need multiple columns from the related table, subqueries stop being a real option:</p>
+<pre><code>-- Need BOTH the biggest order's amount AND its date: JOIN wins
+SELECT c.name, o.amount, o.ordered_at
+FROM customers c
+JOIN orders o
+  ON o.customer_id = c.customer_id
+JOIN (
+  SELECT customer_id, MAX(amount) AS max_amount
+  FROM orders GROUP BY customer_id
+) mx ON mx.customer_id = o.customer_id
+    AND mx.max_amount  = o.amount;</code></pre>
+<p>You <em>could</em> fake it with two parallel scalar subqueries — one for <code>amount</code>, one for <code>ordered_at</code> — but you'd scan the orders table twice and risk the two subqueries disagreeing on ties. JOIN once, get a coherent row.</p>
+<p>Other cases where JOIN is mandatory or clearly better:</p>
+<ul>
+<li><strong>Aggregating over the related table's rows</strong> with multiple output columns (count + sum + max in one pass).</li>
+<li><strong>Filtering on related-table columns</strong> combined with selecting them (<code>WHERE o.ordered_at &gt;= '2026-09-01'</code> while also showing <code>o.amount</code>).</li>
+<li><strong>Order-level output</strong>: when the result grain should be orders, not customers, a JOIN expresses that directly.</li>
+<li><strong>Three or more tables</strong>: chained JOINs with explicit ON conditions stay auditable; nested subqueries at that depth do not.</li>
+</ul>
+</section>
+
+<section class="content-section" id="explain">
+<h2>8. Verifying With EXPLAIN: A Practical Workflow</h2>
+<p>Don't argue about subquery vs JOIN performance — measure it. This is the workflow:</p>
+<p><strong>Step 1 — Write both versions.</strong> The subquery form and the JOIN form of the same question.</p>
+<p><strong>Step 2 — EXPLAIN both (no ANALYZE yet).</strong> <code>EXPLAIN</code> shows the planned strategy without executing:</p>
+<pre><code>EXPLAIN SELECT c.name FROM customers c
+WHERE c.customer_id IN (SELECT o.customer_id FROM orders o);
+
+EXPLAIN SELECT DISTINCT c.name FROM customers c
+JOIN orders o ON o.customer_id = c.customer_id;</code></pre>
+<p>In PostgreSQL, if both plans show <code>Hash Semi Join</code> (or the second shows <code>HashAggregate</code> over a <code>Hash Join</code>), you've proven the rewrite: the semi-join plan is the cheaper one because it skips dedup entirely. In MySQL, run <code>EXPLAIN FORMAT=TREE</code> and look for "Nested loop semijoin" versus a plain join plus temporary table for DISTINCT.</p>
+<p><strong>Step 3 — EXPLAIN ANALYZE for real numbers</strong> (PostgreSQL; MySQL 8.0.18+ supports <code>ANALYZE</code> too). This executes the query and annotates the plan with actual rows and milliseconds:</p>
+<pre><code>EXPLAIN (ANALYZE, BUFFERS)
+SELECT c.name FROM customers c
+WHERE NOT EXISTS (SELECT 1 FROM orders o
+                  WHERE o.customer_id = c.customer_id);</code></pre>
+<p>Compare <code>actual time</code> on the top node and the buffers count. For the correlated scalar subquery from section 4, watch for the inner scan node's <code>loops</code> value — <code>loops=1000000</code> is your smoking gun.</p>
+<p><strong>Step 4 — Check indexes at the join/correlation column.</strong> A sequential scan on the inner side of a semi-join is fine for small tables and fatal for large ones. <code>CREATE INDEX ON orders (customer_id);</code> then re-EXPLAIN and confirm the plan switched to an index scan or index-only scan.</p>
+<p><strong>Step 5 — Keep the readable version when plans match.</strong> If both forms produce equivalent plans and timings, ship the one a colleague can understand in ten seconds. Readability is a real maintenance-cost metric; don't pay it away for a performance difference that doesn't exist.</p>
+<p>Reading raw EXPLAIN trees is an acquired taste. Paste your plan into our <a href="/explain">EXPLAIN visualizer</a> to get a node-by-node breakdown with costs and row estimates highlighted — it's the fastest way to spot the loops=1,000,000 pattern.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — Subquery vs JOIN</h2>
+<div class="faq-item"><h3>Are subqueries slower than JOINs?</h3><p>Usually not. Modern optimizers in PostgreSQL, MySQL 8+, and SQL Server rewrite most non-correlated subqueries into joins or semi-joins automatically. The real performance trap is the correlated subquery, which references the outer query and can execute once per outer row — check the plan's <code>loops</code> count to confirm.</p></div>
+<div class="faq-item"><h3>Should I use IN or EXISTS in SQL?</h3><p>For positive membership tests they perform the same on modern databases — both compile to a semi-join. The difference matters for negation: <code>NOT IN</code> returns an empty set if the subquery contains a single NULL, because NULL comparison yields UNKNOWN. <code>NOT EXISTS</code> has no such trap and is the safe default for anti-joins.</p></div>
+<div class="faq-item"><h3>Why does my NOT IN query return zero rows?</h3><p>Almost certainly a NULL in the subquery's result column. <code>x NOT IN (..., NULL)</code> evaluates to UNKNOWN for every x, and WHERE discards UNKNOWN rows. Fix it with <code>NOT EXISTS</code>, or add <code>WHERE col IS NOT NULL</code> inside the subquery, or make the column NOT NULL.</p></div>
+<div class="faq-item"><h3>When is a subquery clearer than a JOIN?</h3><p>Scalar subqueries in the SELECT list are often clearer than joining a table just to fetch one extra column per row — for example attaching each customer's order count without introducing GROUP BY. They also express single-value lookups (<code>WHERE amount = (SELECT MAX(amount) ...)</code>) where no JOIN form exists.</p></div>
+<div class="faq-item"><h3>When must I use a JOIN instead of a subquery?</h3><p>Whenever you need multiple columns from the related table, or need to aggregate or sort by its values. A scalar subquery returns exactly one column and one row; fetching several columns means several subqueries scanning the same table repeatedly — a JOIN does it once and keeps the values mutually consistent.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools &amp; Reading</h2>
+<div class="related-grid">
+<a href="/explain">SQL EXPLAIN Visualizer</a>
+<a href="/free-online-sql-query-analyzer">SQL Query Analyzer</a>
+<a href="/validate">SQL Validator</a>
+<a href="/stats">SQL Query Statistics</a>
+<a href="/blog/sql-query-optimization-tips">SQL Query Optimization Tips</a>
+<a href="/">SQL Formatter Online</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>

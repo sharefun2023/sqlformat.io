@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL CTE (WITH Clause) Explained — From Basics to Recursive Queries | SQLFormat.io</title>
+  <meta name="description" content="Learn SQL CTEs step by step: WITH clause syntax, chained CTEs vs nested subqueries, recursive CTE examples for number sequences and org trees, MySQL 8.0 and PostgreSQL support, and common pitfalls.">
+  <meta name="keywords" content="sql cte, common table expression, recursive cte, sql with clause, cte vs subquery">
+  <meta property="og:title" content="SQL CTE (WITH Clause) Explained — From Basics to Recursive Queries">
+  <meta property="og:description" content="CTE syntax, chaining, recursive queries for sequences and org trees, MySQL vs PostgreSQL behavior, and the pitfalls that bite in production.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqlformat.io/blog/sql-cte-guide">
+  <link rel="canonical" href="https://sqlformat.io/blog/sql-cte-guide">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL CTE (WITH Clause) Explained — From Basics to Recursive Queries","description":"A complete guide to SQL Common Table Expressions: WITH clause syntax, CTE vs nested subqueries, chained CTEs, recursive CTEs for number sequences and org charts, MySQL 8.0 and PostgreSQL support, and common pitfalls.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-09-11","dateModified":"2026-09-11","url":"https://sqlformat.io/blog/sql-cte-guide","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL CTE (WITH Clause) Explained","item":"https://sqlformat.io/blog/sql-cte-guide"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does MySQL support CTEs?","acceptedAnswer":{"@type":"Answer","text":"Yes, since MySQL 8.0 (released April 2018). Both non-recursive and recursive CTEs are supported with the WITH clause. MySQL 5.7 and earlier have no CTE support at all — you must use derived tables (subqueries in FROM) instead. MariaDB added CTEs in version 10.2."}},{"@type":"Question","name":"Are CTEs faster than subqueries?","acceptedAnswer":{"@type":"Answer","text":"Usually the same. In MySQL, a non-recursive CTE is treated like a derived table: the optimizer either merges it into the outer query or materializes it, producing nearly the same plan as an equivalent subquery. In PostgreSQL 11 and earlier, CTEs were always materialized (an optimization fence), which could make them slower than subqueries; PostgreSQL 12+ inlines non-recursive CTEs referenced only once. CTEs win on readability, not raw speed."}},{"@type":"Question","name":"What is the recursion depth limit for recursive CTEs?","acceptedAnswer":{"@type":"Answer","text":"MySQL stops recursive CTEs at cte_max_recursion_depth iterations (default 1000) and raises an error; change it per session with SET SESSION cte_max_recursion_depth = 100000. PostgreSQL has no depth limit, but a runaway recursion will keep producing rows until it fills memory or you cancel — always include a terminating condition in the recursive member."}},{"@type":"Question","name":"Can I use INSERT, UPDATE, or DELETE inside a CTE?","acceptedAnswer":{"@type":"Answer","text":"In PostgreSQL, yes — data-modifying CTEs let you put INSERT, UPDATE, or DELETE inside WITH clauses, which is handy for atomic insert-and-return patterns. In MySQL, CTEs are read-only: only SELECT (and TABLE or VALUES) statements are allowed inside a CTE body."}},{"@type":"Question","name":"Can one CTE reference another CTE?","acceptedAnswer":{"@type":"Answer","text":"Yes. In a comma-separated WITH clause, each CTE can reference any CTE defined before it, which lets you build a query in named steps like a pipeline. A CTE cannot reference one defined after it, and in PostgreSQL a non-recursive CTE cannot reference itself — self-reference requires WITH RECURSIVE."}}]}</script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.content-section pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:var(--green)}.tip-box{background:var(--surface);border-left:3px solid var(--green);padding:12px 16px;margin-bottom:16px;border-radius:0 var(--radius) var(--radius) 0}.tip-box strong{color:var(--green)}.tip-box p{color:var(--text2);font-size:.9rem;margin-bottom:4px}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
+</head>
+<body>
+<header><div class="container"><a href="/" class="logo"><span>SQL</span> Format</a><nav><a href="/">Formatter</a><a href="/blog">Blog</a><a href="/minify">Minifier</a><a href="/validate">Validator</a><a href="/about">About</a></nav></div></header>
+<main class="container">
+
+<div class="hero">
+<h1>SQL CTE (WITH Clause) Explained — From Basics to Recursive Queries</h1>
+<div class="meta">Published: September 11, 2026 | Updated: September 11, 2026</div>
+<div class="content">
+<p>A <strong>Common Table Expression</strong> (CTE) is a named, temporary result set you define with the <code>WITH</code> keyword that lives for exactly one statement. Think of it as a variable for a query: you give a subquery a meaningful name once, then reference that name wherever a table would go. The result is SQL that reads top-to-bottom like prose instead of inside-out like a matryoshka doll of nested subqueries.</p>
+<p>CTEs have been in the SQL standard since 1999, and every major database now supports them — PostgreSQL since 8.4, MySQL since 8.0, plus SQL Server, Oracle, and SQLite. This guide covers the full arc: basic <code>WITH</code> syntax, why CTEs beat nested subqueries on readability, chaining multiple CTEs, <strong>recursive CTEs</strong> with complete runnable examples (number sequences and org-chart trees), how MySQL and PostgreSQL differ under the hood, and the pitfalls that catch people in production.</p>
+</div>
+</div>
+
+<details class="toc" open>
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#what-is-cte">1. What Is a CTE?</a></li>
+<li><a href="#basic-syntax">2. Basic CTE Syntax</a></li>
+<li><a href="#cte-vs-subquery">3. CTE vs Nested Subquery — the Readability Case</a></li>
+<li><a href="#chaining-ctes">4. Chaining Multiple CTEs</a></li>
+<li><a href="#recursive-cte">5. Recursive CTEs: Sequences and Trees</a></li>
+<li><a href="#cte-vs-alternatives">6. CTE vs Temp Table vs View — Which to Use</a></li>
+<li><a href="#dialect-support">7. MySQL 8.0+ vs PostgreSQL: Support and Behavior</a></li>
+<li><a href="#pitfalls">8. Common CTE Pitfalls</a></li>
+<li><a href="#faq">FAQ</a></li>
+</ol>
+</details>
+
+<section class="content-section" id="what-is-cte">
+<h2>1. What Is a CTE?</h2>
+<p>A CTE is a named subquery defined at the top of a statement, before the main query runs. Its defining traits:</p>
+<ul>
+<li><strong>Scoped to one statement.</strong> A CTE exists only for the duration of the <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> that follows it. The next statement in your session cannot see it.</li>
+<li><strong>Named.</strong> Unlike an anonymous subquery, a CTE has an identifier you choose, so the query explains itself: <code>top_customers</code>, <code>monthly_revenue</code>, <code>org_path</code>.</li>
+<li><strong>Referenceable like a table.</strong> You can select from it, join it to real tables, join two CTEs together, and (with <code>WITH RECURSIVE</code>) have it reference itself.</li>
+<li><strong>Not stored.</strong> A CTE is not a schema object. It is not indexed, has no statistics of its own, and vanishes when the statement finishes. That is the key trade-off against temp tables and views, which we cover in section 6.</li>
+</ul>
+<p>The SQL standard introduced CTEs in SQL:1999, and the recursive variant is what made them genuinely powerful — it is the only standard way to walk hierarchical or graph-like data (org charts, category trees, bill-of-materials) inside a single query.</p>
+</section>
+
+<section class="content-section" id="basic-syntax">
+<h2>2. Basic CTE Syntax</h2>
+<p>The shape is always the same: <code>WITH</code>, a name, an optional column list, <code>AS</code>, a parenthesized subquery, then the main statement.</p>
+<pre><code>WITH high_value_orders AS (
+    SELECT user_id, order_id, total
+    FROM orders
+    WHERE total &gt; 1000
+      AND status = 'completed'
+)
+SELECT u.name, COUNT(h.order_id) AS big_orders, SUM(h.total) AS revenue
+FROM users u
+JOIN high_value_orders h ON h.user_id = u.id
+GROUP BY u.name
+ORDER BY revenue DESC
+LIMIT 10;</code></pre>
+<p>Two syntax details worth knowing:</p>
+<ul>
+<li><strong>You can name the columns explicitly</strong>: <code>WITH cte (col_a, col_b) AS (SELECT ...)</code>. Useful when the inner query produces computed columns with awkward auto-names, and required in some recursive patterns.</li>
+<li><strong>The CTE is visible to any statement that follows <code>WITH</code></strong> — not just <code>SELECT</code>. For example, PostgreSQL lets you write <code>INSERT INTO archive SELECT * FROM cte</code>, and <code>UPDATE ... WHERE id IN (SELECT id FROM cte)</code> works everywhere.</li>
+</ul>
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Do not put a semicolon between the CTE and the main query — they are one statement. A stray <code>;</code> after the closing paren is the most common syntax error people hit when converting subqueries to CTEs.
+</div>
+</section>
+
+<section class="content-section" id="cte-vs-subquery">
+<h2>3. CTE vs Nested Subquery — the Readability Case</h2>
+<p>CTEs and subqueries can express the same logic. The difference is the order a human reads them. Subqueries nest <em>inside-out</em>: you hit the innermost query last but must understand it first. CTEs stack <em>top-to-bottom</em>: each named step is defined before it is used.</p>
+<p>Here is the same analytical question both ways — <em>"For each department, compare every employee's salary against that department's average, but only for departments that spend more than $500k on salaries."</em></p>
+<h3>Version A — nested subqueries</h3>
+<pre><code>SELECT e.name,
+       e.department_id,
+       e.salary,
+       d.avg_salary,
+       e.salary - d.avg_salary AS diff
+FROM employees e
+JOIN (
+    SELECT department_id, AVG(salary) AS avg_salary, SUM(salary) AS total_payroll
+    FROM employees
+    GROUP BY department_id
+    HAVING SUM(salary) &gt; 500000
+) d ON d.department_id = e.department_id
+WHERE e.salary &gt; (
+    SELECT AVG(salary)
+    FROM employees e2
+    WHERE e2.department_id = e.department_id
+)
+ORDER BY diff DESC;</code></pre>
+<h3>Version B — the same query with CTEs</h3>
+<pre><code>WITH dept_stats AS (
+    SELECT department_id,
+           AVG(salary) AS avg_salary,
+           SUM(salary) AS total_payroll
+    FROM employees
+    GROUP BY department_id
+    HAVING SUM(salary) &gt; 500000
+),
+above_average_employees AS (
+    SELECT e.*
+    FROM employees e
+    JOIN dept_stats d ON d.department_id = e.department_id
+    WHERE e.salary &gt; d.avg_salary
+)
+SELECT a.name,
+       a.department_id,
+       a.salary,
+       d.avg_salary,
+       a.salary - d.avg_salary AS diff
+FROM above_average_employees a
+JOIN dept_stats d ON d.department_id = a.department_id
+ORDER BY diff DESC;</code></pre>
+<p>Same semantics, but version B has three properties version A lacks:</p>
+<ul>
+<li><strong>Each step has a name.</strong> <code>dept_stats</code> and <code>above_average_employees</code> document intent. In version A, the correlated subquery in <code>WHERE</code> recomputes the department average a second time and is easy to misread.</li>
+<li><strong>No duplication.</strong> The department average is computed once and referenced twice. The correlated-subquery version repeats the aggregation logic, which is both a readability and (potentially) a performance problem.</li>
+<li><strong>Easy to edit.</strong> Want to raise the payroll threshold to $1M? In version B you change one line in one named block. In version A you must hunt through nesting levels to find every place the logic appears.</li>
+</ul>
+<p>Performance-wise, the two are usually equivalent — optimizers flatten both into the same plan (see section 7 for the important exceptions). Choose CTEs for the human reading the query at 2 a.m. during an incident.</p>
+</section>
+
+<section class="content-section" id="chaining-ctes">
+<h2>4. Chaining Multiple CTEs</h2>
+<p>A single <code>WITH</code> clause can define several CTEs separated by commas, and each one may reference any CTE defined <em>before</em> it. This turns a monster query into a named pipeline — each stage does one thing, and the final <code>SELECT</code> just assembles the result.</p>
+<pre><code>WITH
+-- Stage 1: monthly revenue per product category
+monthly_revenue AS (
+    SELECT DATE_TRUNC('month', o.created_at) AS month,
+           p.category,
+           SUM(o.total) AS revenue
+    FROM orders o
+    JOIN order_items oi ON oi.order_id = o.id
+    JOIN products p ON p.id = oi.product_id
+    WHERE o.status = 'completed'
+    GROUP BY 1, 2
+),
+-- Stage 2: previous month's revenue for each row (self-join on stage 1)
+with_previous AS (
+    SELECT mr.month,
+           mr.category,
+           mr.revenue,
+           LAG(mr.revenue) OVER (
+               PARTITION BY mr.category ORDER BY mr.month
+           ) AS prev_revenue
+    FROM monthly_revenue mr
+),
+-- Stage 3: month-over-month growth
+growth AS (
+    SELECT month,
+           category,
+           revenue,
+           ROUND((revenue - prev_revenue) / NULLIF(prev_revenue, 0) * 100, 1)
+               AS growth_pct
+    FROM with_previous
+    WHERE prev_revenue IS NOT NULL
+)
+-- Final: report the 5 biggest surges
+SELECT * FROM growth
+ORDER BY growth_pct DESC
+LIMIT 5;</code></pre>
+<p>Rules that govern the chain:</p>
+<ul>
+<li><strong>Forward references only.</strong> CTE #3 can use #1 and #2; #1 cannot use #2. Some engines (SQL Server) allow mutual recursion, but MySQL and PostgreSQL require strict top-down ordering for non-recursive CTEs.</li>
+<li><strong>One <code>WITH</code> keyword.</strong> A frequent mistake is writing <code>WITH a AS (...), WITH b AS (...)</code>. The comma separates CTEs; <code>WITH</code> appears once.</li>
+<li><strong>Chained CTEs are not automatically reused.</strong> If two later CTEs both reference <code>monthly_revenue</code>, the optimizer decides whether to compute it once or twice. Do not assume shared work — check the plan with <a href="/explain">EXPLAIN</a>.</li>
+</ul>
+
+<div class="cta-box">
+<h3>Long WITH Chains Get Messy Fast</h3>
+<p>Multi-stage CTE queries can span hundreds of lines. Paste yours into our formatter to get clean, consistent indentation before you commit it.</p>
+<a href="/">Open SQL Format Tool &rarr;</a>
+</div>
+</section>
+
+<section class="content-section" id="recursive-cte">
+<h2>5. Recursive CTEs: Sequences and Trees</h2>
+<p>A recursive CTE references itself. It is the SQL answer to "give me all descendants" or "generate a series" — problems that previously required stored procedures or application-side loops.</p>
+<h3>The anatomy</h3>
+<p>Every recursive CTE has exactly two parts joined by <code>UNION ALL</code> (or <code>UNION</code>):</p>
+<ol>
+<li><strong>Anchor member</strong> — a normal query that produces the starting rows. Runs once.</li>
+<li><strong>Recursive member</strong> — a query that references the CTE itself. On each iteration it sees <em>only the rows produced by the previous iteration</em> (the "working table"), and its output becomes the input for the next iteration. Recursion stops when an iteration produces zero rows.</li>
+</ol>
+<pre><code>WITH RECURSIVE cte_name (columns) AS (
+    -- anchor: SELECT ... (no reference to cte_name)
+    UNION ALL
+    -- recursive member: SELECT ... FROM cte_name JOIN base_table ...
+    -- must eventually produce zero rows, or it runs forever
+)
+SELECT * FROM cte_name;</code></pre>
+<p>In PostgreSQL and MySQL 8.0+, you must write the <code>RECURSIVE</code> keyword even for a single self-referencing CTE. (SQL Server infers it and has no such keyword — a classic portability trap.)</p>
+
+<h3>Example 1 — generate a number sequence</h3>
+<p>The simplest recursion: count from 1 to 10. Useful in practice for filling gaps in time-series reports or generating test rows.</p>
+<pre><code>WITH RECURSIVE numbers (n) AS (
+    -- Anchor: start at 1
+    SELECT 1
+    UNION ALL
+    -- Recursive step: take previous iteration's rows, add 1, stop past 10
+    SELECT n + 1 FROM numbers WHERE n &lt; 10
+)
+SELECT n FROM numbers;</code></pre>
+<p>Output: <code>1, 2, 3, ..., 10</code>. Here is exactly how one engine executes it: the anchor puts <code>{1}</code> into the working table. Iteration 1 runs the recursive member against <code>{1}</code>, passes the <code>n &lt; 10</code> filter, and emits <code>{2}</code> — which becomes both output and the input for iteration 2. This continues until an iteration reads <code>{10}</code>: the filter <code>10 &lt; 10</code> is false, the member emits zero rows, and the recursion terminates. The final result is the anchor plus every iteration's output. In practice this pattern generates date spines too — join the sequence against a start date (<code>SELECT DATE '2026-09-01' + (n - 1)</code> in PostgreSQL, <code>DATE_ADD('2026-09-01', INTERVAL n-1 DAY)</code> in MySQL) to fill gaps in time-series reports.</p>
+
+<h3>Example 2 — walk an org chart (hierarchy traversal)</h3>
+<p>The canonical real-world use. Given an <code>employees</code> table where each row has a <code>manager_id</code> pointing to another row, find everyone reporting under one executive, at any depth, with their level in the tree:</p>
+<pre><code>-- Setup (runnable as-is in MySQL 8+ and PostgreSQL)
+CREATE TABLE employees (
+    id          INT PRIMARY KEY,
+    name        VARCHAR(50),
+    manager_id  INT NULL          -- NULL means top of the tree
+);
+
+INSERT INTO employees (id, name, manager_id) VALUES
+    (1,  'Alice (CEO)',    NULL),
+    (2,  'Bob (CTO)',      1),
+    (3,  'Carol (CFO)',    1),
+    (4,  'Dave (Eng Mgr)', 2),
+    (5,  'Erin (Dev)',     4),
+    (6,  'Frank (Dev)',    4),
+    (7,  'Grace (SRE)',    2),
+    (8,  'Heidi (Fin)',    3),
+    (9,  'Ivan (Analyst)', 8);
+
+-- Walk the whole tree from the CEO downward
+WITH RECURSIVE org_tree (id, name, manager_id, level, path) AS (
+    -- Anchor: the root(s) of the hierarchy
+    SELECT id, name, manager_id, 0 AS level, name AS path
+    FROM employees
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    -- Recursive member: find direct reports of the previous iteration's rows
+    SELECT e.id, e.name, e.manager_id,
+           t.level + 1,
+           CONCAT(t.path, ' &gt; ', e.name)
+    FROM employees e
+    JOIN org_tree t ON t.id = e.manager_id
+)
+SELECT level, name, path
+FROM org_tree
+ORDER BY level, name;</code></pre>
+<p>Output:</p>
+<pre><code>level | name         | path
+------+--------------+------------------------------------------
+0     | Alice (CEO)  | Alice (CEO)
+1     | Bob (CTO)    | Alice (CEO) &gt; Bob (CTO)
+1     | Carol (CFO)  | Alice (CEO) &gt; Carol (CFO)
+2     | Dave (Eng)   | Alice (CEO) &gt; Bob (CTO) &gt; Dave (Eng Mgr)
+2     | Grace (SRE)  | Alice (CEO) &gt; Bob (CTO) &gt; Grace (SRE)
+2     | Heidi (Fin)  | Alice (CEO) &gt; Carol (CFO) &gt; Heidi (Fin)
+3     | Erin (Dev)   | ... &gt; Dave (Eng Mgr) &gt; Erin (Dev)
+3     | Frank (Dev)  | ... &gt; Dave (Eng Mgr) &gt; Frank (Dev)
+4     | Ivan (Anlst) | ... &gt; Heidi (Fin) &gt; Ivan (Analyst)</code></pre>
+<p>Why this works: the anchor seeds the working table with the CEO. Each iteration joins <code>employees.manager_id</code> against the previous iteration's <code>id</code>, producing the next level down. When the leaf employees (Erin, Frank, Ivan) have no reports, the join returns zero rows and recursion terminates naturally. The <code>level</code> counter and the accumulated <code>path</code> string fall out for free — you can <code>WHERE level &lt;= 2</code> to cap depth, or filter <code>path LIKE '%Bob%'</code> to grab one subtree.</p>
+<p>To walk <em>upward</em> instead (find all managers above one employee), swap the anchor and the join direction:</p>
+<pre><code>WITH RECURSIVE chain (id, name, manager_id) AS (
+    SELECT id, name, manager_id FROM employees WHERE id = 5   -- start at Erin
+    UNION ALL
+    SELECT e.id, e.name, e.manager_id
+    FROM employees e
+    JOIN chain c ON c.manager_id = e.id                        -- hop to the manager
+)
+SELECT * FROM chain;</code></pre>
+<div class="tip-box">
+<strong>💡 Pro Tip:</strong> Use <code>UNION</code> instead of <code>UNION ALL</code> in the recursive member and the engine dedupes each iteration, which terminates recursion even when your data has cycles (A reports to B reports to A). It costs a dedup pass per iteration, but it is cheap insurance against dirty data turning into an infinite loop. MySQL supports <code>UNION DISTINCT</code> in recursive CTEs since 8.0.19+.
+</div>
+</section>
+
+<section class="content-section" id="cte-vs-alternatives">
+<h2>6. CTE vs Temp Table vs View — Which to Use</h2>
+<p>These three get confused because all three "name a query result." They differ in lifetime, storage, and reusability:</p>
+<table>
+<thead>
+<tr><th>Criterion</th><th>CTE</th><th>Temp Table</th><th>View</th></tr>
+</thead>
+<tbody>
+<tr><td>Lifetime</td><td>One statement</td><td>Session / transaction</td><td>Permanent schema object</td></tr>
+<tr><td>Physically stored?</td><td>No (may be materialized transiently)</td><td>Yes (temp storage)</td><td>No — unless materialized view</td></tr>
+<tr><td>Own indexes?</td><td>No</td><td>Yes</td><td>No (materialized: yes)</td></tr>
+<tr><td>Recursive traversal</td><td>Yes (<code>WITH RECURSIVE</code>)</td><td>Only via loops in procedures</td><td>No</td></tr>
+<tr><td>Reusable across statements</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Needs CREATE privileges</td><td>No</td><td>Usually no (temp schema)</td><td>Yes</td></tr>
+<tr><td>Best for</td><td>Readable one-shot multi-step queries</td><td>Large intermediate results reused by several queries; huge ETL steps</td><td>Stable, shared query logic with access control</td></tr>
+</tbody>
+</table>
+<p>Practical heuristics from production work:</p>
+<ul>
+<li><strong>Default to a CTE.</strong> If the whole thing fits in one statement, a CTE is almost always the right call — zero DDL, zero cleanup, self-documenting.</li>
+<li><strong>Escalate to a temp table</strong> when an intermediate result is large (millions of rows), is needed by multiple subsequent statements, or benefits from an index. A CTE recomputed across five statements wastes more than the temp table's write cost.</li>
+<li><strong>Use a view</strong> when the same logic is consumed by many people or applications and should have one canonical definition. Use a <em>materialized</em> view (PostgreSQL) when the query is expensive and stale-acceptable data is fine.</li>
+</ul>
+</section>
+
+<section class="content-section" id="dialect-support">
+<h2>7. MySQL 8.0+ vs PostgreSQL: Support and Behavior</h2>
+<table>
+<thead>
+<tr><th>Feature</th><th>MySQL</th><th>PostgreSQL</th></tr>
+</thead>
+<tbody>
+<tr><td>Non-recursive CTEs</td><td>8.0+ (2018); none in 5.7</td><td>8.4+ (2009)</td></tr>
+<tr><td>Recursive CTEs</td><td>8.0+, requires <code>WITH RECURSIVE</code></td><td>8.4+, requires <code>WITH RECURSIVE</code></td></tr>
+<tr><td>Recursion depth limit</td><td><code>cte_max_recursion_depth</code>, default 1000</td><td>None (bounded by memory / cancellation)</td></tr>
+<tr><td>Materialization control</td><td>Optimizer decides; <code>derived_merge</code> switch applies</td><td>12+: inlined unless referenced twice or marked <code>MATERIALIZED</code>; 11 and earlier: always materialized</td></tr>
+<tr><td>Data-modifying CTEs (INSERT/UPDATE/DELETE inside WITH)</td><td>No — SELECT only</td><td>Yes</td></tr>
+<tr><td>CTE in subqueries / views</td><td>Yes (8.0)</td><td>Yes</td></tr>
+</tbody>
+</table>
+<p>The behavioral difference that matters most is <strong>materialization</strong>:</p>
+<ul>
+<li><strong>MySQL</strong> does not promise to materialize a CTE. The optimizer either merges it into the outer query (like a view with <code>MERGE</code> algorithm) or turns it into an internal temp table, and for a CTE referenced multiple times it may execute the underlying query more than once. There is no hint syntax to force materialization. If a MySQL CTE feels slow, run <code>EXPLAIN</code> and look for <code>MATERIALIZED</code> vs merged access — see our <a href="/explain">EXPLAIN tool</a> for reading plans.</li>
+<li><strong>PostgreSQL 12+</strong> inlines a non-recursive CTE that is referenced exactly once and has no side effects — so it behaves like a subquery, letting predicates push down. Referenced twice or more, it materializes once and reuses the result. You can override either way with <code>AS MATERIALIZED (...)</code> or <code>AS NOT MATERIALIZED (...)</code>. Before PostgreSQL 12, every CTE was an optimization fence: filters from the outer query could never push in, which is the source of the persistent "CTEs are slow in Postgres" folklore.</li>
+</ul>
+<p>Recursive CTE execution is nearly identical in both engines: iterate, feed the previous result back in, stop on empty. MariaDB mirrors MySQL's syntax from 10.2 onward, so most MySQL 8 CTE code runs unchanged there.</p>
+</section>
+
+<section class="content-section" id="pitfalls">
+<h2>8. Common CTE Pitfalls</h2>
+<h3>Pitfall 1 — Assuming MySQL materializes CTEs (it doesn't)</h3>
+<p>People port PostgreSQL habits to MySQL and assume a CTE referenced three times is computed once. It may not be. MySQL's optimizer can merge non-materializable CTEs into the outer query, and merged references can cause the underlying logic to run per outer row. Symptom: a query that got <em>slower</em> after you "cleaned it up" into CTEs. Diagnosis: <code>EXPLAIN FORMAT=TREE</code> and look at whether the CTE shows up once. Fix for pathological cases: move the shared logic into a temp table, or restructure so the CTE is referenced once.</p>
+<h3>Pitfall 2 — Hitting the recursion depth limit in MySQL</h3>
+<pre><code>-- MySQL: default cap is 1000 iterations
+ERROR 3636 (HY000): Recursive query aborted after 1001 iterations.
+Try increasing CTE_MAX_RECURSION_DEPTH to a higher value.
+
+-- Raise it for the session (max 4294967295):
+SET SESSION cte_max_recursion_depth = 100000;
+
+-- Or per-query with an optimizer hint:
+WITH RECURSIVE deep_tree AS (...)
+SELECT /*+ SET_VAR(cte_max_recursion_depth = 1000000) */ * FROM deep_tree;</code></pre>
+<p>Generating 50k date rows or walking a 2000-level category tree will fail out of the box on MySQL. The limit is a feature — it catches runaway recursions from cyclic data — but you need to know it exists before your ETL job dies at row 1001 on a Friday afternoon.</p>
+<h3>Pitfall 3 — Missing terminating condition (or cycle) in the data</h3>
+<p>PostgreSQL has no depth cap, so a <code>manager_id</code> cycle (A→B→A) loops forever, eating memory until you cancel. Defenses: keep a <code>level</code> counter and cap it (<code>WHERE level &lt; 50</code>), track visited ids in an array (<code>WHERE NOT id = ANY(path_ids)</code>), or use <code>UNION</code> instead of <code>UNION ALL</code> so duplicates terminate the walk.</p>
+<h3>Pitfall 4 — Referencing a CTE from the next statement</h3>
+<pre><code>WITH recent_orders AS (SELECT * FROM orders WHERE created_at &gt; NOW() - INTERVAL 7 DAY)
+SELECT COUNT(*) FROM recent_orders;
+
+SELECT * FROM recent_orders;  -- ERROR: table doesn't exist.
+                              -- The CTE died with the previous statement.</code></pre>
+<p>If you need the result across statements, that is a temp table job (section 6).</p>
+<h3>Pitfall 5 — Forgetting the RECURSIVE keyword, or writing it where it isn't needed</h3>
+<p>MySQL and PostgreSQL both reject a self-referencing CTE that lacks <code>WITH RECURSIVE</code>, while SQL Server rejects <code>WITH RECURSIVE</code> because it doesn't have the keyword at all. Also note: <code>WITH RECURSIVE</code> applies to the whole <code>WITH</code> clause in Postgres/MySQL, so mixing one recursive and several plain CTEs under a single <code>RECURSIVE</code> keyword is legal — the non-recursive ones are simply unaffected.</p>
+<h3>Pitfall 6 — Column count mismatch between anchor and recursive member</h3>
+<p>The recursive member's <code>SELECT</code> must produce exactly the same number of columns, in compatible types, as the anchor. The CTE's column names always come from the anchor (or the explicit column list). If you add a column to the anchor during refactoring, update the recursive member too — the error message ("Each UNION clause must have the same number of columns") does not tell you which member drifted.</p>
+</section>
+
+<section class="content-section" id="faq">
+<h2>FAQ — SQL CTEs</h2>
+<div class="faq-item"><h3>Does MySQL support CTEs?</h3><p>Yes — since MySQL 8.0 (April 2018), both non-recursive and recursive CTEs. MySQL 5.7 and older have no <code>WITH</code> support; use derived tables (subqueries in <code>FROM</code>) instead. MariaDB supports CTEs from 10.2.</p></div>
+<div class="faq-item"><h3>Are CTEs faster than subqueries?</h3><p>Generally neither faster nor slower — they are a readability tool. MySQL merges or materializes CTEs the same way it handles derived tables. PostgreSQL 12+ inlines single-use CTEs into the plan; on PostgreSQL 11 and earlier CTEs were always materialized, which could block predicate pushdown and hurt performance. Always verify with EXPLAIN.</p></div>
+<div class="faq-item"><h3>What is the recursion depth limit for recursive CTEs?</h3><p>MySQL: <code>cte_max_recursion_depth</code>, default 1000 iterations — raise it per session or with a <code>SET_VAR</code> hint. PostgreSQL: no built-in limit; recursion runs until the working table is empty (or you run out of memory). SQL Server uses <code>MAXRECURSION</code> hint, default 100.</p></div>
+<div class="faq-item"><h3>Can I use INSERT/UPDATE/DELETE inside a CTE?</h3><p>In PostgreSQL, yes — data-modifying CTEs are fully supported and run atomically with the main statement. In MySQL, no: CTE bodies must be <code>SELECT</code>, <code>TABLE</code>, or <code>VALUES</code> statements, though a CTE can feed the main statement's <code>INSERT ... SELECT</code> or <code>UPDATE ... JOIN</code>.</p></div>
+<div class="faq-item"><h3>Can one CTE reference another?</h3><p>Yes — a CTE can reference any CTE defined earlier in the same <code>WITH</code> clause, which is how you build multi-stage query pipelines. It cannot reference a later CTE, and (outside <code>WITH RECURSIVE</code>) it cannot reference itself.</p></div>
+</section>
+
+<div class="related-section">
+<h2>Related Tools &amp; Reading</h2>
+<div class="related-grid">
+<a href="/">SQL Formatter Online</a>
+<a href="/pretty-print">SQL Pretty Printer</a>
+<a href="/explain">SQL EXPLAIN Visualizer</a>
+<a href="/sql-formatter-mysql">MySQL Formatter</a>
+<a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+<a href="/blog/sql-query-optimization-tips">SQL Query Optimization Tips</a>
+</div>
+</div>
+
+</main>
+<footer><div class="container"><p><a href="/">SQLFormat.io</a> — Free Online SQL Tools | <a href="/privacy">Privacy</a> | <a href="/about">About</a> | &copy; 2026</p></div></footer>
+</body>
+</html>
