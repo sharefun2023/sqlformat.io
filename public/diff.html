@@ -36,6 +36,19 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "How do I compare two SQL queries online?", "acceptedAnswer": {"@type": "Answer", "text": "Paste the original query into panel A and the modified query into panel B, then click Compare or press Ctrl+Enter. Added lines are marked green, removed lines red, and modified lines orange, with the exact changed tokens highlighted inline. No signup and no upload required."}},
+      {"@type": "Question", "name": "Is this SQL compare tool free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The SQL diff tool is completely free with no account, no usage limits and no file-size paywall. Comparison runs entirely in your browser."}},
+      {"@type": "Question", "name": "Does it work with MySQL, PostgreSQL and SQL Server?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The comparison is dialect-aware and works with MySQL, PostgreSQL, SQL Server (T-SQL), SQLite, Oracle and other SQL dialects. Identifiers, strings and keywords are tokenized, so a diff on a MySQL query behaves the same way as a diff on a PostgreSQL query."}},
+      {"@type": "Question", "name": "Can I compare SQL without uploading my queries?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. All comparison happens locally in your browser using JavaScript. Your SQL is never sent to a server, so it is safe to compare proprietary or sensitive queries."}},
+      {"@type": "Question", "name": "What is the difference between a SQL diff and a text diff?", "acceptedAnswer": {"@type": "Answer", "text": "A plain text diff compares raw characters or lines, so reformatting shows up as a change. A SQL-aware diff tokenizes the query first and highlights the tokens that actually changed, so a change from JOIN to LEFT JOIN is obvious while extra whitespace or casing is ignored."}}
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -397,13 +410,33 @@ WHERE o.status = 'completed';
     <h2>Tips</h2>
     <p>The comparison is case-insensitive on trimmed line text, so formatting-only differences (extra spaces, line breaks) are surfaced as &ldquo;modified&rdquo; at the token level &mdash; perfect for verifying that a formatter didn't change logic. For large scripts, glance at the stats bar first, then scroll to the orange modified lines where the real logic lives. If two queries look wildly different because of reordering, run both through the <a href="/">SQL Formatter</a> first so the diff aligns on structure rather than whitespace. All processing happens in your browser, so you can safely compare sensitive or proprietary SQL without uploading it anywhere. If the two inputs are very long, paste only the changed region to keep the diff output fast and easy to scan.</p>
   </div>
+
+  <div class="content-section">
+    <h2>Comparing SQL Across Different Dialects</h2>
+    <p>Most comparisons happen between two versions of the same dialect &mdash; MySQL against MySQL, PostgreSQL against PostgreSQL. When you compare across dialects (a query written for MySQL that is being ported to PostgreSQL, for example), expect the diff to light up even when the logic is identical: <code>LIMIT</code> versus <code>TOP</code>, <code>IFNULL()</code> versus <code>COALESCE()</code>, backticks versus double quotes around identifiers, and <code>AUTO_INCREMENT</code> versus <code>SERIAL</code> all produce legitimate differences that are not bugs.</p>
+    <p>A practical workflow when porting a query: format both versions first with the <a href="/">SQL formatter</a>, run the side-by-side compare to isolate the semantic changes, then rewrite the syntax itself with the <a href="/dialect-converter">SQL dialect converter</a>. The dialect-specific formatter pages &mdash; <a href="/sql-formatter-mysql">MySQL formatter</a> and <a href="/sql-formatter-postgresql">PostgreSQL formatter</a> &mdash; apply the matching keyword sets, so the diff reads as language differences instead of formatting noise. If a comparison shows nothing but whitespace and casing, the rewrite is safe to ship. If it shows a changed join type, a changed predicate or a dropped column, review that line before deploying.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>FAQ</h2>
+    <p><strong>How do I compare two SQL queries online?</strong><br>Paste the original query into panel A and the modified query into panel B, then click <strong>Compare</strong> or press <code>Ctrl+Enter</code>. Added lines are marked green, removed lines red, and modified lines orange, with the exact changed tokens highlighted inline. No signup and no upload required.</p>
+    <p><strong>Is this SQL compare tool free?</strong><br>Yes. The SQL diff tool is completely free &mdash; no account, no usage limits, no file-size paywall. The comparison runs entirely in your browser.</p>
+    <p><strong>Does it work with MySQL, PostgreSQL and SQL Server?</strong><br>Yes. The comparison is dialect-aware and works with MySQL, PostgreSQL, SQL Server (T-SQL), SQLite, Oracle and other dialects. Identifiers, strings and keywords are tokenized, so a diff on a MySQL query behaves the same way as a diff on a PostgreSQL query.</p>
+    <p><strong>Can I compare SQL without uploading my queries?</strong><br>Yes. All comparison happens locally in your browser with JavaScript. Your SQL is never sent to a server, so it is safe to compare proprietary or sensitive queries.</p>
+    <p><strong>What is the difference between a SQL diff and a text diff?</strong><br>A plain text diff compares raw characters or lines, so reformatting shows up as a change. A SQL-aware diff tokenizes the query first and highlights the tokens that actually changed, so a change from <code>JOIN</code> to <code>LEFT JOIN</code> is obvious while extra whitespace or casing is ignored.</p>
+  </div>
+
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
     <h3 style="font-size:1rem;margin-bottom:12px;">Related Tools</h3>
     <div style="display:flex;flex-wrap:wrap;gap:8px;">
       <a href="/" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Formatter</a><span style="color:var(--border);">·</span>
       <a href="/sql-diff-online" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Diff Guide</a><span style="color:var(--border);">·</span>
       <a href="/validate" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Validator</a><span style="color:var(--border);">·</span>
-      <a href="/minify" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Minifier</a>
+      <a href="/minify" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Minifier</a><span style="color:var(--border);">·</span>
+      <a href="/sql-formatter-mysql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">MySQL Formatter</a><span style="color:var(--border);">·</span>
+      <a href="/sql-formatter-postgresql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">PostgreSQL Formatter</a><span style="color:var(--border);">·</span>
+      <a href="/dialect-converter" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">Dialect Converter</a><span style="color:var(--border);">·</span>
+      <a href="/sql-to-json" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL to JSON</a>
     </div>
   </div>
 </main>
