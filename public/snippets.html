@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Snippets Library — Free SQL Code Templates & Recipes | SQLFormat.io</title>
-  <meta name="description" content="Free library of reusable SQL code snippets and templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, slow query analysis, and more. One-click copy. 100% free.">
-  <meta name="keywords" content="SQL snippets, SQL code library, SQL templates, SQL recipes, SQL code examples, CTE snippet, window function examples, SQL pagination, SQL pivot, recursive CTE template, SQL slow query analysis, online SQL library, SQL cheat sheet, SQL code samples">
-  <meta property="og:title" content="SQL Snippets Library — Free SQL Code Templates & Recipes">
-  <meta property="og:description" content="Free library of reusable SQL code snippets and templates. Recursive CTEs, window functions, pagination, pivot tables, and more. One-click copy. 100% free, no signup.">
+  <title>Useful SQL Snippets — Free SQL Code Snippet Library | SQLFormat.io</title>
+  <meta name="description" content="A free library of 34 useful SQL snippets and copy-ready code templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, and performance analysis. One-click copy, no signup.">
+  <meta name="keywords" content="SQL snippets, useful SQL snippets, SQL code snippet library, SQL developer snippets, SQL code library, SQL templates, SQL recipes, SQL code examples, CTE snippet, window function examples, SQL pagination, SQL pivot, recursive CTE template, SQL slow query analysis, online SQL library, SQL cheat sheet, SQL code samples">
+  <meta property="og:title" content="Useful SQL Snippets — Free SQL Code Snippet Library">
+  <meta property="og:description" content="A free library of 34 useful SQL snippets and copy-ready code templates. Recursive CTEs, window functions, pagination, pivot tables, and more. One-click copy, no signup.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/snippets">
   <meta property="og:site_name" content="SQLFormat.io">
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "SQL Snippets Library",
-    "description": "Free library of reusable SQL code snippets and templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, slow query analysis, string aggregation, and more. One-click copy. 100% client-side, no data sent to servers.",
+    "description": "Free library of 34 useful SQL snippets and reusable code templates. Browse categorized SQL recipes for recursive CTEs, window functions, pagination, pivot tables, date queries, slow query analysis, and string aggregation. One-click copy, 100% client-side, no data sent to servers.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -48,7 +48,7 @@
         "name": "What SQL snippets are available in the library?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The SQL Snippets Library covers 10+ categories: Recursive CTEs (hierarchical queries, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, ROW_NUMBER wrapper), Pivot Tables (CASE-based and standard PIVOT), Slow Query Analysis (EXPLAIN patterns, missing indexes, blocking queries), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date/Time queries, Common Table Expressions, MERGE/UPSERT patterns, and more. New snippets are added regularly."
+          "text": "The library covers nine categories and 34 snippets: Recursive CTEs (hierarchies, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, keyset), Pivot Tables (CASE-based and native PIVOT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date and Time queries, Performance analysis (missing indexes, blocking queries), MERGE/UPSERT patterns, and utility snippets."
         }
       },
       {
@@ -69,10 +69,26 @@
       },
       {
         "@type": "Question",
+        "name": "How do I copy a snippet into my own query?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Click the Copy button on any snippet card and the full SQL lands on your clipboard. Paste it into your editor or query console, then rename the tables, columns, and placeholders to match your schema. If the indentation suffers in the round trip, run the query through the free SQL formatter at sqlformat.io before executing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are these SQL snippets safe to run on a production database?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Treat every snippet as a starting point. Read it first, confirm the table and column names, add a WHERE clause while you test, and inspect the query plan with the EXPLAIN visualizer before running anything against a large table. Nothing you view or copy is sent to a server, because the whole library runs client-side in your browser."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "Can I contribute or request new SQL snippets?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The library is maintained by the SQLFormat.io team and updated regularly. If you have a specific SQL pattern you'd like added, feel free to reach out. The tool runs entirely client-side with no server storage, so new snippets are added through site updates."
+          "text": "The library is maintained by the SQLFormat.io team and expanded regularly. If a pattern you use daily is missing, tell us - new snippets ship through site updates, and the tool itself runs entirely client-side with no server storage."
         }
       }
     ]
@@ -292,6 +308,7 @@
     /* Content sections */
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.02rem; margin: 22px 0 6px; color: var(--text); }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -319,8 +336,8 @@
 
 <main class="container">
   <div class="page-header">
-    <h1>SQL Snippets Library</h1>
-    <p>Browse categorized, reusable SQL code templates and recipes. Click any snippet to copy it instantly. Covers CTEs, window functions, pagination, pivot tables, date queries, performance analysis, and more.</p>
+    <h1>Useful SQL Snippets — SQL Snippets Library</h1>
+    <p>Browse 34 categorized, copy-ready SQL code snippets and recipes. Click any snippet to copy it instantly. Covers recursive CTEs, window functions, pagination, pivot tables, date queries, and performance analysis — free, no signup.</p>
   </div>
 
   <!-- Category Tabs -->
@@ -383,6 +400,67 @@ ORDER BY order_date;</div>
   <div class="content-section">
     <h2>Tips for Getting the Most Out of the Library</h2>
     <p>Always check the dialect tags on a snippet before pasting it into a production query — several recipes ship PostgreSQL and MySQL variants of the same pattern, and a function like <code>LISTAGG</code> only exists in Oracle. Treat snippets as starting points rather than finished code: rename aliases to match your conventions, add your own <code>WHERE</code> filters, and double-check that window-function framing behaves the way you expect before running anything against a large table. Finally, bookmark the categories you use most often so you can jump straight to them next time.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Useful SQL Snippets Every Developer Should Bookmark</h2>
+    <p>If you only ever save a handful of useful SQL snippets, these are the patterns that pay off week after week. All of them are in the library below, and most map to a tool on this site so you can format, diff, or inspect the result without leaving the browser:</p>
+    <ul>
+      <li><strong>Running total with a window function</strong> — <code>SUM(amount) OVER (ORDER BY order_date)</code> replaces a self-join for cumulative metrics such as revenue-to-date. See the <a href="/blog/sql-window-functions-guide">window function guide</a>.</li>
+      <li><strong>Deduplicate rows with ROW_NUMBER</strong> — keep the newest row per customer using <code>ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY updated_at DESC)</code> and filter <code>rn = 1</code>. Run it through the <a href="/">SQL formatter</a> first to catch a missing alias.</li>
+      <li><strong>Recursive CTE for hierarchies</strong> — employee org charts, category trees, and bills of materials all traverse the same way: an anchor row plus a recursive term joined on the parent key. See the <a href="/blog/sql-cte-guide">recursive CTE guide</a>.</li>
+      <li><strong>Keyset pagination instead of OFFSET</strong> — <code>WHERE (created_at, id) &gt; (?, ?) ORDER BY created_at, id LIMIT 50</code> stays fast on large tables where <code>OFFSET 100000</code> collapses.</li>
+      <li><strong>CASE-based pivot</strong> — turns a long metrics table into a wide report without vendor-specific <code>PIVOT</code> syntax, so the same snippet runs on PostgreSQL, MySQL, and SQLite. Adapt it with the <a href="/dialect-converter">dialect converter</a>.</li>
+      <li><strong>String aggregation</strong> — <code>STRING_AGG</code> (PostgreSQL), <code>GROUP_CONCAT</code> (MySQL), and <code>LISTAGG</code> (Oracle) do the same job under three different names.</li>
+      <li><strong>Find what is blocking your database</strong> — the running-query and blocking-session snippets surface long transactions before they become an incident. Check the plan with the <a href="/explain">EXPLAIN visualizer</a>.</li>
+      <li><strong>Upsert with ON CONFLICT / MERGE</strong> — one statement instead of a check-then-insert race condition.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Inside the SQL Code Snippet Library</h2>
+    <p>Every snippet in this SQL code snippet library carries a title, a one-line description, dialect tags, and copy-ready SQL. The 34 snippets are grouped into nine categories so you can scan the list instead of scrolling a wall of code:</p>
+    <ul>
+      <li><strong>CTE &amp; Recursive (3)</strong> — employee hierarchies, generated date series, category trees built from adjacency lists.</li>
+      <li><strong>Window Functions (6)</strong> — ROW_NUMBER, RANK / DENSE_RANK, LAG / LEAD, running totals, FIRST_VALUE / LAST_VALUE, NTILE bucketing.</li>
+      <li><strong>Pivot / Unpivot (3)</strong> — CASE-based pivots, native SQL Server / Oracle <code>PIVOT</code>, and columns-to-rows unpivot.</li>
+      <li><strong>Pagination (3)</strong> — OFFSET / FETCH, keyset (seek) pagination, and MySQL <code>LIMIT</code> / <code>OFFSET</code>.</li>
+      <li><strong>String Aggregation (3)</strong> — <code>GROUP_CONCAT</code>, <code>STRING_AGG</code>, and <code>LISTAGG</code> side by side.</li>
+      <li><strong>Date &amp; Time (4)</strong> — date truncation by month / week / year, precise age calculation, overlapping range detection, generated date series.</li>
+      <li><strong>Performance (4)</strong> — missing-index queries, running and blocking sessions, and EXPLAIN-driven diagnostics.</li>
+      <li><strong>MERGE / UPSERT (3)</strong> — PostgreSQL <code>ON CONFLICT</code>, SQL Server <code>MERGE</code>, and conditional update-else-insert recipes.</li>
+      <li><strong>Utility (5)</strong> — table sizes, duplicate detection, safe column renames, and other maintenance one-liners.</li>
+    </ul>
+    <p>The category tabs at the top filter the grid instantly, and the copy button puts the whole snippet on your clipboard — no signup and no server round trip. If a snippet needs adjusting, paste it into the <a href="/">SQL formatter</a>, then use <a href="/diff">SQL diff</a> to review exactly what you changed before it goes anywhere near production.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>SQL Developer Snippets: Building Your Own Reusable Library</h2>
+    <p>Team snippet libraries always drift, because every SQL developer snippets differently: one person keeps them in a notes file, another in bookmarks, a third retypes them from memory each time. A little structure makes reuse actually stick.</p>
+    <ul>
+      <li><strong>Name snippets by intent, not syntax.</strong> "Latest row per customer" survives a decade of refactors; "row_number_2" does not.</li>
+      <li><strong>Parameterize, do not hardcode.</strong> Use placeholders such as <code>{{table}}</code>, <code>{{date_column}}</code>, or <code>:param</code> so a snippet cannot be aimed at the wrong table by accident.</li>
+      <li><strong>Keep them in version control.</strong> A snippets repository in Git gives you history, review, and one source of truth for the team.</li>
+      <li><strong>Store them in your editor as well.</strong> VS Code, SSMS, and DBeaver all support user-defined snippets — see our guides for <a href="/blog/vscode-sql-formatter-guide">VS Code</a>, <a href="/blog/how-to-format-sql-in-ssms">SSMS</a>, and <a href="/blog/how-to-format-sql-in-dbeaver">DBeaver</a>.</li>
+      <li><strong>Format on paste.</strong> Snippets copied between tools lose their indentation fast; running the <a href="/">SQL beautifier</a> or <a href="/pretty-print">pretty printer</a> before you commit keeps the library readable.</li>
+      <li><strong>Record the dialect and the version.</strong> Whether <code>QUALIFY</code>, <code>MERGE</code>, or <code>ON CONFLICT</code> is available depends on the engine and its version — note it on the snippet card.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>What SQL snippets are available in the library?</h3>
+    <p>The library covers nine categories and 34 snippets: Recursive CTEs (hierarchies, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, keyset), Pivot Tables (CASE-based and native PIVOT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date &amp; Time queries, Performance analysis (missing indexes, blocking queries), MERGE/UPSERT patterns, and utility snippets.</p>
+    <h3>Is the SQL snippets library free to use?</h3>
+    <p>Yes, completely free. Every snippet is available without an account, signup, or payment, and each one includes a description plus ready-to-run SQL that copies with a single click. There is no limit on how many snippets you view or copy.</p>
+    <h3>Which SQL dialects do the snippets support?</h3>
+    <p>Snippets are written in standard SQL with dialect-specific variants where the syntax differs — <code>STRING_AGG</code> for PostgreSQL, <code>GROUP_CONCAT</code> for MySQL, <code>LISTAGG</code> for Oracle. Dialect tags on each card tell you what it targets, and most snippets run on PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minor edits.</p>
+    <h3>How do I copy a snippet into my own query?</h3>
+    <p>Click the Copy button on any snippet card and the full SQL lands on your clipboard. Paste it into your editor or query console, then rename the tables, columns, and placeholders to match your schema. If the indentation suffers in the round trip, run it through the <a href="/">SQL formatter</a> before executing.</p>
+    <h3>Are these snippets safe to run on a production database?</h3>
+    <p>Treat every snippet as a starting point. Read it first, confirm the table and column names, add a <code>WHERE</code> clause while you test, and inspect the query plan with the <a href="/explain">EXPLAIN visualizer</a> before running anything against a large table. Nothing you view or copy is sent to a server — the whole library runs client-side in your browser.</p>
+    <h3>Can I contribute or request new SQL snippets?</h3>
+    <p>The library is maintained by the SQLFormat.io team and expanded regularly. If a pattern you use daily is missing, tell us — new snippets ship through site updates, and the tool itself runs entirely client-side with no server storage.</p>
   </div>
 
   <!-- Related Tools -->
