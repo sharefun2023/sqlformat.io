@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/er-diagram",
-    "dateModified": "2026-09-12",
+    "dateModified": "2026-09-13",
     "featureList": "CREATE TABLE DDL parsing, entity-relationship diagram generation, primary key and foreign key visualization, table column display, interactive canvas diagram, 100% client-side processing"
   }
   </script>
@@ -44,34 +44,74 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How do I generate an ER diagram from SQL?",
+        "name": "How do I create an ER diagram from SQL?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Paste one or more CREATE TABLE DDL statements into the input area and click Generate. The tool parses each table's columns, data types, primary keys, and foreign keys, then renders an entity-relationship diagram showing tables as boxes and relationships as connecting lines. All processing happens in your browser."
+          "text": "Paste one or more CREATE TABLE statements into the DDL input area and click Generate Diagram. The tool parses each table's columns, data types, primary keys, and foreign keys, then draws tables as boxes and relationships as connecting lines. Everything runs in your browser, so nothing is uploaded."
         }
       },
       {
         "@type": "Question",
-        "name": "What SQL dialects does the ER diagram tool support?",
+        "name": "Can I turn a SQL dump into a database diagram without installing anything?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The tool supports standard SQL CREATE TABLE syntax used by MySQL, PostgreSQL, SQLite, and most other relational databases. It handles column definitions, PRIMARY KEY constraints (both inline and table-level), FOREIGN KEY references, NOT NULL, DEFAULT values, UNIQUE constraints, and various data types."
+          "text": "Yes. The tool only needs the DDL text, so mysqldump --no-data, pg_dump --schema-only, and sqlite3 .schema output can be pasted as-is. INSERT statements, comments, ALTER TABLE patches, and dump pragmas are ignored rather than treated as errors."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I download or export the ER diagram?",
+        "name": "What is the difference between an ER diagram and a database diagram?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. Click the Export as PNG button to download the current diagram as a PNG image. You can also use the Zoom buttons to adjust the view. The diagram renders on an HTML Canvas element for crisp output at any size."
+          "text": "An ER diagram is a conceptual model of entities and relationships; a database diagram is the physical model that adds column names, data types, and key constraints. Since this tool works from DDL, it produces the physical diagram and still shows every foreign key as a relationship line."
         }
       },
       {
         "@type": "Question",
-        "name": "Is my schema data safe when generating ER diagrams?",
+        "name": "Does it work with MySQL, PostgreSQL, and SQLite schemas?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Absolutely. All DDL parsing and diagram rendering happens client-side in your browser using JavaScript. Your schema definitions never leave your device. No server-side processing, no logging, no data collection."
+          "text": "Yes. The parser handles standard CREATE TABLE syntax from MySQL, PostgreSQL, SQLite, SQL Server, and most other relational databases, including inline and table-level PRIMARY KEY, FOREIGN KEY REFERENCES, NOT NULL, DEFAULT, UNIQUE, and AUTO_INCREMENT or SERIAL columns."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I export or download the diagram?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Click Export PNG to download the current diagram as a PNG image; zoom in first if you plan to embed it in a document or slide. Zoom +, Zoom -, and Reset control the view, and the diagram renders on an HTML canvas so the export stays crisp."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many tables can it handle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A few dozen tables render comfortably in one pass. For very large schemas, generate the diagram in sections — one module or feature area at a time — and export each PNG, which also keeps the automatic layout readable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert an ER diagram back into SQL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not from a picture: the tool reads DDL, it does not import images. If you have a hand-drawn ER model, write the CREATE TABLE statements with their PRIMARY KEY and FOREIGN KEY clauses and paste them — the generated diagram then acts as a visual check that the DDL matches your model."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my schema data safe when I generate a diagram?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. All DDL parsing and rendering happens client-side in JavaScript. Your schema definitions never leave your device — no server-side processing, no logging, and no data collection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need an account or a signup?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The tool is free, requires no registration, and has no usage limit on how many schemas you diagram."
         }
       }
     ]
@@ -394,6 +434,70 @@ CREATE TABLE orders (
   <div class="content-section">
     <h2>Tips for Cleaner ER Diagrams</h2>
     <p>Keep your DDL focused on <code>CREATE TABLE</code> blocks — the parser ignores comments and <code>ALTER TABLE</code> lines, so you can safely paste an entire schema dump. Use consistent naming for primary and foreign key columns to make relationships easier to read. For large schemas, generate the diagram in sections (a few related tables at a time) so the layout stays legible, and export each section to PNG before moving on. Exporting at a higher zoom level produces a sharper image, so zoom in before you download if you plan to embed the diagram in a document or slide deck.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>SQL to ER Diagram: From CREATE TABLE to a Database Diagram</h2>
+    <p>Any schema you can express as <code>CREATE TABLE</code> statements converts into a diagram in a single paste. The only real work is getting the DDL out of your database, and every major engine ships a command for it:</p>
+    <div class="code-block">-- MySQL: dump the schema only, no data
+mysqldump --no-data --skip-comments mydb &gt; schema.sql
+
+-- Or grab one table definition
+SHOW CREATE TABLE orders;</div>
+    <div class="code-block">-- PostgreSQL: schema only, no owner or privilege noise
+pg_dump --schema-only --no-owner --no-privileges mydb &gt; schema.sql</div>
+    <div class="code-block">-- SQLite: print the full schema
+sqlite3 app.db .schema &gt; schema.sql
+
+-- SQL Server: Tasks &gt; Generate Scripts, or read INFORMATION_SCHEMA</div>
+    <p>Paste the output straight into the input box and click <strong>Generate Diagram</strong>. You do not need to clean the dump first: the parser reads <code>CREATE TABLE</code> blocks and skips <code>INSERT</code> statements, <code>ALTER TABLE</code> patches, comments, and the <code>SET</code> pragmas a dump wraps around them. That means a full <code>mysqldump</code> or <code>pg_dump</code> file works as-is.</p>
+    <p>Two things determine how readable the result is. First, foreign keys: if your schema declares <code>FOREIGN KEY ... REFERENCES</code>, every relationship is drawn as a line. Schemas generated by some ORMs and all junction tables without an explicit FK constraint will render as isolated boxes — add the missing constraint to the DDL (or at least name the columns consistently, like <code>user_id</code> pointing at <code>users.id</code>) and regenerate, and the relationships appear. Second, scope: paste the tables that belong to one module rather than the whole database, and the automatic layout stays legible.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Database Diagram vs ER Diagram vs Schema Diagram</h2>
+    <p>The same feature gets searched under several names, and they are not quite identical:</p>
+    <ul>
+      <li><strong>ER diagram</strong> — a conceptual model of entities and their relationships. Chen notation draws relationships as diamonds; crow's foot notation marks cardinality (one-to-many, one-to-one, optional) at the end of each line.</li>
+      <li><strong>Database diagram</strong> (physical data model) — the same picture plus implementation detail: exact column names, data types, primary and foreign key constraints.</li>
+      <li><strong>Schema diagram</strong> — usually a synonym for database diagram. "Schema visualizer", "relational schema creator", and "database mapping tool" all describe this view.</li>
+      <li><strong>ERD</strong> — simply the acronym for entity-relationship diagram.</li>
+    </ul>
+    <p>Because this tool parses <code>CREATE TABLE</code> declarations, what it draws is a physical database diagram: a box per table, a row per column with its data type and constraints, and a line per foreign key. That is the version that has to match your code, and it doubles as an ER diagram for design discussions. If you specifically need a Chen-style conceptual model with diamonds and ovals, sketch it from this diagram — the physical view is the one that stays true as the schema changes.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Online Database Diagram Maker vs Desktop Tools</h2>
+    <p>MySQL Workbench, pgAdmin, DBeaver, and SQL Server Management Studio can all reverse-engineer a diagram from a live connection, and for day-to-day work inside one engine they are excellent. A browser-based diagram maker wins in four situations:</p>
+    <ul>
+      <li>You have a DDL file rather than a connection — a dump from a client, a migration directory, or an ORM-generated schema.</li>
+      <li>You cannot install software: a locked-down work laptop, a CI machine, or someone else's computer.</li>
+      <li>You need a picture for a design doc, pull request, or review within a minute.</li>
+      <li>You are comparing two engines, and pasting DDL is faster than configuring a second connection.</li>
+    </ul>
+    <p>Desktop tools remain the better choice when you want live introspection across hundreds of tables, schema editing, or forward engineering from a model. There is also a security argument on both sides: here nothing is uploaded, because the parsing and rendering happen in your browser — which also means you never type production credentials into a web page. See the <a href="/free-online-er-diagram-generator">free online ER diagram generator guide</a> for the longer walkthrough. Once the relationships are clear, <a href="/data-generator">generate test data</a> for the tables, <a href="/dialect-converter">convert the schema between dialects</a>, or check the query plans that hit those tables with the <a href="/explain">EXPLAIN visualizer</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I create an ER diagram from SQL?</h3>
+    <p>Paste one or more <code>CREATE TABLE</code> statements into the DDL input area and click <strong>Generate Diagram</strong>. The tool parses each table's columns, data types, primary keys, and foreign keys, then draws tables as boxes and relationships as connecting lines. Everything runs in your browser, so nothing is uploaded.</p>
+    <h3>Can I turn a SQL dump into a database diagram without installing anything?</h3>
+    <p>Yes. The tool only needs the DDL text, so <code>mysqldump --no-data</code>, <code>pg_dump --schema-only</code>, and <code>sqlite3 .schema</code> output can be pasted as-is. <code>INSERT</code> statements, comments, <code>ALTER TABLE</code> patches, and dump pragmas are ignored rather than treated as errors.</p>
+    <h3>What is the difference between an ER diagram and a database diagram?</h3>
+    <p>An ER diagram is a conceptual model of entities and relationships; a database diagram is the physical model that adds column names, data types, and key constraints. Since this tool works from DDL, it produces the physical diagram and still shows every foreign key as a relationship line.</p>
+    <h3>Does it work with MySQL, PostgreSQL, and SQLite schemas?</h3>
+    <p>Yes. The parser handles standard <code>CREATE TABLE</code> syntax from MySQL, PostgreSQL, SQLite, SQL Server, and most other relational databases, including inline and table-level <code>PRIMARY KEY</code>, <code>FOREIGN KEY ... REFERENCES</code>, <code>NOT NULL</code>, <code>DEFAULT</code>, <code>UNIQUE</code>, and <code>AUTO_INCREMENT</code> or <code>SERIAL</code> columns.</p>
+    <h3>Can I export or download the diagram?</h3>
+    <p>Click <strong>Export PNG</strong> to download the current diagram as a PNG image; zoom in first if you plan to embed it in a document or slide. <strong>Zoom +</strong>, <strong>Zoom -</strong>, and <strong>Reset</strong> control the view, and the diagram renders on an HTML canvas so the export stays crisp.</p>
+    <h3>How many tables can it handle?</h3>
+    <p>A few dozen tables render comfortably in one pass. For very large schemas, generate the diagram in sections — one module or feature area at a time — and export each PNG, which also keeps the automatic layout readable.</p>
+    <h3>Can I convert an ER diagram back into SQL?</h3>
+    <p>Not from a picture: the tool reads DDL, it does not import images. If you have a hand-drawn ER model, write the <code>CREATE TABLE</code> statements with their <code>PRIMARY KEY</code> and <code>FOREIGN KEY</code> clauses and paste them — the generated diagram then acts as a visual check that the DDL matches your model.</p>
+    <h3>Is my schema data safe when I generate a diagram?</h3>
+    <p>Yes. All DDL parsing and rendering happens client-side in JavaScript. Your schema definitions never leave your device — no server-side processing, no logging, and no data collection.</p>
+    <h3>Do I need an account or a signup?</h3>
+    <p>No. The tool is free, requires no registration, and has no usage limit on how many schemas you diagram.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
