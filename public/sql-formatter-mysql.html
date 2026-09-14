@@ -65,6 +65,7 @@ gtag('config', 'G-M3MYLE3P6F');
 
 <section class="content-section" id="tips">
 <h2>Tips for MySQL Developers</h2>
+<h3>Validate MySQL syntax before you format</h3><p>Formatting a query that does not parse just gives you clean-looking broken SQL. Run it through the <a href="/validate">MySQL syntax checker</a> first: MySQL error 1064 almost always comes down to a missing comma or a dialect mismatch, and the validator points at the exact line. Backtick identifiers, <code>LIMIT offset, count</code> and <code>ON DUPLICATE KEY UPDATE</code> are valid in MySQL but not in Standard SQL, so pick the MySQL dialect when you check.</p>
 <h3>Format mysqldump output</h3><p><code>mysqldump</code> produces thousands of lines. Formatting table definitions and insert statements before reviewing them makes schema audits much faster.</p><h3>Format before EXPLAIN</h3><p>When you run <code>EXPLAIN</code> on a formatted query, it is much easier to map execution plan rows back to the actual SQL. An unformatted one-liner makes this nearly impossible.</p><div class="tip"><strong>💡 Note:</strong> Always use the MySQL dialect for queries that reference <code>INFORMATION_SCHEMA</code>. These contain backtick-quoted identifiers that generic formatters handle poorly.</div>
 </section>
 

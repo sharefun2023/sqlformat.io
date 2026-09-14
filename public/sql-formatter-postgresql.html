@@ -81,6 +81,7 @@ RETURNING product_id, quantity AS new_qty;</code></pre><p>The conflict target, t
 
 <section class="content-section" id="tips">
 <h2>Practical Tips for Postgres Users</h2>
+<h3>Validate PostgreSQL syntax before you format</h3><p>Run the query through the <a href="/validate">PostgreSQL syntax checker</a> first &mdash; a statement that does not parse produces neat but broken output. The validator understands <code>RETURNING</code>, <code>::</code> casts, <code>DISTINCT ON</code>, <code>LATERAL</code> joins and JSONB operators such as <code>@&gt;</code> and <code>-&gt;&gt;</code>, all of which get flagged if you check them under MySQL or Standard SQL. Fix the reported line, then format.</p>
 <h3>Format pg_dump output</h3><p><code>pg_dump --schema-only</code> output is functional but ugly. Formatting it section by section — tables, indexes, functions — makes reviewing database changes much easier.</p><h3>Audit JSONB queries</h3><p>When working with JSONB-heavy queries, format the SQL first, then trace the path expressions to verify they target the right nested keys. Clean formatting makes this kind of auditing practical.</p><div class="tip"><strong>💡 Pro tip:</strong> If you use <code>psql</code> with <code>\x auto</code> for expanded display, formatted queries are much easier to align with the expanded output format.</div>
 </section>
 

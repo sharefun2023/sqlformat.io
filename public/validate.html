@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Syntax Validator — Check SQL Errors Online Free | SQLFormat.io</title>
-  <meta name="description" content="Paste your SQL, catch syntax errors instantly. Line-by-line error detection with clear messages. Free, private, runs in your browser. No signup.">
-  <meta name="keywords" content="SQL validator, SQL syntax check, SQL error checker, validate SQL online, SQL linter">
-  <meta property="og:title" content="SQL Syntax Validator — Check SQL Errors Online Free">
-  <meta property="og:description" content="Validate SQL syntax online. Instant error detection, line highlighting, Chinese error messages. Free and private.">
+  <title>SQL Syntax Checker &amp; Validator — Check SQL Queries Online Free | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL syntax checker and validator. Validate MySQL, PostgreSQL, SQL Server, Oracle, SQLite and Snowflake queries, get errors on the exact line, and fix broken SQL fast. Runs in your browser, no signup.">
+  <meta name="keywords" content="SQL validator, SQL syntax checker, SQL checker online, check MySQL syntax, PostgreSQL validator, SQL query checker, fix SQL query, validate SQL online, SQL linter">
+  <meta property="og:title" content="SQL Syntax Checker &amp; Validator — Check SQL Queries Online Free">
+  <meta property="og:description" content="Validate SQL syntax online for MySQL, PostgreSQL, SQL Server, Oracle and SQLite. Instant line-by-line error detection, free and private.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/validate">
   <meta property="og:site_name" content="SQLFormat.io">
@@ -17,8 +17,8 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "SQL Syntax Validator",
-    "description": "Free online SQL syntax validator. Check SQL queries for errors instantly with line-by-line error detection. No signup, private, runs in browser.",
+    "name": "SQL Syntax Checker & Validator",
+    "description": "Free online SQL syntax checker and validator. Check MySQL, PostgreSQL, SQL Server, Oracle and SQLite queries for errors instantly with line-by-line error detection. No signup, private, runs in browser.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -47,7 +47,7 @@
         "name": "What SQL errors can the validator detect?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The validator detects syntax errors such as missing commas, unmatched parentheses, misspelled keywords (e.g., SELCET instead of SELECT), and structural issues that would cause the query to fail. Errors are shown line-by-line with Chinese error messages for clarity."
+          "text": "It detects syntax errors such as missing commas, unmatched parentheses, misspelled keywords (for example SELCET instead of SELECT) and structural problems that would make the query fail. Errors are reported line by line, with warnings flagged separately from hard errors."
         }
       },
       {
@@ -55,7 +55,7 @@
         "name": "Does validation require sending my query to a server?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. All validation runs client-side in your browser. Your SQL query never leaves your device — no data is sent to any server, ensuring complete privacy and security."
+          "text": "No. All validation runs client-side in your browser. Your SQL never leaves your device - nothing is uploaded, so you can check production queries and proprietary schemas safely."
         }
       },
       {
@@ -63,7 +63,39 @@
         "name": "Which SQL dialects can I validate?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "You can validate 15+ SQL dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL, and Trino. Select your dialect from the dropdown before validating."
+          "text": "15+ dialects, including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL and Trino. Pick your dialect from the dropdown before validating."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a SQL syntax checker and a SQL validator?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In practice they do the same job. A checker confirms that your statement parses under a given grammar; a validator does the same and adds typo and bracket heuristics. This tool does both in one pass, which is why the terms SQL syntax checker, SQL validator, SQL query checker and SQL linter all point at the same tool."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I validate a PostgreSQL or MySQL query online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Select PostgreSQL, MySQL or MariaDB from the dialect dropdown. Syntax that is valid in PostgreSQL (RETURNING, :: casts, DISTINCT ON) is flagged under MySQL, and MySQL's backtick identifiers and LIMIT offset, count form are not standard SQL. Choosing the right dialect removes most false errors."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I fix a SQL query that will not run?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Start at the reported line and scan upward. Most failures come from a missing comma, a misspelled keyword, unbalanced parentheses or clauses out of order. Fix one issue and re-validate - each run reports the first structural error. Then compare the repaired query with the original using the SQL diff tool."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the SQL validator free and private?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. It is free with no signup, and every check runs locally in your browser, so your SQL is never sent to a server."
         }
       }
     ]
@@ -287,6 +319,7 @@
     }
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 18px 0 8px; }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -322,8 +355,8 @@ gtag('config', 'G-M3MYLE3P6F');
 
 <main class="container">
   <div class="hero">
-    <h1>SQL Syntax Validator</h1>
-    <p>Paste your SQL, pick a dialect, and see every error on its exact line. All checking happens in your browser — your query never leaves your machine.</p>
+    <h1>SQL Syntax Checker &amp; Validator</h1>
+    <p>Paste your SQL, pick a dialect, and see every error on its exact line. A free online SQL validator for MySQL, PostgreSQL, SQL Server, Oracle, SQLite, BigQuery and Snowflake queries. All checking happens in your browser — your query never leaves your machine.</p>
   </div>
 
   <div class="tool-section">
@@ -416,6 +449,56 @@ AND age > 18
     <h2>Tips</h2>
     <p>Run the validator <em>before</em> formatting or minifying &mdash; a query with broken syntax will produce misleading output in other tools. Always choose the right dialect: syntax that is valid in PostgreSQL (such as <code>RETURNING</code> or <code>::</code> casts) may not be valid in MySQL, and vice versa. The validator reports the first structural error from the parser plus independent typo and bracket warnings, so fix errors top-down and re-run after each change. Remember that a &ldquo;clean&rdquo; result means the syntax is valid, not that the query returns correct results &mdash; still review the logic and test against real data before shipping. For the clearest results, validate one statement at a time &mdash; isolating a query produces more accurate line numbers than dumping an entire script in one go. And since every check runs locally in your browser, you can validate even the most sensitive production queries without a second thought.</p>
   </div>
+  <div class="content-section">
+    <h2>SQL Syntax Checker: Check SQL Online in One Click</h2>
+    <p>A syntax checker answers one question fast: will this SQL parse? Paste the query into the editor above, pick the dialect, and the checker runs a real parser over the text and reports the first structural error plus independent typo and bracket warnings, each anchored to the exact line where it occurs. That is most valuable for SQL you did not write yourself &mdash; output from an ORM, a statement generated by a BI tool, a snippet copied from documentation, or a migration script that has to be right the first time. Unlike a style linter, this checker fails loudly on the things that actually break a query: a missing comma between two columns, a misspelled keyword such as <code>SELCET</code>, an unbalanced parenthesis, or a clause in the wrong order. Everything runs in your browser with no upload, so you can check production queries and internal schemas without a privacy review. If you are debugging a &ldquo;syntax error near &hellip;&rdquo; message from MySQL, PostgreSQL or SQL Server, run the SQL syntax checker first &mdash; it usually surfaces the real problem in a second instead of another round trip to the database. Once the query is clean, format it with the <a href="/">free SQL formatter</a> and read the plan behind it in the <a href="/explain">SQL EXPLAIN visualizer</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>MySQL, PostgreSQL, Oracle and SQL Server Validators</h2>
+    <p>Every dialect has its own grammar, and a query that parses in one engine can fail in the next. The validator ships with 15+ grammars, so you validate against the database you actually deploy to rather than Standard SQL. These are the dialect differences that trip people up most often:</p>
+    <ul>
+      <li><strong>PostgreSQL validator</strong> &mdash; accepts <code>RETURNING</code>, <code>::</code> casts, <code>ON CONFLICT</code>, <code>DISTINCT ON</code>, <code>LATERAL</code> joins, dollar-quoted strings and JSONB operators (<code>-&gt;</code>, <code>-&gt;&gt;</code>, <code>@&gt;</code>). All of these are rejected by MySQL. Pair it with the <a href="/sql-formatter-postgresql">PostgreSQL formatter</a> when you are done.</li>
+      <li><strong>MySQL / MariaDB validator</strong> &mdash; accepts backtick-quoted identifiers, <code>LIMIT offset, count</code> and <code>INSERT ... ON DUPLICATE KEY UPDATE</code>. MySQL error 1064 is nearly always a missing comma or a dialect mismatch, and checking MySQL syntax here catches both before you touch production. See the <a href="/sql-formatter-mysql">MySQL formatter</a> for the formatting side.</li>
+      <li><strong>SQL Server (T-SQL) validator</strong> &mdash; for <code>SELECT TOP n</code>, <code>[bracketed]</code> identifiers, <code>GO</code> batch separators and <code>MERGE</code> statements.</li>
+      <li><strong>Oracle (PL/SQL) validator</strong> &mdash; handles <code>DUAL</code>, <code>ROWNUM</code>, <code>NVL</code>, <code>CONNECT BY</code> and PL/SQL blocks that are not wrapped in a stored procedure.</li>
+      <li><strong>SQLite, BigQuery, Snowflake, Redshift, Spark, Hive, DB2, Trino</strong> &mdash; pick the matching grammar for warehouse and embedded-database SQL.</li>
+    </ul>
+    <p>Choosing the wrong dialect is the most common cause of false alarms: a query flagged under Standard SQL often parses cleanly the moment you switch to the engine you are targeting. Validate with the same engine you will run against. When you need to move a query between engines, check the differences first with the <a href="/dialect-converter">SQL dialect converter</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Fix a SQL Query Error (Fix My SQL Query)</h2>
+    <p>When a query fails, the database message points at where the parser gave up &mdash; not always where you went wrong. The real mistake is often a few lines earlier. Work top-down:</p>
+    <ol>
+      <li>Read the reported line, then scan the two or three lines above it.</li>
+      <li>Check the commas: a missing comma between two selected columns or two join conditions is the single most common defect.</li>
+      <li>Check keyword spelling &mdash; <code>SELCET</code>, <code>FORM</code>, <code>WHEER</code>, <code>GRUOP BY</code>.</li>
+      <li>Check clause order: <code>SELECT ... FROM ... JOIN ... WHERE ... GROUP BY ... HAVING ... ORDER BY ... LIMIT</code>.</li>
+      <li>Balance parentheses and quotes, and look for a trailing comma before <code>FROM</code>.</li>
+      <li>Confirm the dialect, then re-validate.</li>
+    </ol>
+    <p>Re-run the validator after each fix. It reports the first structural error per run, so a brand new message usually means you have moved on to the next problem. Once the query validates, compare the original with the repaired version using the <a href="/diff">SQL diff tool</a> &mdash; seeing both side by side is the quickest way to confirm the logic still matches your intent. Keep one thing in mind: a clean result proves the SQL parses, not that it returns the rows you expect. Always test against real data before shipping.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>What SQL errors can the validator detect?</h3>
+    <p>It detects syntax errors such as missing commas, unmatched parentheses, misspelled keywords (for example <code>SELCET</code> instead of <code>SELECT</code>) and structural problems that would make the query fail. Errors are reported line by line, with warnings flagged separately from hard errors.</p>
+    <h3>Does validation require sending my query to a server?</h3>
+    <p>No. All validation runs client-side in your browser. Your SQL never leaves your device &mdash; nothing is uploaded, so you can check production queries and proprietary schemas safely.</p>
+    <h3>Which SQL dialects can I validate?</h3>
+    <p>15+ dialects, including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL and Trino. Pick your dialect from the dropdown before validating.</p>
+    <h3>What is the difference between a SQL syntax checker and a SQL validator?</h3>
+    <p>In practice they do the same job. A checker confirms that your statement parses under a given grammar; a validator does the same and adds typo and bracket heuristics. This tool does both in one pass, which is why the terms SQL syntax checker, SQL validator, SQL query checker and SQL linter all point at the tool above.</p>
+    <h3>Can I validate a PostgreSQL or MySQL query online?</h3>
+    <p>Yes. Select PostgreSQL, MySQL or MariaDB from the dialect dropdown. Syntax that is valid in PostgreSQL (<code>RETURNING</code>, <code>::</code> casts, <code>DISTINCT ON</code>) is flagged under MySQL, and MySQL's backtick identifiers and <code>LIMIT offset, count</code> form are not standard SQL. Choosing the right dialect removes most false errors.</p>
+    <h3>How do I fix a SQL query that will not run?</h3>
+    <p>Start at the reported line and scan upward. Most failures come from a missing comma, a misspelled keyword, unbalanced parentheses or clauses out of order. Fix one issue and re-validate &mdash; each run reports the first structural error. Then compare the repaired query with the original using the SQL diff tool.</p>
+    <h3>Is the SQL validator free and private?</h3>
+    <p>Yes. It is free with no signup, and every check runs locally in your browser, so your SQL is never sent to a server.</p>
+  </div>
+
   <div class="related-section">
     <h2>More SQL Tools</h2>
     <div class="related-grid">
