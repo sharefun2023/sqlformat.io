@@ -34,3 +34,4 @@
 *   2026-08-09 03:30:57 (auto) — Git activity: 68 commits, latest: ee6daf1 chore: SEO maintenance 2026-08-08 (sharefun2023, 2026-08-08)
 *   2026-09-08 03:30:46 (auto) — Git activity: 121 commits, latest: 544b15d seo: expand postgresql formatter page content (ON CONFLICT/RETURNING section + FAQ) (sharefun2023, 2026-09-07)
 *   2026-09-14 03:30:01 (auto) — Git activity: 131 commits, latest: da029d2 seo: deepen /er-diagram (sql to er diagram, database diagram clusters) + 5 inbound links (sharefun2023, 2026-09-13)
+*   2026-09-17 03:30:06 (auto) — Git activity: 139 commits, latest: 70d27fe chore: sync sitemap lastmod + JSON-LD dateModified with real git history (sharefun2023, 2026-09-16)
