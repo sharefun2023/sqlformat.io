@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compare SQL Online Free — Side-by-Side SQL Query Diff Tool | SQLFormat.io</title>
-  <meta name="description" content="Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas. Works with any SQL dialect, no signup required.">
-  <meta name="keywords" content="SQL compare, compare SQL online, compare SQL queries free, SQL diff, diff SQL online, SQL code compare, SQL compare tool, compare two SQL queries, online SQL diff tool">
+  <meta name="description" content="Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas, stored procedures and full migration scripts. Works with any SQL dialect, no signup required.">
+  <meta name="keywords" content="SQL compare, compare SQL online, compare SQL queries online, compare SQL queries free, SQL diff, diff SQL online, SQL code compare, SQL compare tool, compare two SQL queries, compare stored procedures online, compare SQL scripts, online SQL diff tool">
   <meta property="og:title" content="Compare SQL Online Free — Side-by-Side SQL Query Diff Tool | SQLFormat.io">
-  <meta property="og:description" content="Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas.">
+  <meta property="og:description" content="Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas and stored procedures.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/diff">
   <meta property="og:site_name" content="SQLFormat.io">
@@ -18,12 +18,12 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Compare SQL Online Free",
-    "description": "Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas. Works with any SQL dialect, no signup required.",
+    "description": "Compare SQL online free — paste two SQL queries and see every difference highlighted side by side. Perfect for debugging query rewrites, verifying deployments, or comparing schemas, stored procedures and full migration scripts. Works with any SQL dialect, no signup required.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/diff",
-    "dateModified": "2026-09-16"
+    "dateModified": "2026-09-17"
   }
   </script>
   <script type="application/ld+json">
@@ -45,7 +45,9 @@
       {"@type": "Question", "name": "Is this SQL compare tool free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The SQL diff tool is completely free with no account, no usage limits and no file-size paywall. Comparison runs entirely in your browser."}},
       {"@type": "Question", "name": "Does it work with MySQL, PostgreSQL and SQL Server?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The comparison is dialect-aware and works with MySQL, PostgreSQL, SQL Server (T-SQL), SQLite, Oracle and other SQL dialects. Identifiers, strings and keywords are tokenized, so a diff on a MySQL query behaves the same way as a diff on a PostgreSQL query."}},
       {"@type": "Question", "name": "Can I compare SQL without uploading my queries?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. All comparison happens locally in your browser using JavaScript. Your SQL is never sent to a server, so it is safe to compare proprietary or sensitive queries."}},
-      {"@type": "Question", "name": "What is the difference between a SQL diff and a text diff?", "acceptedAnswer": {"@type": "Answer", "text": "A plain text diff compares raw characters or lines, so reformatting shows up as a change. A SQL-aware diff tokenizes the query first and highlights the tokens that actually changed, so a change from JOIN to LEFT JOIN is obvious while extra whitespace or casing is ignored."}}
+      {"@type": "Question", "name": "What is the difference between a SQL diff and a text diff?", "acceptedAnswer": {"@type": "Answer", "text": "A plain text diff compares raw characters or lines, so reformatting shows up as a change. A SQL-aware diff tokenizes the query first and highlights the tokens that actually changed, so a change from JOIN to LEFT JOIN is obvious while extra whitespace or casing is ignored."}},
+      {"@type": "Question", "name": "Can I compare stored procedures and full scripts, not just single queries?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Anything that is valid SQL text works: a single statement, a view definition, a stored procedure body or an entire migration script. Stored procedure comparisons are the most common case - paste the version from staging and the version from production, and the tool highlights the lines and tokens that differ, including changed WHERE clauses, new columns and renamed variables."}},
+      {"@type": "Question", "name": "How is this different from Redgate SQL Compare or a desktop diff tool?", "acceptedAnswer": {"@type": "Answer", "text": "Desktop tools such as Redgate SQL Compare connect to two live databases and compare the schema objects themselves, which needs installed software, a licence and database credentials. This tool compares the SQL text in your browser: no install, no signup and no credentials. Use it when you already have the two scripts - a query rewrite, a migration file, a procedure body - and simply want to see the differences."}}
     ]
   }
   </script>
@@ -364,6 +366,12 @@ gtag('config', 'G-M3MYLE3P6F');
   </div>
 
   <div class="content-section">
+    <h2>Compare SQL Queries Online</h2>
+    <p>Comparing SQL queries online beats opening a desktop diff tool when all you need is to see what changed between two versions of a statement. Paste one version into panel A and the other into panel B, then press <strong>Compare</strong> &mdash; the tool lines them up token by token and marks every added, removed and modified element. There is nothing to install, no account to create and no upload: the comparison runs entirely in your browser, which is what makes it practical for production SQL you would rather not paste into a third-party service.</p>
+    <p>The same workflow covers stored procedures, view definitions and full migration scripts. When you compare a stored procedure between staging and production, or compare two SQL scripts before a release, read the orange modified lines first &mdash; that is where behaviour usually changes: a different join type, a dropped filter condition, a renamed column. Whitespace and casing show up as token-level modifications, so re-indented code never hides the one line that actually matters. Very large scripts are easier to review in blocks, or you can run both versions through the <a href="/">SQL formatter</a> first so the diff aligns on structure instead of indentation.</p>
+  </div>
+
+  <div class="content-section">
     <h2>How to Use the Compare Tool</h2>
     <ol>
       <li>Paste the original SQL into the left panel (A) and the modified SQL into the right panel (B).</li>
@@ -424,6 +432,8 @@ WHERE o.status = 'completed';
     <p><strong>Does it work with MySQL, PostgreSQL and SQL Server?</strong><br>Yes. The comparison is dialect-aware and works with MySQL, PostgreSQL, SQL Server (T-SQL), SQLite, Oracle and other dialects. Identifiers, strings and keywords are tokenized, so a diff on a MySQL query behaves the same way as a diff on a PostgreSQL query.</p>
     <p><strong>Can I compare SQL without uploading my queries?</strong><br>Yes. All comparison happens locally in your browser with JavaScript. Your SQL is never sent to a server, so it is safe to compare proprietary or sensitive queries.</p>
     <p><strong>What is the difference between a SQL diff and a text diff?</strong><br>A plain text diff compares raw characters or lines, so reformatting shows up as a change. A SQL-aware diff tokenizes the query first and highlights the tokens that actually changed, so a change from <code>JOIN</code> to <code>LEFT JOIN</code> is obvious while extra whitespace or casing is ignored.</p>
+    <p><strong>Can I compare stored procedures and full scripts, not just single queries?</strong><br>Yes. Anything that is valid SQL text works: a single statement, a view definition, a stored procedure body or an entire migration script. Stored procedure comparisons are the most common case &mdash; paste the version from staging and the version from production, and the tool highlights the lines and tokens that differ, including changed <code>WHERE</code> clauses, new columns and renamed variables.</p>
+    <p><strong>How is this different from Redgate SQL Compare or a desktop diff tool?</strong><br>Desktop tools such as Redgate SQL Compare connect to two live databases and compare the schema objects themselves, which needs installed software, a licence and database credentials. This tool compares the SQL text in your browser: no install, no signup and no credentials. Use it when you already have the two scripts &mdash; a query rewrite, a migration file, a procedure body &mdash; and simply want to see the differences.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
