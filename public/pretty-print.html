@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/pretty-print",
-    "dateModified": "2026-09-15",
+    "dateModified": "2026-09-18",
     "browserRequirements": "Requires JavaScript",
     "featureList": "SQL syntax highlighting, SQL formatting, PNG export, SVG export, dark and light themes, copy formatted SQL, 15+ dialect support, client-side processing"
   }
@@ -461,6 +461,19 @@ ORDER BY order_count DESC;</div>
     <h2>Tips</h2>
     <p>SVG is resolution-independent, so prefer it for documentation and print; use PNG when you need a quick raster image for chat or a ticket. Before exporting, switch themes to match the destination &mdash; light for white-background docs, dark for slides and developer blogs. The formatter uses your selected dialect, so pick the right one to get correct handling of dialect-specific constructs. If the parser can't format a query, it still renders the raw text with syntax highlighting, so you always get a usable image. For very long queries, format first, then export in sections so the text stays legible at a readable font size. Note that <strong>Copy</strong> captures the plain SQL text, not the colors &mdash; the highlighting only appears in the rendered panel and in the exported PNG or SVG images.</p>
   </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I export formatted SQL as an image?</h3>
+    <p>Enter your SQL query, select your database dialect, click Format, then choose Export PNG or Export SVG. The syntax-highlighted output is rendered as a downloadable image file. Choose between dark and light themes before exporting. All processing happens client-side in your browser.</p>
+    <h3>Can I use the SQL pretty printer for documentation screenshots?</h3>
+    <p>Yes. The pretty printer is designed specifically for creating documentation-ready SQL images. Format your query with full syntax highlighting, choose your preferred color theme, and export as PNG or SVG. SVG exports are resolution-independent, perfect for inserting into technical documentation, wikis, and presentations.</p>
+    <h3>What syntax highlighting does the SQL pretty printer support?</h3>
+    <p>The tool highlights SQL keywords (SELECT, FROM, WHERE, JOIN, etc.), string literals, numbers, comments (both single-line -- and multi-line /* */), operators, and functions. The highlighting is based on tokenized analysis of the formatted output, producing accurate and readable color-coded SQL for any dialect.</p>
+    <h3>Is the SQL pretty print tool free with no limits?</h3>
+    <p>Yes. Completely free with no signup, no limits, and no data sent to servers. Everything runs in your browser. You can format and export as many SQL queries as you need. The PNG and SVG exports have no size restrictions.</p>
+  </div>
+
   <div class="related-tools">
     <h3>Related Tools</h3>
     <div class="related-links">
@@ -471,6 +484,7 @@ ORDER BY order_count DESC;</div>
       <a href="/explain">EXPLAIN Visualizer</a>
       <a href="/free-online-sql-pretty-printer">Pretty Print Guide</a>
       <a href="/sql-formatter-postgresql">PostgreSQL Formatter</a>
+      <a href="/stats">SQL Query Analyzer</a>
     </div>
   </div>
 </main>

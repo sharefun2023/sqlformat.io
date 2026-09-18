@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Query Analyzer — Free Online SQL Statistics & Complexity Tool | SQLFormat.io</title>
-  <meta name="description" content="Free online SQL query analyzer. Paste your SQL to get detailed statistics: table count, JOIN count, subquery depth, complexity score, and performance warnings. 100% client-side, no signup needed.">
-  <meta name="keywords" content="SQL analyzer, SQL statistics, SQL complexity, SQL query analysis, SQL performance check, SQL table count, SQL JOIN analysis, subquery depth, SQL query optimizer, online SQL analyzer free">
-  <meta property="og:title" content="SQL Query Analyzer — Free Online SQL Statistics & Complexity Tool">
-  <meta property="og:description" content="Analyze SQL queries for complexity, table count, JOIN count, subquery depth, and performance issues. Free, 100% client-side, no signup.">
+  <title>SQL Query Analyzer Online — Free SQL Analyzer & Query Statistics Tool | SQLFormat.io</title>
+  <meta name="description" content="Free online SQL query analyzer. Paste any SQL to get instant statistics — table count, JOIN types, subquery depth, CTE and aggregate counts, a 1-10 complexity score and performance warnings. Works with MySQL, PostgreSQL and SQL Server syntax, 100% client-side, no signup.">
+  <meta name="keywords" content="SQL query analyzer, SQL analyzer, SQL analyzer online, SQL query analyzer online, query analyzer, SQL code analyzer, SQL query analyser, SQL statistics parser, SQL query performance analyzer, SQL query viewer, SQL complexity, SQL JOIN analysis, subquery depth, online SQL analyzer free">
+  <meta property="og:title" content="SQL Query Analyzer Online — Free SQL Analyzer & Query Statistics Tool">
+  <meta property="og:description" content="Analyze SQL queries online for complexity, table count, JOIN count, subquery depth and performance issues. Free, 100% client-side, no signup.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/stats">
   <meta property="og:site_name" content="SQLFormat.io">
@@ -18,14 +18,14 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "SQL Query Analyzer",
-    "description": "Free online SQL query analyzer that provides detailed statistics — table count, JOIN count, subquery depth, complexity score, and performance warnings. 100% client-side, no data sent to servers.",
+    "description": "Free online SQL query analyzer that provides detailed statistics — table count, JOIN count, subquery depth, complexity score, and performance warnings. Dialect-agnostic heuristics for MySQL, PostgreSQL, SQL Server and SQLite. 100% client-side, no data sent to servers.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/stats",
-    "dateModified": "2026-09-01",
+    "dateModified": "2026-09-18",
     "browserRequirements": "Requires JavaScript",
-    "featureList": "SQL analysis, query statistics, complexity scoring, table detection, JOIN analysis, subquery depth measurement, performance issue detection, SELECT * detection, missing WHERE detection"
+    "featureList": "SQL analysis, online SQL query analyzer, query statistics, complexity scoring, table detection, JOIN analysis, subquery depth measurement, CTE and aggregate counts, performance issue detection, SELECT * detection, missing WHERE detection, dialect-agnostic parsing for MySQL, PostgreSQL and SQL Server"
   }
   </script>
   <script type="application/ld+json">
@@ -73,6 +73,46 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "The complexity score ranges from 1 to 10. Score 1-3: simple queries (few tables, no subqueries). Score 4-6: moderate complexity (JOINs, basic subqueries). Score 7-8: complex queries (multiple CTEs, nested subqueries, many JOINs). Score 9-10: extremely complex queries with extensive nesting, many CTEs, and complex JOIN patterns."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to install anything to use the SQL analyzer online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The analyzer is a browser page — open it, paste your SQL, click Analyze. There is no extension, desktop app or database connection to set up, and no account. That is the main difference from a built-in analyzer such as the SSMS Query Analyzer or MySQL Workbench Visual Explain, which require the database engine and client tools to be installed locally."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the SQL query analyzer support MySQL, PostgreSQL and SQL Server syntax?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The statistics are produced from dialect-agnostic heuristics, so MySQL, PostgreSQL, SQL Server (T-SQL), SQLite and MariaDB queries are all analyzed. It recognises dialect-specific constructs such as TOP, LIMIT, FETCH FIRST, ILIKE, RETURNING, ON CONFLICT and backtick or bracket quoting. Because it does not connect to a database engine, it cannot fail on syntax a single vendor would reject — treat the output as a structural overview, not a syntax verdict."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can the analyzer read an execution plan or STATISTICS IO output?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It analyzes the SQL text you paste, so it measures structure — tables, JOINs, subquery depth, CTEs, aggregates and complexity. It cannot see runtime cost. STATISTICS IO counters (scan count, logical reads, physical reads) and EXPLAIN plans come from the engine executing the query. The usual workflow is: analyze the SQL structure here first, then run EXPLAIN or STATISTICS IO in your database and read the plan with the EXPLAIN visualizer."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a SQL query analyzer the same thing as a SQL profiler?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A profiler (SQL Server Profiler, MySQL slow query log, pg_stat_statements) records queries while they actually run against a live database and reports duration, waits and reads. A query analyzer inspects the SQL text before or after execution and reports its structure and complexity. Use the profiler to find which queries are slow in production, and the analyzer to see why a specific query is hard to read, refactor or review."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a SQL query analyser the same as a SQL query analyzer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — analyser and analyzer are the British and American spellings of the same tool. This page answers to both: an SQL query analyser here reports table counts, JOIN types, subquery depth, CTE and aggregate counts, a 1-10 complexity score and performance warnings."
         }
       }
     ]
@@ -455,8 +495,8 @@
 
 <main class="container">
   <div class="page-header">
-    <h1>SQL Query Analyzer</h1>
-    <p>Paste your SQL query to get detailed statistics — table count, JOIN complexity, subquery depth, and performance warnings. All analysis runs in your browser.</p>
+    <h1>SQL Query Analyzer Online</h1>
+    <p>Paste your SQL query to get detailed statistics — table count, JOIN complexity, subquery depth, and performance warnings. Readable by the MySQL, PostgreSQL, SQL Server and SQLite syntax most teams mix in a single repo. All analysis runs in your browser.</p>
   </div>
 
   <div class="input-area">
@@ -560,6 +600,58 @@ ORDER BY order_count DESC;</div>
     <p>Treat the complexity score as a signal, not a verdict — a high score on an analytics query is often justified, while a high score on a simple lookup is worth investigating. Pay closest attention to the <code>danger</code> warnings (missing WHERE on UPDATE/DELETE, CROSS JOIN without a condition), as those can cause real data problems. Run the analyzer on your queries before they reach production, and use the deep-nesting warning to guide you toward breaking subqueries into readable CTEs. If you frequently review similar queries, use the example loaders to compare a candidate against a known sample and see how its score ranks.</p>
   </div>
 
+  <div class="content-section">
+    <h2>SQL Query Analyzer Online — What It Checks</h2>
+    <p>Most SQL analyzers in a search result want an install: the SSMS Query Analyzer ships inside SQL Server Management Studio, Visual Explain ships inside MySQL Workbench, and pgAdmin is a desktop app. This one is a page. Open it, paste the query, click Analyze, and the numbers come back immediately — no connection string, no credentials, no local database, and nothing uploaded.</p>
+    <p>A run reports <strong>tables referenced</strong> (deduplicated, so a self-join is counted once), <strong>JOIN count and type</strong> (INNER, LEFT, RIGHT, FULL, CROSS, NATURAL), <strong>subquery depth</strong>, <strong>CTE count</strong>, <strong>aggregate functions</strong>, <strong>window functions</strong>, <strong>DISTINCT usage</strong> and <strong>UNION branches</strong>, plus statement type and line count. It then compiles a 1–10 complexity score and a warning list split into <code>danger</code> items (missing WHERE on UPDATE or DELETE, CROSS JOIN without a condition) and <code>info</code> items (<code>SELECT *</code>, deep nesting, DISTINCT on a large join).</p>
+    <p>Those warnings are structural, which is what makes them useful before code review: they describe how hard the query will be to maintain and roughly how much work the planner faces, with no running database involved. If all you want to know is whether the SQL parses, run it through the <a href="/validate">SQL validator</a> first; if you want to see how the engine plans it, paste the plan into the <a href="/explain">EXPLAIN visualizer</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Query Analyzer for MySQL, PostgreSQL and SQL Server</h2>
+    <p>"Query analyzer" means something different in every database, so it is worth being precise about which one you need.</p>
+    <ul>
+      <li><strong>SQL Server / T-SQL</strong> — the original SSMS Query Analyzer was split into the query editor, the execution plan and Query Store. Real metrics still need the engine; <code>SET STATISTICS IO ON</code> is the fastest way to see logical reads per table.</li>
+      <li><strong>MySQL / MariaDB</strong> — <code>EXPLAIN</code> and <code>EXPLAIN ANALYZE</code> in the shell, Visual Explain in MySQL Workbench, and the slow query log for statements already running in production.</li>
+      <li><strong>PostgreSQL</strong> — <code>EXPLAIN (ANALYZE, BUFFERS)</code> for one query, and the <code>pg_stat_statements</code> extension to rank the slowest statements across an instance.</li>
+      <li><strong>SQLite</strong> — <code>EXPLAIN QUERY PLAN</code>, or nothing at all if you only want the structure counted.</li>
+    </ul>
+    <p>This analyzer does not replace any of them — it is dialect-agnostic, so a T-SQL query using <code>TOP</code>, a MySQL query with <code>LIMIT</code> and a PostgreSQL query with <code>RETURNING</code> or <code>ON CONFLICT</code> are all counted the same way. The workflow that holds up: count the structure here to see how complex the query really is, move it between vendors with the <a href="/dialect-converter">SQL dialect converter</a> when you are migrating, keep the vendor-specific version readable with the <a href="/sql-formatter-postgresql">PostgreSQL formatter</a> or the <a href="/sql-formatter-mysql">MySQL formatter</a>, and take the reads and timings from the engine itself.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>SQL Query Performance Analyzer: What the Statistics Can and Cannot Tell You</h2>
+    <p>The honest description is that this is a static analyzer — it reads the query, not the database. Its statistics are about shape: how many tables the planner has to join, how deeply the subqueries nest, and whether the query leans on features (window functions, DISTINCT, UNION) that narrow the plans available to the optimizer.</p>
+    <p>What it cannot tell you is cost. <code>STATISTICS IO</code> output — scan count, logical reads, physical reads — and a real execution plan only exist once a server runs the query against real data with real indexes. So the two halves of performance work stay separate:</p>
+    <ul>
+      <li><strong>Structure, before you run anything:</strong> table count, JOIN types, subquery depth, CTE usage, missing WHERE, <code>SELECT *</code>. Spot and fix the antipatterns here — it is free.</li>
+      <li><strong>Cost, after you run it:</strong> the actual plan, reads and index usage. Start with <a href="/blog/how-to-read-sql-explain-plan">how to read a SQL EXPLAIN plan</a>, then read <a href="/blog/how-database-indexes-work">how database indexes work</a> if you see a scan where you expected a seek.</li>
+    </ul>
+    <p>A high complexity score is not automatically a problem — reporting queries are supposed to be complex. The useful signal is a <em>change</em>: a query that scored 3 last month and scores 7 today means somebody added joins or nesting that nobody reviewed. Analyze the rewritten query before you merge it, use the <a href="/diff">SQL diff tool</a> to confirm exactly what changed in the text, and the <a href="/minify">SQL minifier</a> when you need the same query compressed into a log line or a comment. Longer reads on the same subject live in <a href="/blog/sql-query-optimization-tips">SQL query optimization tips</a> and <a href="/blog/sql-subquery-vs-join">subquery vs join</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How does the SQL query analyzer work?</h3>
+    <p>The SQL query analyzer parses your SQL query using a heuristic-based engine that counts tables, JOIN operations, subqueries, CTEs, and detects common performance patterns. It runs entirely in your browser — no data is sent to any server. It assigns a complexity score from 1 (simple) to 10 (extremely complex) based on query characteristics.</p>
+    <h3>What performance issues can the SQL analyzer detect?</h3>
+    <p>The analyzer detects several common performance antipatterns: <code>SELECT *</code> (which pulls unnecessary columns), missing WHERE clauses on SELECT/DELETE/UPDATE statements, CROSS JOINs without conditions, DISTINCT on large JOINs, nested subqueries that could be CTEs, and SELECT FROM subqueries without proper filtering.</p>
+    <h3>Is the SQL query analyzer really free?</h3>
+    <p>Yes, completely free. No signup, no credit card, no usage limits. All analysis runs client-side in your browser. You can analyze unlimited SQL queries — simple SELECTs or complex multi-CTE queries with dozens of JOINs.</p>
+    <h3>What's the complexity score range?</h3>
+    <p>The complexity score ranges from 1 to 10. Score 1-3: simple queries (few tables, no subqueries). Score 4-6: moderate complexity (JOINs, basic subqueries). Score 7-8: complex queries (multiple CTEs, nested subqueries, many JOINs). Score 9-10: extremely complex queries with extensive nesting, many CTEs, and complex JOIN patterns.</p>
+    <h3>Do I need to install anything to use the SQL analyzer online?</h3>
+    <p>No. The analyzer is a browser page — open it, paste your SQL, click Analyze. There is no extension, desktop app or database connection to set up, and no account. That is the main difference from a built-in analyzer such as the SSMS Query Analyzer or MySQL Workbench Visual Explain, which require the database engine and client tools to be installed locally.</p>
+    <h3>Does the SQL query analyzer support MySQL, PostgreSQL and SQL Server syntax?</h3>
+    <p>Yes. The statistics are produced from dialect-agnostic heuristics, so MySQL, PostgreSQL, SQL Server (T-SQL), SQLite and MariaDB queries are all analyzed. It recognises dialect-specific constructs such as <code>TOP</code>, <code>LIMIT</code>, <code>FETCH FIRST</code>, <code>ILIKE</code>, <code>RETURNING</code>, <code>ON CONFLICT</code> and backtick or bracket quoting. Because it does not connect to a database engine, it cannot fail on syntax a single vendor would reject — treat the output as a structural overview, not a syntax verdict.</p>
+    <h3>Can the analyzer read an execution plan or STATISTICS IO output?</h3>
+    <p>No. It analyzes the SQL text you paste, so it measures structure — tables, JOINs, subquery depth, CTEs, aggregates and complexity. It cannot see runtime cost. <code>STATISTICS IO</code> counters (scan count, logical reads, physical reads) and EXPLAIN plans come from the engine executing the query. The usual workflow is: analyze the SQL structure here first, then run EXPLAIN or <code>STATISTICS IO</code> in your database and read the plan with the <a href="/explain">EXPLAIN visualizer</a>.</p>
+    <h3>Is a SQL query analyzer the same thing as a SQL profiler?</h3>
+    <p>No. A profiler (SQL Server Profiler, MySQL slow query log, pg_stat_statements) records queries while they actually run against a live database and reports duration, waits and reads. A query analyzer inspects the SQL text before or after execution and reports its structure and complexity. Use the profiler to find which queries are slow in production, and the analyzer to see why a specific query is hard to read, refactor or review.</p>
+    <h3>Is a SQL query analyser the same as a SQL query analyzer?</h3>
+    <p>Yes — analyser and analyzer are the British and American spellings of the same tool. This page answers to both: an SQL query analyser here reports table counts, JOIN types, subquery depth, CTE and aggregate counts, a 1-10 complexity score and performance warnings.</p>
+  </div>
+
   <!-- Related Tools -->
   <div class="related-tools">
     <h3>Related Tools</h3>
@@ -572,6 +664,8 @@ ORDER BY order_count DESC;</div>
       <a href="/snippets">Snippets Library</a>
       <a href="/pretty-print">Pretty Print</a>
       <a href="/free-online-sql-query-analyzer">Query Analyzer Guide</a>
+      <a href="/blog/sql-query-optimization-tips">Optimization Tips</a>
+      <a href="/blog/how-to-read-sql-explain-plan">EXPLAIN Plan Guide</a>
     </div>
   </div>
 </main>
