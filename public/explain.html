@@ -80,6 +80,22 @@
           "@type": "Answer",
           "text": "Yes, completely safe. All parsing, analysis, and tree rendering runs 100% in your browser using client-side JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after loading and the tool works fully offline."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between EXPLAIN and EXPLAIN ANALYZE?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "EXPLAIN only estimates: it shows the plan the optimizer intends to run, with predicted costs and row counts, and never executes the statement. EXPLAIN ANALYZE actually runs the query and reports real elapsed time, real row counts, and loop iterations alongside the estimates. Comparing the two is how you catch bad cardinality estimates — in PostgreSQL a huge gap between estimated rows and actual rows usually means stale statistics, so run ANALYZE on the table. In MySQL the equivalent is EXPLAIN ANALYZE (8.0.18+) or the FORMAT=TREE option."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this tool work with Oracle, SQL Server or DB2 plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not currently — the parser reads MySQL, PostgreSQL and SQLite formats, which cover the plans most developers paste while tuning day to day. Oracle DBMS_XPLAN, SQL Server SHOWPLAN_XML and DB2 explain tables use their own XML or tabular layouts that need a separate parser. If you paste one of those formats the tool tells you it could not detect a dialect instead of rendering a wrong tree."
+        }
       }
     ]
   }
@@ -547,6 +563,24 @@ addr	opcode	p1	p2	p3
       <li><span style="color:var(--orange);font-weight:600;">Using filesort / Using temporary</span> in MySQL — query cannot use an index for sorting, causing disk I/O</li>
     </ul>
     <p style="color:var(--text2);font-size:0.85rem;line-height:1.7;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">Tip: Use <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:0.83rem;">EXPLAIN ANALYZE</code> over plain EXPLAIN when tuning — it executes the query and shows actual (not estimated) timings per operation, row counts, and loop iterations, which is critical for spotting the real bottlenecks.</p>
+  </div>
+
+  <div style="margin:24px 0;padding:24px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+    <h2 style="font-size:1.15rem;margin-bottom:12px;color:var(--text);">Frequently Asked Questions</h2>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">What is SQL EXPLAIN and how does the visualizer help?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">EXPLAIN is a command that shows the query execution plan — how the database engine retrieves rows, joins tables, and filters results. The raw output is dense terminal text. Our visualizer turns it into a color-coded tree diagram so you can spot full table scans, index usage, nested loops, and bottlenecks at a glance without deciphering raw text.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">How do I use the SQL EXPLAIN Visualizer online?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">Run EXPLAIN or EXPLAIN ANALYZE before your SQL query in MySQL, PostgreSQL, or SQLite. Copy the full output, paste it into the editor, and click Analyze Plan or press Ctrl+Enter. The tool auto-detects your database dialect and renders an interactive tree with color-coded operation nodes and actionable performance insights.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">What databases does this execution plan analyzer support?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">The tool supports MySQL (tabular format with id, select_type, table, type, key, rows, Extra columns), PostgreSQL (tree-format EXPLAIN and EXPLAIN ANALYZE with cost, actual time, rows, and loops), and SQLite (opcode-level EXPLAIN with addr, opcode, p1-p5). It auto-detects the dialect from your pasted output.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">How do I read a SQL execution plan tree?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">Read the tree from innermost (leaf) nodes outward. Each node is one operation: red = full table scan (slow), green = index scan/seek (fast), blue = join, orange = sort. The cost field shows estimated I/O and CPU cost. Focus on red nodes first — they represent operations scanning every row, which are the primary optimization targets.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">Is my EXPLAIN output safe? Does data leave my browser?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">Yes, completely safe. All parsing, analysis, and tree rendering runs 100% in your browser using client-side JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after loading and the tool works fully offline.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">What is the difference between EXPLAIN and EXPLAIN ANALYZE?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">EXPLAIN only estimates: it shows the plan the optimizer intends to run, with predicted costs and row counts, and never executes the statement. EXPLAIN ANALYZE actually runs the query and reports real elapsed time, real row counts, and loop iterations alongside the estimates. Comparing the two is how you catch bad cardinality estimates — in PostgreSQL a huge gap between estimated rows and actual rows usually means stale statistics, so run ANALYZE on the table. In MySQL the equivalent is EXPLAIN ANALYZE (8.0.18+) or the FORMAT=TREE option.</p>
+    <h3 style="font-size:0.98rem;margin:16px 0 6px;color:var(--text);">Does this tool work with Oracle, SQL Server or DB2 plans?</h3>
+    <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:12px;">Not currently — the parser reads MySQL, PostgreSQL and SQLite formats, which cover the plans most developers paste while tuning day to day. Oracle DBMS_XPLAN, SQL Server SHOWPLAN_XML and DB2 explain tables use their own XML or tabular layouts that need a separate parser. If you paste one of those formats the tool tells you it could not detect a dialect instead of rendering a wrong tree.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">

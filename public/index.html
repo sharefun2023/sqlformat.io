@@ -87,6 +87,22 @@
           "@type": "Answer",
           "text": "Once the page is loaded, formatting works without an internet connection since all processing is client-side. You can bookmark the page and use it anytime."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a SQL formatter and a SQL beautifier?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "They are the same thing. A SQL beautifier is just another name for a SQL formatter: both add indentation, line breaks, and consistent keyword casing so that a query becomes readable. This site does both — the same engine that formats your query also beautifies it, and the result is identical whichever word you use. Related terms such as SQL pretty printer and SQL code cleaner describe the same operation as well."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I format SQL inside SSMS or VS Code instead?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, but the built-in options are limited. SQL Server Management Studio has no native format command, so most developers install a free extension, and VS Code needs a SQL formatter extension plus a configured dialect. For a one-off query — or on a machine where you cannot install extensions — pasting it into the online formatter is faster than configuring an extension."
+        }
       }
     ]
   }
@@ -449,6 +465,7 @@
     }
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.02rem; color: var(--text); margin: 20px 0 8px; }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -692,6 +709,31 @@ gtag('config', 'G-M3MYLE3P6F');
   <section class="content-section">
     <h2>How It Works</h2>
     <p>Formatting a query takes three steps and a few seconds. First, paste your SQL into the input box. Second, choose your database dialect and preferred indentation from the dropdowns above. Third, click <strong style="color:var(--text);">Format</strong> — the result appears instantly and is ready to copy with a single click. Because everything runs in your browser, no data is ever uploaded to a server, and the page keeps working even after you load it offline.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>How do I format SQL online for free?</h3>
+    <p>Paste your SQL query into the input box, select your database dialect (MySQL, PostgreSQL, SQLite, etc.), and click the Format button. SQLFormat.io processes everything in your browser — no signup, no data sent to servers.</p>
+
+    <h3>Which SQL dialects does sqlformat.io support?</h3>
+    <p>15+ dialects: MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL.</p>
+
+    <h3>Is my SQL data safe? Does it get sent to a server?</h3>
+    <p>Yes, completely safe. All formatting happens client-side in your browser using JavaScript. SQL queries never leave your device. No server-side processing, no logging, no data collection.</p>
+
+    <h3>Can I format large SQL queries?</h3>
+    <p>Yes. There are no size limits. The formatter handles queries of any length, including complex queries with CTEs, subqueries, window functions, and nested joins.</p>
+
+    <h3>Does sqlformat.io work offline?</h3>
+    <p>Once the page is loaded, formatting works without an internet connection since all processing is client-side. You can bookmark the page and use it anytime.</p>
+
+    <h3>What is the difference between a SQL formatter and a SQL beautifier?</h3>
+    <p>They are the same thing. A SQL beautifier is just another name for a SQL formatter: both add indentation, line breaks, and consistent keyword casing so that a query becomes readable. This site does both — the same engine that formats your query also beautifies it, and the result is identical whichever word you use. Related terms such as SQL pretty printer and SQL code cleaner describe the same operation as well.</p>
+
+    <h3>Can I format SQL inside SSMS or VS Code instead?</h3>
+    <p>Yes, but the built-in options are limited. SQL Server Management Studio has no native format command, so most developers install a free extension, and VS Code needs a SQL formatter extension plus a configured dialect. For a one-off query — or on a machine where you cannot install extensions — pasting it here is faster. See our guides on <a href="/blog/how-to-format-sql-in-ssms">formatting SQL in SSMS</a> and the <a href="/blog/vscode-sql-formatter-guide">VS Code SQL formatter</a> for the editor-specific steps.</p>
   </section>
 
   <!-- SQL Tutorials & Guides -->
