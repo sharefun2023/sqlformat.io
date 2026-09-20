@@ -73,6 +73,22 @@
           "@type": "Answer",
           "text": "Absolutely. All generation happens client-side in your browser using JavaScript. Your schema definition and generated data never leave your device. No server-side processing, no logging, no data collection."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I generate data for specific column naming patterns?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The generator recognises common column names — email, first_name, last_name, city, phone, department, job_title, and price among others — and produces matching sample values. Generic names still generate valid data, but recognisable names give you far more realistic INSERT statements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many rows can I generate at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The row count is yours to set, from a handful for a quick fixture up to thousands of rows for load testing. Generation runs entirely in your browser, so very large batches depend on your machine's memory and may take a moment to produce. For a worked example of seeding a schema by hand, see our guide to generating test data with SQL."
+        }
       }
     ]
   }
@@ -342,6 +358,7 @@
     /* Content sections */
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 20px 0 6px; color: var(--text); }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -470,6 +487,22 @@ INSERT INTO orders (order_id, customer_id, unit_price, order_date) VALUES (9156,
   <div class="content-section">
     <h2>Tips for Better Mock Data</h2>
     <p>Name your columns after common fields the generator recognizes — <code>email</code>, <code>first_name</code>, <code>last_name</code>, <code>city</code>, <code>phone</code>, <code>department</code>, or <code>job_title</code> all produce far more realistic values than generic names. For <code>ENUM</code> columns, put the allowed values in the Options field as a comma-separated list, and use a <code>price</code> hint on <code>DECIMAL</code> columns to get currency-like values. Remember the output is randomized on every run, so click <code>Generate</code> again whenever you want a fresh dataset. If you need stable fixtures, copy the output and save it to a file rather than relying on the generator to reproduce the same rows.</p>
+  </div>
+
+  <div class="content-section" id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I generate mock SQL data online?</h3>
+    <p>Enter your table name, define column names and data types (INT, VARCHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, FLOAT, DECIMAL, UUID), set the number of rows, and click Generate. The tool creates realistic INSERT statements with fake but believable data — no signup required.</p>
+    <h3>What data types does the SQL data generator support?</h3>
+    <p>INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, and ENUM. Each type generates appropriate mock data — names and emails for VARCHAR, dates for DATE, prices for DECIMAL, etc.</p>
+    <h3>Is the generated data realistic?</h3>
+    <p>Yes. VARCHAR fields generate first names, last names, company names, email addresses, and city names. INT fields generate sequential or random IDs. DATE fields generate dates in a recent range. DECIMAL fields generate realistic prices.</p>
+    <h3>Is my data safe when using this generator?</h3>
+    <p>Absolutely. All generation happens client-side in your browser using JavaScript. Your schema definition and generated data never leave your device. No server-side processing, no logging, no data collection.</p>
+    <h3>Can I generate data for specific column naming patterns?</h3>
+    <p>Yes. The generator recognises common column names — email, first_name, last_name, city, phone, department, job_title, and price among others — and produces matching sample values. Generic names still generate valid data, but recognisable names give you far more realistic INSERT statements.</p>
+    <h3>How many rows can I generate at once?</h3>
+    <p>The row count is yours to set, from a handful for a quick fixture up to thousands of rows for load testing. Generation runs entirely in your browser, so very large batches depend on your machine's memory and may take a moment to produce. For a worked example of seeding a schema by hand, see our guide to generating <a href="/blog/how-to-generate-test-data-with-sql">test data with SQL</a>.</p>
   </div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">

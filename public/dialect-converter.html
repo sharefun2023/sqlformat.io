@@ -81,6 +81,30 @@
           "@type": "Answer",
           "text": "Yes. The converter handles CREATE TABLE definitions including AUTO_INCREMENT to SERIAL/GENERATED AS IDENTITY, ENGINE=InnoDB removal, CHARSET removal, ON UPDATE CURRENT_TIMESTAMP translation, and ENUM type differences between MySQL and PostgreSQL (converted to VARCHAR with CHECK constraints)."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "What about PostgreSQL to SQLite conversion?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The converter handles PostgreSQL to SQLite as well: SERIAL becomes INTEGER PRIMARY KEY AUTOINCREMENT, ILIKE becomes LIKE, ::type casts are simplified, || stays as is (SQLite supports it), RETURNING clauses are handled, and sequences (CREATE SEQUENCE) are converted to AUTOINCREMENT on the column definition."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the conversion accurate for complex queries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The converter handles 40+ syntax differences across the three dialects, including CREATE TABLE definitions, SELECT queries, INSERT/UPDATE/DELETE, subqueries, CTEs, window functions, and JOINs. For edge cases or dialect-specific features (like MySQL's ON DUPLICATE KEY), the tool applies the closest equivalent. Always review the output before using it in production."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a size limit on the SQL I can convert?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No size limit. All processing is client-side, so the practical limit depends on your browser's memory. For typical development queries (CREATE TABLE, INSERT, SELECT with CTEs), performance is instant. Very large scripts (500+ lines) may take a second or two to process."
+        }
       }
     ]
   }
@@ -328,7 +352,7 @@
       overflow: hidden;
       transition: max-height 0.3s ease;
     }
-    .faq-item.open .faq-answer { max-height: 300px; }
+    .faq-item.open .faq-answer { max-height: 480px; }
     .faq-answer p {
       padding: 0 20px 16px;
       color: var(--text2);
@@ -468,8 +492,24 @@ LIMIT 10;" spellcheck="false"></textarea>
   <div class="faq-section">
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item" onclick="this.classList.toggle('open')">
-      <button class="faq-question">How do I convert MySQL SQL to PostgreSQL? <span class="arrow">▼</span></button>
-      <div class="faq-answer"><p>Paste your MySQL SQL into the input box. Select "MySQL" as source and "PostgreSQL" as target. Click Convert. The tool automatically translates AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to the || operator, IFNULL() to COALESCE(), LIMIT stays the same, and MySQL-specific date functions to PostgreSQL equivalents like TO_CHAR().</p></div>
+      <button class="faq-question">How do I convert MySQL SQL to PostgreSQL online? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Paste your MySQL SQL query into the input box, select "MySQL" as the source dialect and "PostgreSQL" as the target dialect, then click Convert. The tool automatically translates AUTO_INCREMENT to SERIAL, backtick quoting to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), and MySQL-specific date functions to PostgreSQL equivalents.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">What SQL syntax differences does the dialect converter handle? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>LIMIT/OFFSET syntax, AUTO_INCREMENT vs SERIAL vs AUTOINCREMENT, backtick vs double-quote quoting, ILIKE to LIKE, CONCAT to || operator, type casting (:: vs CAST vs implicit), IFNULL vs COALESCE, DATE_FORMAT vs TO_CHAR vs STRFTIME, NOW() vs CURRENT_TIMESTAMP vs DATETIME('now'), GROUP_CONCAT differences, and INSERT IGNORE vs ON CONFLICT vs INSERT OR REPLACE.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Is the SQL dialect converter free and private? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes, completely free and private. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device. No signup, no server uploads, no usage limits.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Can I convert between any of MySQL, PostgreSQL, and SQLite? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes. You can convert in any direction: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, or SQLite to PostgreSQL. Just select the source and target dialects and paste your SQL.</p></div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <button class="faq-question">Does the converter work for CREATE TABLE statements? <span class="arrow">▼</span></button>
+      <div class="faq-answer"><p>Yes. The converter handles CREATE TABLE definitions including AUTO_INCREMENT to SERIAL/GENERATED AS IDENTITY, ENGINE=InnoDB removal, CHARSET removal, ON UPDATE CURRENT_TIMESTAMP translation, and ENUM type differences between MySQL and PostgreSQL (converted to VARCHAR with CHECK constraints).</p></div>
     </div>
     <div class="faq-item" onclick="this.classList.toggle('open')">
       <button class="faq-question">What about PostgreSQL to SQLite conversion? <span class="arrow">▼</span></button>
