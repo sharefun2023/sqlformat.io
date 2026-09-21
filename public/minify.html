@@ -67,7 +67,31 @@
         "name": "How much space can I save by minifying SQL?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Typically 40-60% for well-formatted SQL. A 500-line query with 4-space indentation can compress from ~15KB to ~6KB. The exact savings depend on how heavily formatted the original query is."
+          "text": "Typically 40-60% for well-formatted SQL. A 500-line query with 4-space indentation can compress from about 15KB to about 6KB. The exact savings depend on how heavily formatted the original query is."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I compact or compress a whole SQL file, not just one query?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Paste the entire file - multiple statements separated by semicolons are handled in one pass, and block or line comments are stripped along with the whitespace. A file with generous indentation, comment headers, and blank lines commonly shrinks by half, which is useful before committing generated migration scripts or shipping a schema snapshot."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does minifying SQL make the query run faster?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The database parses the minified statement into exactly the same query plan as the formatted one, so execution time and index usage are unchanged. The measurable win is smaller transfer size: fewer bytes over the wire, in API payloads, in application bundles, and in log lines. To make a slow query actually faster, look at its execution plan instead."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this SQL minifier free, and are my queries uploaded anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It is free, needs no account, and runs entirely in your browser: your SQL is processed by client-side JavaScript on your own machine and is never transmitted to a server. Nothing is stored, and the panel is cleared with one click."
         }
       }
     ]
@@ -232,6 +256,7 @@
     .toast.show { opacity: 1; transform: translateY(0); }
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--text); }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -340,6 +365,27 @@ SELECT id, name, email FROM users WHERE status = 'active' ORDER BY created_at DE
   <div class="content-section">
     <h2>Tips</h2>
     <p>The minifier never rewrites your SQL logic, so the output is always safe to execute. Still, keep a formatted copy of complex queries before minifying &mdash; once collapsed to a single line, a long query is much harder to read and debug. If you need to review or edit later, paste the minified result back into the <a href="/">SQL Formatter</a> to expand it again. String literals are fully protected: whitespace inside quotes is preserved, so values like <code>'San Francisco'</code> come through untouched. Finally, heavily formatted queries with 2- or 4-space indentation typically shrink by 40&ndash;60%, so the biggest savings appear exactly where readability mattered most. If you paste the minified result into a single-quoted shell string or a JSON value, remember to escape any embedded quotes afterward &mdash; the minifier preserves them literally, so values like <code>O''Brien</code> still need escaping in the surrounding language.</p>
+  </div>
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+
+    <h3>What is SQL minification and why would I need it?</h3>
+    <p>SQL minification removes unnecessary whitespace, line breaks, and comments from SQL queries, compressing them into a single line. This is useful when embedding SQL in application code, reducing network payload size in API calls, or fitting queries into log messages with character limits.</p>
+
+    <h3>Will minification break my SQL query?</h3>
+    <p>No. The minifier only removes whitespace and comments. All SQL logic, identifiers, keywords, and string literals are preserved exactly as written. The query will execute identically to the original.</p>
+
+    <h3>How much space can I save by minifying SQL?</h3>
+    <p>Typically 40-60% for well-formatted SQL. A 500-line query with 4-space indentation can compress from about 15KB to about 6KB. The exact savings depend on how heavily formatted the original query is.</p>
+
+    <h3>Can I compact or compress a whole SQL file, not just one query?</h3>
+    <p>Yes. Paste the entire file &mdash; multiple statements separated by semicolons are handled in one pass, and block or line comments are stripped along with the whitespace. A file with generous indentation, comment headers, and blank lines commonly shrinks by half, which is useful before committing generated migration scripts or shipping a schema snapshot.</p>
+
+    <h3>Does minifying SQL make the query run faster?</h3>
+    <p>No. The database parses the minified statement into exactly the same query plan as the formatted one, so execution time and index usage are unchanged. The measurable win is smaller transfer size: fewer bytes over the wire, in API payloads, in application bundles, and in log lines. To make a slow query actually faster, look at its execution plan instead &mdash; paste it into the <a href="/explain">SQL EXPLAIN analyzer</a>.</p>
+
+    <h3>Is this SQL minifier free, and are my queries uploaded anywhere?</h3>
+    <p>It is free, needs no account, and runs entirely in your browser: your SQL is processed by client-side JavaScript on your own machine and is never transmitted to a server. Nothing is stored, and the panel is cleared with one click. Use the <a href="/pretty-print">pretty printer</a> whenever you need to expand the compacted result back into readable form.</p>
   </div>
   <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
 
