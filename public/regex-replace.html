@@ -40,51 +40,67 @@
   </script>
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How does the SQL regex replace tool work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Paste your SQL, enter a regex pattern and replacement text, then click Preview to see all matches highlighted. You can scope the replacement to table names only, column names only, comments only, or the entire SQL. Each replacement is shown individually so you can verify before applying. All processing happens in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I batch rename multiple tables at once?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Set the scope to 'Table Names' and use a regex like (orders|users|products) with a replacement like new_$1_schema. All matching table references across the entire SQL will be renamed in one operation. The preview shows each match before you commit."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there an undo function?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Every replace operation is tracked. You can undo the last replace or reset to the original SQL at any time. The tool keeps the original input so you never lose your starting query."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What regex flavor does this tool use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The tool uses JavaScript's RegExp engine (ECMAScript regex). This supports all standard features: character classes, groups, backreferences ($1, $2...), alternation, quantifiers, lookaheads, and word boundaries. Flags like g (global) and i (case-insensitive) are exposed as toggles."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my SQL data sent to a server?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. All regex matching, previewing, and replacement runs entirely in your browser using client-side JavaScript. Nothing is transmitted, stored, or logged. This makes it safe for proprietary SQL and schema information."
-        }
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does the SQL regex replace tool work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste your SQL, enter a regex pattern and replacement text, then click Preview to see all matches highlighted. You can scope the replacement to table names only, column names only, comments only, or the entire SQL. Each replacement is shown individually so you can verify before applying. All processing happens in your browser."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I batch rename multiple tables at once?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Set the scope to Table Names and use a regex like (orders|users|products) with a replacement like new_$1_schema. All matching table references across the entire SQL will be renamed in one operation. The preview shows each match before you commit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there an undo function?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every replace operation is tracked. You can undo the last replace or reset to the original SQL at any time. The tool keeps the original input so you never lose your starting query."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What regex flavor does this tool use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tool uses JavaScript's RegExp engine (ECMAScript regex). This supports all standard features: character classes, groups, backreferences ($1, $2...), alternation, quantifiers, lookaheads, and word boundaries. Flags like g (global) and i (case-insensitive) are exposed as toggles."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my SQL data sent to a server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All regex matching, previewing, and replacement runs entirely in your browser using client-side JavaScript. Nothing is transmitted, stored, or logged. This makes it safe for proprietary SQL and schema information."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use regex replace to strip SQL comments or normalize whitespace?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Set the scope to Comments Only to remove line comments and block comments, or use the Entire SQL scope with a pattern like \\s+ to collapse runs of whitespace. Preview first: comment markers can also appear inside string literals, so check the highlighted matches before applying."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on large dumps and INSERT statements?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The tool runs client-side, so multi-megabyte mysqldump files and long INSERT statements can be refactored in place. For very large scripts, scope the replacement to Table Names or Column Names instead of Entire SQL to keep the preview fast and the operation precise."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -432,6 +448,7 @@
     /* Content sections */
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 18px 0 8px; color: var(--text); }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -605,6 +622,25 @@ JOIN app_products p ON o.product_id = p.id;</div>
   <div class="content-section">
     <h2>Tips for Safe Regex Refactoring</h2>
     <p>Always run a <code>Preview</code> before applying, and prefer the narrowest scope that fits your goal — a pattern like <code>id</code> on <code>Entire SQL</code> will match far more than you expect. Use word-boundary anchors (<code>\b</code>) to avoid partial matches, and capture groups (<code>$1</code>, <code>$2</code>) to reuse parts of each match in the replacement. If a pattern behaves unexpectedly, remember the tool uses JavaScript's RegExp engine, so features like lookbehind may not be available in every browser. For multi-step refactors, use the "Use as New Input" button to chain replacements together without losing your place.</p>
+  </div>
+
+  <!-- FAQ -->
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How does the SQL regex replace tool work?</h3>
+    <p>Paste your SQL, enter a regex pattern and replacement text, then click Preview to see all matches highlighted. You can scope the replacement to table names only, column names only, comments only, or the entire SQL. Each replacement is shown individually so you can verify before applying. All processing happens in your browser.</p>
+    <h3>Can I batch rename multiple tables at once?</h3>
+    <p>Yes. Set the scope to Table Names and use a regex like (orders|users|products) with a replacement like new_$1_schema. All matching table references across the entire SQL will be renamed in one operation. The preview shows each match before you commit.</p>
+    <h3>Is there an undo function?</h3>
+    <p>Yes. Every replace operation is tracked. You can undo the last replace or reset to the original SQL at any time. The tool keeps the original input so you never lose your starting query.</p>
+    <h3>What regex flavor does this tool use?</h3>
+    <p>The tool uses JavaScript&#x27;s RegExp engine (ECMAScript regex). This supports all standard features: character classes, groups, backreferences ($1, $2...), alternation, quantifiers, lookaheads, and word boundaries. Flags like g (global) and i (case-insensitive) are exposed as toggles.</p>
+    <h3>Is my SQL data sent to a server?</h3>
+    <p>No. All regex matching, previewing, and replacement runs entirely in your browser using client-side JavaScript. Nothing is transmitted, stored, or logged. This makes it safe for proprietary SQL and schema information.</p>
+    <h3>Can I use regex replace to strip SQL comments or normalize whitespace?</h3>
+    <p>Yes. Set the scope to Comments Only to remove line comments and block comments, or use the Entire SQL scope with a pattern like \s+ to collapse runs of whitespace. Preview first: comment markers can also appear inside string literals, so check the highlighted matches before applying.</p>
+    <h3>Does it work on large dumps and INSERT statements?</h3>
+    <p>Yes. The tool runs client-side, so multi-megabyte mysqldump files and long INSERT statements can be refactored in place. For very large scripts, scope the replacement to Table Names or Column Names instead of Entire SQL to keep the preview fast and the operation precise.</p>
   </div>
 
   <!-- Related Tools -->
