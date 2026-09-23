@@ -38,52 +38,84 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What does the free online SQL query analyzer do?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The SQL query analyzer inspects your SQL and generates detailed statistics: the number of tables referenced, types and count of JOIN operations, subquery nesting depth, aggregate and window function usage, UNION clauses, and a 1-10 complexity score. It also flags common performance issues like SELECT *, missing WHERE clauses, excessive JOINs, and CROSS JOINs without conditions."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How is the SQL complexity score calculated?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The complexity score ranges from 1 (simple) to 10 (extremely complex). It factors in: table count, number and type of JOINs, subquery nesting depth, CTE usage, aggregate and window function count, DISTINCT usage, UNION branches, GROUP BY and HAVING presence, and query length. A score of 1-3 indicates a straightforward query, 4-6 moderate complexity, and 7-10 signals a complex query that may benefit from optimization or refactoring."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the SQL query analyzer really free to use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, completely free. No signup, no credit card, no usage caps. Every analysis runs entirely in your browser — your SQL never leaves your machine. You can analyze unlimited queries of any length, from simple single-table SELECTs to massive multi-CTE queries with dozens of JOINs."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What performance issues can the analyzer detect?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The analyzer detects: SELECT * (unnecessary column fetching), missing WHERE clauses on SELECT/DELETE/UPDATE, excessive JOINs (6+), deep subquery nesting (4+ levels), DISTINCT on multi-JOIN queries (possible data duplication), CROSS JOINs without conditions (Cartesian product risk), and very large queries (5K+ characters). Each warning includes a brief explanation of the potential impact."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I analyze complex SQL queries with CTEs and window functions?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The analyzer handles recursive CTEs, multiple CTEs in a single WITH clause, all window functions (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE, etc.), subqueries in SELECT, FROM, and WHERE clauses, and complex JOIN patterns including INNER, LEFT, RIGHT, FULL, CROSS, and NATURAL JOINs. It counts CTEs separately and tracks window function usage independently."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does the free online SQL query analyzer do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The analyzer inspects your SQL and reports statistics: how many tables are referenced, the type and count of JOIN operations, subquery nesting depth, aggregate and window function usage, UNION branches, and a 1-10 complexity score. It also flags common performance issues such as SELECT *, missing WHERE clauses on SELECT/UPDATE/DELETE, excessive JOINs, and CROSS JOINs without conditions."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "How is the SQL complexity score calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The score ranges from 1 (simple) to 10 (extremely complex) and factors in table count, number and type of JOINs, subquery nesting depth, CTE usage, aggregate and window function count, DISTINCT usage, UNION branches, GROUP BY / HAVING presence, and query length. 1-3 means a straightforward query, 4-6 moderate complexity, 7-10 signals a query that may be worth refactoring."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What performance issues can the analyzer detect?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It flags SELECT * (unnecessary column fetching), missing WHERE clauses on SELECT/DELETE/UPDATE, excessive JOINs (6+), deep subquery nesting (4+ levels), DISTINCT on multi-JOIN queries (possible duplication), CROSS JOINs without conditions (Cartesian product risk), and very large queries (5K+ characters)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the SQL query analyzer really free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No signup, no credit card, no usage caps. Every analysis runs in your browser and your SQL never leaves your machine, so you can analyze unlimited queries of any length."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I analyze complex SQL queries with CTEs and window functions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Both regular and recursive CTEs (WITH RECURSIVE) are detected and counted separately, along with every window function (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE and friends), subqueries in SELECT / FROM / WHERE, and INNER, LEFT, RIGHT, FULL, CROSS and NATURAL joins. Recursive queries score higher because their execution planning is more demanding."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the analyzer support INSERT, UPDATE, and DELETE statements?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, all DML statements are supported, and the analyzer checks for missing WHERE clauses on UPDATE and DELETE, which is a common and dangerous oversight. INSERT ... SELECT statements are analyzed for their SELECT portion too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a limit on query length or number of analyses?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No limits. You can analyze queries of any length, from a two-line SELECT to a 20,000-character ETL script. There are no daily caps and no account required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate is the SQL parser used for analysis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The analyzer uses a heuristic parsing engine that covers 95%+ of common SQL patterns across MySQL, PostgreSQL, SQLite, SQL Server and Oracle. Unusual vendor extensions may make some statistics approximate; table count, JOIN analysis and subquery depth are the most reliable metrics."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the analyzer store my SQL queries?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All analysis happens client-side in your browser's JavaScript engine. Nothing is sent to a server, stored, logged or transmitted, which makes it safe for queries containing sensitive schema names or proprietary business logic."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -395,28 +427,48 @@
   <h2>Frequently Asked Questions</h2>
 
   <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">Can the analyzer handle complex CTEs and recursive queries? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Yes. The analyzer detects both regular and recursive CTEs (WITH RECURSIVE). It counts each CTE separately and accounts for recursive CTEs in the complexity score, since recursive queries often have deeper execution planning requirements.</p></div>
+    <button class="faq-q" onclick="toggleFaq(this)">What does the free online SQL query analyzer do? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>The analyzer inspects your SQL and reports statistics: how many tables are referenced, the type and count of JOIN operations, subquery nesting depth, aggregate and window function usage, UNION branches, and a 1-10 complexity score. It also flags common performance issues such as <code>SELECT *</code>, missing WHERE clauses on SELECT/UPDATE/DELETE, excessive JOINs, and CROSS JOINs without conditions.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">How is the SQL complexity score calculated? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>The score ranges from 1 (simple) to 10 (extremely complex) and factors in table count, number and type of JOINs, subquery nesting depth, CTE usage, aggregate and window function count, DISTINCT usage, UNION branches, GROUP BY / HAVING presence, and query length. 1-3 means a straightforward query, 4-6 moderate complexity, 7-10 signals a query that may be worth refactoring.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">What performance issues can the analyzer detect? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>It flags <code>SELECT *</code> (unnecessary column fetching), missing WHERE clauses on SELECT/DELETE/UPDATE, excessive JOINs (6+), deep subquery nesting (4+ levels), DISTINCT on multi-JOIN queries (possible duplication), CROSS JOINs without conditions (Cartesian product risk), and very large queries (5K+ characters).</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Is the SQL query analyzer really free to use? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. No signup, no credit card, no usage caps. Every analysis runs in your browser and your SQL never leaves your machine, so you can analyze unlimited queries of any length.</p></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">Can I analyze complex SQL queries with CTEs and window functions? <span class="arrow">▼</span></button>
+    <div class="faq-a"><p>Yes. Both regular and recursive CTEs (<code>WITH RECURSIVE</code>) are detected and counted separately, along with every window function (ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, NTILE and friends), subqueries in SELECT / FROM / WHERE, and INNER, LEFT, RIGHT, FULL, CROSS and NATURAL joins. Recursive queries score higher because their execution planning is more demanding.</p></div>
   </div>
 
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFaq(this)">Does the analyzer support INSERT, UPDATE, and DELETE statements? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Yes. All DML statements are supported. The analyzer checks for missing WHERE clauses on UPDATE and DELETE statements, which is a common and dangerous oversight. INSERT ... SELECT statements are analyzed for their SELECT portion too.</p></div>
+    <div class="faq-a"><p>Yes, all DML statements are supported, and the analyzer checks for missing WHERE clauses on UPDATE and DELETE, which is a common and dangerous oversight. <code>INSERT ... SELECT</code> statements are analyzed for their SELECT portion too.</p></div>
   </div>
 
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFaq(this)">Is there a limit on query length or number of analyses? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>No limits. You can analyze queries of any length — from a 2-line SELECT to a 20,000-character ETL script. There are no daily caps on how many queries you can analyze, and no account required.</p></div>
+    <div class="faq-a"><p>No limits. You can analyze queries of any length, from a two-line SELECT to a 20,000-character ETL script. There are no daily caps and no account required.</p></div>
   </div>
 
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFaq(this)">How accurate is the SQL parser used for analysis? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>The analyzer uses a heuristic-based parsing engine that covers 95%+ of common SQL patterns across all major dialects (MySQL, PostgreSQL, SQLite, SQL Server, Oracle, etc.). For edge cases with unusual syntax or vendor-specific extensions, some statistics may be approximate. The table count, JOIN analysis, and subquery depth are the most reliable metrics.</p></div>
+    <div class="faq-a"><p>The analyzer uses a heuristic parsing engine that covers 95%+ of common SQL patterns across MySQL, PostgreSQL, SQLite, SQL Server and Oracle. Unusual vendor extensions may make some statistics approximate; table count, JOIN analysis and subquery depth are the most reliable metrics.</p></div>
   </div>
 
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFaq(this)">Does the analyzer store my SQL queries? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>No. All analysis happens client-side in your browser's JavaScript engine. No data is sent to any server, stored, logged, or transmitted. This makes it safe for analyzing queries containing sensitive schema information or proprietary business logic.</p></div>
+    <div class="faq-a"><p>No. All analysis happens client-side in your browser's JavaScript engine. Nothing is sent to a server, stored, logged or transmitted, which makes it safe for queries containing sensitive schema names or proprietary business logic.</p></div>
   </div>
 
 </main>
