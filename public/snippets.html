@@ -39,61 +39,69 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What SQL snippets are available in the library?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The library covers nine categories and 34 snippets: Recursive CTEs (hierarchies, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, keyset), Pivot Tables (CASE-based and native PIVOT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date and Time queries, Performance analysis (missing indexes, blocking queries), MERGE/UPSERT patterns, and utility snippets."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the SQL snippets library free to use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, completely free. All snippets are accessible without any account, signup, or payment. Each snippet includes a description and ready-to-use SQL code that you can copy with a single click. No limits on how many snippets you can view or copy."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Which SQL dialects do the snippets support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Snippets are written in standard SQL and include dialect-specific variations where applicable (e.g., STRING_AGG for PostgreSQL vs GROUP_CONCAT for MySQL, LISTAGG for Oracle). Each snippet's description notes which dialects it targets. Most snippets work across PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minor adjustments."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do I copy a snippet into my own query?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Click the Copy button on any snippet card and the full SQL lands on your clipboard. Paste it into your editor or query console, then rename the tables, columns, and placeholders to match your schema. If the indentation suffers in the round trip, run the query through the free SQL formatter at sqlformat.io before executing."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are these SQL snippets safe to run on a production database?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Treat every snippet as a starting point. Read it first, confirm the table and column names, add a WHERE clause while you test, and inspect the query plan with the EXPLAIN visualizer before running anything against a large table. Nothing you view or copy is sent to a server, because the whole library runs client-side in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I contribute or request new SQL snippets?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The library is maintained by the SQLFormat.io team and expanded regularly. If a pattern you use daily is missing, tell us - new snippets ship through site updates, and the tool itself runs entirely client-side with no server storage."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What SQL snippets are available in the library?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The library covers nine categories and 34 snippets: Recursive CTEs (hierarchies, date ranges), Window Functions (ROW_NUMBER, RANK, LAG/LEAD, running totals), Pagination (OFFSET/FETCH, keyset), Pivot Tables (CASE-based and native PIVOT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG), Date and Time queries, Performance analysis (missing indexes, blocking queries), MERGE/UPSERT patterns, and utility snippets."
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "Is the SQL snippets library free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, completely free. All snippets are accessible without any account, signup, or payment. Each snippet includes a description and ready-to-use SQL code that you can copy with a single click. No limits on how many snippets you can view or copy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SQL dialects do the snippets support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Snippets are written in standard SQL and include dialect-specific variations where applicable (e.g., STRING_AGG for PostgreSQL vs GROUP_CONCAT for MySQL, LISTAGG for Oracle). Each snippet's description notes which dialects it targets. Most snippets work across PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minor adjustments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I copy a snippet into my own query?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click the Copy button on any snippet card and the full SQL lands on your clipboard. Paste it into your editor or query console, then rename the tables, columns, and placeholders to match your schema. If the indentation suffers in the round trip, run the query through the free SQL formatter at sqlformat.io before executing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are these SQL snippets safe to run on a production database?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Treat every snippet as a starting point. Read it first, confirm the table and column names, add a WHERE clause while you test, and inspect the query plan with the EXPLAIN visualizer before running anything against a large table. Nothing you view or copy is sent to a server, because the whole library runs client-side in your browser."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I contribute or request new SQL snippets?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The library is maintained by the SQLFormat.io team and expanded regularly. If a pattern you use daily is missing, tell us - new snippets ship through site updates, and the tool itself runs entirely client-side with no server storage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use these SQL snippets as query templates for my own tables?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes - every snippet is meant as a template, not a finished query. Copy it, then rename the tables, columns, and placeholders to match your schema; the snippets deliberately use obvious names such as orders, customer_id, and {{table}} so nothing gets silently aimed at the wrong object. Keep the renamed version in your own snippet library or in Git so the next query starts from a working template instead of a blank editor."
+      }
+    }
+  ]
+}
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -457,10 +465,12 @@ ORDER BY order_date;</div>
     <p>Snippets are written in standard SQL with dialect-specific variants where the syntax differs — <code>STRING_AGG</code> for PostgreSQL, <code>GROUP_CONCAT</code> for MySQL, <code>LISTAGG</code> for Oracle. Dialect tags on each card tell you what it targets, and most snippets run on PostgreSQL, MySQL, SQL Server, SQLite, and Oracle with minor edits.</p>
     <h3>How do I copy a snippet into my own query?</h3>
     <p>Click the Copy button on any snippet card and the full SQL lands on your clipboard. Paste it into your editor or query console, then rename the tables, columns, and placeholders to match your schema. If the indentation suffers in the round trip, run it through the <a href="/">SQL formatter</a> before executing.</p>
-    <h3>Are these snippets safe to run on a production database?</h3>
+    <h3>Are these SQL snippets safe to run on a production database?</h3>
     <p>Treat every snippet as a starting point. Read it first, confirm the table and column names, add a <code>WHERE</code> clause while you test, and inspect the query plan with the <a href="/explain">EXPLAIN visualizer</a> before running anything against a large table. Nothing you view or copy is sent to a server — the whole library runs client-side in your browser.</p>
     <h3>Can I contribute or request new SQL snippets?</h3>
     <p>The library is maintained by the SQLFormat.io team and expanded regularly. If a pattern you use daily is missing, tell us — new snippets ship through site updates, and the tool itself runs entirely client-side with no server storage.</p>
+    <h3>Can I use these SQL snippets as query templates for my own tables?</h3>
+    <p>Yes - every snippet is meant as a template, not a finished query. Copy it, then rename the tables, columns, and placeholders to match your schema; the snippets deliberately use obvious names such as <code>orders</code>, <code>customer_id</code>, and <code>{{table}}</code> so nothing gets silently aimed at the wrong object. Keep the renamed version in your own snippet library or in Git so the next query starts from a working template instead of a blank editor.</p>
   </div>
 
   <!-- Related Tools -->

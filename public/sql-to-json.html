@@ -42,37 +42,61 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I convert SQL query results to JSON?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Paste your SQL INSERT statements or SELECT query results into the input box, choose the conversion mode (INSERT→JSON or SELECT→JSON), and click Convert. The tool parses column names and values, outputting a clean JSON array of objects."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What SQL formats does the converter support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The converter supports standard SQL INSERT INTO ... VALUES statements and pipe-delimited or comma-separated SELECT result sets. Multiple INSERT statements and multi-row VALUES clauses are handled automatically."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my data safe when converting SQL to JSON?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, completely safe. All conversion runs client-side in your browser. Your SQL data never leaves your device — no server processing, no logging, no data collection."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I convert SQL query results to JSON?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste your SQL INSERT statements or SELECT query results into the input box, choose the conversion mode (INSERT to JSON or SELECT to JSON), and click Convert. The tool parses the column names and values and prints a clean JSON array of objects that you can copy into your application, an API response, or a .json fixture file."
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "What SQL formats does the converter support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The converter handles standard INSERT INTO ... VALUES statements, including multi-row VALUES lists and several statements in one paste, plus pipe-delimited, tab-delimited, or comma-separated SELECT result sets copied straight out of a query console. NULL becomes JSON null, numbers stay numbers, and TRUE/FALSE become booleans."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data safe when converting SQL to JSON?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Conversion runs entirely client-side in your browser, so your SQL never leaves your device: there is no server processing, no upload, and no logging. You can paste production rows containing customer records and nothing is transmitted anywhere."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I convert SQL data into JSON format step by step?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "1) Get the rows as SQL text: export the table with mysqldump --no-create-info or pg_dump --inserts, or copy the SELECT output with its header row. 2) Paste it into the input box and pick INSERT mode or SELECT mode. 3) Click Convert and copy the JSON. Keys are taken from the column names, so the JSON field names match your table columns exactly and downstream code needs no mapping."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I convert a whole database to JSON?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There is no one-click \"dump the whole database to JSON\" button: the converter works one table at a time. Take a data-only dump without the DDL wrapper (mysqldump --no-create-info --skip-extended-insert for MySQL, pg_dump --inserts for PostgreSQL), paste each table's INSERT statements in turn, and you get one JSON array per table. If the dump is too large to paste, split it first with the help of formatting large SQL files."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I check if the SQL to JSON output looks wrong?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Four usual causes: a data row with a different number of columns than the header row gets skipped or misaligned; strings containing the delimiter need to be quoted; escaped quotes inside values (O''Brien) must stay escaped; and each multi-row VALUES statement should end with a semicolon. Validate the result in a JSON formatter, and see the SQL to JSON converter guide for worked examples."
+      }
+    }
+  ]
+}
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -263,6 +287,7 @@
     .loading { opacity: 0.5; pointer-events: none; }
     .content-section { margin-bottom: 36px; }
     .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.02rem; margin: 22px 0 6px; color: var(--text); }
     .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
     .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
     .content-section li { margin-bottom: 6px; }
@@ -376,6 +401,22 @@ INSERT INTO users (id, name, email, age, active) VALUES
     <h2>Tips</h2>
     <p>Use <strong>INSERT</strong> mode for clean, typed conversion: numbers stay numbers, <code>TRUE</code>/<code>FALSE</code> become booleans, and <code>NULL</code> becomes JSON <code>null</code>. For <strong>SELECT</strong> mode, paste the query followed by a header row and data rows separated by pipes (<code>|</code>), tabs, or commas &mdash; separator lines like <code>---</code> are skipped automatically. Values are auto-typed, so quoted strings remain strings while bare numbers become numbers. If your output looks wrong, check that every data row has the same number of columns as the header. Because conversion is entirely client-side, you can safely process sensitive production data without uploading it anywhere. The output uses double-quoted keys and values, so it is valid JSON out of the box and can be validated with any JSON tool or pasted directly into a script.</p>
   </div>
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I convert SQL query results to JSON?</h3>
+    <p>Paste your SQL <code>INSERT</code> statements or <code>SELECT</code> query results into the input box, choose the conversion mode (INSERT to JSON or SELECT to JSON), and click Convert. The tool parses the column names and values and prints a clean JSON array of objects that you can copy into your application, an API response, or a <code>.json</code> fixture file.</p>
+    <h3>What SQL formats does the converter support?</h3>
+    <p>The converter handles standard <code>INSERT INTO ... VALUES</code> statements, including multi-row VALUES lists and several statements in one paste, plus pipe-delimited, tab-delimited, or comma-separated <code>SELECT</code> result sets copied straight out of a query console. <code>NULL</code> becomes JSON <code>null</code>, numbers stay numbers, and <code>TRUE</code>/<code>FALSE</code> become booleans.</p>
+    <h3>Is my data safe when converting SQL to JSON?</h3>
+    <p>Yes. Conversion runs entirely client-side in your browser, so your SQL never leaves your device: there is no server processing, no upload, and no logging. You can paste production rows containing customer records and nothing is transmitted anywhere.</p>
+    <h3>How do I convert SQL data into JSON format step by step?</h3>
+    <p>1) Get the rows as SQL text: export the table with <code>mysqldump --no-create-info</code> or <code>pg_dump --inserts</code>, or copy the SELECT output with its header row. 2) Paste it into the input box and pick INSERT mode or SELECT mode. 3) Click Convert and copy the JSON. Keys are taken from the column names, so the JSON field names match your table columns exactly and downstream code needs no mapping.</p>
+    <h3>Can I convert a whole database to JSON?</h3>
+    <p>There is no one-click "dump the whole database to JSON" button: the converter works one table at a time. Take a data-only dump without the DDL wrapper (<code>mysqldump --no-create-info --skip-extended-insert</code> for MySQL, <code>pg_dump --inserts</code> for PostgreSQL), paste each table's INSERT statements in turn, and you get one JSON array per table. If the dump is too large to paste, split it first with the help of <a href="/format-large-sql-files-online">formatting large SQL files</a>.</p>
+    <h3>What should I check if the SQL to JSON output looks wrong?</h3>
+    <p>Four usual causes: a data row with a different number of columns than the header row gets skipped or misaligned; strings containing the delimiter need to be quoted; escaped quotes inside values (<code>O''Brien</code>) must stay escaped; and each multi-row <code>VALUES</code> statement should end with a semicolon. Validate the result in a <a href="https://23232322.xyz/tools/json-formatter-online">JSON formatter</a>, and see the <a href="/sql-to-json-converter-online">SQL to JSON converter guide</a> for worked examples.</p>
+  </div>
+
   <div class="nav-row">
     <a href="/">← SQL Formatter</a>
     <a href="/minify">SQL Minifier →</a>
