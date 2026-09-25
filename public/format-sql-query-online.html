@@ -37,38 +37,7 @@
     ]
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Do I need to sign up to format SQL queries?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No signup required. Paste your SQL, select a dialect, click Format, and copy the result. Everything runs in your browser — no account, no email, no registration wall."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How long does it take to format a query?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Formatting is near-instant. Even complex queries with CTEs, subqueries, and multiple JOINs format in under 100ms. There are no server round-trips — all processing happens locally in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I format very large or complex SQL queries?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, there are no size limits. The formatter handles queries of any length, including deeply nested subqueries, recursive CTEs, window functions, and complex multi-table joins across 15+ SQL dialects."
-        }
-      }
-    ]
-  }
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need to sign up to format SQL queries?","acceptedAnswer":{"@type":"Answer","text":"No signup required. Paste your SQL, select a dialect, click Format, and copy the result. Everything runs in your browser - no account, no email, no registration wall."}},{"@type":"Question","name":"How long does it take to format a query?","acceptedAnswer":{"@type":"Answer","text":"Formatting is near-instant. Even complex queries with CTEs, subqueries, and multiple JOINs format in under 100ms. There are no server round-trips - all processing happens locally in your browser."}},{"@type":"Question","name":"Can I format very large or complex SQL queries?","acceptedAnswer":{"@type":"Answer","text":"Yes, there are no size limits. The formatter handles queries of any length, including deeply nested subqueries, recursive CTEs, window functions, and complex multi-table joins across 15+ SQL dialects."}},{"@type":"Question","name":"Which SQL dialects can I format a query in?","acceptedAnswer":{"@type":"Answer","text":"The dialect selector covers Standard SQL, MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark, T-SQL, and Trino. Pick the dialect your query actually targets so reserved words and quoting rules are handled correctly."}},{"@type":"Question","name":"Is my SQL query uploaded to your server?","acceptedAnswer":{"@type":"Answer","text":"No. There is no backend that receives your query - formatting is pure JavaScript in the page, so your SQL never leaves the browser tab. That also means it works on production queries you cannot paste into a hosted tool."}}]}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -256,6 +225,13 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 32px; }
+    .content-section h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .content-section h3 { font-size: 1.05rem; color: var(--text); margin: 16px 0 8px; }
+    .content-section p { color: var(--text2); line-height: 1.75; margin-bottom: 12px; font-size: 0.93rem; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+    .faq-item p { color: var(--text2); line-height: 1.65; font-size: 0.93rem; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -337,6 +313,14 @@ gtag('config', 'G-M3MYLE3P6F');
     </div>
   </div>
 
+  <section class="content-section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>Do I need to sign up to format SQL queries?</h3><p>No signup required. Paste your SQL, select a dialect, click Format, and copy the result. Everything runs in your browser - no account, no email, no registration wall.</p></div>
+  <div class="faq-item"><h3>How long does it take to format a query?</h3><p>Formatting is near-instant. Even complex queries with CTEs, subqueries, and multiple JOINs format in under 100ms. There are no server round-trips - all processing happens locally in your browser.</p></div>
+  <div class="faq-item"><h3>Can I format very large or complex SQL queries?</h3><p>Yes, there are no size limits. The formatter handles queries of any length, including deeply nested subqueries, recursive CTEs, window functions, and complex multi-table joins across 15+ SQL dialects.</p></div>
+  <div class="faq-item"><h3>Which SQL dialects can I format a query in?</h3><p>The dialect selector covers Standard SQL, MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark, T-SQL, and Trino. Pick the dialect your query actually targets so reserved words and quoting rules are handled correctly.</p></div>
+  <div class="faq-item"><h3>Is my SQL query uploaded to your server?</h3><p>No. There is no backend that receives your query - formatting is pure JavaScript in the page, so your SQL never leaves the browser tab. That also means it works on production queries you cannot paste into a hosted tool.</p></div>
+  </section>
   <div class="related-section">
     <h2>More SQL Tools</h2>
     <div class="related-grid"><a href="/free-sql-formatter-online">Free SQL Formatter</a><a href="/sql-formatter-postgresql">PostgreSQL Formatter</a><a href="/sql-formatter-mysql">MySQL Formatter</a><a href="/online-sql-beautifier">SQL Beautifier</a><a href="/free-sql-formatter-online">Query Formatter</a><a href="/free-sql-formatter-online">Format SQL Free</a><a href="/online-sql-beautifier">Code Beautifier</a><a href="/sql-minifier-online">SQL Minifier</a><a href="/sql-minifier-online">Compress SQL</a><a href="/sql-to-json-converter-online">SQL to JSON</a><a href="/auto-format-sql-online">Auto Format SQL</a><a href="/best-online-sql-formatter">Best SQL Formatter</a><a href="/sql-formatter-no-signup">No Signup Formatter</a><a href="/format-sql-query-online">Format Queries</a><a href="/online-sql-beautifier">Beautify SQL Code</a><a href="/free-sql-formatter-online">Indentation Fix</a><a href="/online-sql-beautifier">Pretty Print SQL</a><a href="/free-sql-formatter-online">Formatting Tool</a><a href="/free-sql-formatter-online">Clean Up SQL</a><a href="/free-sql-formatter-online">Beginner Formatter</a><a href="/free-sql-formatter-online">Syntax Formatter</a><a href="/free-sql-formatter-online">Fix Formatting</a><a href="/online-sql-beautifier">Code Cleaner</a><a href="/best-online-sql-formatter">Readability</a><a href="/auto-format-sql-online">Instant Formatter</a></div>
