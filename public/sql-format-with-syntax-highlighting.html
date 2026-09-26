@@ -37,54 +37,7 @@
     ]
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What does syntax highlighting do for SQL?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Syntax highlighting assigns distinct colors to SQL keywords, strings, numbers, identifiers, and comments. This lets your eyes instantly parse the structure of a query — you can spot a missing closing quote, a keyword typo, or an unbracketed subquery without reading every character."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the highlighted SQL copyable?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The formatted SQL retains its highlighting in the output pane, but when you copy it, you get clean plain-text SQL that pastes correctly into any editor, IDE, or database client. The colors are visual only — they do not add any hidden markup to the copied text."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does syntax highlighting slow down formatting for large queries?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. The highlighting runs in your browser alongside the formatter. Even for queries over 2,000 lines, the combined formatting and highlighting completes in under 150ms. There is no server round-trip, so latency is zero."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I turn off highlighting and just format?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely. The highlighting is a visual enhancement in the output pane. If you prefer plain text, simply copy the output — the clipboard content is always unhighlighted, clean SQL. There is no toggle needed."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What color scheme does the highlighter use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The highlighter uses a dark-theme-optimized palette: blue for SQL keywords, green for strings, orange for numbers, gray for comments, and white for identifiers. The scheme is designed to be easy on the eyes during long debugging sessions and matches the overall dark theme of SQLFormat.io."
-        }
-      }
-    ]
-  }
-  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does syntax highlighting do for SQL?", "acceptedAnswer": {"@type": "Answer", "text": "Syntax highlighting assigns distinct colors to SQL keywords, strings, numbers, identifiers, and comments. This lets your eyes instantly parse the structure of a query - you can spot a missing closing quote, a keyword typo, or an unbracketed subquery without reading every character."}}, {"@type": "Question", "name": "Is the highlighted SQL copyable?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The formatted SQL retains its highlighting in the output pane, but when you copy it, you get clean plain-text SQL that pastes correctly into any editor, IDE, or database client. The colors are visual only - they do not add any hidden markup to the copied text."}}, {"@type": "Question", "name": "Does syntax highlighting slow down formatting for large queries?", "acceptedAnswer": {"@type": "Answer", "text": "No. The highlighting runs in your browser alongside the formatter. Even for queries over 2,000 lines, the combined formatting and highlighting completes in under 150ms. There is no server round-trip, so latency is zero."}}, {"@type": "Question", "name": "Can I turn off highlighting and just format?", "acceptedAnswer": {"@type": "Answer", "text": "Absolutely. The highlighting is a visual enhancement in the output pane. If you prefer plain text, simply copy the output - the clipboard content is always unhighlighted, clean SQL. There is no toggle needed."}}, {"@type": "Question", "name": "What color scheme does the highlighter use?", "acceptedAnswer": {"@type": "Answer", "text": "The highlighter uses a dark-theme-optimized palette: blue for SQL keywords, green for strings, orange for numbers, gray for comments, and white for identifiers. The scheme is designed to be easy on the eyes during long debugging sessions and matches the overall dark theme of SQLFormat.io."}}, {"@type": "Question", "name": "Does the syntax highlighting work for MySQL, PostgreSQL and T-SQL?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The highlighter follows whichever dialect you select - Standard SQL, MySQL, PostgreSQL, T-SQL, PL/SQL, SQLite, BigQuery, MariaDB, Snowflake, Redshift, Spark, Hive, Trino and more. Dialect-aware coloring matters because quoting rules differ: backticked MySQL identifiers, double-quoted PostgreSQL identifiers and bracketed T-SQL identifiers are all highlighted as identifiers rather than strings."}}, {"@type": "Question", "name": "Can I use the highlighted result in documentation or a screenshot?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The output pane is color-coded and easy to capture for docs, slides, README examples and code reviews. If you need plain text instead - for a commit, a ticket comment or a config file - just use Copy: the clipboard always receives unhighlighted SQL, so the colors never leak into the text you paste."}}]}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -309,6 +262,13 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+      .content-section { margin-bottom: 32px; }
+    .content-section h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .content-section h3 { font-size: 1.05rem; color: var(--text); margin: 16px 0 8px; }
+    .content-section p { color: var(--text2); line-height: 1.75; margin-bottom: 12px; font-size: 0.93rem; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+    .faq-item p { color: var(--text2); line-height: 1.65; font-size: 0.93rem; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -436,6 +396,17 @@ LIMIT 100;</pre>
       </div>
     </div>
   </div>
+
+  <section class="content-section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>What does syntax highlighting do for SQL?</h3><p>Syntax highlighting assigns distinct colors to SQL keywords, strings, numbers, identifiers, and comments. This lets your eyes instantly parse the structure of a query - you can spot a missing closing quote, a keyword typo, or an unbracketed subquery without reading every character.</p></div>
+  <div class="faq-item"><h3>Is the highlighted SQL copyable?</h3><p>Yes. The formatted SQL retains its highlighting in the output pane, but when you copy it, you get clean plain-text SQL that pastes correctly into any editor, IDE, or database client. The colors are visual only - they do not add any hidden markup to the copied text.</p></div>
+  <div class="faq-item"><h3>Does syntax highlighting slow down formatting for large queries?</h3><p>No. The highlighting runs in your browser alongside the formatter. Even for queries over 2,000 lines, the combined formatting and highlighting completes in under 150ms. There is no server round-trip, so latency is zero.</p></div>
+  <div class="faq-item"><h3>Can I turn off highlighting and just format?</h3><p>Absolutely. The highlighting is a visual enhancement in the output pane. If you prefer plain text, simply copy the output - the clipboard content is always unhighlighted, clean SQL. There is no toggle needed.</p></div>
+  <div class="faq-item"><h3>What color scheme does the highlighter use?</h3><p>The highlighter uses a dark-theme-optimized palette: blue for SQL keywords, green for strings, orange for numbers, gray for comments, and white for identifiers. The scheme is designed to be easy on the eyes during long debugging sessions and matches the overall dark theme of SQLFormat.io.</p></div>
+  <div class="faq-item"><h3>Does the syntax highlighting work for MySQL, PostgreSQL and T-SQL?</h3><p>Yes. The highlighter follows whichever dialect you select - Standard SQL, MySQL, PostgreSQL, T-SQL, PL/SQL, SQLite, BigQuery, MariaDB, Snowflake, Redshift, Spark, Hive, Trino and more. Dialect-aware coloring matters because quoting rules differ: backticked MySQL identifiers, double-quoted PostgreSQL identifiers and bracketed T-SQL identifiers are all highlighted as identifiers rather than strings.</p></div>
+  <div class="faq-item"><h3>Can I use the highlighted result in documentation or a screenshot?</h3><p>Yes. The output pane is color-coded and easy to capture for docs, slides, README examples and code reviews. If you need plain text instead - for a commit, a ticket comment or a config file - just use Copy: the clipboard always receives unhighlighted SQL, so the colors never leak into the text you paste.</p></div>
+  </section>
 
   <div class="related-section">
     <h2>More SQL Tools</h2>

@@ -37,62 +37,7 @@
     ]
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I generate mock SQL data online for free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Go to SQLFormat.io, click Data Gen in the navigation bar. Enter your table name, define columns (name + data type), set how many rows you want, and click Generate. The tool produces INSERT statements with realistic fake data — names, emails, dates, prices, UUIDs — based on the column names and types you define."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What data types can the SQL data generator handle?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, JSONB, and ENUM. Each type produces appropriate mock values — VARCHAR generates names and emails, DECIMAL generates prices, UUID generates valid UUID strings, DATE generates calendar dates in a recent range."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I generate data for specific column naming patterns?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The generator detects common naming conventions and adjusts output automatically. Columns named email or mail get valid email addresses. Columns ending in _id get sequential IDs. Price, cost, or amount columns get realistic dollar values. Columns named phone get formatted phone numbers. City gets real US city names. This makes the generated data much more believable than random strings."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a limit on how many rows I can generate?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "You can generate up to 1,000 rows at a time. Since all processing happens in your browser, the practical limit depends on your device memory. For most development and testing needs, 1,000 rows is more than enough to populate a test database or seed integration tests."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are there preset schemas I can use instead of building from scratch?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The tool includes presets for Users, Products, Orders, and Employees tables. Each preset includes realistic column definitions — names, emails, prices, dates, foreign keys, and status fields. You can load a preset and modify it, or build your schema from scratch."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my schema data safe when using this generator?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Completely safe. All generation runs client-side in your browser using JavaScript. Your table schema and the generated data never leave your device. There is no server-side processing, no data collection, and no logging of any kind."
-        }
-      }
-    ]
-  }
-  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I generate mock SQL data online for free?", "acceptedAnswer": {"@type": "Answer", "text": "Go to SQLFormat.io, click Data Gen in the navigation bar. Enter your table name, define columns (name + data type), set how many rows you want, and click Generate. The tool produces INSERT statements with realistic fake data - names, emails, dates, prices, UUIDs - based on the column names and types you define."}}, {"@type": "Question", "name": "What data types can the SQL data generator handle?", "acceptedAnswer": {"@type": "Answer", "text": "INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, JSONB, and ENUM. Each type produces appropriate mock values - VARCHAR generates names and emails, DECIMAL generates prices, UUID generates valid UUID strings, DATE generates calendar dates in a recent range."}}, {"@type": "Question", "name": "Can I generate data for specific column naming patterns?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The generator detects common naming conventions and adjusts output automatically. Columns named email or mail get valid email addresses. Columns ending in _id get sequential IDs. Price, cost, or amount columns get realistic dollar values. Columns named phone get formatted phone numbers. City gets real US city names. This makes the generated data much more believable than random strings."}}, {"@type": "Question", "name": "Is there a limit on how many rows I can generate?", "acceptedAnswer": {"@type": "Answer", "text": "You can generate up to 1,000 rows at a time. Since all processing happens in your browser, the practical limit depends on your device memory. For most development and testing needs, 1,000 rows is more than enough to populate a test database or seed integration tests."}}, {"@type": "Question", "name": "Are there preset schemas I can use instead of building from scratch?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The tool includes presets for Users, Products, Orders, and Employees tables. Each preset includes realistic column definitions - names, emails, prices, dates, foreign keys, and status fields. You can load a preset and modify it, or build your schema from scratch."}}, {"@type": "Question", "name": "Is my schema data safe when using this generator?", "acceptedAnswer": {"@type": "Answer", "text": "Completely safe. All generation runs client-side in your browser using JavaScript. Your table schema and the generated data never leave your device. There is no server-side processing, no data collection, and no logging of any kind."}}, {"@type": "Question", "name": "Can I generate mock data for MySQL, PostgreSQL and SQL Server?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The generator emits standard INSERT INTO ... VALUES statements, which run unchanged on MySQL, PostgreSQL, SQL Server, SQLite, MariaDB and Oracle. Values follow the universal SQL standard - TRUE/FALSE for BOOLEAN, YYYY-MM-DD for DATE, quoted text for VARCHAR - so you can paste the output straight into any of these databases without editing it first."}}, {"@type": "Question", "name": "How do I seed a test database with the generated INSERT statements?", "acceptedAnswer": {"@type": "Answer", "text": "Generate the rows you need, click Copy, then paste the statements into your database console (psql, mysql, sqlcmd or a GUI client) or save them into a seed file such as seed.sql. The statements are complete and self-contained, so one paste populates the table - ideal for local development setups, integration tests and demos that need data which looks real but is not production data."}}]}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -227,6 +172,9 @@
       font-size: 0.85rem;
     }
     footer a { color: var(--accent); text-decoration: none; }
+      .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+    .faq-item p { color: var(--text2); line-height: 1.65; font-size: 0.93rem; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -374,6 +322,18 @@ INSERT INTO products (product_name, category, price, stock, is_available) VALUES
     </table>
     <p>Columns ending in <code>_id</code> generate integers suitable for foreign key references. Columns named <code>password</code>, <code>hash</code>, or <code>token</code> generate hex strings that look like real authentication values.</p>
   </div>
+
+  <section class="content-section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>How do I generate mock SQL data online for free?</h3><p>Go to SQLFormat.io, click Data Gen in the navigation bar. Enter your table name, define columns (name + data type), set how many rows you want, and click Generate. The tool produces INSERT statements with realistic fake data - names, emails, dates, prices, UUIDs - based on the column names and types you define.</p></div>
+  <div class="faq-item"><h3>What data types can the SQL data generator handle?</h3><p>INT, BIGINT, SMALLINT, VARCHAR, CHAR, TEXT, BOOLEAN, DATE, TIMESTAMP, TIME, FLOAT, DOUBLE, DECIMAL, NUMERIC, UUID, JSON, JSONB, and ENUM. Each type produces appropriate mock values - VARCHAR generates names and emails, DECIMAL generates prices, UUID generates valid UUID strings, DATE generates calendar dates in a recent range.</p></div>
+  <div class="faq-item"><h3>Can I generate data for specific column naming patterns?</h3><p>Yes. The generator detects common naming conventions and adjusts output automatically. Columns named email or mail get valid email addresses. Columns ending in _id get sequential IDs. Price, cost, or amount columns get realistic dollar values. Columns named phone get formatted phone numbers. City gets real US city names. This makes the generated data much more believable than random strings.</p></div>
+  <div class="faq-item"><h3>Is there a limit on how many rows I can generate?</h3><p>You can generate up to 1,000 rows at a time. Since all processing happens in your browser, the practical limit depends on your device memory. For most development and testing needs, 1,000 rows is more than enough to populate a test database or seed integration tests.</p></div>
+  <div class="faq-item"><h3>Are there preset schemas I can use instead of building from scratch?</h3><p>Yes. The tool includes presets for Users, Products, Orders, and Employees tables. Each preset includes realistic column definitions - names, emails, prices, dates, foreign keys, and status fields. You can load a preset and modify it, or build your schema from scratch.</p></div>
+  <div class="faq-item"><h3>Is my schema data safe when using this generator?</h3><p>Completely safe. All generation runs client-side in your browser using JavaScript. Your table schema and the generated data never leave your device. There is no server-side processing, no data collection, and no logging of any kind.</p></div>
+  <div class="faq-item"><h3>Can I generate mock data for MySQL, PostgreSQL and SQL Server?</h3><p>Yes. The generator emits standard INSERT INTO ... VALUES statements, which run unchanged on MySQL, PostgreSQL, SQL Server, SQLite, MariaDB and Oracle. Values follow the universal SQL standard - TRUE/FALSE for BOOLEAN, YYYY-MM-DD for DATE, quoted text for VARCHAR - so you can paste the output straight into any of these databases without editing it first.</p></div>
+  <div class="faq-item"><h3>How do I seed a test database with the generated INSERT statements?</h3><p>Generate the rows you need, click Copy, then paste the statements into your database console (psql, mysql, sqlcmd or a GUI client) or save them into a seed file such as seed.sql. The statements are complete and self-contained, so one paste populates the table - ideal for local development setups, integration tests and demos that need data which looks real but is not production data.</p></div>
+  </section>
 
   <div class="content-section">
     <h2>Related SQL Tools at SQLFormat.io</h2>

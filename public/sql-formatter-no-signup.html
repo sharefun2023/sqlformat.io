@@ -37,38 +37,7 @@
     ]
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Do I really not need to create an account?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Correct. There is no signup form, no email verification, and no account creation. The SQL formatter runs entirely in your browser using JavaScript. Paste your query, format it, copy the result — no personal information required."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Why would a formatter require signup in the first place?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Some online tools require signup to monetize users through email marketing, enforce usage limits, or because their formatting runs on expensive server infrastructure. Since SQLFormat.io processes everything client-side, there are no server costs to offset — so no signup needed."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a limit on how many queries I can format?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No limits whatsoever. Format as many queries as you want, as often as you want. Since formatting runs locally in your browser, there are no usage caps, quotas, or rate limits to worry about."
-        }
-      }
-    ]
-  }
-  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I really not need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "Correct. There is no signup form, no email verification, and no account creation. The SQL formatter runs entirely in your browser using JavaScript. Paste your query, format it, copy the result - no personal information required."}}, {"@type": "Question", "name": "Why would a formatter require signup in the first place?", "acceptedAnswer": {"@type": "Answer", "text": "Some online tools require signup to monetize users through email marketing, enforce usage limits, or because their formatting runs on expensive server infrastructure. Since SQLFormat.io processes everything client-side, there are no server costs to offset - so no signup needed."}}, {"@type": "Question", "name": "Is there a limit on how many queries I can format?", "acceptedAnswer": {"@type": "Answer", "text": "No limits whatsoever. Format as many queries as you want, as often as you want. Since formatting runs locally in your browser, there are no usage caps, quotas, or rate limits to worry about."}}, {"@type": "Question", "name": "Does the formatter store or upload my SQL queries?", "acceptedAnswer": {"@type": "Answer", "text": "No. Formatting runs entirely as JavaScript in your browser, so queries never leave your machine and nothing is logged. That is also why no account is required: there is no server-side history to attach to a user, which means you can safely paste queries that touch production schemas."}}, {"@type": "Question", "name": "Can I format MySQL, PostgreSQL and T-SQL without signing up?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The dialect selector covers Standard SQL, MySQL, PostgreSQL, SQLite, MariaDB, T-SQL, PL/SQL, BigQuery, Snowflake, Redshift, Spark, Hive, Trino, DB2 and SingleStoreDB - all available with no registration, no email and no free-tier quota."}}]}</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -256,6 +225,13 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+      .content-section { margin-bottom: 32px; }
+    .content-section h2 { font-size: 1.3rem; color: var(--text); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .content-section h3 { font-size: 1.05rem; color: var(--text); margin: 16px 0 8px; }
+    .content-section p { color: var(--text2); line-height: 1.75; margin-bottom: 12px; font-size: 0.93rem; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item h3 { font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+    .faq-item p { color: var(--text2); line-height: 1.65; font-size: 0.93rem; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -336,6 +312,15 @@ gtag('config', 'G-M3MYLE3P6F');
       </div>
     </div>
   </div>
+
+  <section class="content-section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>Do I really not need to create an account?</h3><p>Correct. There is no signup form, no email verification, and no account creation. The SQL formatter runs entirely in your browser using JavaScript. Paste your query, format it, copy the result - no personal information required.</p></div>
+  <div class="faq-item"><h3>Why would a formatter require signup in the first place?</h3><p>Some online tools require signup to monetize users through email marketing, enforce usage limits, or because their formatting runs on expensive server infrastructure. Since SQLFormat.io processes everything client-side, there are no server costs to offset - so no signup needed.</p></div>
+  <div class="faq-item"><h3>Is there a limit on how many queries I can format?</h3><p>No limits whatsoever. Format as many queries as you want, as often as you want. Since formatting runs locally in your browser, there are no usage caps, quotas, or rate limits to worry about.</p></div>
+  <div class="faq-item"><h3>Does the formatter store or upload my SQL queries?</h3><p>No. Formatting runs entirely as JavaScript in your browser, so queries never leave your machine and nothing is logged. That is also why no account is required: there is no server-side history to attach to a user, which means you can safely paste queries that touch production schemas.</p></div>
+  <div class="faq-item"><h3>Can I format MySQL, PostgreSQL and T-SQL without signing up?</h3><p>Yes. The dialect selector covers Standard SQL, MySQL, PostgreSQL, SQLite, MariaDB, T-SQL, PL/SQL, BigQuery, Snowflake, Redshift, Spark, Hive, Trino, DB2 and SingleStoreDB - all available with no registration, no email and no free-tier quota.</p></div>
+  </section>
 
   <div class="related-section">
     <h2>More SQL Tools</h2>
