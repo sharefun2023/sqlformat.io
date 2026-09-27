@@ -38,53 +38,69 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is there a file size limit for formatting SQL?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Because formatting runs entirely in your browser using JavaScript, there is no server-side file size limit. The only constraint is your browser's available memory. Files up to 50MB format without issues on a standard laptop. For files over 100MB, we recommend splitting them into smaller chunks using a text editor or command-line tool like split before pasting."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Will formatting a 20MB SQL file freeze my browser?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For most modern browsers on a machine with 8GB+ RAM, 20MB files format in 1-3 seconds. The formatter uses efficient tokenization and does not block the main thread for the entire duration. If you notice any sluggishness, closing other tabs and browser windows frees up memory and speeds up processing."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How should I handle a 200MB mysqldump?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For extremely large files, split them by statement type first. Format CREATE TABLE statements separately from INSERT statements. You can use a text editor with regex search to extract sections, or use command-line tools like awk or grep to split on semicolons. Format each chunk individually, then reassemble."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does the formatter preserve comments in large files?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Single-line comments (-- and #) and block comments (/* */) are fully preserved. The formatter only adjusts whitespace and indentation. Your documentation comments, inline notes, and section headers remain exactly where you wrote them."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I format multiple large files in batch?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The browser-based formatter processes one file at a time. For batch processing, consider using our open-source sql-formatter npm package in a Node.js script. However, for one-off large file formatting — a 50MB dump you need to review right now — the online formatter handles it without any setup."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there a file size limit for formatting SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Because formatting runs entirely in your browser using JavaScript, there is no server-side file size limit. The only constraint is your browser's available memory. Files up to 50MB format without issues on a standard laptop. For files over 100MB, we recommend splitting them into smaller chunks using a text editor or a command-line tool like split before pasting."
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "Will formatting a 20MB SQL file freeze my browser?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For most modern browsers on a machine with 8GB+ RAM, a 20MB file formats in 1-3 seconds. The formatter uses efficient tokenization and does not block the main thread for the entire duration. If you notice any sluggishness, closing other tabs and browser windows frees up memory and speeds up processing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How should I handle a 200MB mysqldump?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For extremely large files, split them by statement type first. Format CREATE TABLE statements separately from INSERT statements. You can use a text editor with regex search to extract sections, or command-line tools like awk or grep to split on semicolons. Format each chunk individually, then reassemble."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the formatter preserve comments in large files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Single-line comments (-- and #) and block comments (/* */) are fully preserved. The formatter only adjusts whitespace and indentation. Your documentation comments, inline notes, and section headers remain exactly where you wrote them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I format multiple large files in batch?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The browser-based formatter processes one file at a time. For batch processing, consider using the open-source sql-formatter npm package in a Node.js script. For one-off large file formatting - a 50MB dump you need to review right now - the online formatter handles it without any setup."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does SQLFormat.io upload large SQL files to a server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There is no upload step at all. The formatter is a JavaScript file that runs inside your browser tab, so your dump, your schema, and your customer data never leave your machine. That is also why there is no file size cap: nothing has to travel over the network or fit inside a request body."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I format a large SQL file offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, once the page has loaded. The formatting engine runs locally, so you can paste a dump, format it, and copy the result with the network disconnected. Only loading or reloading the page needs a connection."
+      }
+    }
+  ]
+}
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -292,7 +308,31 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
-  </style>
+      /* FAQ + content sections */
+    .content-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    .content-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: var(--accent);
+    }
+    .content-section h3 {
+      font-size: 1.02rem;
+      color: var(--text);
+      margin: 16px 0 6px;
+    }
+    .content-section p {
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+    .faq-item { margin-bottom: 6px; }
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
 <script>
@@ -390,6 +430,17 @@ gtag('config', 'G-M3MYLE3P6F');
       </div>
     </div>
   </div>
+
+  <section class="content-section" id="faq">
+<h2>Frequently Asked Questions</h2>
+<div class="faq-item"><h3>Is there a file size limit for formatting SQL?</h3><p>No. Because formatting runs entirely in your browser using JavaScript, there is no server-side file size limit. The only constraint is your browser&#x27;s available memory. Files up to 50MB format without issues on a standard laptop. For files over 100MB, we recommend splitting them into smaller chunks using a text editor or a command-line tool like split before pasting.</p></div>
+<div class="faq-item"><h3>Will formatting a 20MB SQL file freeze my browser?</h3><p>For most modern browsers on a machine with 8GB+ RAM, a 20MB file formats in 1-3 seconds. The formatter uses efficient tokenization and does not block the main thread for the entire duration. If you notice any sluggishness, closing other tabs and browser windows frees up memory and speeds up processing.</p></div>
+<div class="faq-item"><h3>How should I handle a 200MB mysqldump?</h3><p>For extremely large files, split them by statement type first. Format CREATE TABLE statements separately from INSERT statements. You can use a text editor with regex search to extract sections, or command-line tools like awk or grep to split on semicolons. Format each chunk individually, then reassemble.</p></div>
+<div class="faq-item"><h3>Does the formatter preserve comments in large files?</h3><p>Yes. Single-line comments (-- and #) and block comments (/* */) are fully preserved. The formatter only adjusts whitespace and indentation. Your documentation comments, inline notes, and section headers remain exactly where you wrote them.</p></div>
+<div class="faq-item"><h3>Can I format multiple large files in batch?</h3><p>The browser-based formatter processes one file at a time. For batch processing, consider using the open-source sql-formatter npm package in a Node.js script. For one-off large file formatting - a 50MB dump you need to review right now - the online formatter handles it without any setup.</p></div>
+<div class="faq-item"><h3>Does SQLFormat.io upload large SQL files to a server?</h3><p>No. There is no upload step at all. The formatter is a JavaScript file that runs inside your browser tab, so your dump, your schema, and your customer data never leave your machine. That is also why there is no file size cap: nothing has to travel over the network or fit inside a request body.</p></div>
+<div class="faq-item"><h3>Can I format a large SQL file offline?</h3><p>Yes, once the page has loaded. The formatting engine runs locally, so you can paste a dump, format it, and copy the result with the network disconnected. Only loading or reloading the page needs a connection.</p></div>
+</section>
 
   <div class="related-section">
     <h2>More SQL Tools</h2>

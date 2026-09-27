@@ -38,45 +38,69 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I compare two SQL queries online?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Paste your original SQL in the left panel and the modified SQL in the right panel, then click Compare. Our SQL diff tool analyzes both queries and highlights added, removed, and modified sections at the field and value level—not just line-by-line text differences."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can this tool compare MySQL and PostgreSQL DDL?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The SQL diff tool understands MySQL-specific syntax like backtick identifiers and AUTO_INCREMENT, as well as PostgreSQL features like SERIAL types, RETURNING clauses, and :: casting. CREATE TABLE, ALTER TABLE, and schema DDL are all supported."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my SQL data safe when using the diff tool?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely. All comparison happens in your browser using JavaScript. Your SQL queries never leave your device—no server-side processing, no logging, no data collection. You can even disconnect from the internet after the page loads and it still works."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How is this different from a text diff tool?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Unlike generic text diff tools, our SQL diff tool understands SQL structure. It highlights changes at the field, value, and clause level within each line, so you see exactly which column was renamed, which value changed, or which JOIN condition was modified—not just that a line is different."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I compare two SQL queries online?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste the original query in the left panel and the modified query in the right panel, then click Compare. The tool tokenizes both queries and uses a longest-common-subsequence algorithm to show what was added (green), removed (red), and changed (yellow) - down to the individual field name or value."
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "Can this tool compare MySQL and PostgreSQL DDL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The diff understands dialect-specific syntax such as MySQL backticks and AUTO_INCREMENT, PostgreSQL SERIAL types, :: casting, and dollar-quoted bodies. You can even compare a MySQL statement against its PostgreSQL rewrite to see exactly what the migration changed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my SQL data safe when using the diff tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every comparison runs client-side in your browser - nothing is uploaded and no query text is stored or logged. You can verify it by disconnecting from the network after the page loads: the diff still works."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is this different from a text diff tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A text diff compares lines character by character, so a reformatted query looks completely different even when the logic is identical. This tool tokenizes SQL first, so it distinguishes a renamed column from a re-indented clause and highlights the precise token that changed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I compare stored procedures or migration scripts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Stored procedure bodies, view definitions, and migration scripts all diff the same way - paste the before and after versions. For very long scripts, compare one statement at a time so the highlighted changes stay easy to review."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a size limit for the SQL I compare?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No server-side limit, because the comparison runs in your browser. Practical limits come from your machine's memory: queries and scripts of a few megabytes diff instantly, and multi-megabyte dumps are better compared statement by statement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the diff ignore whitespace and formatting differences?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It tokenizes SQL before comparing, so pure re-indentation and line-break changes do not drown the real differences. Actual content changes - a renamed column, a changed literal, a new WHERE condition - are always highlighted."
+      }
+    }
+  ]
+}
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -192,7 +216,14 @@
       font-size: 0.85rem;
     }
     footer a { color: var(--accent); text-decoration: none; }
-  </style>
+      /* FAQ + content sections */
+    .content-section h3 {
+      font-size: 1.02rem;
+      color: var(--text);
+      margin: 16px 0 6px;
+    }
+    .faq-item { margin-bottom: 6px; }
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
 <script>
@@ -269,6 +300,17 @@ gtag('config', 'G-M3MYLE3P6F');
     </p>
     <p>Lines that exist only in the original appear in <span style="color:#f85149">red</span> (removed). Lines that exist only in the modified version appear in <span style="color:#3fb950">green</span> (added). Lines that appear in both but have differences are shown in <span style="color:#d29922">yellow</span> with the specific changed tokens highlighted inline, so you can see exactly which field name was renamed or which value was updated.</p>
   </div>
+
+  <section class="content-section" id="faq">
+<h2>Frequently Asked Questions</h2>
+<div class="faq-item"><h3>How do I compare two SQL queries online?</h3><p>Paste the original query in the left panel and the modified query in the right panel, then click Compare. The tool tokenizes both queries and uses a longest-common-subsequence algorithm to show what was added (green), removed (red), and changed (yellow) - down to the individual field name or value.</p></div>
+<div class="faq-item"><h3>Can this tool compare MySQL and PostgreSQL DDL?</h3><p>Yes. The diff understands dialect-specific syntax such as MySQL backticks and AUTO_INCREMENT, PostgreSQL SERIAL types, :: casting, and dollar-quoted bodies. You can even compare a MySQL statement against its PostgreSQL rewrite to see exactly what the migration changed.</p></div>
+<div class="faq-item"><h3>Is my SQL data safe when using the diff tool?</h3><p>Yes. Every comparison runs client-side in your browser - nothing is uploaded and no query text is stored or logged. You can verify it by disconnecting from the network after the page loads: the diff still works.</p></div>
+<div class="faq-item"><h3>How is this different from a text diff tool?</h3><p>A text diff compares lines character by character, so a reformatted query looks completely different even when the logic is identical. This tool tokenizes SQL first, so it distinguishes a renamed column from a re-indented clause and highlights the precise token that changed.</p></div>
+<div class="faq-item"><h3>Can I compare stored procedures or migration scripts?</h3><p>Yes. Stored procedure bodies, view definitions, and migration scripts all diff the same way - paste the before and after versions. For very long scripts, compare one statement at a time so the highlighted changes stay easy to review.</p></div>
+<div class="faq-item"><h3>Is there a size limit for the SQL I compare?</h3><p>No server-side limit, because the comparison runs in your browser. Practical limits come from your machine&#x27;s memory: queries and scripts of a few megabytes diff instantly, and multi-megabyte dumps are better compared statement by statement.</p></div>
+<div class="faq-item"><h3>Does the diff ignore whitespace and formatting differences?</h3><p>It tokenizes SQL before comparing, so pure re-indentation and line-break changes do not drown the real differences. Actual content changes - a renamed column, a changed literal, a new WHERE condition - are always highlighted.</p></div>
+</section>
 
   <div class="cta-section" style="padding-top:0">
     <a href="/diff" class="cta-btn">🔍 Start Comparing SQL Now</a>
