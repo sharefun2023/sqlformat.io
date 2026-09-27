@@ -51,8 +51,8 @@
 <p>Start with an ordinary login lookup. The application takes an email address from a form and runs:</p>
 <pre><code>SELECT id, email, password_hash
 FROM users
-WHERE email = 'user@example.com';</code></pre>
-<p>A normal user submits <code>user@example.com</code> and the database treats everything between the two single quotes as one string literal. Now the attacker submits this as the email:</p>
+WHERE email = '<!--email_off-->user@example.com<!--/email_off-->';</code></pre>
+<p>A normal user submits <code><!--email_off-->user@example.com<!--/email_off--></code> and the database treats everything between the two single quotes as one string literal. Now the attacker submits this as the email:</p>
 <pre><code>' OR '1'='1' --</code></pre>
 <p>If the application builds the SQL by string concatenation, the statement that actually reaches the parser becomes:</p>
 <pre><code>SELECT id, email, password_hash
@@ -128,7 +128,7 @@ ResultSet rs = ps.executeQuery();</code></pre>
 <pre><code>PREPARE find_user (text) AS
   SELECT id, email FROM users WHERE email = $1;
 
-EXECUTE find_user('user@example.com');
+EXECUTE find_user('<!--email_off-->user@example.com<!--/email_off-->');
 -- The parameter stays a parameter. Passing  ' OR '1'='1  as the value
 -- returns zero rows; it is compared as a literal string, not parsed.</code></pre>
 <h3>Placeholder syntax by stack</h3>

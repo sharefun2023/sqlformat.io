@@ -385,14 +385,14 @@ gtag('config', 'G-M3MYLE3P6F');
     <p>Paste an <code>INSERT</code> statement and get back a JSON array where each row is an object.</p>
     <div class="code-block">-- Input (INSERT mode):
 INSERT INTO users (id, name, email, age, active) VALUES
-(1, 'Alice', 'alice@example.com', 28, true),
-(2, 'Bob', 'bob@example.com', 35, false),
+(1, 'Alice', '<!--email_off-->alice@example.com<!--/email_off-->', 28, true),
+(2, 'Bob', '<!--email_off-->bob@example.com<!--/email_off-->', 35, false),
 (3, 'Charlie', NULL, 22, true);
 
 -- Output (JSON):
 [
-  { "id": 1, "name": "Alice", "email": "alice@example.com", "age": 28, "active": true },
-  { "id": 2, "name": "Bob", "email": "bob@example.com", "age": 35, "active": false },
+  { "id": 1, "name": "Alice", "email": "<!--email_off-->alice@example.com<!--/email_off-->", "age": 28, "active": true },
+  { "id": 2, "name": "Bob", "email": "<!--email_off-->bob@example.com<!--/email_off-->", "age": 35, "active": false },
   { "id": 3, "name": "Charlie", "email": null, "age": 22, "active": true }
 ]</div>
   </div>

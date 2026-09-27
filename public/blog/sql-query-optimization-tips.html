@@ -195,12 +195,12 @@ WHERE EXISTS (
 <p><code>OR</code> can prevent index usage because the database may need to scan for two separate conditions. Rewrite <code>OR</code> using <code>UNION</code> or <code>IN</code> when possible.</p>
 
 <h3>Problematic — OR prevents index use</h3>
-<pre><code>SELECT * FROM users WHERE id = 42 OR email = 'alice@example.com';</code></pre>
+<pre><code>SELECT * FROM users WHERE id = 42 OR email = '<!--email_off-->alice@example.com<!--/email_off-->';</code></pre>
 
 <h3>Better — UNION uses both indexes</h3>
 <pre><code>SELECT * FROM users WHERE id = 42
 UNION
-SELECT * FROM users WHERE email = 'alice@example.com';</code></pre>
+SELECT * FROM users WHERE email = '<!--email_off-->alice@example.com<!--/email_off-->';</code></pre>
 
 <p>The <code>UNION</code> version can use the index on <code>id</code> for the first part and the index on <code>email</code> for the second — each subquery gets an optimal plan. Use <code>UNION ALL</code> if you know the results will not overlap (faster, no dedup step).</p>
 </section>

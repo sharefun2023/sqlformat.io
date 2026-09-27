@@ -218,7 +218,7 @@ gtag('config', 'G-M3MYLE3P6F');
       Writing INSERT statements by hand is tedious. For a schema with ten columns, you spend more time typing quotes and commas than the data itself is worth. When you need 50 rows to populate a development database or seed integration tests, manual INSERTs are not just slow — they are error-prone. One missing quote and your script fails at runtime.
     </p>
     <p>
-      A <strong>free online SQL data generator</strong> solves this by letting you describe your schema and automatically producing syntactically correct INSERT statements with realistic test data. A column named <code>email</code> generates addresses like alice.smith@example.com. A column named <code>price</code> generates dollar amounts between $10 and $1,000. A <code>UUID</code> column gets a valid <code>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</code> string. The result is data that looks believable in demos, documentation, and staging environments.
+      A <strong>free online SQL data generator</strong> solves this by letting you describe your schema and automatically producing syntactically correct INSERT statements with realistic test data. A column named <code>email</code> generates addresses like <!--email_off-->alice.smith@example.com<!--/email_off-->. A column named <code>price</code> generates dollar amounts between $10 and $1,000. A <code>UUID</code> column gets a valid <code>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</code> string. The result is data that looks believable in demos, documentation, and staging environments.
     </p>
     <p>
       Every developer has at least one story about writing a script to populate a test database, only to spend more time debugging the script than it would have taken to write INSERTs manually. This generator eliminates that overhead entirely.
@@ -278,11 +278,11 @@ gtag('config', 'G-M3MYLE3P6F');
 <span class="comment">-- Define: table=employees, 5 rows</span>
 <span class="comment">-- Columns: first_name(VARCHAR), last_name(VARCHAR), email(VARCHAR), salary(DECIMAL), department(VARCHAR), hire_date(DATE)</span>
 
-INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Alice', 'Smith', 'alice.smith@gmail.com', 85342.18, 'Engineering', '2025-03-14');
-INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Bob', 'Johnson', 'bob.johnson@outlook.com', 62471.50, 'Sales', '2024-08-22');
-INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Grace', 'Williams', 'grace.williams@company.com', 91205.99, 'Marketing', '2025-11-03');
-INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Jack', 'Brown', 'jack.brown@proton.me', 51200.00, 'Support', '2024-02-11');
-INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Mia', 'Davis', 'mia.davis@gmail.com', 120000.00, 'Engineering', '2023-06-30');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Alice', 'Smith', '<!--email_off-->alice.smith@gmail.com<!--/email_off-->', 85342.18, 'Engineering', '2025-03-14');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Bob', 'Johnson', '<!--email_off-->bob.johnson@outlook.com<!--/email_off-->', 62471.50, 'Sales', '2024-08-22');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Grace', 'Williams', '<!--email_off-->grace.williams@company.com<!--/email_off-->', 91205.99, 'Marketing', '2025-11-03');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Jack', 'Brown', '<!--email_off-->jack.brown@proton.me<!--/email_off-->', 51200.00, 'Support', '2024-02-11');
+INSERT INTO employees (first_name, last_name, email, salary, department, hire_date) VALUES ('Mia', 'Davis', '<!--email_off-->mia.davis@gmail.com<!--/email_off-->', 120000.00, 'Engineering', '2023-06-30');
     </div>
 
     <h3>Populating an E-Commerce Schema</h3>

@@ -387,10 +387,10 @@ ORDER BY CASE WHEN last_login IS NULL THEN 1 ELSE 0 END, last_login DESC;
 );
 
 -- DEFAULT applies: credits becomes 0
-INSERT INTO users (id, email) VALUES (1, 'a@example.com');
+INSERT INTO users (id, email) VALUES (1, '<!--email_off-->a@example.com<!--/email_off-->');
 
 -- DEFAULT is bypassed: this inserts NULL, which NOT NULL would reject
-INSERT INTO users (id, email, credits) VALUES (2, 'b@example.com', NULL);
+INSERT INTO users (id, email, credits) VALUES (2, '<!--email_off-->b@example.com<!--/email_off-->', NULL);
 -- ERROR: null value in column "credits" violates not-null constraint
 </code></pre>
 <p>That is the single most misunderstood interaction in schema design. A column declared <code>credits INTEGER DEFAULT 0</code> without <code>NOT NULL</code> will happily store NULL the moment a client sends an explicit NULL, and then every <code>SUM(credits)</code> silently drops those rows. If the column should always have a value, declare both: <code>NOT NULL DEFAULT 0</code>. The default handles the polite inserts; the constraint handles the rest.</p>

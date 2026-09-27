@@ -128,11 +128,11 @@ CREATE TABLE users (
 </ul>
 <p>Reading back the generated key differs too, and this one bites every ORM developer during a migration:</p>
 <pre><code>-- MySQL: insert, then ask the session for the last generated value
-INSERT INTO users (email) VALUES ('a@example.com');
+INSERT INTO users (email) VALUES ('<!--email_off-->a@example.com<!--/email_off-->');
 SELECT LAST_INSERT_ID();
 
 -- PostgreSQL: the INSERT itself returns the value
-INSERT INTO users (email) VALUES ('a@example.com')
+INSERT INTO users (email) VALUES ('<!--email_off-->a@example.com<!--/email_off-->')
 RETURNING id;</code></pre>
 <p><code>RETURNING</code> works on <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> in PostgreSQL, which makes the read-modify-write round trip a single statement. MySQL has no <code>RETURNING</code> clause — it is the single most requested MySQL feature for good reason.</p>
 </section>

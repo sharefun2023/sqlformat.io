@@ -95,7 +95,7 @@ SELECT * FROM employees ORDER BY department ASC, salary DESC;</code></pre>
 <tr><td><code>!=</code> or <code>&lt;&gt;</code></td><td>Not equal</td><td><code>WHERE status != 'closed'</code></td></tr>
 <tr><td><code>&gt;, &lt;, &gt;=, &lt;=</code></td><td>Greater/less than</td><td><code>WHERE salary > 50000</code></td></tr>
 <tr><td><code>BETWEEN</code></td><td>Range (inclusive)</td><td><code>WHERE age BETWEEN 18 AND 65</code></td></tr>
-<tr><td><code>LIKE</code></td><td>Pattern match</td><td><code>WHERE email LIKE '%@gmail.com'</code></td></tr>
+<tr><td><code>LIKE</code></td><td>Pattern match</td><td><code>WHERE email LIKE '<!--email_off-->%@gmail.com<!--/email_off-->'</code></td></tr>
 <tr><td><code>IN</code></td><td>Match any in list</td><td><code>WHERE dept IN ('Sales','HR')</code></td></tr>
 <tr><td><code>IS NULL</code></td><td>Null check</td><td><code>WHERE manager_id IS NULL</code></td></tr>
 <tr><td><code>AND / OR</code></td><td>Combine conditions</td><td><code>WHERE dept='Eng' AND salary>50k</code></td></tr>
@@ -254,13 +254,13 @@ CREATE UNIQUE INDEX idx_employees_email ON employees(email);</code></pre>
 <h2>9. DML — Insert, Update, Delete</h2>
 <pre><code>-- Insert single row
 INSERT INTO employees (name, email, department_id, salary)
-VALUES ('Alice Chen', 'alice@company.com', 3, 75000);
+VALUES ('Alice Chen', '<!--email_off-->alice@company.com<!--/email_off-->', 3, 75000);
 
 -- Insert multiple rows
 INSERT INTO employees (name, email, department_id, salary)
 VALUES
-  ('Bob Smith', 'bob@company.com', 2, 65000),
-  ('Carol Wu', 'carol@company.com', 3, 82000);
+  ('Bob Smith', '<!--email_off-->bob@company.com<!--/email_off-->', 2, 65000),
+  ('Carol Wu', '<!--email_off-->carol@company.com<!--/email_off-->', 3, 82000);
 
 -- Insert from SELECT
 INSERT INTO employees_archive

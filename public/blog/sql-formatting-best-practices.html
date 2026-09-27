@@ -246,7 +246,7 @@ ORDER BY tc.total_revenue DESC;</code></pre>
 SELECT usr.name, ord.total
 FROM users usr
 JOIN orders ord ON usr.id = ord.user_id
-WHERE usr.email NOT LIKE '%@test.internal'
+WHERE usr.email NOT LIKE '<!--email_off-->%@test.internal<!--/email_off-->'
   AND usr.role != 'admin'
   -- Status 4 = refunded, excluded per finance policy Q3-2026
   AND ord.status != 4;</code></pre>

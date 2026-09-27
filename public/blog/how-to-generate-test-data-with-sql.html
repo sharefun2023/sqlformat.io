@@ -118,9 +118,9 @@
 <h2>2. Where Hand-Written INSERT Statements Fall Apart</h2>
 <p>The starting point everyone writes looks like this, and for seeding reference data it is perfectly correct:</p>
 <pre><code>INSERT INTO customers (name, email, created_at) VALUES
-  ('Alice',  'alice@example.com',  '2024-01-01'),
-  ('Bob',    'bob@example.com',    '2024-01-02'),
-  ('Carol',  'carol@example.com',  '2024-01-03');
+  ('Alice',  '<!--email_off-->alice@example.com<!--/email_off-->',  '2024-01-01'),
+  ('Bob',    '<!--email_off-->bob@example.com<!--/email_off-->',    '2024-01-02'),
+  ('Carol',  '<!--email_off-->carol@example.com<!--/email_off-->',  '2024-01-03');
 -- ...and 47 more lines you typed by hand</code></pre>
 <p>Four problems show up as soon as you scale this:</p>
 <ul>
