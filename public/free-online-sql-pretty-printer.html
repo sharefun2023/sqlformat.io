@@ -39,52 +39,68 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is a SQL pretty printer?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "A SQL pretty printer formats raw SQL queries with proper indentation, line breaks, and color-coded syntax highlighting. It makes SQL code readable and visually appealing, with different colors for keywords, strings, numbers, comments, and operators. The formatted output can be exported as an image for use in documentation, presentations, and code reviews."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do I export formatted SQL as an image?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Enter your SQL query on the free online SQL pretty printer at sqlformat.io, click Format & Highlight, then choose Export PNG or Export SVG. The tool renders your formatted SQL with full syntax highlighting as a clean image file. You can switch between dark and light themes before exporting. SVG exports are resolution-independent and perfect for print documentation."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I use the pretty printer for documentation screenshots?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The SQL pretty printer is built specifically for creating documentation-quality SQL images. Choose your color theme (dark or light), format your query with proper indentation and syntax highlighting, and download as PNG or SVG. The dark theme produces images that look great on modern developer documentation sites, while the light theme is ideal for printed documentation and presentations."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Which SQL dialects does the pretty printer support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The free online SQL pretty printer supports 15+ database dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. The syntax highlighting adapts to each dialect's specific keywords and syntax rules."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my SQL data safe when using the online pretty printer?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely. All SQL formatting, syntax highlighting, and image rendering happens entirely in your browser. The SQL pretty printer uses client-side JavaScript with no server-side processing. Your SQL queries never leave your device. No data is logged, stored, or transmitted."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a SQL pretty printer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A SQL pretty printer formats raw SQL queries with proper indentation, line breaks, and color-coded syntax highlighting. It makes SQL code readable and visually appealing, with different colors for keywords, strings, numbers, comments, and operators. The formatted output can be exported as an image for use in documentation, presentations, and code reviews."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I export formatted SQL as an image?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Enter your SQL query on the free online SQL pretty printer at sqlformat.io, click Format & Highlight, then choose Export PNG or Export SVG. The tool renders your formatted SQL with full syntax highlighting as a clean image file. You can switch between dark and light themes before exporting. SVG exports are resolution-independent and perfect for print documentation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the pretty printer for documentation screenshots?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The SQL pretty printer is built specifically for creating documentation-quality SQL images. Choose your color theme (dark or light), format your query with proper indentation and syntax highlighting, and download as PNG or SVG. The dark theme produces images that look great on modern developer documentation sites, while the light theme is ideal for printed documentation and presentations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SQL dialects does the pretty printer support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The free online SQL pretty printer supports 15+ database dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. The syntax highlighting adapts to each dialect's specific keywords and syntax rules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my SQL data safe when using the online pretty printer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Absolutely. All SQL formatting, syntax highlighting, and image rendering happens entirely in your browser. The SQL pretty printer uses client-side JavaScript with no server-side processing. Your SQL queries never leave your device. No data is logged, stored, or transmitted."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a SQL pretty printer the same thing as a SQL formatter or beautifier?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Pretty print, format and beautify all describe the same operation: re-indenting a query, upper-casing keywords and lining up clauses so the structure is readable. The pretty printer overlaps with our free SQL formatter (same dialect list) and adds syntax highlighting plus PNG/SVG export on top."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I paste the pretty-printed SQL back into my editor or a document?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Copy the formatted SQL with the Copy button and paste it into SSMS, DBeaver, VS Code, a wiki page or a ticket. For documentation, use PNG or SVG export instead: the SVG keeps every character as a real text element, so it stays selectable and crisp at any zoom level."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -224,6 +240,22 @@
   <p>Like all tools on SQLFormat.io, the <strong>SQL pretty printer runs entirely in your browser</strong>. There are no server requests, no data storage, and no logging. Your SQL queries and formatted output never leave your device. This makes it safe to use with proprietary queries, production SQL, and sensitive database schemas.</p>
 
   <a href="/pretty-print" class="cta">Try the Free SQL Pretty Printer &rarr;</a>
+
+  <h2>Frequently Asked Questions</h2>
+  <h3>What is a SQL pretty printer?</h3>
+  <p>A SQL pretty printer formats raw SQL queries with proper indentation, line breaks, and color-coded syntax highlighting. It makes SQL code readable and visually appealing, with different colors for keywords, strings, numbers, comments, and operators. The formatted output can be exported as an image for use in documentation, presentations, and code reviews.</p>
+  <h3>How do I export formatted SQL as an image?</h3>
+  <p>Enter your SQL query on the free online SQL pretty printer at sqlformat.io, click Format &amp; Highlight, then choose Export PNG or Export SVG. The tool renders your formatted SQL with full syntax highlighting as a clean image file. You can switch between dark and light themes before exporting. SVG exports are resolution-independent and perfect for print documentation.</p>
+  <h3>Can I use the pretty printer for documentation screenshots?</h3>
+  <p>Yes. The SQL pretty printer is built specifically for creating documentation-quality SQL images. Choose your color theme (dark or light), format your query with proper indentation and syntax highlighting, and download as PNG or SVG. The dark theme produces images that look great on modern developer documentation sites, while the light theme is ideal for printed documentation and presentations.</p>
+  <h3>Which SQL dialects does the pretty printer support?</h3>
+  <p>The free online SQL pretty printer supports 15+ database dialects including MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL (Oracle), Redshift, SingleStoreDB, Snowflake, Spark SQL, T-SQL (SQL Server), Trino, and Standard SQL. The syntax highlighting adapts to each dialect's specific keywords and syntax rules.</p>
+  <h3>Is my SQL data safe when using the online pretty printer?</h3>
+  <p>Absolutely. All SQL formatting, syntax highlighting, and image rendering happens entirely in your browser. The SQL pretty printer uses client-side JavaScript with no server-side processing. Your SQL queries never leave your device. No data is logged, stored, or transmitted.</p>
+  <h3>Is a SQL pretty printer the same thing as a SQL formatter or beautifier?</h3>
+  <p>Yes. Pretty print, format and beautify all describe the same operation: re-indenting a query, upper-casing keywords and lining up clauses so the structure is readable. The pretty printer overlaps with our free SQL formatter (same dialect list) and adds syntax highlighting plus PNG/SVG export on top.</p>
+  <h3>Can I paste the pretty-printed SQL back into my editor or a document?</h3>
+  <p>Yes. Copy the formatted SQL with the Copy button and paste it into SSMS, DBeaver, VS Code, a wiki page or a ticket. For documentation, use PNG or SVG export instead: the SVG keeps every character as a real text element, so it stays selectable and crisp at any zoom level.</p>
 
   <div class="related-links">
     <a href="/">SQL Formatter</a>

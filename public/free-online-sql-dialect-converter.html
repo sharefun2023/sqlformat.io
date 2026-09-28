@@ -38,52 +38,68 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I convert MySQL SQL to PostgreSQL online for free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Visit the SQL Dialect Converter at SQLFormat.io. Paste your MySQL SQL in the input area, select 'MySQL' as the source and 'PostgreSQL' as the target, then click Convert. The tool automatically handles AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), and INSERT IGNORE to ON CONFLICT DO NOTHING. No signup required, all processing happens in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What SQL syntax differences does the converter handle between MySQL and PostgreSQL?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The converter handles 40+ differences: AUTO_INCREMENT to SERIAL/BIGSERIAL, backtick to double-quote quoting, CONCAT() to || operator, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), INSERT IGNORE to ON CONFLICT DO NOTHING, IF() to CASE WHEN, LENGTH() to CHAR_LENGTH(), CURDATE() to CURRENT_DATE, LIMIT a,b to LIMIT b OFFSET a, ENGINE/CHARSET removal, ON UPDATE CURRENT_TIMESTAMP removal, TINYINT to BOOLEAN, and ENUM to VARCHAR with CHECK constraints."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I convert PostgreSQL or MySQL to SQLite?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The converter supports all 6 conversion directions: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, and SQLite to PostgreSQL. For SQLite specifically, it handles AUTO_INCREMENT to AUTOINCREMENT, NOW() to DATETIME('now'), CURRENT_TIMESTAMP to DATETIME('now'), ENGINE/CHARSET removal, CONCAT() to ||, and INSERT IGNORE to INSERT OR IGNORE."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this SQL dialect converter safe for sensitive queries?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Completely safe. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device and are never sent to any server. There's no data logging, no analytics tracking of your query content, and no signup required. It works the same way as our SQL Formatter — private by design."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Do I need to know both dialects to use this converter?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Just paste your SQL from the source database, select source and target dialects, and the tool does the rest. It's designed for developers migrating between databases who don't want to memorize every syntax difference. The conversion count tells you exactly how many changes were applied, so you can review the output with confidence."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I convert MySQL SQL to PostgreSQL online for free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Visit the SQL Dialect Converter at SQLFormat.io. Paste your MySQL SQL in the input area, select 'MySQL' as the source and 'PostgreSQL' as the target, then click Convert. The tool automatically handles AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), and INSERT IGNORE to ON CONFLICT DO NOTHING. No signup required, all processing happens in your browser."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "What SQL syntax differences does the converter handle between MySQL and PostgreSQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The converter handles 40+ differences: AUTO_INCREMENT to SERIAL/BIGSERIAL, backtick to double-quote quoting, CONCAT() to || operator, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), INSERT IGNORE to ON CONFLICT DO NOTHING, IF() to CASE WHEN, LENGTH() to CHAR_LENGTH(), CURDATE() to CURRENT_DATE, LIMIT a,b to LIMIT b OFFSET a, ENGINE/CHARSET removal, ON UPDATE CURRENT_TIMESTAMP removal, TINYINT to BOOLEAN, and ENUM to VARCHAR with CHECK constraints."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I convert PostgreSQL or MySQL to SQLite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The converter supports all 6 conversion directions: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, and SQLite to PostgreSQL. For SQLite specifically, it handles AUTO_INCREMENT to AUTOINCREMENT, NOW() to DATETIME('now'), CURRENT_TIMESTAMP to DATETIME('now'), ENGINE/CHARSET removal, CONCAT() to ||, and INSERT IGNORE to INSERT OR IGNORE."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this SQL dialect converter safe for sensitive queries?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Completely safe. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device and are never sent to any server. There's no data logging, no analytics tracking of your query content, and no signup required. It works the same way as our SQL Formatter — private by design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to know both dialects to use this converter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Just paste your SQL from the source database, select source and target dialects, and the tool does the rest. It's designed for developers migrating between databases who don't want to memorize every syntax difference. The conversion count tells you exactly how many changes were applied, so you can review the output with confidence."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the converter run my SQL or modify my database?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Neither. It is a text-to-text rewriter: your SQL is parsed and re-emitted in the target dialect inside the browser tab. No database connection is opened, no statement is executed, no schema or data is touched, and the query text is never uploaded to a server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I convert T-SQL (SQL Server), Oracle or BigQuery SQL to another dialect?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not yet. The converter covers the MySQL, PostgreSQL and SQLite routes, which is where most migration searches land (mysql to sqlite converter, postgresql to sqlite, sql to sqlite converter). For T-SQL or Oracle, format the query with our SQL Formatter first so the structure is clear, then port the vendor-specific parts (TOP vs LIMIT, date functions, MERGE) by hand."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -328,6 +344,24 @@ gtag('config', 'G-M3MYLE3P6F');
 
   <h2>Privacy & Security</h2>
   <p>Your SQL queries never leave your device. The entire conversion engine runs inside your browser using JavaScript. No server requests, no data logging, no account needed. This is the same privacy model used by our <a href="/">SQL Formatter</a>, <a href="/minify">SQL Minifier</a>, and all other tools on SQLFormat.io.</p>
+
+  <section>
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I convert MySQL SQL to PostgreSQL online for free?</h3>
+    <p>Visit the SQL Dialect Converter at SQLFormat.io. Paste your MySQL SQL in the input area, select 'MySQL' as the source and 'PostgreSQL' as the target, then click Convert. The tool automatically handles AUTO_INCREMENT to SERIAL, backtick quotes to double-quote identifiers, CONCAT() to ||, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), and INSERT IGNORE to ON CONFLICT DO NOTHING. No signup required, all processing happens in your browser.</p>
+    <h3>What SQL syntax differences does the converter handle between MySQL and PostgreSQL?</h3>
+    <p>The converter handles 40+ differences: AUTO_INCREMENT to SERIAL/BIGSERIAL, backtick to double-quote quoting, CONCAT() to || operator, IFNULL() to COALESCE(), DATE_FORMAT() to TO_CHAR(), GROUP_CONCAT() to STRING_AGG(), INSERT IGNORE to ON CONFLICT DO NOTHING, IF() to CASE WHEN, LENGTH() to CHAR_LENGTH(), CURDATE() to CURRENT_DATE, LIMIT a,b to LIMIT b OFFSET a, ENGINE/CHARSET removal, ON UPDATE CURRENT_TIMESTAMP removal, TINYINT to BOOLEAN, and ENUM to VARCHAR with CHECK constraints.</p>
+    <h3>Can I convert PostgreSQL or MySQL to SQLite?</h3>
+    <p>Yes. The converter supports all 6 conversion directions: MySQL to PostgreSQL, PostgreSQL to MySQL, MySQL to SQLite, SQLite to MySQL, PostgreSQL to SQLite, and SQLite to PostgreSQL. For SQLite specifically, it handles AUTO_INCREMENT to AUTOINCREMENT, NOW() to DATETIME('now'), CURRENT_TIMESTAMP to DATETIME('now'), ENGINE/CHARSET removal, CONCAT() to ||, and INSERT IGNORE to INSERT OR IGNORE.</p>
+    <h3>Is this SQL dialect converter safe for sensitive queries?</h3>
+    <p>Completely safe. All conversion happens locally in your browser using JavaScript. Your SQL queries never leave your device and are never sent to any server. There's no data logging, no analytics tracking of your query content, and no signup required. It works the same way as our SQL Formatter — private by design.</p>
+    <h3>Do I need to know both dialects to use this converter?</h3>
+    <p>No. Just paste your SQL from the source database, select source and target dialects, and the tool does the rest. It's designed for developers migrating between databases who don't want to memorize every syntax difference. The conversion count tells you exactly how many changes were applied, so you can review the output with confidence.</p>
+    <h3>Does the converter run my SQL or modify my database?</h3>
+    <p>Neither. It is a text-to-text rewriter: your SQL is parsed and re-emitted in the target dialect inside the browser tab. No database connection is opened, no statement is executed, no schema or data is touched, and the query text is never uploaded to a server.</p>
+    <h3>Can I convert T-SQL (SQL Server), Oracle or BigQuery SQL to another dialect?</h3>
+    <p>Not yet. The converter covers the MySQL, PostgreSQL and SQLite routes, which is where most migration searches land (mysql to sqlite converter, postgresql to sqlite, sql to sqlite converter). For T-SQL or Oracle, format the query with our SQL Formatter first so the structure is clear, then port the vendor-specific parts (TOP vs LIMIT, date functions, MERGE) by hand.</p>
+  </section>
 
   <h2>More SQL Tools</h2>
   <p>SQLFormat.io offers a complete suite of free SQL utilities. Try our <a href="/">SQL Formatter</a> to beautify your queries, the <a href="/diff">SQL Diff</a> tool to compare two queries, or the <a href="/data-generator">SQL Data Generator</a> to create mock INSERT data from your schema definitions.</p>
