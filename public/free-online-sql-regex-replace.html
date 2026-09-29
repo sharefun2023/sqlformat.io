@@ -36,52 +36,68 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I batch rename tables in SQL using regex?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like (users|orders|products), and a replacement like new_$1. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this SQL regex replace tool really free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The tool is completely free with no signup, no credit card, and no usage limits. All regex matching runs in your browser — your SQL never leaves your machine. Use it as many times as you need for any size of SQL script."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I preview changes before applying them?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Click 'Preview Changes' to see every match highlighted with old → new values before committing. You can also undo the last operation or reset back to the original SQL at any point."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What regex features are supported?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The tool uses JavaScript's RegExp engine supporting character classes, groups with backreferences ($1, $2...), alternation (|), quantifiers (*, +, ?), word boundaries (\\b), and flags: g (global), i (case-insensitive), m (multiline)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I scope regex to only specific parts of SQL?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Choose from four scopes: Entire SQL (default), Table Names (targets table references in FROM/JOIN/INTO clauses), Column Names (targets column identifiers), and Comments (targets -- and /* */ style comments). This prevents accidental replacements in the wrong context."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I batch rename tables in SQL using regex?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like (users|orders|products), and a replacement like new_$1. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I scope regex to only specific parts of SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Choose from four scopes: Entire SQL (default), Table Names (targets table references in FROM/JOIN/INTO clauses), Column Names (targets column identifiers), and Comments (targets -- and /* */ style comments). This prevents accidental replacements in the wrong context."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I preview changes before applying them?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Click 'Preview Changes' to see every match highlighted with old → new values before committing. You can also undo the last operation or reset back to the original SQL at any point."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I undo a regex replace?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every operation is tracked in a history stack, so you can undo the last replacement or reset back to the original query at any point - including after a batch rename across a large script."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What regex features are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tool uses JavaScript's RegExp engine supporting character classes, groups with backreferences ($1, $2...), alternation (|), quantifiers (*, +, ?), word boundaries (\\b), and flags: g (global), i (case-insensitive), m (multiline)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this SQL regex replace tool really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The tool is completely free with no signup, no credit card, and no usage limits. All regex matching runs in your browser — your SQL never leaves your machine. Use it as many times as you need for any size of SQL script."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run regex replacements on a mysqldump or large SQL script?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Matching happens locally in the browser, so there is no upload step and no size limit - mysqldump output, migration scripts and multi-thousand-line .sql files can be pasted in directly. For very large files, strip comments first with the Comments scope and then run your structural renames."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -332,30 +348,38 @@ WHERE cust_status = 'active'</div>
     </div>
   </div>
 
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">How do I batch rename tables in SQL using regex? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like <code>(users|orders|products)</code>, and a replacement like <code>new_$1</code>. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename.</p></div>
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How do I batch rename tables in SQL using regex? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Paste your SQL into the tool, set the scope to 'Table Names', enter a regex pattern like (users|orders|products), and a replacement like new_$1. The tool matches table references across FROM, JOIN, INTO, and UPDATE clauses. Preview shows each match before you apply the rename.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I scope regex to only specific parts of SQL? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Yes. Choose from four scopes: Entire SQL (default), Table Names (targets table references in FROM/JOIN/INTO clauses), Column Names (targets column identifiers), and Comments (targets -- and /* */ style comments). This prevents accidental replacements in the wrong context.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I preview changes before applying them? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Yes. Click 'Preview Changes' to see every match highlighted with old → new values before committing. You can also undo the last operation or reset back to the original SQL at any point.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I undo a regex replace? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Yes. Every operation is tracked in a history stack, so you can undo the last replacement or reset back to the original query at any point - including after a batch rename across a large script.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What regex features are supported? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>The tool uses JavaScript's RegExp engine supporting character classes, groups with backreferences ($1, $2...), alternation (|), quantifiers (*, +, ?), word boundaries (\b), and flags: g (global), i (case-insensitive), m (multiline).</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Is this SQL regex replace tool really free? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Yes. The tool is completely free with no signup, no credit card, and no usage limits. All regex matching runs in your browser — your SQL never leaves your machine. Use it as many times as you need for any size of SQL script.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Can I run regex replacements on a mysqldump or large SQL script? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p>Yes. Matching happens locally in the browser, so there is no upload step and no size limit - mysqldump output, migration scripts and multi-thousand-line .sql files can be pasted in directly. For very large files, strip comments first with the Comments scope and then run your structural renames.</p></div>
+    </div>
   </div>
 
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">Is this tool really free? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Yes. No signup, no credit card, no limits. Everything runs client-side — your SQL never leaves your browser.</p></div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">Can I undo a regex replace? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Yes. Every operation is tracked in a history stack. Undo the last replacement or reset back to the original query at any time.</p></div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">What scopes can I limit my regex to? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Four scopes: Entire SQL (default), Table Names, Column Names, and Comments. Scoping prevents accidental replacements in unintended contexts.</p></div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">Does the tool support lookaheads and backreferences? <span class="arrow">▼</span></button>
-    <div class="faq-a"><p>Yes. JavaScript regex supports lookaheads (<code>(?=...)</code>, <code>(?!...)</code>), capturing groups with backreferences (<code>$1</code>, <code>$2</code>...), and all standard quantifiers and character classes.</p></div>
-  </div>
 </main>
 
 <footer>

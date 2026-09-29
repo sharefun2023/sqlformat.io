@@ -39,44 +39,68 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is a SQL snippet library and why should I use one?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "A SQL snippet library is a curated collection of reusable SQL code templates and recipes organized by category. Instead of writing common SQL patterns from scratch every time, you browse the library, find the snippet that matches your need, and copy it with one click. It saves hours of Googling and trial-and-error, especially for complex patterns like recursive CTEs, window functions, and pivot tables that have non-obvious syntax."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What categories of SQL snippets are available?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The library covers 10+ categories: Recursive CTEs (hierarchical queries, date range generation, category trees), Window Functions (ROW_NUMBER deduplication, running totals, LAG/LEAD comparisons, NTILE bucketing, FIRST_VALUE/LAST_VALUE), Pivot/Unpivot (CASE-based cross-tabs, native PIVOT operator, columns-to-rows), Pagination (OFFSET/FETCH, keyset/seek method, MySQL LIMIT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG with cross-dialect comparisons), Date/Time queries (truncation, age calculation, overlap detection, series generation), Performance analysis (missing indexes, blocking queries, slow query log), and MERGE/UPSERT patterns."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Which SQL dialects do the snippets support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Snippets are provided with dialect-specific variations where syntax differs across databases. PostgreSQL, MySQL, SQL Server, Oracle, SQLite, and standard SQL are all covered. For example, string aggregation includes GROUP_CONCAT (MySQL/SQLite), STRING_AGG (PostgreSQL/SQL Server), and LISTAGG (Oracle). Each snippet is tagged with the dialects it supports so you can find what works for your database."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this SQL snippet library free to use with no signup?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The entire SQL snippet library is completely free with zero signup, zero limits, and zero data collection. All snippets are displayed client-side and copied directly to your clipboard. No account, no email, no credit card required. You can browse, copy, and use as many snippets as you need, as often as you want."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a SQL snippet library and why should I use one?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A SQL snippet library is a curated collection of reusable SQL code templates and recipes organized by category. Instead of writing common SQL patterns from scratch every time, you browse the library, find the snippet that matches your need, and copy it with one click. It saves hours of Googling and trial-and-error, especially for complex patterns like recursive CTEs, window functions, and pivot tables that have non-obvious syntax."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "What categories of SQL snippets are available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The library covers 10+ categories: Recursive CTEs (hierarchical queries, date range generation, category trees), Window Functions (ROW_NUMBER deduplication, running totals, LAG/LEAD comparisons, NTILE bucketing, FIRST_VALUE/LAST_VALUE), Pivot/Unpivot (CASE-based cross-tabs, native PIVOT operator, columns-to-rows), Pagination (OFFSET/FETCH, keyset/seek method, MySQL LIMIT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG with cross-dialect comparisons), Date/Time queries (truncation, age calculation, overlap detection, series generation), Performance analysis (missing indexes, blocking queries, slow query log), and MERGE/UPSERT patterns."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SQL dialects do the snippets support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Snippets are provided with dialect-specific variations where syntax differs across databases. PostgreSQL, MySQL, SQL Server, Oracle, SQLite, and standard SQL are all covered. For example, string aggregation includes GROUP_CONCAT (MySQL/SQLite), STRING_AGG (PostgreSQL/SQL Server), and LISTAGG (Oracle). Each snippet is tagged with the dialects it supports so you can find what works for your database."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this SQL snippet library free to use with no signup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The entire SQL snippet library is completely free with zero signup, zero limits, and zero data collection. All snippets are displayed client-side and copied directly to your clipboard. No account, no email, no credit card required. You can browse, copy, and use as many snippets as you need, as often as you want."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I copy a snippet into DBeaver, DataGrip or VS Code?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open the snippet, click copy, and paste it into your editor's SQL console or a .sql file. Every snippet is plain SQL with no wrapper syntax, so it works in DBeaver, DataGrip, pgAdmin, MySQL Workbench and VS Code alike. Swap the placeholder table and column names for your own before running it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the snippets safe to run on a production database?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Treat every snippet as a starting point rather than a script you paste blindly. The SELECT, WITH and EXPLAIN recipes are read-only, but the UPDATE, DELETE, MERGE and ALTER recipes in the library are destructive: run them on a staging copy first, wrap them in a transaction so you can ROLLBACK, and check the WHERE clause before committing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use a snippet as a query template?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Most teams keep the library open next to their editor and adapt the closest snippet instead of writing from scratch - swap the table names, adjust the filter, keep the structure. That is faster and far less error-prone than rebuilding window functions, recursive CTEs or upserts by hand."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -268,6 +292,22 @@ LIMIT 10;</pre>
   <p>
     The difference is dramatic: OFFSET 100000 skips 100K rows; <code>WHERE id > 42</code> uses the index directly. The library includes both approaches with dialect-specific syntax.
   </p>
+
+  <h2>Frequently Asked Questions</h2>
+  <h3>What is a SQL snippet library and why should I use one?</h3>
+  <p>A SQL snippet library is a curated collection of reusable SQL code templates and recipes organized by category. Instead of writing common SQL patterns from scratch every time, you browse the library, find the snippet that matches your need, and copy it with one click. It saves hours of Googling and trial-and-error, especially for complex patterns like recursive CTEs, window functions, and pivot tables that have non-obvious syntax.</p>
+  <h3>What categories of SQL snippets are available?</h3>
+  <p>The library covers 10+ categories: Recursive CTEs (hierarchical queries, date range generation, category trees), Window Functions (ROW_NUMBER deduplication, running totals, LAG/LEAD comparisons, NTILE bucketing, FIRST_VALUE/LAST_VALUE), Pivot/Unpivot (CASE-based cross-tabs, native PIVOT operator, columns-to-rows), Pagination (OFFSET/FETCH, keyset/seek method, MySQL LIMIT), String Aggregation (GROUP_CONCAT, STRING_AGG, LISTAGG with cross-dialect comparisons), Date/Time queries (truncation, age calculation, overlap detection, series generation), Performance analysis (missing indexes, blocking queries, slow query log), and MERGE/UPSERT patterns.</p>
+  <h3>Which SQL dialects do the snippets support?</h3>
+  <p>Snippets are provided with dialect-specific variations where syntax differs across databases. PostgreSQL, MySQL, SQL Server, Oracle, SQLite, and standard SQL are all covered. For example, string aggregation includes GROUP_CONCAT (MySQL/SQLite), STRING_AGG (PostgreSQL/SQL Server), and LISTAGG (Oracle). Each snippet is tagged with the dialects it supports so you can find what works for your database.</p>
+  <h3>Is this SQL snippet library free to use with no signup?</h3>
+  <p>Yes. The entire SQL snippet library is completely free with zero signup, zero limits, and zero data collection. All snippets are displayed client-side and copied directly to your clipboard. No account, no email, no credit card required. You can browse, copy, and use as many snippets as you need, as often as you want.</p>
+  <h3>How do I copy a snippet into DBeaver, DataGrip or VS Code?</h3>
+  <p>Open the snippet, click copy, and paste it into your editor's SQL console or a .sql file. Every snippet is plain SQL with no wrapper syntax, so it works in DBeaver, DataGrip, pgAdmin, MySQL Workbench and VS Code alike. Swap the placeholder table and column names for your own before running it.</p>
+  <h3>Are the snippets safe to run on a production database?</h3>
+  <p>Treat every snippet as a starting point rather than a script you paste blindly. The SELECT, WITH and EXPLAIN recipes are read-only, but the UPDATE, DELETE, MERGE and ALTER recipes in the library are destructive: run them on a staging copy first, wrap them in a transaction so you can ROLLBACK, and check the WHERE clause before committing.</p>
+  <h3>Can I use a snippet as a query template?</h3>
+  <p>Yes. Most teams keep the library open next to their editor and adapt the closest snippet instead of writing from scratch - swap the table names, adjust the filter, keep the structure. That is faster and far less error-prone than rebuilding window functions, recursive CTEs or upserts by hand.</p>
 
   <h2>Related Tools</h2>
   <div class="related-links">

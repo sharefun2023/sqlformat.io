@@ -38,44 +38,68 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I visualize an SQL EXPLAIN plan online?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Run EXPLAIN or EXPLAIN ANALYZE on your query in MySQL or PostgreSQL, copy the output, and paste it into the SQLFormat.io EXPLAIN Visualizer. It parses the plan and renders it as a color-coded tree diagram, highlighting full table scans in red and index usage in green — no signup required."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does this tool support MySQL EXPLAIN output?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The tool auto-detects MySQL tabular EXPLAIN output (with columns like id, select_type, table, type, key, rows, Extra) and renders each row as a node in the execution plan tree. It flags ALL scans, index lookups, and notes from the Extra column like Using filesort and Using temporary."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What's the difference between EXPLAIN and EXPLAIN ANALYZE?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "EXPLAIN shows the estimated execution plan with predicted costs and row counts. EXPLAIN ANALYZE actually runs the query and shows real timing, row counts, and loop counts — much more accurate but may take time for slow queries. Our visualizer handles both formats in the same tree view."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my SQL data safe when analyzing execution plans?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely. All parsing and rendering happens in your browser using JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after the page loads and it still works."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I visualize an SQL EXPLAIN plan online?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run EXPLAIN or EXPLAIN ANALYZE on your query in MySQL or PostgreSQL, copy the output, and paste it into the SQLFormat.io EXPLAIN Visualizer. It parses the plan and renders it as a color-coded tree diagram, highlighting full table scans in red and index usage in green — no signup required."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this tool support MySQL EXPLAIN output?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The tool auto-detects MySQL tabular EXPLAIN output (with columns like id, select_type, table, type, key, rows, Extra) and renders each row as a node in the execution plan tree. It flags ALL scans, index lookups, and notes from the Extra column like Using filesort and Using temporary."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between EXPLAIN and EXPLAIN ANALYZE?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "EXPLAIN shows the estimated execution plan with predicted costs and row counts. EXPLAIN ANALYZE actually runs the query and shows real timing, row counts, and loop counts — much more accurate but may take time for slow queries. Our visualizer handles both formats in the same tree view."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my SQL data safe when analyzing execution plans?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Absolutely. All parsing and rendering happens in your browser using JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after the page loads and it still works."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I visualize PostgreSQL EXPLAIN (ANALYZE, FORMAT JSON) output?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The visualizer accepts PostgreSQL's default text tree as well as JSON output from EXPLAIN (ANALYZE, FORMAT JSON). Paste whichever form your client prints - psql, pgAdmin and DBeaver all produce output the parser understands - and the plan is rendered as the same indented tree, with actual timings shown when ANALYZE was used."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I tell a Seq Scan from an Index Scan in the tree?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each node is labelled with its operation. Seq Scan and Parallel Seq Scan mean the whole table was read and are flagged in red; Index Scan and Index Only Scan mean an index was used; Bitmap Heap Scan sits between the two. A Seq Scan on a small table is perfectly fine - the same node over hundreds of thousands of rows usually points at a missing index."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the visualizer show estimated versus actual rows and cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. EXPLAIN reports the planner's estimated rows and cost, while EXPLAIN ANALYZE adds actual rows, actual time and loop counts. When both are present the visualizer shows them side by side, so a large gap between estimate and reality - the classic sign of stale statistics - is visible at a glance. On MySQL the rows column is the estimate and the filtered percentage shows how selective the condition was."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -149,6 +173,11 @@
       font-size: 1.3rem;
       margin-bottom: 16px;
       color: var(--accent);
+    }
+    .content-section h3 {
+      font-size: 1.05rem;
+      margin: 24px 0 8px;
+      color: var(--text);
     }
     .content-section p {
       color: var(--text2);
@@ -281,6 +310,24 @@ gtag('config', 'G-M3MYLE3P6F');
     <p>
       For PostgreSQL users, <code>EXPLAIN ANALYZE</code> provides actual execution timing and per-loop row counts — far more useful than estimates alone. The visualizer displays these alongside the cost estimates so you can compare what the planner predicted versus what actually happened.
     </p>
+  </div>
+
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I visualize an SQL EXPLAIN plan online?</h3>
+    <p>Run EXPLAIN or EXPLAIN ANALYZE on your query in MySQL or PostgreSQL, copy the output, and paste it into the SQLFormat.io EXPLAIN Visualizer. It parses the plan and renders it as a color-coded tree diagram, highlighting full table scans in red and index usage in green — no signup required.</p>
+    <h3>Does this tool support MySQL EXPLAIN output?</h3>
+    <p>Yes. The tool auto-detects MySQL tabular EXPLAIN output (with columns like id, select_type, table, type, key, rows, Extra) and renders each row as a node in the execution plan tree. It flags ALL scans, index lookups, and notes from the Extra column like Using filesort and Using temporary.</p>
+    <h3>What's the difference between EXPLAIN and EXPLAIN ANALYZE?</h3>
+    <p>EXPLAIN shows the estimated execution plan with predicted costs and row counts. EXPLAIN ANALYZE actually runs the query and shows real timing, row counts, and loop counts — much more accurate but may take time for slow queries. Our visualizer handles both formats in the same tree view.</p>
+    <h3>Is my SQL data safe when analyzing execution plans?</h3>
+    <p>Absolutely. All parsing and rendering happens in your browser using JavaScript. Your EXPLAIN output never leaves your device — no server-side processing, no logging, no data collection. You can disconnect from the internet after the page loads and it still works.</p>
+    <h3>Can I visualize PostgreSQL EXPLAIN (ANALYZE, FORMAT JSON) output?</h3>
+    <p>Yes. The visualizer accepts PostgreSQL's default text tree as well as JSON output from EXPLAIN (ANALYZE, FORMAT JSON). Paste whichever form your client prints - psql, pgAdmin and DBeaver all produce output the parser understands - and the plan is rendered as the same indented tree, with actual timings shown when ANALYZE was used.</p>
+    <h3>How do I tell a Seq Scan from an Index Scan in the tree?</h3>
+    <p>Each node is labelled with its operation. Seq Scan and Parallel Seq Scan mean the whole table was read and are flagged in red; Index Scan and Index Only Scan mean an index was used; Bitmap Heap Scan sits between the two. A Seq Scan on a small table is perfectly fine - the same node over hundreds of thousands of rows usually points at a missing index.</p>
+    <h3>Does the visualizer show estimated versus actual rows and cost?</h3>
+    <p>Yes. EXPLAIN reports the planner's estimated rows and cost, while EXPLAIN ANALYZE adds actual rows, actual time and loop counts. When both are present the visualizer shows them side by side, so a large gap between estimate and reality - the classic sign of stale statistics - is visible at a glance. On MySQL the rows column is the estimate and the filtered percentage shows how selective the condition was.</p>
   </div>
 
   <div class="content-section">
