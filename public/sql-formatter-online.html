@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
     "url": "https://sqlformat.io/sql-formatter-online",
-    "dateModified": "2026-09-05"
+    "dateModified": "2026-09-29"
   }
   </script>
   <script type="application/ld+json">
@@ -285,6 +285,15 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--text); }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .content-section a { color: var(--accent); text-decoration: none; }
+    .content-section a:hover { text-decoration: underline; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -379,6 +388,63 @@ gtag('config', 'G-M3MYLE3P6F');
       <h3>Free, no signup</h3>
       <p>No account, no trial counter, no watermark. Paste, format, copy — as many times as you like.</p>
     </div>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Format SQL Online</h2>
+    <p>No account, no queue, nothing to install. Paste, pick a dialect, click Format:</p>
+    <ol>
+      <li>Paste into the <strong>Input</strong> panel. A sample query with a <code>LEFT JOIN</code>, <code>GROUP BY</code>, and <code>HAVING</code> is pre-filled so you can see the behaviour first.</li>
+      <li>Pick the <strong>dialect</strong>. Standard SQL handles ordinary <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>; switch to MySQL, PostgreSQL, or T-SQL for vendor syntax.</li>
+      <li>Choose an <strong>indent</strong>: 2 spaces, 4 spaces, or tabs.</li>
+      <li>Click <strong>Format</strong> or press <code>Ctrl+Enter</code> &mdash; <strong>Copy</strong> grabs the result, <strong>Clear</strong> resets both panels.</li>
+    </ol>
+    <p>The statement is parsed rather than regex-patched, so the output stays valid SQL and runs identically to the original.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Which SQL Dialects It Supports</h2>
+    <p>Fifteen dialects are available: Standard SQL, MySQL, MariaDB, PostgreSQL, SQLite, SQL Server (T-SQL), BigQuery, Snowflake, Redshift, DB2, Hive, Spark, Trino, SingleStoreDB, and PL/SQL. A formatter that ignores dialect will mangle syntax it does not recognise:</p>
+    <ul>
+      <li><strong>MySQL and MariaDB</strong>: backtick identifiers and <code>LIMIT offset, count</code>, so <code>`order date`</code> stays one name.</li>
+      <li><strong>SQL Server</strong>: <code>TOP n</code> and <code>[bracketed]</code> identifiers.</li>
+      <li><strong>PostgreSQL</strong>: <code>::</code> casts and dollar-quoted strings that must not be split across lines.</li>
+      <li><strong>BigQuery, Snowflake, Redshift</strong>: <code>QUALIFY</code> and semi-structured access like <code>payload:user.id::string</code>.</li>
+      <li><strong>PL/SQL</strong>: a block language, so indentation follows <code>BEGIN ... END</code> as well as clauses.</li>
+    </ul>
+    <p>For plain ANSI SQL &mdash; joins, aggregates, subqueries &mdash; Standard SQL gives the same output as any other option.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Online Formatter vs Desktop Tools and Editor Plugins</h2>
+    <p>This page does not replace format-on-save in your editor. It covers what an editor plugin cannot:</p>
+    <ul>
+      <li>The query never reached a file. It came from a ticket, a Slack thread, or a Grafana panel, and the browser is already open.</li>
+      <li>You cannot install anything: locked-down laptops block extensions and IDE plugins, but not a browser.</li>
+      <li>You are on a jump box or a fresh VM where your dotfiles were never cloned.</li>
+      <li>You want the result in a design doc, a runbook, or a review comment.</li>
+    </ul>
+    <p>Inside one repository, an editor integration is still the better tool: it formats on save, respects <code>.editorconfig</code>, and keeps commits consistent &mdash; that setup is in the <a href="/blog/vscode-sql-formatter-guide">VS Code SQL formatter guide</a>. Both use the same parser underneath, so the output should match.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Running in the Browser Is Safer</h2>
+    <p>A query is rarely just keywords: it carries real table and column names, literal customer emails and order IDs, and sometimes a test connection string with a password in it. Uploading that to a stranger's server to have it indented is a worse trade than it looks.</p>
+    <p>Here the SQL is handled by JavaScript already loaded into the tab &mdash; read from one <code>&lt;textarea&gt;</code>, passed to the formatter, written into another. Nothing is posted, nothing is stored, and no endpoint on our side would receive it. The only requests leaving the page are the analytics and ad scripts, which never see your query text.</p>
+    <p>Corporate networks add a second reason: many terminate TLS at a proxy, so SQL uploaded over HTTPS to an external service is readable by the security stack. Nothing to inspect means nothing to explain.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Common SQL Formatting Problems It Fixes</h2>
+    <h3>Keyword case</h3>
+    <p>SQL copied from ORM logs and generated migrations is usually lowercase; hand-written SQL is usually uppercase. The formatter normalises keywords and leaves identifiers, aliases, and string literals exactly as typed &mdash; their case matters for quoted identifiers.</p>
+    <h3>Indentation style</h3>
+    <p>Subqueries step in one level, joins line up with the <code>FROM</code> they belong to, and conditions inside <code>ON</code> and <code>WHERE</code> stack under one another.</p>
+    <h3>Long <code>IN</code> lists and <code>VALUES</code> rows</h3>
+    <p>An <code>IN</code> list with 300 generated IDs gets wrapped across lines, and bulk <code>INSERT ... VALUES</code> rows stop collapsing into one endless line.</p>
+    <h3>Structure lost in nested clauses</h3>
+    <p>Multi-level <code>CASE</code> expressions, <code>WITH</code> chains with several CTEs, and back-to-back <code>UNION</code> queries are split at the clause boundaries where a person would put a blank line.</p>
+    <p>What it will not do is repair a query that was already broken: a missing parenthesis, an unclosed string literal, or the wrong dialect returns an error rather than a half-formatted result.</p>
   </div>
 
   <div class="related-section">

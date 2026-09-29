@@ -11,9 +11,9 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://sqlformat.io/blog/how-to-format-sql-in-ssms">
   <link rel="canonical" href="https://sqlformat.io/blog/how-to-format-sql-in-ssms">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Format SQL in SSMS — Format Your T-SQL Queries Properly","description":"Learn multiple ways to format SQL in SSMS (SQL Server Management Studio): built-in keyboard shortcuts, third-party add-ins, paste-as-format, and free online formatters for T-SQL.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-07","dateModified": "2026-07-19","url":"https://sqlformat.io/blog/how-to-format-sql-in-ssms","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Format SQL in SSMS — Format Your T-SQL Queries Properly","description":"Learn multiple ways to format SQL in SSMS (SQL Server Management Studio): built-in keyboard shortcuts, third-party add-ins, paste-as-format, and free online formatters for T-SQL.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-07","dateModified": "2026-09-29","url":"https://sqlformat.io/blog/how-to-format-sql-in-ssms","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"How to Format SQL in SSMS","item":"https://sqlformat.io/blog/how-to-format-sql-in-ssms"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can SSMS format SQL automatically?","acceptedAnswer":{"@type":"Answer","text":"Yes. SSMS has a built-in formatter accessible via Edit > Advanced > Format Document or using the shortcut Ctrl+K, Ctrl+D to format the whole document, and Ctrl+K, Ctrl+F to format a selected block."}},{"@type":"Question","name":"Does SSMS have a SQL beautifier built in?","acceptedAnswer":{"@type":"Answer","text":"SSMS includes a basic SQL formatter that handles indentation and keyword capitalization. For more advanced formatting — custom indentation, line breaks, spacing rules — third-party add-ins or online formatters are recommended."}},{"@type":"Question","name":"What is the shortcut to format SQL in SSMS?","acceptedAnswer":{"@type":"Answer","text":"The default shortcut is Ctrl+K then Ctrl+D (format document) or select text and press Ctrl+K then Ctrl+F (format selection). You can customize these shortcuts under Tools > Options > Environment > Keyboard."}},{"@type":"Question","name":"Can I use an online SQL formatter for T-SQL?","acceptedAnswer":{"@type":"Answer","text":"Yes. SQLFormat.io supports T-SQL dialect. Simply paste your T-SQL code into the editor, select T-SQL as the dialect, and format instantly — no installation needed."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can SSMS format SQL automatically?","acceptedAnswer":{"@type":"Answer","text":"Yes. SSMS has a built-in formatter accessible via Edit > Advanced > Format Document or using the shortcut Ctrl+K, Ctrl+D to format the whole document, and Ctrl+K, Ctrl+F to format a selected block."}},{"@type":"Question","name":"Does SSMS have a SQL beautifier built in?","acceptedAnswer":{"@type":"Answer","text":"SSMS includes a basic SQL formatter that handles indentation and keyword capitalization. For more advanced formatting — custom indentation, line breaks, spacing rules — third-party add-ins or online formatters are recommended."}},{"@type":"Question","name":"What is the shortcut to format SQL in SSMS?","acceptedAnswer":{"@type":"Answer","text":"The default shortcut is Ctrl+K then Ctrl+D (format document) or select text and press Ctrl+K then Ctrl+F (format selection). You can customize these shortcuts under Tools > Options > Environment > Keyboard."}},{"@type":"Question","name":"Can I use an online SQL formatter for T-SQL?","acceptedAnswer":{"@type":"Answer","text":"Yes. SQLFormat.io supports T-SQL dialect. Simply paste your T-SQL code into the editor, select T-SQL as the dialect, and format instantly — no installation needed."}},{"@type":"Question","name":"Is Azure Data Studio still an option for formatting T-SQL?","acceptedAnswer":{"@type":"Answer","text":"No. Azure Data Studio reached end of support on February 28, 2026. Microsoft's replacement is the MSSQL extension for Visual Studio Code, which includes a T-SQL formatter: Shift+Alt+F formats the document, Ctrl+K then Ctrl+F formats the selection, and keyword or datatype casing is controlled by the mssql.format.* settings."}},{"@type":"Question","name":"Can SSMS format multiple SQL files at once?","acceptedAnswer":{"@type":"Answer","text":"No. SSMS has no project-wide format command, and Ctrl+K then Ctrl+D only affects the active query window. To format a folder of .sql files, run a command-line formatter such as sqlfluff with the tsql dialect or the sql-formatter CLI, then review the diff before committing."}}]}</script>
 <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin:16px 0 8px}.content-section p{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:12px}.content-section ul,.content-section ol{padding-left:20px;color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:12px}.content-section li{margin-bottom:6px}.content-section blockquote{border-left:3px solid var(--accent);padding:10px 16px;margin:12px 0;background:var(--surface);border-radius:0 var(--radius) var(--radius) 0;color:var(--text2);font-size:.9rem}.content-section blockquote strong{color:var(--text)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin:12px 0;overflow-x:auto;font-size:.88rem}.content-section pre code{background:none;padding:0;color:var(--text)}.cta-box{background:var(--surface);border:1px solid var(--accent2);border-radius:var(--radius);padding:20px;margin:24px 0;text-align:center}.cta-box h3{color:var(--text);margin-bottom:8px;font-size:1.1rem}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:12px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:6px;text-decoration:none;font-weight:500;transition:background .2s}.cta-box a:hover{background:var(--accent)}.related-section{margin:32px 0;padding-top:20px;border-top:1px solid var(--border)}.related-section h2{font-size:1.1rem;margin-bottom:12px}.related-grid{display:flex;flex-wrap:wrap;gap:8px}.related-grid a{color:var(--text2);text-decoration:none;font-size:.85rem;padding:6px 12px;border:1px solid var(--border);border-radius:6px;transition:all .2s}.related-grid a:hover{color:var(--accent);border-color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.85rem}footer a{color:var(--accent);text-decoration:none}</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -31,7 +31,7 @@ gtag('config', 'G-M3MYLE3P6F');
 
 <div class="hero">
 <h1>How to Format SQL in SSMS (SQL Server Management Studio)</h1>
-<div class="meta">Published: July 7, 2026 | Updated: July 7, 2026</div>
+<div class="meta">Published: July 7, 2026 | Updated: September 29, 2026</div>
 <div class="content">
 <p>If you write T-SQL queries in <strong>SQL Server Management Studio (SSMS)</strong>, you have probably wondered how to <strong>format SQL in SSMS</strong> without copying code to an external tool every time. Fortunately, SSMS includes several built-in formatting features, and you can extend them with third-party add-ins or use a <a href="/">free online SQL formatter</a> for T-SQL.</p>
 <p>This guide covers every method to format SQL in SSMS — from built-in keyboard shortcuts to professional formatters — so you can keep your T-SQL clean, readable, and consistent.</p>
@@ -46,6 +46,10 @@ gtag('config', 'G-M3MYLE3P6F');
 <li><a href="#paste-as-format">Paste-as-Format in SSMS</a></li>
 <li><a href="#online">Using an Online SQL Formatter for T-SQL</a></li>
 <li><a href="#tips">Tips for Clean T-SQL Formatting</a></li>
+<li><a href="#ssms-vs-ads">SSMS vs Azure Data Studio vs VS Code Formatting</a></li>
+<li><a href="#templates">Saving Formatted T-SQL as Templates and Snippets</a></li>
+<li><a href="#batch">Formatting Multiple SQL Files at Once</a></li>
+<li><a href="#tsql-constructs">CTEs, Window Functions, MERGE, and Embedded Strings</a></li>
 <li><a href="#faq">FAQ — Format SQL in SSMS</a></li>
 </ol>
 </details>
@@ -164,12 +168,126 @@ ORDER BY ro.OrderCount DESC;</code></pre>
 <blockquote><strong>Pro tip:</strong> If you inherit legacy T-SQL that is poorly formatted, paste it into the <a href="/">free online SQL formatter</a> with T-SQL dialect selected. Watch as the entire query transforms into a readable structure.</blockquote>
 </section>
 
+<section class="content-section" id="ssms-vs-ads">
+<h2>6. Formatting Differences: SSMS vs Azure Data Studio vs VS Code</h2>
+<p>SSMS is not the only Microsoft editor for T-SQL, and each editor ships a different formatting engine — which is why the same query can come out looking different depending on where you pressed the format shortcut.</p>
+
+<h3>Where SSMS stands today</h3>
+<p>SSMS 21 moved the tool onto the Visual Studio 2022 shell, and the current general-availability release is SSMS 22. The editor changed; the formatting command did not. <code>Edit.FormatDocument</code> is still bound to <strong>Ctrl+K, Ctrl+D</strong>, and the formatter is still the lightweight one that uppercases keywords and normalizes indentation — the reason an upgrade to SSMS 22 does not change what your queries look like after formatting.</p>
+
+<h3>Azure Data Studio is retired</h3>
+<p>Azure Data Studio reached end of support on <strong>February 28, 2026</strong> and no longer receives updates or security fixes. Microsoft's replacement is the <strong>MSSQL extension for Visual Studio Code</strong>. If your team is mid-migration, this matters for formatting specifically: ADS and the extension do not use the SSMS formatter at all, so any formatting habits built around ADS will look different after the move.</p>
+
+<h3>How the VS Code formatter differs in practice</h3>
+<ul>
+<li><strong>Shortcuts:</strong> <strong>Shift+Alt+F</strong> formats the whole document (Shift+Option+F on macOS), and <strong>Ctrl+K, Ctrl+F</strong> formats the selection — the same chord SSMS uses for a selection, but a different one for the document.</li>
+<li><strong>Engine:</strong> the extension's formatter is built on <strong>ScriptDOM</strong>, Microsoft's open-source T-SQL parser. It formats from the syntax tree instead of guessing from whitespace, so long IN lists, CASE expressions, and nested parentheses come out more predictably than they do from the built-in SSMS formatter.</li>
+<li><strong>Format on save:</strong> add <code>"[sql]": { "editor.formatOnSave": true }</code> to <code>settings.json</code> and every save reformats the file. SSMS cannot do this, and it is the main reason teams move .sql file editing into VS Code.</li>
+<li><strong>Casing and layout are configurable:</strong> <code>mssql.format.keywordCasing</code> and <code>mssql.format.datatypeCasing</code> accept <code>uppercase</code>, <code>lowercase</code>, or <code>none</code> (the default, which leaves your existing case alone). <code>mssql.format.alignColumnDefinitionsInColumns</code> aligns the column definitions in a CREATE TABLE, <code>mssql.format.placeCommasBeforeNextStatement</code> switches to leading commas, and <code>mssql.format.placeSelectStatementReferencesOnNewLine</code> puts each SELECT reference on its own line instead of leaving <code>SELECT C1, C2</code> on one line.</li>
+</ul>
+<p>The SQL text is identical in both editors; only the formatter differs. Use SSMS for interactive server work, and VS Code when consistent output across a repository matters more than convenience.</p>
+</section>
+
+<section class="content-section" id="templates">
+<h2>7. Saving Formatted T-SQL as SSMS Templates and Snippets</h2>
+<p>Formatting the same boilerplate every day is wasted effort. SSMS has two reuse features that are easy to miss, and both let you start from text that is already laid out correctly.</p>
+
+<h3>The template browser (Ctrl+Alt+T)</h3>
+<p>Press <strong>Ctrl+Alt+T</strong> to open the Template Explorer. SSMS ships templates for the usual operations — CREATE TABLE, stored procedures, functions, indexes, triggers — and inserting one drops its text into the active query window at the cursor.</p>
+<p>Templates are ordinary .sql files on disk. Under SSMS 22 they live in a per-version folder like this:</p>
+<pre><code>%USERPROFILE%\AppData\Roaming\Microsoft\SQL Server Management Studio\22.0\Templates\Sql</code></pre>
+<p>Put your own .sql files in that folder (or in a subfolder of it), right-click in Template Explorer and choose <strong>Refresh</strong>, and they show up as templates. Everything in there is a candidate for house style: a formatted SELECT with your join skeleton and WHERE pattern, a formatted CTE scaffold, a formatted MERGE, a TRY...CATCH block with the logging lines already in place.</p>
+
+<h3>Parameter placeholders (Ctrl+Shift+M)</h3>
+<p>Templates support placeholders written as <code>&lt;ParameterName, Type, DefaultValue&gt;</code>. After inserting a template, press <strong>Ctrl+Shift+M</strong> to open <em>Specify Values for Template Parameters</em> and fill each one in. A scaffold that stays correct after substitution looks like this:</p>
+<pre><code>WITH &lt;cte_name, sysname, RecentOrders&gt; AS (
+    SELECT
+        CustomerID,
+        COUNT(*) AS OrderCount
+    FROM dbo.&lt;table_name, sysname, Orders&gt;
+    WHERE OrderDate &gt;= DATEADD(month, -&lt;months, int, 3&gt;, GETDATE())
+    GROUP BY CustomerID
+)
+SELECT
+    c.CustomerName,
+    r.OrderCount
+FROM dbo.Customers c
+    INNER JOIN &lt;cte_name, sysname, RecentOrders&gt; r
+        ON c.CustomerID = r.CustomerID
+ORDER BY r.OrderCount DESC;</code></pre>
+<p>Placeholder values are substituted after insertion, so the indentation and alignment you saved survive — the output of a formatter pass, without running one.</p>
+
+<h3>Snippets and Surround With</h3>
+<p><strong>Ctrl+K, Ctrl+X</strong> opens the snippet picker at the insertion point, and <strong>Ctrl+K, Ctrl+S</strong> is <em>Surround With</em>, which wraps the current selection in a snippet. Manage both from <strong>Tools &gt; Code Snippets Manager</strong> (<strong>Ctrl+K, Ctrl+B</strong>), where you can register a folder of your own .snippet files. Surround With is the practical way to wrap an already-formatted SELECT in <code>IF EXISTS (...)</code> or inside a TRY block without re-indenting everything by hand.</p>
+</section>
+
+<section class="content-section" id="batch">
+<h2>8. Formatting Multiple SQL Files at Once</h2>
+<p>SSMS formats one editor window at a time. There is no format-folder command, no project-wide format action, and no <code>Ssms.exe</code> switch that rewrites files on disk. If you have a folder of a few hundred procedure scripts to clean up, the built-in formatter is the wrong tool.</p>
+
+<h3>Small batches: open everything, format per window</h3>
+<p>For a handful of files, use <strong>File &gt; Open &gt; File</strong> with multi-select to open them all, then work through the tabs with <strong>Ctrl+K, Ctrl+D</strong> in each and save. It is mechanical but safe, and every change ends up in one reviewable diff.</p>
+
+<h3>Larger batches: a command-line formatter</h3>
+<p>For a real codebase, run a formatter from a terminal so the work is repeatable and reviewable. Two options handle T-SQL:</p>
+<pre><code># sqlfluff (Python): tsql dialect, fixes layout in place
+sqlfluff fix --dialect tsql ./sql
+
+# sql-formatter (Node): write to a new file, then diff
+npx sql-formatter -l tsql -i 4 queries/proc.sql &gt; queries/proc.formatted.sql</code></pre>
+<p>Neither one is the SSMS formatter, so the output will not match it character for character. That is usually fine, but it means you should pick one tool as the source of truth for the repository instead of alternating between Ctrl+K, Ctrl+D in SSMS and a CLI on the same files.</p>
+
+<h3>Make the sweep safe</h3>
+<ol>
+<li>Start from a clean working tree and create a branch.</li>
+<li>Commit the unformatted files first, then run the formatter as a second, formatting-only commit.</li>
+<li>Record that commit in <code>.git-blame-ignore-revs</code> and set <code>blame.ignoreRevsFile</code> to point at it, so blame skips the reformat.</li>
+<li>Read the diff before committing. Formatters disagree on T-SQL edge cases: multiple statements separated by semicolons on one line, nested string literals, unclosed quoted aliases.</li>
+</ol>
+<p>After the initial sweep, format-on-save in the VS Code MSSQL extension keeps new and edited files in the same shape without anyone remembering a shortcut.</p>
+</section>
+
+<section class="content-section" id="tsql-constructs">
+<h2>9. How T-SQL-Specific Constructs Format (CTEs, Window Functions, MERGE)</h2>
+<p>The built-in SSMS formatter knows nothing about T-SQL structure beyond indentation and keyword casing. Here is what actually happens when you press Ctrl+K, Ctrl+D on the constructs that show up constantly in production code.</p>
+
+<h3>CTEs and chained WITH clauses</h3>
+<p>SSMS indents each CTE body but leaves the chain flat, so a four-CTE query comes back as a wall of near-identical indentation with no separation between the CTEs. The readable form keeps the CTE name and its opening parenthesis on one line and puts the closing parenthesis flush with <code>WITH</code>. Expect to fix that by hand after formatting, or format the chain in the <a href="/">online formatter</a> and paste it back.</p>
+
+<h3>Window functions</h3>
+<p>An <code>OVER()</code> clause with a frame specification is where formatting matters most, and it is exactly what the built-in formatter leaves alone:</p>
+<pre><code>SELECT
+    o.OrderID,
+    o.CustomerID,
+    SUM(o.OrderTotal) OVER (
+        PARTITION BY o.CustomerID
+        ORDER BY o.OrderDate
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS RunningTotal
+FROM dbo.Orders o;</code></pre>
+<p>No automatic pass produces that layout reliably. Whichever tool you use, re-read the frame clause afterwards: <code>ROWS BETWEEN ... AND ...</code> is easy to misread when it is squeezed onto the same line as the ORDER BY.</p>
+
+<h3>MERGE and TRY...CATCH</h3>
+<p>SSMS indents the <code>WHEN MATCHED</code> and <code>WHEN NOT MATCHED</code> branches but does not align the <code>THEN</code> keywords or group each branch as a unit. And no formatter will add the terminating semicolon a MERGE statement requires — if yours is missing, SQL Server raises an error at run time.</p>
+
+<h3>What formatters will not touch: strings, JSON, XML, embedded CSS</h3>
+<p>Every SQL formatter treats string literals as opaque. That is the correct behavior, but it has consequences worth planning for:</p>
+<ul>
+<li><strong>Dynamic SQL</strong> — <code>EXEC ('SELECT * FROM dbo.' + @TableName)</code> keeps whatever the author typed. To format the inner query, format it on its own first, then wrap it and double every single quote (<code>'</code> becomes <code>''</code>). Do not run that replacement twice over the same text.</li>
+<li><strong>JSON</strong> — path expressions such as <code>'$.customer.name'</code> and JSON documents stored in <code>nvarchar</code> use double quotes for property names, so the T-SQL parser leaves them alone. That is a feature: a formatter cannot break JSON that lives inside a string. Keep large payloads in .json files loaded with <code>OPENJSON</code> or <code>OPENROWSET</code> instead of pasting them into a query. The same rule covers XML: indentation inside <code>FOR XML PATH('')</code> output and XML-typed variables survives exactly as written.</li>
+<li><strong>Embedded CSS or HTML</strong> — a column holding a markup fragment (style blocks with semicolons, double-quoted font names) is just a string to the formatter. The only real hazard is the single quote: <code>'font-family:''Segoe UI'''</code> must keep its doubled quotes, and a formatter that re-spaces the surrounding SQL will not touch them.</li>
+</ul>
+<p>Rule of thumb: if a value sits inside quotes, you own its formatting — not the tool.</p>
+</section>
+
 <section class="content-section" id="faq">
-<h2>6. FAQ — Format SQL in SSMS</h2>
+<h2>10. FAQ — Format SQL in SSMS</h2>
 <div class="faq-item"><h3>Can SSMS format SQL automatically?</h3><p>Yes. SSMS has a built-in formatter accessible via Edit &gt; Advanced &gt; Format Document or using the shortcut Ctrl+K, Ctrl+D to format the whole document, and Ctrl+K, Ctrl+F to format a selected block.</p></div>
 <div class="faq-item"><h3>Does SSMS have a SQL beautifier built in?</h3><p>SSMS includes a basic SQL formatter that handles indentation and keyword capitalization. For more advanced formatting — custom indentation, line breaks, spacing rules — third-party add-ins or online formatters are recommended.</p></div>
 <div class="faq-item"><h3>What is the shortcut to format SQL in SSMS?</h3><p>The default shortcut is Ctrl+K then Ctrl+D (format document) or select text and press Ctrl+K then Ctrl+F (format selection). You can customize these shortcuts under Tools &gt; Options &gt; Environment &gt; Keyboard.</p></div>
 <div class="faq-item"><h3>Can I use an online SQL formatter for T-SQL?</h3><p>Yes. SQLFormat.io supports T-SQL dialect. Simply paste your T-SQL code into the editor, select T-SQL as the dialect, and format instantly — no installation needed.</p></div>
+<div class="faq-item"><h3>Is Azure Data Studio still an option for formatting T-SQL?</h3><p>No. Azure Data Studio reached end of support on February 28, 2026. Microsoft's replacement is the MSSQL extension for Visual Studio Code, which includes a T-SQL formatter: Shift+Alt+F formats the document, Ctrl+K then Ctrl+F formats the selection, and keyword or datatype casing is controlled by the mssql.format.* settings.</p></div>
+<div class="faq-item"><h3>Can SSMS format multiple SQL files at once?</h3><p>No. SSMS has no project-wide format command, and Ctrl+K then Ctrl+D only affects the active query window. To format a folder of .sql files, run a command-line formatter such as sqlfluff with the tsql dialect or the sql-formatter CLI, then review the diff before committing.</p></div>
 </section>
 
 <div class="related-section">

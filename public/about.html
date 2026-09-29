@@ -64,6 +64,26 @@
       font-size: 0.85rem;
     }
     .changelog-item ul li { margin-bottom: 2px; }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { margin: 0 0 12px; font-size: 1.3rem; color: var(--accent); }
+    .content-section h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--text); }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; font-size: 0.95rem; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; font-size: 0.95rem; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: #21262d; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono','Consolas',monospace;
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      white-space: pre;
+    }
     footer {
       margin-top: auto;
       border-top: 1px solid var(--border);
@@ -89,7 +109,7 @@ gtag('config', 'G-M3MYLE3P6F');
   "name": "SQLFormat.io",
   "description": "Free online SQL formatter and beautifier. Format, validate, and clean your SQL queries.",
   "url": "https://sqlformat.io",
-  "dateModified": "2026-07-19"
+  "dateModified": "2026-09-29"
 }
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4778164204771005" crossorigin="anonymous"></script>
@@ -124,8 +144,73 @@ gtag('config', 'G-M3MYLE3P6F');
   <h2>🔧 Supported Dialects</h2>
   <p>Standard SQL, MySQL, PostgreSQL, SQLite, BigQuery, DB2, Hive, MariaDB, PL/SQL, Redshift, SingleStoreDB, Snowflake, Spark, T-SQL, Trino</p>
 
+  <div class="content-section">
+    <h2>Why This Site Exists</h2>
+    <p>Most SQL problems are not performance problems. They are readability problems: a four-hundred-line statement pasted out of a log line, a migration file where three people used three different indentation styles, a query someone wrote six months ago that nobody wants to touch. Every database vendor ships a formatter inside its paid client and every editor has a plugin for it, but all of those assume you have the right client installed and permission to add extensions to a locked-down work machine. SQLFormat.io assumes none of that. Open a tab, paste the statement, read the result, close the tab.</p>
+    <p>The scope is deliberately narrow. The site formats, minifies, validates, escapes, and converts SQL. It does not connect to your database, keep a copy of your schema, or try to become a query IDE. That narrowness is what keeps the whole thing small enough to load instantly and to keep working from the browser cache after the first visit.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Who It Is Built For</h2>
+    <p>The tool gets used most often by people who need a query readable <em>right now</em>, not after a tooling detour:</p>
+    <ul>
+      <li><strong>Backend engineers</strong> who pulled a statement out of an application log or an ORM and need to see its shape before debugging it.</li>
+      <li><strong>Analysts</strong> who exported SQL from a BI tool and want to re-indent it before pasting it into a notebook or a ticket.</li>
+      <li><strong>DBAs and on-call engineers</strong> triaging a production issue on a jump host where you can install nothing, but you can open a browser.</li>
+      <li><strong>Students and interview candidates</strong> learning to read joins and subqueries without a database client at hand.</li>
+      <li><strong>Technical writers and reviewers</strong> who need consistent, aligned SQL inside documentation, pull requests, and runbooks.</li>
+    </ul>
+    <p>These are different jobs, but they share one constraint: the query is often sensitive and the environment is often restricted. That constraint shaped every design decision below.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Nothing Is Uploaded</h2>
+    <p>Queries carry real data. A <code>WHERE</code> clause can contain customer emails, an <code>INSERT</code> can contain payment identifiers, and a schema dump leaks your entire data model. Pasting that into a server-side formatter means trusting a stranger's logging policy, and "we delete logs after 30 days" is not something you can verify. So the formatter runs as client-side JavaScript on your own machine. There is no fetch call, no WebSocket, and no backend endpoint that receives SQL; the tool is a static HTML page with a script tag, and the transformation happens in the same process as the tab you are looking at.</p>
+    <p>Two things do leave the browser, and it is worth being precise about which. Google Analytics records page views, so it knows that someone opened the formatter, not what was pasted into it. AdSense serves the ad slots. The query text itself never enters either request. The only persistence is the last five formatted queries saved to <code>localStorage</code> so you can recover a recent paste — that list lives in your browser profile, is visible in DevTools, and disappears when you clear the panels or clear site data. If you are on a shared or managed device, treat it exactly as you would a text file on that machine.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How the Formatting Actually Works</h2>
+    <p>The formatter is a tokenizer plus a layout engine, not a full grammar-aware rewriter. The first pass scans the statement and classifies each token: keywords, identifiers, quoted identifiers, string literals, numeric literals, operators, and comments. Strings and quoted identifiers are held as opaque units, which is why a value like <code>'SELECT * FROM t'</code> stays inside its quotes instead of being rearranged as code. The second pass re-emits the token stream with deterministic whitespace rules — major clauses (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>GROUP BY</code>, <code>ORDER BY</code>, <code>JOIN</code>) start a new line, nested subqueries and <code>CASE</code> blocks indent by one level, and comma lists get one item per line once they pass a length threshold.</p>
+    <p>Because the token stream is only re-spaced and never reordered, formatting cannot change what a query means, and the <a href="/minify">minifier</a> can reverse the operation without guessing. Where the approach has limits, we say so instead of hiding it: procedural blocks in PL/SQL and T-SQL, dynamic SQL assembled from string concatenation, and input with unbalanced quotes are passed through rather than mangled into something that merely looks valid.</p>
+    <div class="code-block">-- Input (one line)
+select u.id,u.email,o.total from users u left join orders o on o.user_id=u.id where o.status='paid' order by o.total desc;
+
+-- Output
+SELECT
+    u.id,
+    u.email,
+    o.total
+FROM users u
+LEFT JOIN orders o
+    ON o.user_id = u.id
+WHERE o.status = 'paid'
+ORDER BY o.total DESC;</div>
+  </div>
+
+  <div class="content-section">
+    <h2>Dialect Support and Correctness</h2>
+    <p>The dialect list is not decoration; each one changes how the tokenizer classifies text. Identifier quoting differs (<code>`backticks`</code> in MySQL, <code>"double quotes"</code> in standard SQL and PostgreSQL, <code>[brackets]</code> in T-SQL), so the wrong dialect can leave a quoted name looking like a syntax error. Comment syntax, string concatenation, and keyword sets differ as well, and the vendor-specific list continues from there: <code>LIMIT</code> versus <code>TOP</code> versus <code>FETCH FIRST</code>, JSON operators, and BigQuery's fully-qualified <code>project.dataset.table</code> names.</p>
+    <p>When output looks wrong, the fastest check is the <a href="/validate">syntax validator</a>, which flags unbalanced parentheses and a list of common misspellings such as <code>SELCET</code> for <code>SELECT</code> and <code>WHRE</code> for <code>WHERE</code>. Beyond that, the honest rule is that a formatter is not a parser: if the output looks plausible but your database rejects it, the tokenizer classified something the way your engine would not, and that is a bug worth reporting.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How the Site Is Maintained</h2>
+    <p>This is a small, single-maintainer project, and the changelog below is the record of it: every entry is dated and describes what changed, without marketing language. Guide pages are written to describe what the tools actually do, in the order someone would use them, and they are updated when behaviour changes rather than left to drift. When a dialect's handling changes, the page that documents it changes in the same pass.</p>
+    <p>That is also why the content is longer than a typical tool page. A page that only says "paste your SQL and click Format" is not useful to someone who is trying to decide whether a client-side formatter is safe for production data, or whether escaping a quote is a security fix (it is not — see the <a href="/escape">escape guide</a>). Explaining the tradeoffs is part of the tool.</p>
+  </div>
+
   <h2>📋 Changelog</h2>
   <div class="changelog">
+
+    <div class="changelog-item">
+      <div class="date">September 29, 2026</div>
+      <div class="title">Content — Expanded Documentation on Guide Pages</div>
+      <ul>
+        <li>About page expanded: how the formatter works internally, how each dialect changes tokenizing, and exactly what does and does not leave the browser</li>
+        <li>Documentation updated to describe tool behaviour and limits in more depth, instead of restating the button labels</li>
+      </ul>
+    </div>
 
     <div class="changelog-item">
       <div class="date">June 2, 2026</div>
@@ -181,8 +266,13 @@ gtag('config', 'G-M3MYLE3P6F');
 
   </div>
 
-  <h2>📬 Contact</h2>
-  <p>Have feedback or suggestions? Feel free to contribute on GitHub.</p>
+  <div class="content-section">
+    <h2>📬 Contact</h2>
+    <p>Have feedback or suggestions? Feel free to contribute on GitHub.</p>
+    <p>A good bug report for a formatter has four things in it: the SQL you pasted (redact real values first, but keep the structure intact), the dialect you selected, what you expected the output to look like, and your browser and operating system. A short before/after excerpt is worth more than a paragraph of description, because the fix almost always starts with reproducing the exact token sequence that was misclassified.</p>
+    <p>Feature requests are read too, and the ones that get built fastest are the narrow ones — "add <code>FETCH FIRST</code> handling for DB2", "keep one-line <code>CASE</code> blocks on one line", "support a new dialect". If you are asking for a new dialect, include its identifier quoting rules and the keywords that differ from standard SQL; that is most of the work.</p>
+    <p>Set expectations accordingly: this is a side project maintained by one person, so replies are best-effort and there is no support SLA. Privacy questions about what the tools transmit are answered on the <a href="/privacy">privacy page</a>.</p>
+  </div>
 </main>
 <footer>
   <div class="container">

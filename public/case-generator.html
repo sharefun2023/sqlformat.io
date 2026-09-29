@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/case-generator",
-    "dateModified": "2026-09-15",
+    "dateModified": "2026-09-29",
     "featureList": "SQL CASE generation, Simple CASE, Searched CASE, WHEN THEN ELSE building, client-side processing"
   }
   </script>
@@ -392,6 +392,15 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--text); }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .content-section kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.78rem; }
+    .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -516,6 +525,98 @@ END</pre>
     ELSE 'Senior'
   END as age_group
 FROM users;</pre>
+  </div>
+
+  <div class="content-section">
+    <h2>What a SQL CASE Expression Actually Is</h2>
+    <p><code>CASE</code> is an <em>expression</em>, not a control-flow statement. It returns one scalar value, so it can sit wherever a value is allowed: a <code>SELECT</code> list, <code>WHERE</code>, <code>ORDER BY</code>, <code>GROUP BY</code>, <code>HAVING</code>, the right-hand side of <code>SET</code> in an <code>UPDATE</code>, and even inside a <code>CHECK</code> constraint. That is the difference from procedural <code>IF ... THEN</code>, which decides which block of statements runs rather than producing a result you can select.</p>
+    <p>There are two forms. A <strong>Simple CASE</strong> names one expression up front and compares it for equality against each <code>WHEN</code> value:</p>
+    <div class="code-block">CASE status
+  WHEN 'active' THEN 'Enabled'
+  WHEN 'inactive' THEN 'Disabled'
+  ELSE 'Unknown'
+END</div>
+    <p>A <strong>Searched CASE</strong> gives each <code>WHEN</code> its own full predicate, so it can express ranges, <code>IN</code> lists, <code>IS NULL</code> tests and combined conditions:</p>
+    <div class="code-block">CASE
+  WHEN salary &gt;= 100000 THEN 'High'
+  WHEN salary &gt;= 50000 THEN 'Medium'
+  ELSE 'Low'
+END</div>
+    <p>Both evaluate top to bottom. The first matching <code>WHEN</code> wins and the remaining branches are skipped, so the order you write them in is part of the logic rather than formatting.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Use the CASE Generator</h2>
+    <p>The builder is a thin layer over that syntax: it collects the parts and prints the finished expression. Nothing you type leaves the browser, and the output is plain text you paste straight into a query.</p>
+    <ol>
+      <li>Choose <strong>Simple CASE</strong> or <strong>Searched CASE</strong> in the mode toggle. Switching modes rewrites the <code>WHEN</code> prompt and shows or hides the expression field.</li>
+      <li>For Simple CASE, type the expression being compared &mdash; usually a column such as <code>status</code>, <code>category</code> or <code>type</code>. Searched CASE has no expression field, because each branch carries its own condition.</li>
+      <li>Fill the <strong>WHEN</strong> and <strong>THEN</strong> columns and press <em>+ Add WHEN / THEN</em> for every extra branch. Only rows with both halves filled in are compiled, so a half-finished row is ignored instead of producing broken SQL.</li>
+      <li>Set the <code>ELSE</code> value with <em>Include ELSE</em> still checked. Clear the checkbox if you deliberately want no default branch &mdash; the generated statement then ends at the last <code>THEN</code> and any unmatched row yields <code>NULL</code>.</li>
+      <li>Read the result in the output panel and hit <strong>Copy</strong>. The WHEN / line / character counters refresh as you type, and <kbd>Ctrl</kbd>+<kbd>Enter</kbd> regenerates on demand. <strong>Clear</strong> resets the form back to one empty builder.</li>
+    </ol>
+    <p>Five presets &mdash; status labels, salary bands, priority levels, age groups and rating tiers &mdash; load a complete working example so you can see the shape before writing your own mapping.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Where CASE Earns Its Keep</h2>
+    <ul>
+      <li><strong>Turning codes into labels.</strong> The table stores <code>'active'</code>, <code>'pending'</code> or numeric flags; a report needs words a human can read without a legend. Map every known code and give the unknown ones an explicit default.</li>
+      <li><strong>Bucketing numbers.</strong> Salary bands, age groups, order-value tiers, latency thresholds &mdash; anywhere a continuous value has to become a discrete label. Watch the boundaries: the branches must not overlap and must not leave gaps.</li>
+      <li><strong>Custom sort order.</strong> <code>ORDER BY CASE priority WHEN 'critical' THEN 1 WHEN 'high' THEN 2 ... END</code> produces the order the team actually thinks in, instead of an alphabetical one that files <em>critical</em> after <em>low</em>.</li>
+      <li><strong>Conditional aggregation.</strong> <code>SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END)</code> pivots rows into columns without a <code>PIVOT</code> clause and works on every engine.</li>
+      <li><strong>Normalising data in an UPDATE.</strong> Collapse legacy spellings &mdash; <code>'USA'</code>, <code>'U.S.'</code>, <code>'US'</code> &mdash; onto a single value in place, before the mess spreads into more tables.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>Copyable Examples</h2>
+    <p>Labels for an enum column, built with Simple CASE. Note the <code>ELSE</code>: without it, any status added to the table later would silently come back as <code>NULL</code>.</p>
+    <div class="code-block">SELECT
+  order_id,
+  CASE status
+    WHEN 'paid'     THEN 'Paid'
+    WHEN 'shipped'  THEN 'Shipped'
+    WHEN 'refunded' THEN 'Refunded'
+    ELSE 'Open'
+  END AS status_label
+FROM orders;</div>
+    <p>Sorting by priority in the order a support queue is worked, using Searched CASE in <code>ORDER BY</code>:</p>
+    <div class="code-block">SELECT id, title, priority
+FROM tickets
+ORDER BY CASE
+  WHEN priority = 'critical' THEN 1
+  WHEN priority = 'high'     THEN 2
+  WHEN priority = 'normal'   THEN 3
+  ELSE 4
+END, created_at;</div>
+    <p>Pivoting paid and unpaid totals per customer &mdash; CASE nested inside an aggregate is the portable alternative to <code>PIVOT</code>:</p>
+    <div class="code-block">SELECT
+  customer_id,
+  SUM(CASE WHEN paid = 1 THEN amount ELSE 0 END) AS paid_total,
+  SUM(CASE WHEN paid = 0 THEN amount ELSE 0 END) AS unpaid_total
+FROM invoices
+GROUP BY customer_id;</div>
+  </div>
+
+  <div class="content-section">
+    <h2>CASE vs IF() and Similar Functions</h2>
+    <p>MySQL has <code>IF(cond, a, b)</code> and SQL Server has <code>IIF(cond, a, b)</code>. Both are two-branch shorthands and neither is portable &mdash; the same query that runs on MySQL fails on PostgreSQL or Oracle. <code>CASE</code> is the ANSI spelling and works everywhere, so a query that might move between engines should standardise on it. CASE is also the only one of the three that is an expression in its own right, usable as a sort key in <code>ORDER BY</code>.</p>
+    <p>For a plain two-way branch, <code>CASE WHEN x IS NULL THEN y ELSE x END</code> and <code>COALESCE(x, y)</code> do the same job; <code>COALESCE</code> is shorter and states the intent more clearly, so prefer it there. Reach for CASE the moment you need more than two branches, a range test, or a condition that is not a simple null check. Related functions worth knowing so you do not rebuild them by hand: <code>NULLIF(a, b)</code> returns NULL when the two arguments are equal, and <code>COALESCE</code> takes any number of arguments and returns the first non-NULL one.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Common Pitfalls</h2>
+    <h3>No ELSE means NULL, not the original value</h3>
+    <p>If nothing matches and there is no <code>ELSE</code>, the expression returns <code>NULL</code>. That NULL then propagates through anything downstream &mdash; <code>amount * 1.1</code> becomes NULL, not <code>amount</code>, and a concatenation quietly disappears. When an unmapped value should keep its raw form, say so: <code>ELSE status END</code>. At minimum, map every known code and check what the unmapped ones produce.</p>
+    <h3>Every THEN branch must have a compatible type</h3>
+    <p>PostgreSQL is strict here and will reject a CASE whose branches cannot be resolved to one type, raising an error such as <code>CASE types integer and text cannot be matched</code> when you mix <code>1</code> with <code>'one'</code>. Decide on the output type up front and cast the odd branch (<code>1::text</code>) instead of mixing.</p>
+    <h3>NULL never equals NULL in a Simple CASE</h3>
+    <p><code>CASE col WHEN NULL THEN ...</code> does not match rows where <code>col</code> is NULL, because comparing anything to NULL yields unknown rather than true. Handle nulls with a Searched CASE and an explicit <code>WHEN col IS NULL</code> branch.</p>
+    <h3>Order decides the winner</h3>
+    <p>Conditions are tested in sequence and the first true one stops evaluation. Overlapping ranges make later branches unreachable &mdash; <code>WHEN score &gt;= 50</code> written before <code>WHEN score &gt;= 90</code> means the second never fires for any value, since 95 matches the first test first. Put the narrowest or highest-priority condition at the top.</p>
+    <h3>Stop nesting at two levels</h3>
+    <p>A CASE inside a CASE inside a CASE is hard to review and usually a sign that the mapping belongs in a lookup table instead. If a mapping is stable and shared across queries, build a reference table and join to it &mdash; the query gets shorter and the values become editable without a deploy.</p>
   </div>
 
   <div class="nav-back" style="text-align:center;margin:24px 0;">

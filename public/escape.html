@@ -27,7 +27,7 @@
       "priceCurrency": "USD"
     },
     "url": "https://sqlformat.io/escape",
-    "dateModified": "2026-07-19"
+    "dateModified": "2026-09-29"
   
   }
   </script>
@@ -300,6 +300,14 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .content-section { margin-bottom: 36px; }
+    .content-section h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .content-section h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--text); }
+    .content-section p { color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+    .content-section ul, .content-section ol { color: var(--text2); line-height: 1.7; padding-left: 20px; margin-bottom: 12px; }
+    .content-section li { margin-bottom: 6px; }
+    .content-section code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.85rem; color: var(--accent); }
+    .content-section pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 0.82rem; color: var(--text2); line-height: 1.6; overflow-x: auto; margin-bottom: 20px; white-space: pre; }
   </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
@@ -393,6 +401,66 @@ Output: It's a "test" with \backslash</pre>
 
     <h3>Auto-Escape</h3>
     <p>As you type in the input box, the output updates automatically with a small debounce delay of 300ms. You can also press <strong>Ctrl+Enter</strong> to trigger escaping immediately.</p>
+  </div>
+  <div class="content-section">
+    <h2>What SQL Escaping Actually Solves</h2>
+    <p>A SQL query treats quotes as both punctuation and data: in <code>WHERE name = 'Ada'</code> the first quote opens a string literal and the last closes it. Put a quote inside the value &mdash; <code>O'Brien</code> &mdash; and the literal ends early, so the parser reads the rest as syntax. Escaping marks that quote as data: standard SQL doubles it (<code>'O''Brien'</code>), and MySQL's default mode also accepts a backslash (<code>O\'Brien</code>). Both store the same value. That is the whole job &mdash; a quoting concern, not a security boundary.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Why Escaping Is Not a Security Strategy</h2>
+    <p>SQL injection happens when untrusted input is concatenated into a query, so the input closes the literal early and appends SQL of its own. Escaping the input first is the tempting fix, and it fails for three reasons.</p>
+    <ul>
+      <li><strong>Escaping is context-blind.</strong> A query holds string literals, quoted identifiers, <code>LIKE</code> patterns and <code>ORDER BY</code> names; doubling quotes covers the first only.</li>
+      <li><strong>One missed path is a total failure.</strong> Every value on every code path must be escaped, including the error handler and next quarter's new branch.</li>
+      <li><strong>Server settings change the escape character:</strong> MySQL stops honouring backslashes under <code>NO_BACKSLASH_ESCAPES</code>, so such code breaks after a configuration change.</li>
+    </ul>
+    <p>A parameterized query never builds the string at all: the SQL text and the values travel separately, so the parser never receives the value as code.</p>
+    <pre>cur.execute("SELECT * FROM users WHERE email = '" + email + "'")  -- injectable
+cur.execute("SELECT * FROM users WHERE email = %s", (email,))      -- parameterized</pre>
+    <p>Binding also handles ordinary quoting for free; escaping is a fallback for cases where binding is impossible, never a replacement &mdash; see the <a href="/blog/sql-injection-prevention-guide">SQL injection prevention guide</a>.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Escape Rules Differ by Database Dialect</h2>
+    <p>There is no single "SQL escape" &mdash; match the mode to the engine that parses the string.</p>
+    <ul>
+      <li><strong>PostgreSQL, Oracle, SQL Server, SQLite, standard SQL:</strong> double the single quote; backslash is ordinary.</li>
+      <li><strong>MySQL / MariaDB default:</strong> backslash escapes are active, so <code>\'</code> works too. A literal backslash is written <code>\\</code>, and <code>\n</code>, <code>\t</code>, <code>\0</code> mean something inside strings.</li>
+      <li><strong>Server settings move the line:</strong> MySQL with <code>NO_BACKSLASH_ESCAPES</code> makes only doubling safe; PostgreSQL with <code>standard_conforming_strings = off</code> keeps the legacy behaviour unless <code>E'...'</code> is used.</li>
+      <li><strong>Identifiers differ again:</strong> standard SQL doubles a double quote in a name, MySQL uses backticks, SQL Server brackets. Validate names against an allow-list; escaping is not a fix.</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>When Hand-Escaping Is the Right Tool</h2>
+    <p>Binding covers values, not everything. Escaping earns its place when the deliverable is text you <em>emit</em> rather than input you accept.</p>
+    <ul>
+      <li>Ad-hoc queries typed into <code>psql</code> or the MySQL client, with no driver to bind anything.</li>
+      <li>Generating a <code>.sql</code> script or migration, where the literal must be correct in the file because there is no parameter channel at run time.</li>
+      <li>Exporting rows as <code>INSERT</code> statements, where every string value needs its quotes doubled.</li>
+      <li>Dynamic DDL and identifiers: names cannot be bound, and escaping is not enough either &mdash; check the name against a fixed allow-list and quote it with the dialect's identifier rules.</li>
+    </ul>
+    <p>Every item is about emitting text, not accepting input. A value that comes from a user and lands in a query belongs in a placeholder.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>How to Verify an Escaped String Before You Run It</h2>
+    <p>Both under-escaping and over-escaping survive a glance and both fail later, quietly: a row stores <code>O''Brien</code> with the quotes showing, or a statement dies on a syntax error seen only in a log. Four checks catch most of it.</p>
+    <ol>
+      <li><strong>Round-trip it.</strong> Switch to <em>Unescape All</em> and paste the output back; you should recover the original exactly. A surviving quote means the escaping ran twice or the wrong mode was used.</li>
+      <li><strong>Compare character counts.</strong> Doubling the quotes in a value with <em>n</em> apostrophes adds exactly <em>n</em> characters; any other jump means something was escaped that should not have been.</li>
+      <li><strong>Test hostile values:</strong> <code>'</code>, <code>''</code>, <code>\'</code>, a trailing backslash before the closing quote (<code>'abc\</code>), a newline. A trailing backslash is the classic breaker: in a backslash-escaping dialect it consumes the closing quote.</li>
+      <li><strong>Run it inside a transaction:</strong> <code>BEGIN; ... ROLLBACK;</code>, then check the row count with <code>SELECT</code> and <code>LENGTH()</code>.</li>
+    </ol>
+  </div>
+
+  <div class="content-section">
+    <h2>Escaping in Bulk: Columns of Values and INSERT Scripts</h2>
+    <p>The tool processes the whole input, so a column of a thousand values is one paste.</p>
+    <p><strong>One value per line.</strong> Escape the column and copy the output back. Doubling is safe across a list as long as no line already holds a doubled quote; keep values one per line rather than comma-separated, so a value containing a comma cannot shift the columns.</p>
+    <p><strong>Multi-row <code>INSERT</code>.</strong> Escape the values, then assemble the statement. One <code>INSERT ... VALUES (...), (...);</code> beats a thousand separate inserts because the server plans it once. The failure mode is one unescaped quote halfway down the list: the statement fails and the error points at the wrong row, so test on a single row first.</p>
+    <p>For a large file, use the engine's bulk loader (<code>COPY</code>, <code>LOAD DATA INFILE</code>, <code>BULK INSERT</code>) with a configured quoting and escape character &mdash; same principle as binding: let the layer that understands the format do the encoding.</p>
   </div>
   <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
 

@@ -11,9 +11,9 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://sqlformat.io/blog/sql-cheat-sheet">
   <link rel="canonical" href="https://sqlformat.io/blog/sql-cheat-sheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL Cheat Sheet — Quick Reference Guide for Beginners","description":"The ultimate SQL cheat sheet: 50+ commands with examples covering SELECT, JOINs, GROUP BY, subqueries, window functions, and DDL for MySQL, PostgreSQL, and T-SQL. Bookmark this page.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-14","dateModified": "2026-09-27","url":"https://sqlformat.io/blog/sql-cheat-sheet","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SQL Cheat Sheet — Quick Reference Guide for Beginners","description":"The ultimate SQL cheat sheet: 50+ commands with examples covering SELECT, JOINs, GROUP BY, subqueries, window functions, and DDL for MySQL, PostgreSQL, and T-SQL. Bookmark this page.","author":{"@type":"Person","name":"SQLFormat.io"},"datePublished":"2026-07-14","dateModified": "2026-09-29","url":"https://sqlformat.io/blog/sql-cheat-sheet","publisher":{"@type":"Organization","name":"SQLFormat.io","url":"https://sqlformat.io"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SQLFormat.io","item":"https://sqlformat.io"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://sqlformat.io/blog"},{"@type":"ListItem","position":3,"name":"SQL Cheat Sheet","item":"https://sqlformat.io/blog/sql-cheat-sheet"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the basic SQL commands every beginner should know?","acceptedAnswer":{"@type":"Answer","text":"The four fundamental SQL commands are SELECT (retrieve data), INSERT (add new rows), UPDATE (modify existing rows), and DELETE (remove rows). Beyond these, beginners should also learn WHERE (filtering), JOIN (combining tables), GROUP BY (aggregation), and ORDER BY (sorting)."}},{"@type":"Question","name":"How do I format SQL queries to make them readable?","acceptedAnswer":{"@type":"Answer","text":"Use uppercase for SQL keywords, put each major clause (SELECT, FROM, WHERE, JOIN) on a new line, indent subqueries consistently, and format column lists vertically. SQLFormat.io provides a free online SQL formatter that applies these rules automatically for 15+ dialects."}},{"@type":"Question","name":"What is the difference between INNER JOIN and LEFT JOIN?","acceptedAnswer":{"@type":"Answer","text":"INNER JOIN returns only rows where there is a match in both tables. LEFT JOIN returns all rows from the left table, plus matching rows from the right table — unmatched right-table columns are filled with NULL. Use LEFT JOIN when you need all rows from the main table regardless of matches."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the basic SQL commands every beginner should know?","acceptedAnswer":{"@type":"Answer","text":"The four fundamental SQL commands are SELECT (retrieve data), INSERT (add new rows), UPDATE (modify existing rows), and DELETE (remove rows). Beyond these, beginners should also learn WHERE (filtering), JOIN (combining tables), GROUP BY (aggregation), and ORDER BY (sorting)."}},{"@type":"Question","name":"How do I format SQL queries to make them readable?","acceptedAnswer":{"@type":"Answer","text":"Use uppercase for SQL keywords, put each major clause (SELECT, FROM, WHERE, JOIN) on a new line, indent subqueries consistently, and format column lists vertically. SQLFormat.io provides a free online SQL formatter that applies these rules automatically for 15+ dialects."}},{"@type":"Question","name":"What is the difference between INNER JOIN and LEFT JOIN?","acceptedAnswer":{"@type":"Answer","text":"INNER JOIN returns only rows where there is a match in both tables. LEFT JOIN returns all rows from the left table, plus matching rows from the right table — unmatched right-table columns are filled with NULL. Use LEFT JOIN when you need all rows from the main table regardless of matches."}},{"@type":"Question","name":"What is the difference between WHERE and HAVING?","acceptedAnswer":{"@type":"Answer","text":"WHERE filters individual rows before grouping, so it cannot reference aggregate functions such as COUNT() or SUM(). HAVING filters groups after GROUP BY and can reference aggregates. If the condition involves a SUM or COUNT it belongs in HAVING; everything else belongs in WHERE, because filtering earlier reduces the rows that reach the aggregation step."}}]}</script>
 <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--radius:8px}html{font-size:16px;scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}.container{max-width:960px;margin:0 auto;padding:0 20px;width:100%}header{border-bottom:1px solid var(--border);padding:16px 0;background:var(--surface);position:sticky;top:0;z-index:10}header .container{display:flex;align-items:center;justify-content:space-between}.logo{font-size:1.4rem;font-weight:700;color:var(--text);text-decoration:none}.logo span{color:var(--accent)}nav a{color:var(--text2);text-decoration:none;margin-left:24px;font-size:.9rem;transition:color .2s}nav a:hover{color:var(--accent)}.hero{padding:40px 0 16px}.hero h1{font-size:2rem;font-weight:700;margin-bottom:12px}.hero .meta{color:var(--text2);font-size:.85rem;margin-bottom:16px}.hero .content{color:var(--text2);font-size:.95rem;line-height:1.7;max-width:780px}.hero .content p{margin-bottom:12px}.hero .content code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.hero .content strong{color:var(--text)}.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}.toc summary{font-weight:600;cursor:pointer;color:var(--text);font-size:.95rem}.toc ol{margin-top:10px;padding-left:20px}.toc li{margin-bottom:4px}.toc a{color:var(--text2);font-size:.9rem;text-decoration:none}.toc a:hover{color:var(--accent)}.content-section{margin-bottom:32px}.content-section h2{font-size:1.3rem;color:var(--text);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}.content-section h3{font-size:1.05rem;color:var(--text);margin-bottom:8px;margin-top:16px}.content-section p,.content-section li{color:var(--text2);font-size:.93rem;line-height:1.7;margin-bottom:8px}.content-section ul,.content-section ol{padding-left:20px;margin-bottom:12px}.content-section code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.88em;color:var(--accent)}.content-section pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;overflow-x:auto;font-size:.85rem;line-height:1.5;color:var(--green)}.cheat-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.88rem}.cheat-table th{background:var(--surface2);color:var(--accent);text-align:left;padding:8px 12px;font-weight:600;border:1px solid var(--border);font-size:.85rem}.cheat-table td{padding:8px 12px;border:1px solid var(--border);color:var(--text2)}.cheat-table code{background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:.85em;color:var(--accent)}.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:24px;text-align:center;margin:20px 0}.cta-box h3{color:var(--accent);margin-bottom:8px}.cta-box p{color:var(--text2);font-size:.9rem;margin-bottom:16px}.cta-box a{display:inline-block;background:var(--accent2);color:#fff;padding:10px 24px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s}.cta-box a:hover{background:var(--accent)}.faq-item{margin-bottom:12px}.faq-item h3{font-size:.95rem;color:var(--accent);margin-bottom:4px}.faq-item p{color:var(--text2);font-size:.88rem;line-height:1.6;margin-bottom:4px}.related-section{border-top:1px solid var(--border);padding-top:24px;margin:24px 0}.related-section h2{font-size:1.1rem;margin-bottom:14px}.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}.related-grid a{display:block;background:var(--surface);border:1px solid var(--border);padding:10px 14px;border-radius:var(--radius);color:var(--text2);text-decoration:none;font-size:.85rem;transition:border-color .2s,color .2s}.related-grid a:hover{border-color:var(--accent);color:var(--accent)}footer{border-top:1px solid var(--border);padding:20px 0;margin-top:auto;text-align:center}footer p{color:var(--text2);font-size:.8rem}footer a{color:var(--text2);text-decoration:none}footer a:hover{color:var(--accent)}</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3MYLE3P6F"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-M3MYLE3P6F')</script>
@@ -25,7 +25,7 @@
 
 <div class="hero">
 <h1>SQL Cheat Sheet — Quick Reference Guide for Beginners</h1>
-<div class="meta">Published: July 14, 2026 | Updated: July 14, 2026</div>
+<div class="meta">Published: July 14, 2026 | Updated: September 29, 2026</div>
 <div class="content">
 <p>This <strong>SQL cheat sheet</strong> covers the most important SQL commands, syntax patterns, and quick-reference tables. Whether you are just starting out or need a refresher before an interview, bookmark this page. Every example is tested on MySQL, PostgreSQL, and T-SQL. Use our <a href="/">free online SQL formatter</a> to clean up any query you write.</p>
 </div>
@@ -44,6 +44,11 @@
 <li><a href="#ddl">DDL — Creating &amp; Modifying Tables</a></li>
 <li><a href="#dml">DML — Insert, Update, Delete</a></li>
 <li><a href="#datatypes">Common Data Types</a></li>
+<li><a href="#dialects">Dialect Differences at a Glance</a></li>
+<li><a href="#strings">String Functions</a></li>
+<li><a href="#dates">Date &amp; Time Functions</a></li>
+<li><a href="#json">JSON Functions</a></li>
+<li><a href="#transactions">Transactions, Locking &amp; Permissions</a></li>
 <li><a href="#faq">FAQ</a></li>
 </ol>
 </details>
@@ -289,6 +294,170 @@ WHERE status = 'terminated' AND updated_at < '2024-01-01';</code></pre>
 <tr><td>Auto-increment</td><td><code>AUTO_INCREMENT</code></td><td><code>SERIAL</code></td><td><code>IDENTITY(1,1)</code></td></tr>
 <tr><td>JSON</td><td><code>JSON</code></td><td><code>JSONB</code></td><td><code>NVARCHAR(MAX)</code></td></tr>
 </table>
+
+<h3 id="dialects">Dialect Differences at a Glance</h3>
+<p>A large share of the questions in this cheat sheet have a different answer per engine. This table collects the ones that bite hardest when a query moves between platforms, starting with the two that fail silently instead of raising an error.</p>
+<table class="cheat-table">
+<tr><th>Task</th><th>MySQL</th><th>PostgreSQL</th><th>T-SQL</th></tr>
+<tr><td>Limit rows</td><td><code>LIMIT 10</code></td><td><code>LIMIT 10</code></td><td><code>SELECT TOP 10</code></td></tr>
+<tr><td>Concatenate strings</td><td><code>CONCAT(a, b)</code></td><td><code>a || b</code></td><td><code>a + b</code> or <code>CONCAT</code></td></tr>
+<tr><td>Quote an identifier</td><td><code>`name`</code></td><td><code>"name"</code></td><td><code>[name]</code></td></tr>
+<tr><td>Random row</td><td><code>ORDER BY RAND()</code></td><td><code>ORDER BY RANDOM()</code></td><td><code>ORDER BY NEWID()</code></td></tr>
+<tr><td>Null-safe comparison</td><td><code>a &lt;=&gt; b</code></td><td><code>a IS NOT DISTINCT FROM b</code></td><td><code>a IS NOT DISTINCT FROM b</code> (2022+)</td></tr>
+<tr><td>Upsert</td><td><code>ON DUPLICATE KEY UPDATE</code></td><td><code>ON CONFLICT DO UPDATE</code></td><td><code>MERGE</code></td></tr>
+<tr><td>Auto-increment</td><td><code>AUTO_INCREMENT</code></td><td><code>GENERATED ... AS IDENTITY</code></td><td><code>IDENTITY(1,1)</code></td></tr>
+<tr><td>Regex match</td><td><code>REGEXP</code></td><td><code>~</code></td><td>no built-in operator</td></tr>
+<tr><td>Execution plan</td><td><code>EXPLAIN</code></td><td><code>EXPLAIN ANALYZE</code></td><td><code>SET SHOWPLAN_ALL ON</code></td></tr>
+</table>
+<p>Two of these fail quietly rather than raising an error. In MySQL, <code>||</code> is the logical OR unless <code>PIPES_AS_CONCAT</code> is enabled, so <code>'a' || 'b'</code> evaluates to <code>1</code> instead of <code>'ab'</code>. And identifier case folding differs: PostgreSQL folds unquoted names to lower case, so a column created as <code>EmployeeID</code> is stored as <code>employeeid</code> and only resolves if you double-quote it everywhere. T-SQL follows the collation of the database, which is why one schema can behave differently on two servers.</p>
+</section>
+
+<section class="content-section" id="strings">
+<h2>11. String Functions</h2>
+<p>Text is the messiest data most of us handle: padded, mixed-case, half-normalized, and occasionally NULL when nobody expected it. These are the functions worth having in muscle memory, with the T-SQL spelling shown where it differs from the portable name.</p>
+<table class="cheat-table">
+<tr><th>Function</th><th>What it does</th><th>Example</th></tr>
+<tr><td><code>UPPER</code> / <code>LOWER</code></td><td>Change case</td><td><code>UPPER(email)</code></td></tr>
+<tr><td><code>LENGTH</code> / <code>LEN</code></td><td>Length of a string</td><td><code>LENGTH(name)</code></td></tr>
+<tr><td><code>TRIM</code>, <code>LTRIM</code>, <code>RTRIM</code></td><td>Strip surrounding spaces</td><td><code>TRIM(raw_input)</code></td></tr>
+<tr><td><code>SUBSTRING</code></td><td>Extract part of a string</td><td><code>SUBSTRING(phone, 1, 3)</code></td></tr>
+<tr><td><code>REPLACE</code></td><td>Swap every occurrence</td><td><code>REPLACE(phone, '-', '')</code></td></tr>
+<tr><td><code>CONCAT</code></td><td>Join strings together</td><td><code>CONCAT(first_name, ' ', last_name)</code></td></tr>
+<tr><td><code>LEFT</code> / <code>RIGHT</code></td><td>First or last n characters</td><td><code>LEFT(code, 2)</code></td></tr>
+<tr><td><code>COALESCE</code></td><td>First non-NULL argument</td><td><code>COALESCE(nickname, first_name)</code></td></tr>
+<tr><td><code>NULLIF</code></td><td>Turn a value into NULL</td><td><code>NULLIF(status, 'unknown')</code></td></tr>
+<tr><td><code>CAST</code> / <code>CONVERT</code></td><td>Change the data type</td><td><code>CAST(id AS CHAR)</code></td></tr>
+</table>
+<pre><code>-- Build a display name, normalise case, measure the result
+SELECT
+  CONCAT(COALESCE(nickname, first_name), ' ', last_name) AS display_name,
+  UPPER(LEFT(department, 3)) AS dept_code,
+  LENGTH(TRIM(comment)) AS comment_length
+FROM users
+WHERE LOWER(email) = LOWER(?);</code></pre>
+<h3>Nulls and concatenation</h3>
+<p>Concatenation is the classic silent failure. <code>CONCAT('a', NULL)</code> returns NULL in MySQL, and so does <code>'a' || NULL</code> in PostgreSQL &mdash; one NULL column wipes out the whole built string, and you find out in the report rather than the test suite. T-SQL's <code>CONCAT</code> treats NULL as an empty string instead, and PostgreSQL's variadic <code>concat()</code> does the same, so two queries that look identical behave differently. If any input can be NULL, wrap it in <code>COALESCE(col, '')</code> before joining, or use <code>CONCAT_WS()</code>, which both MySQL and PostgreSQL provide and which skips NULL arguments by design.</p>
+<h3>Indexing and lengths</h3>
+<p>Every mainstream engine numbers string positions from 1, and the third argument of <code>SUBSTRING</code> is a length rather than an end position, so <code>SUBSTRING(name, 1, 3)</code> returns the first three characters. T-SQL requires all three arguments; MySQL and PostgreSQL let you omit the length to mean "through the end of the string", and MySQL alone accepts a negative start to count from the right. <code>LENGTH()</code> is the other portability trap: in MySQL it counts bytes while <code>CHAR_LENGTH()</code> counts characters, so an 8-character UTF-8 value can report 24. On any column that may hold non-ASCII text, prefer <code>CHAR_LENGTH()</code> in MySQL and <code>LENGTH()</code> elsewhere.</p>
+</section>
+
+<section class="content-section" id="dates">
+<h2>12. Date &amp; Time Functions</h2>
+<p>Date arithmetic is where copy-pasting a query between engines fails most often, because the syntax changes even when the intent does not. The table maps the common operations across all three platforms.</p>
+<table class="cheat-table">
+<tr><th>Task</th><th>MySQL</th><th>PostgreSQL</th><th>T-SQL</th></tr>
+<tr><td>Current timestamp</td><td><code>NOW()</code></td><td><code>NOW()</code></td><td><code>GETDATE()</code>, <code>SYSDATETIME()</code></td></tr>
+<tr><td>Current date</td><td><code>CURDATE()</code></td><td><code>CURRENT_DATE</code></td><td><code>CAST(GETDATE() AS DATE)</code></td></tr>
+<tr><td>Add an interval</td><td><code>d + INTERVAL 7 DAY</code></td><td><code>d + INTERVAL '7 days'</code></td><td><code>DATEADD(day, 7, d)</code></td></tr>
+<tr><td>Difference between two dates</td><td><code>DATEDIFF(a, b)</code></td><td><code>a - b</code></td><td><code>DATEDIFF(day, a, b)</code></td></tr>
+<tr><td>Extract one part</td><td><code>EXTRACT(YEAR FROM d)</code></td><td><code>EXTRACT(YEAR FROM d)</code></td><td><code>DATEPART(year, d)</code></td></tr>
+<tr><td>Truncate to first of month</td><td><code>DATE_FORMAT(d, '%Y-%m-01')</code></td><td><code>DATE_TRUNC('month', d)</code></td><td><code>DATETRUNC(month, d)</code></td></tr>
+<tr><td>Format as text</td><td><code>DATE_FORMAT(d, '%Y-%m')</code></td><td><code>TO_CHAR(d, 'YYYY-MM')</code></td><td><code>FORMAT(d, 'yyyy-MM')</code></td></tr>
+</table>
+<pre><code>-- Orders placed in the last 30 days
+-- MySQL
+SELECT * FROM orders WHERE created_at &gt;= NOW() - INTERVAL 30 DAY;
+
+-- PostgreSQL
+SELECT * FROM orders WHERE created_at &gt;= NOW() - INTERVAL '30 days';
+
+-- T-SQL
+SELECT * FROM orders WHERE created_at &gt;= DATEADD(day, -30, GETDATE());
+
+-- Revenue per month, portable between MySQL and PostgreSQL
+SELECT EXTRACT(YEAR FROM paid_at) AS yr,
+       EXTRACT(MONTH FROM paid_at) AS mo,
+       SUM(amount) AS revenue
+FROM orders
+WHERE paid_at &gt;= '2026-01-01'
+GROUP BY 1, 2
+ORDER BY 1, 2;</code></pre>
+<h3>Date traps worth memorising</h3>
+<p><strong>Argument order in <code>DATEDIFF</code> is reversed.</strong> MySQL's <code>DATEDIFF(a, b)</code> returns <code>a - b</code> in whole days, while T-SQL's <code>DATEDIFF(day, a, b)</code> returns <code>b - a</code>. Swap the arguments and you get a sign flip rather than an error, which is exactly the kind of bug that survives code review.</p>
+<p><strong><code>BETWEEN</code> on a timestamp is a half-open range pretending not to be.</strong> <code>created_at BETWEEN '2026-01-01' AND '2026-01-31'</code> quietly excludes everything after midnight on the 31st. Write the half-open form instead &mdash; <code>created_at &gt;= '2026-01-01' AND created_at &lt; '2026-02-01'</code> &mdash; and it behaves correctly for dates, timestamps, and time zones alike.</p>
+<p><strong>Wrapping a column in a function kills the index.</strong> <code>WHERE DATE(created_at) = '2026-09-29'</code> forces a full scan because the index stores <code>created_at</code>, not <code>DATE(created_at)</code>. Filter with a range and apply the function to the <code>SELECT</code> list only. Time zones follow the same logic: store UTC, since MySQL's <code>DATETIME</code> and T-SQL's <code>DATETIME2</code> both discard the offset silently.</p>
+</section>
+
+<section class="content-section" id="json">
+<h2>13. JSON Functions</h2>
+<p>JSON columns are common enough that you cannot avoid them: feature flags, webhook payloads, and audit events all tend to land as documents. Every major engine now has a JSON type and a path syntax, but the operators share almost no names.</p>
+<table class="cheat-table">
+<tr><th>Task</th><th>MySQL</th><th>PostgreSQL</th><th>T-SQL</th></tr>
+<tr><td>Field as JSON value</td><td><code>doc-&gt;'$.name'</code></td><td><code>doc-&gt;'name'</code></td><td><code>JSON_QUERY(doc, '$.name')</code></td></tr>
+<tr><td>Field as text</td><td><code>doc-&gt;&gt;'$.name'</code></td><td><code>doc-&gt;&gt;'name'</code></td><td><code>JSON_VALUE(doc, '$.name')</code></td></tr>
+<tr><td>Nested path</td><td><code>'$.user.city'</code></td><td><code>doc#&gt;&gt;'{user,city}'</code></td><td><code>'$.user.city'</code></td></tr>
+<tr><td>Array elements as rows</td><td><code>JSON_TABLE(...)</code></td><td><code>jsonb_array_elements(doc)</code></td><td><code>OPENJSON(doc)</code></td></tr>
+<tr><td>Index for filtering</td><td>generated column + index</td><td>GIN index on the jsonb column</td><td>computed column + index</td></tr>
+</table>
+<pre><code>-- PostgreSQL: filter on a JSON field, then cast the extracted text
+SELECT id, payload-&gt;&gt;'status' AS status
+FROM events
+WHERE payload-&gt;&gt;'type' = 'signup'
+  AND (payload-&gt;&gt;'amount')::numeric &gt; 100;
+
+-- MySQL: same idea, dollar-rooted paths
+SELECT id, payload-&gt;&gt;'$.status' AS status
+FROM events
+WHERE payload-&gt;&gt;'$.type' = 'signup'
+  AND CAST(payload-&gt;&gt;'$.amount' AS DECIMAL(10,2)) &gt; 100;
+
+-- T-SQL: JSON lives in NVARCHAR(MAX) and is parsed on read
+SELECT id, JSON_VALUE(payload, '$.status') AS status
+FROM events
+WHERE JSON_VALUE(payload, '$.type') = 'signup';</code></pre>
+<h3>What to watch out for</h3>
+<p><strong>Single arrow versus double arrow.</strong> In both MySQL and PostgreSQL the double arrow unquotes the value and returns text; the single arrow returns a JSON value that still carries its quotes. Comparing a single-arrow result to a string literal is the most common JSON bug there is, because the comparison fails even though the printed values look identical.</p>
+<p><strong>Extraction does not coerce types.</strong> Every value that comes out of a JSON path is text, so <code>&gt; 100</code> against an extracted field compares strings in some engines and numbers in others. Cast explicitly, as the examples above do.</p>
+<p><strong>Indexing needs help.</strong> A GIN index on a <code>jsonb</code> column accelerates containment queries but not an arbitrary path comparison, so PostgreSQL needs an expression index on the extracted field. MySQL 8 can index a functional expression directly while MySQL 5.7 needs a generated column, and T-SQL needs a persisted computed column. Prefer <code>jsonb</code> over <code>json</code> for anything you query: raw <code>json</code> preserves whitespace and duplicate keys, <code>jsonb</code> does not.</p>
+</section>
+
+<section class="content-section" id="transactions">
+<h2>14. Transactions, Locking &amp; Permissions</h2>
+<p>Changing data is half the job; the other half is deciding when the change becomes visible, what it locks while it runs, and who is allowed to run it at all. These are the statements worth knowing before touching anything that matters.</p>
+<pre><code>-- Explicit transaction
+BEGIN;                                  -- MySQL / PostgreSQL
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;                                 -- or ROLLBACK
+
+-- Partial rollback with a savepoint
+BEGIN;
+UPDATE orders SET status = 'shipped' WHERE id = 42;
+SAVEPOINT before_audit;
+INSERT INTO audit_log (event) VALUES ('order 42 shipped');
+ROLLBACK TO SAVEPOINT before_audit;     -- keeps the UPDATE, drops the log row
+COMMIT;
+
+-- Lock the rows you are about to update
+SELECT * FROM jobs WHERE status = 'pending' FOR UPDATE;
+SELECT * FROM jobs WHERE status = 'pending' FOR UPDATE SKIP LOCKED;
+
+-- Isolation level for this transaction only
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;</code></pre>
+<table class="cheat-table">
+<tr><th>Task</th><th>MySQL</th><th>PostgreSQL</th><th>T-SQL</th></tr>
+<tr><td>Start a transaction</td><td><code>BEGIN</code> / <code>START TRANSACTION</code></td><td><code>BEGIN</code></td><td><code>BEGIN TRANSACTION</code></td></tr>
+<tr><td>Default isolation</td><td><code>REPEATABLE READ</code></td><td><code>READ COMMITTED</code></td><td><code>READ COMMITTED</code></td></tr>
+<tr><td>Row lock hint</td><td><code>FOR UPDATE</code></td><td><code>FOR UPDATE</code></td><td><code>WITH (UPDLOCK)</code></td></tr>
+<tr><td>Grant read access</td><td><code>GRANT SELECT ON shop.* TO 'app'</code></td><td><code>GRANT SELECT ON orders TO app</code></td><td><code>GRANT SELECT ON dbo.Orders TO app</code></td></tr>
+<tr><td>Revoke</td><td><code>REVOKE SELECT ON shop.* FROM 'app'</code></td><td><code>REVOKE SELECT ON orders FROM app</code></td><td><code>REVOKE SELECT ON dbo.Orders FROM app</code></td></tr>
+</table>
+<pre><code>-- PostgreSQL: a read-only role for analytics
+CREATE ROLE analyst LOGIN;
+GRANT USAGE ON SCHEMA public TO analyst;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO analyst;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO analyst;
+
+-- MySQL
+CREATE USER 'analyst'@'%' IDENTIFIED BY 'change-me';
+GRANT SELECT ON shop.* TO 'analyst'@'%';
+
+-- T-SQL: reuse the built-in role
+ALTER ROLE db_datareader ADD MEMBER analyst;</code></pre>
+<h3>DDL inside a transaction does not behave the same everywhere</h3>
+<p>PostgreSQL and SQL Server run DDL inside the surrounding transaction, so a migration that creates three tables and fails on the third rolls all of them back. MySQL commits implicitly before and after almost every DDL statement, so a <code>CREATE TABLE</code> survives even when the transaction around it rolls back, and <code>TRUNCATE</code> cannot be undone. If a migration has to be atomic, check the engine's rules before promising that a failed deploy leaves no trace.</p>
+<h3>Least privilege, in practice</h3>
+<p>Applications should connect with an account that holds only the privileges they actually need: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> on the tables they own, and nothing on the schema. Reserve DDL and <code>GRANT</code> for migration accounts that only run during deployment. Two details save time later: <code>FLUSH PRIVILEGES</code> in MySQL is only required when you edit the grant tables directly, because <code>CREATE USER</code> and <code>GRANT</code> take effect immediately; and in PostgreSQL, privileges on existing objects and future objects are separate settings, so <code>ALTER DEFAULT PRIVILEGES</code> is what keeps a role working after the next migration creates a table.</p>
 </section>
 
 <section class="content-section" id="faq">
@@ -296,6 +465,7 @@ WHERE status = 'terminated' AND updated_at < '2024-01-01';</code></pre>
 <div class="faq-item"><h3>What are the basic SQL commands every beginner should know?</h3><p>Start with SELECT, INSERT, UPDATE, and DELETE — the four fundamental operations. Then learn WHERE (filtering), JOIN (combining tables), GROUP BY (aggregation), and ORDER BY (sorting). These 8 commands cover 90% of daily SQL work.</p></div>
 <div class="faq-item"><h3>How do I format SQL queries to make them readable?</h3><p>Use uppercase for keywords, put each clause on a new line, indent subqueries, and format column lists vertically. Or use <a href="/">SQLFormat.io</a> to auto-format any query in one click — 15+ dialects supported.</p></div>
 <div class="faq-item"><h3>What is the difference between INNER JOIN and LEFT JOIN?</h3><p>INNER JOIN returns only rows with matches in both tables. LEFT JOIN returns all rows from the left table plus matching rows from the right — unmatched right columns get NULL. Use LEFT JOIN when you need all rows from the main table regardless of matches.</p></div>
+<div class="faq-item"><h3>What is the difference between WHERE and HAVING?</h3><p>WHERE filters individual rows before grouping, so it cannot reference aggregate functions such as COUNT() or SUM(). HAVING filters groups after GROUP BY and can reference aggregates. If the condition involves a SUM or COUNT it belongs in HAVING; everything else belongs in WHERE, because filtering earlier reduces the rows that reach the aggregation step.</p></div>
 </section>
 
 <div class="related-section">
