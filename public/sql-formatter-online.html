@@ -80,6 +80,22 @@
           "@type": "Answer",
           "text": "Yes. The page is fully responsive, so you can paste and format SQL from a phone, tablet, or any browser. It also works offline after the first load, since all processing is local JavaScript with no server dependency."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I format a whole .sql file, or only a single query?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Either works. Paste one statement or an entire migration script into the input panel and the parser walks the file statement by statement, keeping each one on its own block. Because the formatting runs in your browser, the practical limit is your machine's memory rather than an upload quota."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does formatting change how the query behaves?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Only whitespace, line breaks and keyword case are rewritten; identifiers, aliases and string literals are left exactly as typed, so the output runs identically to the original. If the input does not parse — an unclosed parenthesis, a mismatched quote, the wrong dialect — you get an error instead of a half-formatted result."
+        }
       }
     ]
   }
@@ -445,6 +461,17 @@ gtag('config', 'G-M3MYLE3P6F');
     <h3>Structure lost in nested clauses</h3>
     <p>Multi-level <code>CASE</code> expressions, <code>WITH</code> chains with several CTEs, and back-to-back <code>UNION</code> queries are split at the clause boundaries where a person would put a blank line.</p>
     <p>What it will not do is repair a query that was already broken: a missing parenthesis, an unclosed string literal, or the wrong dialect returns an error rather than a half-formatted result.</p>
+  </div>
+
+  <div class="content-section" id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><h3>What is a SQL formatter online?</h3><p>An online SQL formatter takes messy, unreadable SQL — often a single massive line — and rewrites it with proper indentation, line breaks, and keyword casing. The output keeps the exact same logic, so it runs identically, but you can finally see the structure: which JOIN belongs to which table, where each subquery starts and ends, and what that nested CASE statement is actually doing.</p></div>
+    <div class="faq-item"><h3>Is this online SQL formatter free?</h3><p>Yes, completely free. There is no signup, no trial counter, no watermark, and no premium tier hiding the features you actually need. Paste your SQL, pick a dialect, click Format, and copy the result — as many times as you want.</p></div>
+    <div class="faq-item"><h3>Which SQL dialects does it support?</h3><p>The formatter supports 15+ dialects including MySQL, PostgreSQL, SQLite, SQL Server (T-SQL), BigQuery, Snowflake, Redshift, MariaDB, PL/SQL, DB2, Hive, Spark, Trino, and SingleStoreDB. Dialect-aware formatting matters because features like array syntax, window functions, and operator precedence differ between databases.</p></div>
+    <div class="faq-item"><h3>Is my SQL code safe to paste into an online formatter?</h3><p>Yes. Formatting runs entirely in your browser — your SQL never leaves your machine, so there is no upload, no server log, and no database of queries to worry about. This makes it safe to format queries that touch sensitive tables or contain credentials.</p></div>
+    <div class="faq-item"><h3>Can I format SQL on my phone or tablet?</h3><p>Yes. The page is fully responsive, so you can paste and format SQL from a phone, tablet, or any browser. It also works offline after the first load, since all processing is local JavaScript with no server dependency.</p></div>
+    <div class="faq-item"><h3>Can I format a whole .sql file, or only a single query?</h3><p>Either works. Paste one statement or an entire migration script into the input panel and the parser walks the file statement by statement, keeping each one on its own block. Because the formatting runs in your browser, the practical limit is your machine's memory rather than an upload quota.</p></div>
+    <div class="faq-item"><h3>Does formatting change how the query behaves?</h3><p>No. Only whitespace, line breaks and keyword case are rewritten; identifiers, aliases and string literals are left exactly as typed, so the output runs identically to the original. If the input does not parse — an unclosed parenthesis, a mismatched quote, the wrong dialect — you get an error instead of a half-formatted result.</p></div>
   </div>
 
   <div class="related-section">
