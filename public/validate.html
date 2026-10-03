@@ -482,6 +482,16 @@ AND age > 18
   </div>
 
   <div class="content-section">
+    <h2>Online SQL Query Checker for PostgreSQL, MySQL and MariaDB</h2>
+    <p>Most searches that land here are dialect-specific: people want a PostgreSQL validator, a MySQL syntax checker or a MariaDB checker, not generic Standard SQL. Those are all the same tool with a different grammar selected, and picking the right one is what turns a wall of false errors into a clean pass. The dropdown above ships a dedicated grammar per engine, so validation runs against the rules you actually deploy under.</p>
+    <p><strong>PostgreSQL validator.</strong> Select PostgreSQL and the checker accepts the syntax MySQL rejects: <code>RETURNING</code> on <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code>; <code>::</code> casts; <code>ON CONFLICT ... DO UPDATE</code>; <code>DISTINCT ON</code>; <code>LATERAL</code> joins; dollar-quoted <code>$$ ... $$</code> bodies; and the JSONB operators <code>-&gt;</code>, <code>-&gt;&gt;</code> and <code>@&gt;</code>. The PostgreSQL-specific failures this catches most often are an unterminated dollar quote inside a function body and a <code>::</code> cast attached to the wrong expression. Format the repaired statement afterwards with the <a href="/sql-formatter-postgresql">PostgreSQL formatter</a>.</p>
+    <p><strong>MySQL and MariaDB syntax checker.</strong> Select MySQL or MariaDB for backtick-quoted identifiers, <code>LIMIT offset, count</code>, <code>INSERT ... ON DUPLICATE KEY UPDATE</code>, <code>REPLACE INTO</code> and <code>AUTO_INCREMENT</code>. MySQL error 1064 is the message people are usually staring at when they arrive, and a missing comma between two selected columns or a stray trailing comma before <code>FROM</code> accounts for most of them. The step-by-step walkthrough lives in <a href="/blog/fix-mysql-error-1064">fixing MySQL error 1064</a>.</p>
+    <p><strong>Oracle SQL validator.</strong> Select PL/SQL for <code>DUAL</code>, <code>ROWNUM</code>, <code>NVL</code>, <code>CONNECT BY</code> and PL/SQL blocks that are not wrapped in a stored procedure &mdash; all of which read as syntax errors under MySQL or Standard SQL.</p>
+    <p><strong>SQL query checker across every other engine.</strong> The same checker covers SQL Server / T-SQL (<code>SELECT TOP n</code>, <code>[bracketed]</code> identifiers, <code>GO</code> batch separators), plus SQLite, BigQuery, Snowflake, Redshift, Spark, Hive, DB2, Trino and SingleStoreDB. Checking a query under the wrong grammar is the biggest single source of phantom errors &mdash; a statement flagged under Standard SQL often parses cleanly the moment you switch dialect.</p>
+    <p>Validation tells you whether the SQL parses; it does not tell you whether the query is fast or correct. Those are the next two steps: read the access path in the <a href="/explain">SQL EXPLAIN visualizer</a>, and diff the fixed statement against the original in the <a href="/diff">SQL diff tool</a> to confirm the logic survived the repair. Porting between engines rather than fixing a typo? Start from the <a href="/dialect-converter">SQL dialect converter</a>, then validate the converted output under the target grammar.</p>
+  </div>
+
+  <div class="content-section">
     <h2>Frequently Asked Questions</h2>
     <h3>What SQL errors can the validator detect?</h3>
     <p>It detects syntax errors such as missing commas, unmatched parentheses, misspelled keywords (for example <code>SELCET</code> instead of <code>SELECT</code>) and structural problems that would make the query fail. Errors are reported line by line, with warnings flagged separately from hard errors.</p>
@@ -510,6 +520,8 @@ AND age > 18
       <a href="/sql-formatter-mysql">MySQL Formatter</a>
       <a href="/sql-minifier-online">SQL Minifier Online</a>
       <a href="/sql-to-json-converter-online">SQL to JSON Converter</a>
+      <a href="/diff">SQL Diff Tool</a>
+      <a href="/explain">EXPLAIN Visualizer</a>
     </div>
   </div>
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">

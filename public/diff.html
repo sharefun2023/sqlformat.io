@@ -426,6 +426,20 @@ WHERE o.status = 'completed';
   </div>
 
   <div class="content-section">
+    <h2>Compare SQL Code Online: Diff Checker for Queries, Procedures and Scripts</h2>
+    <p>Most people arrive looking for a SQL difference checker &mdash; a way to see, on one screen, what changed between two pieces of SQL code. That is exactly what this page is: paste the old version into panel A and the new version into panel B, and the tool acts as a diff checker for the whole script rather than a single statement. It works on anything that is valid SQL text, so the same box compares two <code>SELECT</code> statements, two view definitions, two stored procedure bodies, or a four-hundred-line migration file.</p>
+    <p>Comparing SQL code online is deliberately different from comparing two text files. A text diff is byte-oriented, so reindenting a block or converting tabs to spaces lights up the entire page in red and green while the three lines that actually changed get lost in the noise. This tool tokenizes the SQL first &mdash; keywords, identifiers, string literals, operators, punctuation &mdash; and then diffs the token stream. The result is a difference checker that ignores cosmetic reformatting and highlights the changes that alter behaviour: a <code>JOIN</code> that became a <code>LEFT JOIN</code>, a <code>WHERE</code> predicate that gained a condition, a column dropped from the select list, a parameter default that moved.</p>
+    <p>Cases where a SQL code diff pays for itself:</p>
+    <ul>
+      <li><strong>Code review</strong> &mdash; diff the branch version against <code>main</code> before approving a migration, and read the orange modified tokens instead of re-reading the whole procedure.</li>
+      <li><strong>Environment drift</strong> &mdash; export the same procedure from staging and production, then compare the two files to find the definition that quietly diverged.</li>
+      <li><strong>Formatter verification</strong> &mdash; run a query through the <a href="/">SQL formatter</a> and diff the output against the input; if only whitespace and casing changed, the diff proves the reformat is safe to ship.</li>
+      <li><strong>Post-refactor sanity check</strong> &mdash; after rewriting a subquery as a join (see <a href="/blog/sql-query-optimization-tips">SQL query optimization tips</a>), compare both versions to confirm the predicates still match.</li>
+    </ul>
+    <p>Nothing is uploaded while you compare: the tokenizer and the diff both run in the browser in JavaScript, which is what makes it usable on proprietary schema and production SQL. If one side will not compare because it fails to parse, check it first in the <a href="/validate">SQL syntax checker</a>. If the difference is really a dialect port rather than an edit, convert the syntax with the <a href="/dialect-converter">SQL dialect converter</a>. And to see what the changed statement does at runtime, paste the plan into the <a href="/explain">SQL EXPLAIN visualizer</a>.</p>
+  </div>
+
+  <div class="content-section">
     <h2>FAQ</h2>
     <p><strong>How do I compare two SQL queries online?</strong><br>Paste the original query into panel A and the modified query into panel B, then click <strong>Compare</strong> or press <code>Ctrl+Enter</code>. Added lines are marked green, removed lines red, and modified lines orange, with the exact changed tokens highlighted inline. No signup and no upload required.</p>
     <p><strong>Is this SQL compare tool free?</strong><br>Yes. The SQL diff tool is completely free &mdash; no account, no usage limits, no file-size paywall. The comparison runs entirely in your browser.</p>
@@ -446,7 +460,9 @@ WHERE o.status = 'completed';
       <a href="/sql-formatter-mysql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">MySQL Formatter</a><span style="color:var(--border);">·</span>
       <a href="/sql-formatter-postgresql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">PostgreSQL Formatter</a><span style="color:var(--border);">·</span>
       <a href="/dialect-converter" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">Dialect Converter</a><span style="color:var(--border);">·</span>
-      <a href="/sql-to-json" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL to JSON</a>
+      <a href="/sql-to-json" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL to JSON</a><span style="color:var(--border);">&middot;</span>
+      <a href="/explain" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">EXPLAIN Visualizer</a><span style="color:var(--border);">&middot;</span>
+      <a href="/stats" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Query Analyzer</a>
     </div>
   </div>
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
