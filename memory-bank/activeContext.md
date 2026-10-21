@@ -34,3 +34,4 @@
 *   2026-09-23 03:30:08 (auto) — Latest commit: bbdd04c chore: SEO maintenance 2026-09-22 - honest lastmod: ignore site-wide footer/nav commits (sharefun2023, 2026-09-22)
 *   2026-10-10 03:30:01 (auto) — Latest commit: 43d710a chore: sync lastmod and dateModified for sql-subquery-vs-join (sharefun2023, 2026-10-09)
 *   2026-10-11 03:30:21 (auto) — Latest commit: 8f86583 chore: sync lastmod and dateModified for sql-formatter-online (sharefun2023, 2026-10-10)
+*   2026-10-21 03:30:47 (auto) — Latest commit: 8cfeef0 chore: rotate daily SQL tip 2026-10-20 (sharefun2023, 2026-10-20)
