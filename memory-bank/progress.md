@@ -40,3 +40,5 @@
 *   2026-10-10 03:30:01 (auto) — Git activity: 209 commits, latest: 43d710a chore: sync lastmod and dateModified for sql-subquery-vs-join (sharefun2023, 2026-10-09)
 *   2026-10-11 03:30:21 (auto) — Git activity: 212 commits, latest: 8f86583 chore: sync lastmod and dateModified for sql-formatter-online (sharefun2023, 2026-10-10)
 *   2026-10-21 03:30:47 (auto) — Git activity: 224 commits, latest: 8cfeef0 chore: rotate daily SQL tip 2026-10-20 (sharefun2023, 2026-10-20)
+*   2026-10-22 03:30:44 (auto) — Git activity: 227 commits, latest: 93a6910 chore: sync lastmod for er-diagram (sharefun2023, 2026-10-21)
+*   2026-10-23 03:30:44 (auto) — Git activity: 229 commits, latest: 67d7f18 chore: sync lastmod and dateModified for minify, pretty-print, sql-formatter-mysql (sharefun2023, 2026-10-22)
