@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Escape - Escape Single Quotes &amp; Special Characters Online</title>
-  <meta name="description" content="Free online SQL string escaper. Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Instant, client-side, no data sent to server.">
-  <meta name="keywords" content="SQL escape, escape SQL string, escape single quotes, SQL string escaper, escape SQL characters, online SQL escape">
-  <meta property="og:title" content="SQL Escape - Escape Single Quotes &amp; Special Characters Online">
+  <title>SQL Escape Online — Escape Single Quotes in SQL Queries | SQLFormat.io</title>
+  <meta name="description" content="Escape single quotes in SQL in one paste: get O'Brien back as O''Brien for PostgreSQL, SQL Server and SQLite, or \' for MySQL. Handles quotes, backslashes, newlines and whole INSERT scripts. Free, no signup, runs entirely in your browser.">
+  <meta name="keywords" content="SQL escape, SQL escape online, escape single quote in SQL, escape quotes in SQL, MySQL escape, SQL Server escape, SQL escape character, escape SQL string, SQL string escaper">
+  <meta property="og:title" content="SQL Escape Online — Escape Single Quotes in SQL Queries | SQLFormat.io">
   <meta property="og:description" content="Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Free, instant, and runs entirely in your browser.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/escape">
@@ -17,8 +17,8 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "SQL Escape Tool",
-    "description": "Free online SQL string escaper. Escape single quotes, double quotes, backslashes, and special characters for SQL queries. Instant, client-side, no data sent to server.",
+    "name": "SQL Escape Online — Escape Single Quotes in SQL",
+    "description": "Escape single quotes in SQL in one paste: get O'Brien back as O''Brien for PostgreSQL, SQL Server and SQLite, or \\' for MySQL. Handles quotes, backslashes, newlines and whole INSERT scripts. Free, no signup, runs entirely in your browser.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "offers": {
@@ -27,7 +27,7 @@
       "priceCurrency": "USD"
     },
     "url": "https://sqlformat.io/escape",
-    "dateModified": "2026-09-29"
+    "dateModified": "2026-11-10"
   
   }
   </script>
@@ -40,6 +40,70 @@
       {"@type": "ListItem", "position": 2, "name": "SQL Escape", "item": "https://sqlformat.io/escape"}
     ]
   }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I escape a single quote in SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Double it. In PostgreSQL, SQL Server, SQLite, Oracle and standard SQL, O'Brien is written O''Brien inside a string literal &mdash; two apostrophes, no backslash. MySQL also accepts \\' because backslash escaping is on by default, but doubling works there too and keeps the literal portable across engines."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I escape a single quote in MySQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Write \\' or ''. The backslash form is what the mysql client and most drivers produce, while '' is the standard form. Watch the session mode: with NO_BACKSLASH_ESCAPES set on the server, \\' is no longer an escape at all, so doubling is the only safe choice for a script that may run on a differently configured server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I escape a single quote in SQL Server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Double it, the same as standard SQL: 'It''s done' is a single string containing an apostrophe. There is no backslash escape in T-SQL &mdash; a backslash is a literal character &mdash; so do not carry MySQL-style \\' into SQL Server, and remember that a leading N'...' prefix changes only the type to nvarchar, not the quoting rules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my query still break after escaping the quotes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Almost always a trailing backslash or a double-escaped value. In a backslash-escaping dialect a value ending in \\ consumes the closing quote and the parser keeps reading into the next line. Test with the hostile cases from the verification checklist: a lone quote, a doubled quote, a backslash-quote pair, a value ending in a backslash, and a newline."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to escape double quotes in SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not inside a normal string literal: the single quote is the delimiter, so double quotes are ordinary characters in PostgreSQL, MySQL, SQL Server, Oracle and SQLite. They matter only when an identifier is delimited with double quotes, and in that case embed one by doubling it &mdash; or, better, avoid building identifiers from input entirely."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is escaping enough to prevent SQL injection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Escaping protects the text you emit, not the queries you accept: one missed value, one concatenated identifier or one differently configured server breaks it. The injection defence is parameter binding &mdash; placeholders for values, an allow-list for identifiers. See our SQL injection prevention guide, and use this tool for the cases where you are writing a script rather than running a parameterised query."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I escape a whole column of values or an INSERT script?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes &mdash; the tool processes the entire input at once. Paste one value per line for a column, or a full multi-row INSERT to normalise every literal inside it. Keep values one per line rather than comma-separated so a value containing a comma cannot shift columns, and re-run Unescape on the output to confirm it round-trips before you run the script."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -335,7 +399,7 @@ gtag('config', 'G-M3MYLE3P6F');
 </header>
 <main class="container">
   <div class="hero">
-    <h1>SQL Escape</h1>
+    <h1>SQL Escape Online &mdash; Escape Single Quotes in SQL Queries</h1>
     <p>Escape single quotes, double quotes, backslashes, and special characters for SQL queries. All processing happens in your browser — your data never leaves your machine.</p>
   </div>
   <div class="tool-section">
@@ -433,6 +497,30 @@ cur.execute("SELECT * FROM users WHERE email = %s", (email,))      -- parameteri
   </div>
 
   <div class="content-section">
+    <h2>SQL Escape Character Reference: Single Quote, Double Quote and Backslash</h2>
+    <p>Every escaping bug traces back to one of three characters and one question: which engine is parsing the string. This reference is the short version of the rules above, with the exact literal to type.</p>
+
+    <h3>Escaping a single quote (') in every major dialect</h3>
+    <ul>
+      <li><strong>PostgreSQL, SQL Server, SQLite, Oracle, standard SQL:</strong> double it. <code>O'Brien</code> becomes <code>O''Brien</code>. A backslash is an ordinary character and needs no treatment.</li>
+      <li><strong>MySQL / MariaDB (default mode):</strong> <code>\'</code> and <code>''</code> both work, but <code>\'</code> is the one the client relies on. If the server runs with <code>NO_BACKSLASH_ESCAPES</code>, only doubling is valid.</li>
+      <li><strong>Inside a PostgreSQL <code>E'...'</code> string:</strong> backslash escapes are active even though plain literals ignore them, so <code>E'O\'Brien'</code> is legal and <code>E'O''Brien'</code> is still legal too.</li>
+    </ul>
+
+    <h3>Escaping double quotes and identifiers</h3>
+    <ul>
+      <li>In a string value, a double quote needs no escaping in any of the five engines &mdash; the delimiter is the single quote. Escaping it anyway is how <code>\&quot;</code> ends up stored literally in a MySQL value.</li>
+      <li>An <em>identifier</em> uses a different delimiter: double quotes in PostgreSQL and standard SQL (double them to embed one), backticks in MySQL (double them), square brackets in SQL Server (double the closing bracket).</li>
+      <li>Never build an identifier from user text at all &mdash; check it against a fixed allow-list first. No amount of escaping makes an arbitrary identifier safe.</li>
+    </ul>
+
+    <h3>Backslashes, newlines and control characters</h3>
+    <p>In MySQL and in PostgreSQL <code>E'...'</code> strings a literal backslash must be doubled to <code>\\</code>, a newline can be written <code>\n</code>, a tab <code>\t</code>, and a NUL byte <code>\0</code>. In the other engines those sequences are just the two characters typed, so a value copied from a MySQL dump into PostgreSQL keeps the backslashes visibly.</p>
+    <p>The dangerous shape is a value that <em>ends</em> in a backslash: in a backslash-escaping dialect the trailing <code>\</code> consumes the closing quote and the statement swallows whatever follows. Doubling the backslash before you emit the string is the fix, and switching the escape mode in the tool above is how you check it.</p>
+    <p>Once the literal is correct, confirm the statement itself parses: paste the result into the <a href="/validate">SQL validator</a>, or format it with the <a href="/sql-formatter-mysql">MySQL</a> and <a href="/sql-formatter-postgresql">PostgreSQL</a> formatters to see the quoting survive a re-parse.</p>
+  </div>
+
+  <div class="content-section">
     <h2>When Hand-Escaping Is the Right Tool</h2>
     <p>Binding covers values, not everything. Escaping earns its place when the deliverable is text you <em>emit</em> rather than input you accept.</p>
     <ul>
@@ -462,6 +550,24 @@ cur.execute("SELECT * FROM users WHERE email = %s", (email,))      -- parameteri
     <p><strong>Multi-row <code>INSERT</code>.</strong> Escape the values, then assemble the statement. One <code>INSERT ... VALUES (...), (...);</code> beats a thousand separate inserts because the server plans it once. The failure mode is one unescaped quote halfway down the list: the statement fails and the error points at the wrong row, so test on a single row first.</p>
     <p>For a large file, use the engine's bulk loader (<code>COPY</code>, <code>LOAD DATA INFILE</code>, <code>BULK INSERT</code>) with a configured quoting and escape character &mdash; same principle as binding: let the layer that understands the format do the encoding.</p>
   </div>
+  <div class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I escape a single quote in SQL?</h3>
+    <p>Double it. In PostgreSQL, SQL Server, SQLite, Oracle and standard SQL, O'Brien is written O''Brien inside a string literal &mdash; two apostrophes, no backslash. MySQL also accepts \' because backslash escaping is on by default, but doubling works there too and keeps the literal portable across engines.</p>
+    <h3>How do I escape a single quote in MySQL?</h3>
+    <p>Write \' or ''. The backslash form is what the mysql client and most drivers produce, while '' is the standard form. Watch the session mode: with NO_BACKSLASH_ESCAPES set on the server, \' is no longer an escape at all, so doubling is the only safe choice for a script that may run on a differently configured server.</p>
+    <h3>How do I escape a single quote in SQL Server?</h3>
+    <p>Double it, the same as standard SQL: 'It''s done' is a single string containing an apostrophe. There is no backslash escape in T-SQL &mdash; a backslash is a literal character &mdash; so do not carry MySQL-style \' into SQL Server, and remember that a leading N'...' prefix changes only the type to nvarchar, not the quoting rules.</p>
+    <h3>Why does my query still break after escaping the quotes?</h3>
+    <p>Almost always a trailing backslash or a double-escaped value. In a backslash-escaping dialect a value ending in \ consumes the closing quote and the parser keeps reading into the next line. Test with the hostile cases from the verification checklist: a lone quote, a doubled quote, a backslash-quote pair, a value ending in a backslash, and a newline.</p>
+    <h3>Do I need to escape double quotes in SQL?</h3>
+    <p>Not inside a normal string literal: the single quote is the delimiter, so double quotes are ordinary characters in PostgreSQL, MySQL, SQL Server, Oracle and SQLite. They matter only when an identifier is delimited with double quotes, and in that case embed one by doubling it &mdash; or, better, avoid building identifiers from input entirely.</p>
+    <h3>Is escaping enough to prevent SQL injection?</h3>
+    <p>No. Escaping protects the text you emit, not the queries you accept: one missed value, one concatenated identifier or one differently configured server breaks it. The injection defence is parameter binding &mdash; placeholders for values, an allow-list for identifiers. See our <a href="/blog/sql-injection-prevention-guide">SQL injection prevention guide</a>, and use this tool for the cases where you are writing a script rather than running a parameterised query.</p>
+    <h3>Can I escape a whole column of values or an INSERT script?</h3>
+    <p>Yes &mdash; the tool processes the entire input at once. Paste one value per line for a column, or a full multi-row INSERT to normalise every literal inside it. Keep values one per line rather than comma-separated so a value containing a comma cannot shift columns, and re-run Unescape on the output to confirm it round-trips before you run the script.</p>
+  </div>
+
   <div class="nav-back"><a href="/">← Back to SQL Formatter</a></div>
 
   <div style="margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
@@ -471,6 +577,12 @@ cur.execute("SELECT * FROM users WHERE email = %s", (email,))      -- parameteri
       <a href="/validate" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Validator</a><span style="color:var(--border);">·</span>
       <a href="/minify" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Minifier</a><span style="color:var(--border);">·</span>
       <a href="/sql-to-json" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL to JSON</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/sql-formatter-mysql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">MySQL Formatter</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/sql-formatter-postgresql" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">PostgreSQL Formatter</a>
+      <span style="color:var(--border);">·</span>
+      <a href="/blog/sql-injection-prevention-guide" style="color:var(--accent);text-decoration:none;font-size:0.88rem;">SQL Injection Prevention</a>
     </div>
   </div>
 </main>
