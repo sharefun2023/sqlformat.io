@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Pretty Print — Syntax-Highlighted Formatter & Image Export | SQLFormat.io</title>
-  <meta name="description" content="Format SQL with syntax highlighting and export as PNG or SVG image. Perfect for documentation, presentations, and code reviews. Choose from dark and light themes. 100% free, runs in your browser.">
-  <meta name="keywords" content="SQL pretty print, SQL syntax highlighting, SQL formatter with colors, export SQL as image, SQL to PNG, SQL to SVG, SQL code screenshot, formatted SQL image, database documentation tool">
-  <meta property="og:title" content="SQL Pretty Print — Syntax-Highlighted Formatter & Image Export">
-  <meta property="og:description" content="Format SQL with syntax highlighting and export as PNG or SVG. Perfect for documentation, presentations, and code reviews. Dark and light themes. No signup, runs in your browser.">
+  <title>SQL Pretty Print Online — Pretty Print SQL Queries Free | SQLFormat.io</title>
+  <meta name="description" content="Pretty print SQL in one click: paste a messy query and get clean, indented, colour-coded SQL you can copy straight into your editor, ticket or docs. Export PNG or SVG when you need a screenshot. Free, no signup, runs entirely in your browser.">
+  <meta name="keywords" content="SQL pretty print, pretty print SQL, SQL pretty printer, SQL pretty, SQL print, SQL syntax highlighting, SQL formatter with colors, export SQL as image, SQL to PNG, SQL to SVG, SQL code screenshot, formatted SQL image, database documentation tool">
+  <meta property="og:title" content="SQL Pretty Print Online — Pretty Print SQL Queries Free">
+  <meta property="og:description" content="Paste SQL and pretty print it instantly: clean indentation, colour-coded keywords, copy-ready output. Export PNG or SVG for docs and slides. Free, private, no signup.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sqlformat.io/pretty-print">
   <meta property="og:site_name" content="SQLFormat.io">
@@ -23,7 +23,7 @@
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://sqlformat.io/pretty-print",
-    "dateModified": "2026-10-22",
+    "dateModified": "2026-11-12",
     "browserRequirements": "Requires JavaScript",
     "featureList": "SQL syntax highlighting, SQL formatting, PNG export, SVG export, dark and light themes, copy formatted SQL, 15+ dialect support, client-side processing"
   }
@@ -39,44 +39,76 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I export formatted SQL as an image?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Enter your SQL query, select your database dialect, click Format, then choose Export PNG or Export SVG. The syntax-highlighted output is rendered as a downloadable image file. Choose between dark and light themes before exporting. All processing happens client-side in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I use the SQL pretty printer for documentation screenshots?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The pretty printer is designed specifically for creating documentation-ready SQL images. Format your query with full syntax highlighting, choose your preferred color theme, and export as PNG or SVG. SVG exports are resolution-independent, perfect for inserting into technical documentation, wikis, and presentations."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What syntax highlighting does the SQL pretty printer support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The tool highlights SQL keywords (SELECT, FROM, WHERE, JOIN, etc.), string literals, numbers, comments (both single-line -- and multi-line /* */), operators, and functions. The highlighting is based on tokenized analysis of the formatted output, producing accurate and readable color-coded SQL for any dialect."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the SQL pretty print tool free with no limits?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Completely free with no signup, no limits, and no data sent to servers. Everything runs in your browser. You can format and export as many SQL queries as you need. The PNG and SVG exports have no size restrictions."
-        }
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I export formatted SQL as an image?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Enter your SQL query, select your database dialect, click Format, then choose Export PNG or Export SVG. The syntax-highlighted output is rendered as a downloadable image file. Choose between dark and light themes before exporting. All processing happens client-side in your browser."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the SQL pretty printer for documentation screenshots?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The pretty printer is designed specifically for creating documentation-ready SQL images. Format your query with full syntax highlighting, choose your preferred color theme, and export as PNG or SVG. SVG exports are resolution-independent, perfect for inserting into technical documentation, wikis, and presentations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What syntax highlighting does the SQL pretty printer support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tool highlights SQL keywords (SELECT, FROM, WHERE, JOIN, etc.), string literals, numbers, comments (both single-line -- and multi-line /* */), operators, and functions. The highlighting is based on tokenized analysis of the formatted output, producing accurate and readable color-coded SQL for any dialect."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the SQL pretty print tool free with no limits?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Completely free with no signup, no limits, and no data sent to servers. Everything runs in your browser. You can format and export as many SQL queries as you need. The PNG and SVG exports have no size restrictions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does pretty print mean in SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pretty printing re-indents and line-breaks a query so its clause structure is visible: one clause per line, the SELECT list indented one level, JOIN conditions and subqueries aligned under their parent. It is the same transformation as formatting or beautifying SQL. Nothing about the query's meaning changes - only whitespace and presentation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I pretty print SQL without an IDE or a plugin?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. This page runs in the browser, so it works on a locked-down work laptop, a jump box or a colleague's machine where you cannot install SSMS, DataGrip, pgAdmin or a VS Code extension. Paste the query, pick the dialect, click Format & Highlight, then use Copy to take the plain indented text back into whatever editor you have."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does pretty printing change how a query runs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The database parser ignores whitespace outside string literals, so reformatting a query does not change its plan or its results. Two caveats: never let a formatter re-wrap text inside a quoted string or a dollar-quoted body, and keep MySQL optimizer hints in their /*+ ... */ comments intact - minifying removes those, pretty printing does not."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is pretty print the same as format or beautify SQL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In practice yes - all three describe rule-based re-indentation of a query. The wording differs by origin: pretty print comes from printers that laid code out for humans to read, format and beautify are the names used by editors and online tools. This page does all three in one pass and adds colour-coded syntax plus PNG / SVG export on top."
+      }
+    }
+  ]
+}
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -354,8 +386,8 @@
 
 <main class="container">
   <div class="back-link"><a href="/">&larr; Back to SQL Formatter</a></div>
-  <h1>SQL Pretty Print &amp; Syntax Highlighting</h1>
-  <p class="subtitle">Format SQL with colored syntax, then export as PNG or SVG for documentation, presentations, and code reviews.</p>
+  <h1>SQL Pretty Print Online</h1>
+  <p class="subtitle">Paste any query and pretty print it with clean indentation and colour-coded syntax &mdash; copy the plain text into your editor, or export a PNG / SVG for documentation and slides.</p>
 
   <div class="controls-row">
     <select id="dialect">
@@ -463,6 +495,20 @@ ORDER BY order_count DESC;</div>
   </div>
 
   <div class="content-section">
+    <h2>Pretty Print SQL: What the Term Actually Means</h2>
+    <p>Pretty printing is the operation people describe with half a dozen different phrases &mdash; pretty print SQL, SQL pretty printer, sql pretty, print sql &mdash; and every one of them means the same thing: take a query that arrived as one unreadable line and lay it out so a human can follow the logic. Each clause starts on its own line. The <code>SELECT</code> list is indented one level and one column per line. <code>JOIN</code> conditions sit under the join they belong to, and a subquery is indented inside its parentheses instead of being flattened into the parent expression. The parser never changes: only whitespace moves.</p>
+    <p>What separates pretty printing from a plain formatter is presentation. A formatter gives you indented text; a pretty printer also colours every token by type &mdash; keywords, functions, string literals, numbers, comments, operators &mdash; so the structure is readable at a glance even in a screenshot. That is why the output of this tool holds up in a wiki page, a slide deck or a design document, where a grey block of monospace text would not. If all you need is valid layout for your editor, use the <a href="/sql-formatter-online">SQL formatter online</a> and copy the result; if the SQL has to be read by someone else, pretty print it and export an image.</p>
+    <p>Two related operations are worth keeping apart. Minifying strips whitespace and comments to shrink a script, which is what you want before shipping SQL to a client or embedding it in code &mdash; the <a href="/minify">SQL minifier</a> does that. Comparing two versions side by side is a third job entirely, handled by the <a href="/diff">SQL diff tool</a>. Pretty print, format, beautify and minify all operate on the same text; only the intended reader changes.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Paste, Pretty Print, Copy: Working Without an IDE Plugin</h2>
+    <p>Most of the time you are not in your own editor. A query arrives in a Slack message, a Jira ticket, an email from a DBA, a Stack Overflow answer or a handover document &mdash; already collapsed into one line because the sender's client stripped the formatting. Rebuilding the indentation by hand takes minutes and you will still miss a nesting level. Paste it here instead: choose the dialect so the parser applies the right grammar, click Format &amp; Highlight, and the clause structure comes back immediately.</p>
+    <p><strong>Copy</strong> takes the plain, indented text (no colours) so you can drop it into SSMS, DBeaver, DataGrip, pgAdmin, VS Code or a Markdown file. <strong>Export PNG</strong> and <strong>Export SVG</strong> are for destinations that cannot take text at all: a slide, a Confluence page where code blocks are painful, a PDF, a support ticket that only accepts screenshots. SVG stays sharp at any zoom or print resolution, so prefer it for documentation; reach for PNG when you need a file that pastes anywhere.</p>
+    <p>If the query will not format at all, the parser has probably hit a real syntax error rather than a layout problem &mdash; run it through the <a href="/validate">SQL validator</a> first to get the failing line, then come back and pretty print the repaired statement. Both tools run entirely in your browser, so internal schemas and production queries never leave the machine. More conventions for readable SQL are collected in the <a href="/blog/sql-formatting-best-practices">SQL formatting best practices</a> guide.</p>
+  </div>
+
+  <div class="content-section">
     <h2>Frequently Asked Questions</h2>
     <h3>How do I export formatted SQL as an image?</h3>
     <p>Enter your SQL query, select your database dialect, click Format, then choose Export PNG or Export SVG. The syntax-highlighted output is rendered as a downloadable image file. Choose between dark and light themes before exporting. All processing happens client-side in your browser.</p>
@@ -472,6 +518,14 @@ ORDER BY order_count DESC;</div>
     <p>The tool highlights SQL keywords (SELECT, FROM, WHERE, JOIN, etc.), string literals, numbers, comments (both single-line -- and multi-line /* */), operators, and functions. The highlighting is based on tokenized analysis of the formatted output, producing accurate and readable color-coded SQL for any dialect.</p>
     <h3>Is the SQL pretty print tool free with no limits?</h3>
     <p>Yes. Completely free with no signup, no limits, and no data sent to servers. Everything runs in your browser. You can format and export as many SQL queries as you need. The PNG and SVG exports have no size restrictions.</p>
+    <h3>What does pretty print mean in SQL?</h3>
+    <p>Pretty printing re-indents and line-breaks a query so its clause structure is visible: one clause per line, the SELECT list indented one level, JOIN conditions and subqueries aligned under their parent. It is the same transformation as formatting or beautifying SQL. Nothing about the query&#x27;s meaning changes - only whitespace and presentation.</p>
+    <h3>Can I pretty print SQL without an IDE or a plugin?</h3>
+    <p>Yes. This page runs in the browser, so it works on a locked-down work laptop, a jump box or a colleague&#x27;s machine where you cannot install SSMS, DataGrip, pgAdmin or a VS Code extension. Paste the query, pick the dialect, click Format &amp; Highlight, then use Copy to take the plain indented text back into whatever editor you have.</p>
+    <h3>Does pretty printing change how a query runs?</h3>
+    <p>No. The database parser ignores whitespace outside string literals, so reformatting a query does not change its plan or its results. Two caveats: never let a formatter re-wrap text inside a quoted string or a dollar-quoted body, and keep MySQL optimizer hints in their /*+ ... */ comments intact - minifying removes those, pretty printing does not.</p>
+    <h3>Is pretty print the same as format or beautify SQL?</h3>
+    <p>In practice yes - all three describe rule-based re-indentation of a query. The wording differs by origin: pretty print comes from printers that laid code out for humans to read, format and beautify are the names used by editors and online tools. This page does all three in one pass and adds colour-coded syntax plus PNG / SVG export on top.</p>
   </div>
 
   <div class="related-tools">
